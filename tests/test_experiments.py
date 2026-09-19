@@ -153,3 +153,36 @@ def test_completed_event_index_can_return_status_without_deadlock(monkeypatch):
     worker = threading.Thread(target=lambda: (service.start_event_index(), completed.set()), daemon=True)
     worker.start()
     assert completed.wait(1), 'Repeated index request deadlocks while reading status under the same lock'
+
+
+@pytest.mark.parametrize('k', [1, 3, 5])
+def test_configurable_recursion_matches_original_caller(data, k):
+    from pyEpiAneufinder.get_breakpoints import recursive_getbp
+    full = data.x_row('TTAGGCTAGGCCGGAA-1').copy()
+    c = data.chrom_by_name['chr9']
+    full[c.offset+169:c.offset+210] *= 0.5
+    tree = exp.inspect_tree(full, c.offset, c.n, k=k)
+    expected = recursive_getbp(full[c.offset:c.offset+c.n], full, k=k,
+                               n_permutations=1000, alpha=0.001)
+    assert tree['boundaries'] == [row[0] for row in expected]
+    assert all(node['depth'] < k for node in tree['nodes'])
+    assert len({node['side'] for node in tree['nodes']}) == len(tree['nodes'])
+    assert all(not node['accepted'] for node in tree['nodes'] if node['hypothetical'])
+
+
+def test_rejected_root_does_not_expand_hypothetical_grandchildren(monkeypatch):
+    monkeypatch.setattr(exp.science, 'compute_node', lambda x: dict(n=len(x), argmax_b=len(x)//2))
+    monkeypatch.setattr(exp.science, 'run_split_tests', lambda *a: dict(p_local=0.5, p_global=0.5))
+    tree = exp.inspect_tree(np.ones(128), 0, 128, k=8)
+    assert [n['side'] for n in tree['nodes']] == ['root', 'left', 'right']
+    assert tree['boundaries'] == []
+    assert all(n['hypothetical'] for n in tree['nodes'][1:])
+
+
+def test_experiment_depth_is_validated_and_defaults_to_two():
+    from server.experiment_api import ExperimentReq
+    req = dict(cell='cell', chrom='chr9', start=1, end=4, operation='multiply')
+    assert ExperimentReq(**req).k == 2
+    for k in [0, 11, 2.5, True]:
+        with pytest.raises(ValueError):
+            ExperimentReq(**req, k=k)

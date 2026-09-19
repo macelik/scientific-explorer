@@ -1,9 +1,9 @@
 import { create } from 'zustand'
 import type { TestResult } from './types'
 
-export interface ExperimentDraft { start: number; end: number; operation: 'multiply' | 'add' | 'set' | 'simulate' | 'extend' | 'duplicate'; value: number; preserve_total: boolean; cn_state?: 'loss' | 'base' | 'gain'; direction?: 'left' | 'right'; length?: number; seed?: number }
+export interface ExperimentDraft { start: number; end: number; operation: 'multiply' | 'add' | 'set' | 'simulate' | 'extend' | 'duplicate'; value: number; preserve_total: boolean; cn_state?: 'loss' | 'base' | 'gain'; direction?: 'left' | 'right'; length?: number; seed?: number; k?: number }
 export interface ExperimentNode {
-  start: number; end: number; side: string; n: number; ad: number[]; argmax_b: number | null; argmax_ad: number | null
+  start: number; end: number; side: string; depth?: number; n: number; ad: number[]; argmax_b: number | null; argmax_ad: number | null
   accepted: boolean; hypothetical: boolean; passes?: boolean; tests: TestResult | null
 }
 export interface ExperimentCN {
@@ -26,7 +26,7 @@ export interface ExperimentEntry { draft: ExperimentDraft; result: ExperimentRes
 
 export function sameDraft(a: ExperimentDraft, b: ExperimentDraft) {
   return a.start === b.start && a.end === b.end && a.operation === b.operation && a.value === b.value && a.preserve_total === b.preserve_total &&
-    (a.cn_state || 'loss') === (b.cn_state || 'loss') && (a.direction || 'right') === (b.direction || 'right') && (a.length ?? 40) === (b.length ?? 40) && (a.seed ?? 42) === (b.seed ?? 42)
+    (a.cn_state || 'loss') === (b.cn_state || 'loss') && (a.direction || 'right') === (b.direction || 'right') && (a.length ?? 40) === (b.length ?? 40) && (a.seed ?? 42) === (b.seed ?? 42) && (a.k ?? 2) === (b.k ?? 2)
 }
 async function json(url: string, body?: unknown): Promise<any> {
   const res = await fetch(url, body === undefined ? undefined : { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })

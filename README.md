@@ -62,7 +62,7 @@ The tests save screenshots, a demonstration session, and result JSON under `vali
 
 ## Scientific scope
 
-Experiments use the existing scientific functions unchanged. They modify normalized X only; they do not simulate raw fragments or rerun GC correction. Automatic experimental segmentation is limited to the selected chromosome at production depth k=2; manual trees operate on original X. The original and edited scenarios each supply their own full-genome row to the global permutation test. Every CN fit uses the full genome.
+Experiments use the existing scientific functions unchanged. They modify normalized X only; they do not simulate raw fragments or rerun GC correction. Automatic experimental segmentation is limited to the selected chromosome with configurable recursion k=1–10 (default k=2); manual trees operate on original X. Child plots shade the modified target and mark accepted breakpoints, with a depth selector for deeper nodes. The original and edited scenarios each supply their own full-genome row to the global permutation test. Every CN fit uses the full genome.
 
 Simulation samples independently from bins with an exact original same-cell production state (loss 0, base 1, gain 2). At least eight donor bins are required. It is a call-conditioned exploratory model, not independently validated biological truth. Extension resamples the selected source; duplication repeats its ordered pattern. Both overwrite neighbouring retained bins and report chromosome-edge clipping.
 

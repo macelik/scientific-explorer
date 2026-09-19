@@ -1,8 +1,10 @@
 import Plot from './Plot'
+import { useState } from 'react'
 import type { ExperimentResult } from '../experimentStore'
 import { useStore } from '../store'
 
-export const ORIGINAL = '#2a6f97', EDITED = '#b25424'
+import { experimentOverlays, nodeDepth, ORIGINAL, EDITED } from '../experimentOverlays'
+export { ORIGINAL, EDITED } from '../experimentOverlays'
 
 function line(starts: number[], ends: number[], ys: number[]) {
   const x: (number | null)[] = [], y: (number | null)[] = []
@@ -30,11 +32,7 @@ export function ExperimentTracks({ result, starts, ends, original, edited, start
   add('Edited X', edited, EDITED, hasAD ? 'y2' : 'y', starts, ends, 'dot')
   add('Change in X', edited.map((v, i) => v - original[i]), EDITED, hasAD ? 'y3' : 'y2')
   const axis = { gridcolor: '#e8edf0', zerolinecolor: '#bcc7ce', fixedrange: false, automargin: true }
-  const shapes: any[] = start >= 0 && end <= starts.length && start < end ? [{ type: 'rect', x0: starts[start] / 1e6, x1: ends[end-1] / 1e6, y0: 0, y1: 1, yref: 'paper', fillcolor: EDITED, opacity: 0.07, line: { width: 0 } }] : []
-  if (result) for (const [which, color] of [[result.original, ORIGINAL], [result.edited, EDITED]] as const) {
-    const b = which.nodes[0].argmax_b
-    if (b !== null) shapes.push({ type: 'line', x0: starts[b]/1e6, x1: starts[b]/1e6, y0: 0, y1: 1, yref: 'paper', line: { color, width: 1.2, dash: 'dash' } })
-  }
+  const shapes: any[] = result ? experimentOverlays(result, 'root') : start >= 0 && end <= starts.length && start < end ? [{ type: 'rect', x0: starts[start] / 1e6, x1: ends[end-1] / 1e6, y0: 0, y1: 1, yref: 'paper', fillcolor: EDITED, opacity: 0.12, line: { width: 0 }, layer:'below' }] : []
   return <Plot data={data} layout={{ height: hasAD ? 510 : 345, margin: { l: 64, r: 22, t: 40, b: 45 }, paper_bgcolor: '#fff', plot_bgcolor: '#fff', font: { family: 'system-ui', size: 12, color: '#36444d' },
     xaxis: { ...axis, title: 'Genomic position (Mb)', anchor: hasAD ? 'y3' : 'y2', showspikes: true, spikemode: 'across', spikesnap: 'cursor' },
     yaxis: { ...axis, title: hasAD ? 'AD statistic' : 'X', domain: hasAD ? [0.68, 1] : [0.43, 1] },
@@ -52,17 +50,26 @@ export function ExperimentTracks({ result, starts, ends, original, edited, start
 
 export function ChildExperimentPlots({ result }: { result: ExperimentResult }) {
   const presentation = useStore(s => s.presentation)
-  return <div className="two-col">{['left', 'right'].map(side => {
+  const [selectedDepth, setSelectedDepth] = useState(1)
+  const nodes = [...result.original.nodes, ...result.edited.nodes]
+  const depths = [...new Set(nodes.map(nodeDepth).filter(d => d > 0))].sort((a,b) => a-b)
+  const depth = depths.includes(selectedDepth) ? selectedDepth : depths[0]
+  const sides = [...new Set(nodes.filter(n => nodeDepth(n) === depth).map(n => n.side))].sort()
+  if (!depths.length) return <p className="muted">No child nodes were tested at this recursion limit. Increase k and rerun to inspect children.</p>
+  return <div className="experiment-children"><label>Inspection depth <select aria-label="Child inspection depth" value={depth} onChange={e=>setSelectedDepth(+e.target.value)}>{depths.map(d=><option key={d} value={d}>{d}{d===1?' · immediate children':''}</option>)}</select></label>
+    <p className="muted">Orange shading: modified interval, clipped to the displayed nodes. Solid lines: accepted breakpoints in each node, including accepted descendants. Dashed lines: unaccepted candidates. Blue = original; brown = edited. The shaded interval marks the edit target; total-preserving normalization can also change X elsewhere.</p>
+    <div className="two-col">{sides.map(side => {
     const data = [result.original, result.edited].flatMap((tree, i) => {
       const node = tree.nodes.find(v => v.side === side)
       if (!node) return []
       return [{ ...line(result.start_bp.slice(node.start+1, node.end), result.end_bp.slice(node.start+1, node.end), node.ad), type: 'scatter', mode: 'lines',
-        name: `${i ? 'Edited' : 'Original'} [${node.start}, ${node.end})`, line: { color: i ? EDITED : ORIGINAL, width: 1.5 },
+        name: `${i ? 'Edited' : 'Original'} [${node.start}, ${node.end})${node.hypothetical?' · hypothetical':''}`, line: { color: i ? EDITED : ORIGINAL, width: 1.5 },
         hovertemplate: '%{x:.3f} Mb · AD %{y:.4g}<extra>%{fullData.name}</extra>' }]
     })
-    return <section key={side}><h3>{side === 'left' ? 'Left' : 'Right'} child AD</h3><Plot data={data} layout={{ height: 260, margin: { l: 50, r: 15, b: 45, t: 40 },
+    return <section key={side} data-node-path={side}><h3>{side.split('.').map(s=>s[0].toUpperCase()+s.slice(1)).join(' → ')} child AD · depth {depth}</h3><Plot data={data} layout={{ height: 280, margin: { l: 50, r: 15, b: 45, t: 40 },
       xaxis: { title: 'Genomic position (Mb)', gridcolor: '#e8edf0' }, yaxis: { title: 'AD', gridcolor: '#e8edf0', rangemode: 'tozero' },
       font: { family: 'system-ui', size: 11 }, legend: { orientation: 'h', y: 1.18 }, hovermode: presentation ? false : 'x unified',
+      shapes:experimentOverlays(result,side),
     }} config={{ displayModeBar: !presentation }} /></section>
-  })}</div>
+  })}</div></div>
 }

@@ -22,6 +22,7 @@ class ExperimentReq(BaseModel):
     direction: Literal['left', 'right'] = 'right'
     length: int = Field(default=40, ge=1, le=30000, strict=True)
     seed: int = Field(default=42, ge=0, le=4294967295, strict=True)
+    k: int = Field(default=2, ge=1, le=10, strict=True)
 
 
 def register_experiments(app, get_store, get_jobs, cfg):

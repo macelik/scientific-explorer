@@ -115,14 +115,16 @@ def apply_region_edit(source, offset, n, request, production_cn=None):
     return edited, info
 
 
-def inspect_tree(xfull, offset, n):
-    """Root and both children; only gated k=2 splits enter the final segmentation."""
+def inspect_tree(xfull, offset, n, k=2):
+    """Match recursive_getbp through depth k-1; keep immediate hypothetical children."""
+    if not isinstance(k, int) or isinstance(k, bool) or not 1 <= k <= 10:
+        raise ValueError('Recursion k must be an integer from 1 to 10')
     nodes, boundaries = [], []
 
-    def inspect(start, end, side, parent_accepted):
+    def inspect(start, end, side, parent_accepted, depth):
         x = xfull[offset+start:offset+end]
         node = science.compute_node(x)
-        node.update(start=start, end=end, side=side, accepted=False,
+        node.update(start=start, end=end, side=side, depth=depth, accepted=False,
                     hypothetical=not parent_accepted, tests=None)
         b = node['argmax_b']
         if b is not None:
@@ -133,12 +135,15 @@ def inspect_tree(xfull, offset, n):
             if node['accepted']:
                 boundaries.append(start+b)
         nodes.append(node)
+        if b is not None and depth + 1 < k and (node['accepted'] or depth == 0):
+            # Keep the existing immediate-child diagnostic after a rejected root,
+            # but never recursively expand a branch the caller would have pruned.
+            prefix = '' if side == 'root' else side + '.'
+            inspect(start, start+b, prefix+'left', node['accepted'], depth+1)
+            inspect(start+b, end, prefix+'right', node['accepted'], depth+1)
         return node
 
-    root = inspect(0, n, 'root', True)
-    if root['argmax_b'] is not None:
-        inspect(0, root['argmax_b'], 'left', root['accepted'])
-        inspect(root['argmax_b'], n, 'right', root['accepted'])
+    inspect(0, n, 'root', True, 0)
     return {'nodes': nodes, 'boundaries': sorted(boundaries)}
 
 
@@ -180,6 +185,7 @@ def fit_cn(xfull, labels, offset, n, chroms):
 
 def run_experiment(xfull, production, chroms, starts, ends, request, pkg_dir):
     science._ensure(pkg_dir)
+    request = {**request, 'k': request.get('k', 2)}
     t0 = time.perf_counter()
     chrom = next(c for c in chroms if c['name'] == request['chrom'])
     offset, n = chrom['offset'], chrom['n']
@@ -189,8 +195,8 @@ def run_experiment(xfull, production, chroms, starts, ends, request, pkg_dir):
     xfull = np.asarray(xfull, dtype=np.float64)
     donor_cn = science.assign_cn(xfull, production.tolist())['cn5'] if request['operation'] == 'simulate' else None
     edited, intervention = apply_region_edit(xfull, offset, n, request, donor_cn)
-    original_tree = inspect_tree(xfull, offset, n)
-    edited_tree = inspect_tree(edited, offset, n)
+    original_tree = inspect_tree(xfull, offset, n, k=request['k'])
+    edited_tree = inspect_tree(edited, offset, n, k=request['k'])
     root_b = original_tree['nodes'][0]['argmax_b']
     same_boundary = (science.run_split_tests(edited[offset:offset+n], root_b, edited, 1000, 42)
                      if root_b is not None else None)
@@ -236,7 +242,7 @@ def run_experiment(xfull, production, chroms, starts, ends, request, pkg_dir):
         edges.append(edge)
     sl = slice(offset, offset+n)
     return {
-        'request': request, 'parameters': PARAMETERS, 'intervention': intervention,
+        'request': request, 'parameters': {**PARAMETERS, 'k': request['k']}, 'intervention': intervention,
         'original': original_tree, 'edited': edited_tree,
         'edited_at_original_boundary': same_boundary,
         'start_bp': np.asarray(starts[sl], dtype=int).tolist(),
@@ -247,7 +253,7 @@ def run_experiment(xfull, production, chroms, starts, ends, request, pkg_dir):
         'provenance': {
             'signal': 'GC-corrected, normalized X; not raw fragment counts',
             'null_pool': 'Each scenario uses its own full-genome X for the global test',
-            'segmentation_scope': 'Selected chromosome only, k=2; other chromosome boundaries remain production',
+            'segmentation_scope': f"Selected chromosome only, k={request['k']}; other chromosome boundaries remain production",
             'coordinates': 'Chromosome-local half-open bin interval; genomic bp are 1-based inclusive',
             'source_hash': request.get('dataset_hash'), 'science_hash': request.get('science_hash'),
         },

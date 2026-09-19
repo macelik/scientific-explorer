@@ -1,0 +1,374 @@
+{
+  "k": 4,
+  "original_nodes": 11,
+  "edited_nodes": 11,
+  "immediate": [
+    {
+      "path": "left",
+      "shapes": [
+        {
+          "type": "rect",
+          "name": "Modified region",
+          "xref": "x",
+          "x0": 18.900001,
+          "x1": 26,
+          "yref": "paper",
+          "y0": 0,
+          "y1": 1,
+          "fillcolor": "#b25424",
+          "opacity": 0.12,
+          "line": {
+            "width": 0
+          },
+          "layer": "below"
+        },
+        {
+          "type": "line",
+          "name": "Original accepted · bin 225",
+          "xref": "x",
+          "x0": 27.400001,
+          "x1": 27.400001,
+          "yref": "paper",
+          "y0": 0,
+          "y1": 1,
+          "line": {
+            "color": "#2a6f97",
+            "width": 2.5,
+            "dash": "solid"
+          }
+        },
+        {
+          "type": "line",
+          "name": "Edited accepted · bin 225",
+          "xref": "x",
+          "x0": 27.400001,
+          "x1": 27.400001,
+          "yref": "paper",
+          "y0": 0,
+          "y1": 1,
+          "line": {
+            "color": "#b25424",
+            "width": 1.5,
+            "dash": "solid"
+          }
+        }
+      ]
+    },
+    {
+      "path": "right",
+      "shapes": [
+        {
+          "type": "line",
+          "name": "Original accepted · bin 292",
+          "xref": "x",
+          "x0": 34.200001,
+          "x1": 34.200001,
+          "yref": "paper",
+          "y0": 0,
+          "y1": 1,
+          "line": {
+            "color": "#2a6f97",
+            "width": 2.5,
+            "dash": "solid"
+          }
+        },
+        {
+          "type": "line",
+          "name": "Original accepted · bin 644",
+          "xref": "x",
+          "x0": 99.000001,
+          "x1": 99.000001,
+          "yref": "paper",
+          "y0": 0,
+          "y1": 1,
+          "line": {
+            "color": "#2a6f97",
+            "width": 2.5,
+            "dash": "solid"
+          }
+        },
+        {
+          "type": "line",
+          "name": "Original accepted · bin 731",
+          "xref": "x",
+          "x0": 107.700001,
+          "x1": 107.700001,
+          "yref": "paper",
+          "y0": 0,
+          "y1": 1,
+          "line": {
+            "color": "#2a6f97",
+            "width": 2.5,
+            "dash": "solid"
+          }
+        },
+        {
+          "type": "line",
+          "name": "Original accepted · bin 815",
+          "xref": "x",
+          "x0": 116.200001,
+          "x1": 116.200001,
+          "yref": "paper",
+          "y0": 0,
+          "y1": 1,
+          "line": {
+            "color": "#2a6f97",
+            "width": 2.5,
+            "dash": "solid"
+          }
+        },
+        {
+          "type": "line",
+          "name": "Edited accepted · bin 292",
+          "xref": "x",
+          "x0": 34.200001,
+          "x1": 34.200001,
+          "yref": "paper",
+          "y0": 0,
+          "y1": 1,
+          "line": {
+            "color": "#b25424",
+            "width": 1.5,
+            "dash": "solid"
+          }
+        },
+        {
+          "type": "line",
+          "name": "Edited accepted · bin 644",
+          "xref": "x",
+          "x0": 99.000001,
+          "x1": 99.000001,
+          "yref": "paper",
+          "y0": 0,
+          "y1": 1,
+          "line": {
+            "color": "#b25424",
+            "width": 1.5,
+            "dash": "solid"
+          }
+        },
+        {
+          "type": "line",
+          "name": "Edited accepted · bin 731",
+          "xref": "x",
+          "x0": 107.700001,
+          "x1": 107.700001,
+          "yref": "paper",
+          "y0": 0,
+          "y1": 1,
+          "line": {
+            "color": "#b25424",
+            "width": 1.5,
+            "dash": "solid"
+          }
+        },
+        {
+          "type": "line",
+          "name": "Edited accepted · bin 815",
+          "xref": "x",
+          "x0": 116.200001,
+          "x1": 116.200001,
+          "yref": "paper",
+          "y0": 0,
+          "y1": 1,
+          "line": {
+            "color": "#b25424",
+            "width": 1.5,
+            "dash": "solid"
+          }
+        }
+      ]
+    }
+  ],
+  "deeper": [
+    {
+      "path": "left.left",
+      "shapes": [
+        {
+          "type": "rect",
+          "name": "Modified region",
+          "xref": "x",
+          "x0": 18.900001,
+          "x1": 26,
+          "yref": "paper",
+          "y0": 0,
+          "y1": 1,
+          "fillcolor": "#b25424",
+          "opacity": 0.12,
+          "line": {
+            "width": 0
+          },
+          "layer": "below"
+        },
+        {
+          "type": "line",
+          "name": "Original candidate · bin 69",
+          "xref": "x",
+          "x0": 7.000001,
+          "x1": 7.000001,
+          "yref": "paper",
+          "y0": 0,
+          "y1": 1,
+          "line": {
+            "color": "#2a6f97",
+            "width": 1,
+            "dash": "dash"
+          }
+        },
+        {
+          "type": "line",
+          "name": "Edited candidate · bin 69",
+          "xref": "x",
+          "x0": 7.000001,
+          "x1": 7.000001,
+          "yref": "paper",
+          "y0": 0,
+          "y1": 1,
+          "line": {
+            "color": "#b25424",
+            "width": 1,
+            "dash": "dash"
+          }
+        }
+      ]
+    },
+    {
+      "path": "left.right",
+      "shapes": [
+        {
+          "type": "line",
+          "name": "Original candidate · bin 267",
+          "xref": "x",
+          "x0": 31.600001,
+          "x1": 31.600001,
+          "yref": "paper",
+          "y0": 0,
+          "y1": 1,
+          "line": {
+            "color": "#2a6f97",
+            "width": 1,
+            "dash": "dash"
+          }
+        },
+        {
+          "type": "line",
+          "name": "Edited candidate · bin 267",
+          "xref": "x",
+          "x0": 31.600001,
+          "x1": 31.600001,
+          "yref": "paper",
+          "y0": 0,
+          "y1": 1,
+          "line": {
+            "color": "#b25424",
+            "width": 1,
+            "dash": "dash"
+          }
+        }
+      ]
+    },
+    {
+      "path": "right.left",
+      "shapes": [
+        {
+          "type": "line",
+          "name": "Original accepted · bin 292",
+          "xref": "x",
+          "x0": 34.200001,
+          "x1": 34.200001,
+          "yref": "paper",
+          "y0": 0,
+          "y1": 1,
+          "line": {
+            "color": "#2a6f97",
+            "width": 2.5,
+            "dash": "solid"
+          }
+        },
+        {
+          "type": "line",
+          "name": "Original accepted · bin 644",
+          "xref": "x",
+          "x0": 99.000001,
+          "x1": 99.000001,
+          "yref": "paper",
+          "y0": 0,
+          "y1": 1,
+          "line": {
+            "color": "#2a6f97",
+            "width": 2.5,
+            "dash": "solid"
+          }
+        },
+        {
+          "type": "line",
+          "name": "Edited accepted · bin 292",
+          "xref": "x",
+          "x0": 34.200001,
+          "x1": 34.200001,
+          "yref": "paper",
+          "y0": 0,
+          "y1": 1,
+          "line": {
+            "color": "#b25424",
+            "width": 1.5,
+            "dash": "solid"
+          }
+        },
+        {
+          "type": "line",
+          "name": "Edited accepted · bin 644",
+          "xref": "x",
+          "x0": 99.000001,
+          "x1": 99.000001,
+          "yref": "paper",
+          "y0": 0,
+          "y1": 1,
+          "line": {
+            "color": "#b25424",
+            "width": 1.5,
+            "dash": "solid"
+          }
+        }
+      ]
+    },
+    {
+      "path": "right.right",
+      "shapes": [
+        {
+          "type": "line",
+          "name": "Original accepted · bin 815",
+          "xref": "x",
+          "x0": 116.200001,
+          "x1": 116.200001,
+          "yref": "paper",
+          "y0": 0,
+          "y1": 1,
+          "line": {
+            "color": "#2a6f97",
+            "width": 2.5,
+            "dash": "solid"
+          }
+        },
+        {
+          "type": "line",
+          "name": "Edited accepted · bin 815",
+          "xref": "x",
+          "x0": 116.200001,
+          "x1": 116.200001,
+          "yref": "paper",
+          "y0": 0,
+          "y1": 1,
+          "line": {
+            "color": "#b25424",
+            "width": 1.5,
+            "dash": "solid"
+          }
+        }
+      ]
+    }
+  ],
+  "stale_depth": true,
+  "restored_depth": true,
+  "errors": []
+}
