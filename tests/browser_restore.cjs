@@ -1,0 +1,26 @@
+const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
+const fs=require('fs'), path=require('path');
+(async()=>{
+ const b=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_PATH});
+ const p=await b.newPage({viewport:{width:1500,height:1000}});
+ p.on('pageerror',e=>console.log('ERROR',String(e)));
+ await p.goto('http://127.0.0.1:8766');
+ await p.getByText('300 matching cells',{exact:true}).waitFor();
+ await p.locator('input[type=file]').setInputFiles(path.resolve(__dirname,'../validation/browser-session.json'));
+ await p.getByRole('heading',{name:'X-value experiments',exact:true}).waitFor();
+ console.log('Restored',await p.getByLabel('Extension bins',{exact:true}).inputValue());
+ await p.setViewportSize({width:1050,height:900});
+ await p.waitForTimeout(1000);
+ console.log('Viewport dimensions:',await p.evaluate(()=>({width:window.innerWidth,body:document.documentElement.scrollWidth,plots:[...document.querySelectorAll('.js-plotly-plot')].map(el=>({outer:el.clientWidth,plot:el._fullLayout?.width}))})));
+ await p.waitForFunction(()=>document.documentElement.scrollWidth<=window.innerWidth+2);
+ await p.evaluate(()=>window.scrollTo(0,0));
+ console.log('Geometry',await p.evaluate(()=>[...document.querySelectorAll('.experiment-preview,.experiment-results,.scientific-details,.js-plotly-plot')].map(el=>({cls:el.className,top:el.getBoundingClientRect().top,height:el.getBoundingClientRect().height,layout:el._fullLayout?.height,svg:el.querySelector('.svg-container')?.getBoundingClientRect().height}))));
+ await p.waitForFunction(() => [...document.querySelectorAll('.experiment-preview > .js-plotly-plot, .experiment-results > .js-plotly-plot')].every(el => el.getBoundingClientRect().height >= el._fullLayout.height));
+ await p.screenshot({path:path.resolve(__dirname,'../validation/experiment-narrow.png'),fullPage:true});
+ await p.reload();
+ await p.waitForTimeout(6000);
+ console.log('After reload URL:',p.url());
+ console.log((await p.locator('body').innerText()).slice(0,4000));
+ await p.screenshot({path:path.resolve(__dirname,'../validation/reload-debug.png')});
+ await b.close();
+})().catch(e=>{console.error(e);process.exit(1)});

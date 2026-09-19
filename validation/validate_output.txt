@@ -1,0 +1,34 @@
+[PASS] production clusters rebuilt from breakpoints.csv equal clusters.json -- 300/300 cells, 5.9s
+[PASS] assign_gainloss_new reproduces exported five-state CN rows -- 300/300
+[PASS] assign_gainloss_new reproduces exported best_s -- 300/300, 17.4s
+[PASS] node AD TTAGGCTAGGCCGGAA-1 chr9[0,1031) equals direct seq_dist_ad -- argmax b=275 AD=30.0931; API 83 ms (server compute 68.8 ms)
+[PASS] node baselines TTAGGCTAGGCCGGAA-1 chr9[0,1031) -- trimmed 2.9870 median 0.0000
+[PASS] node AD TTAGGCTAGGCCGGAA-1 chr9[0,275) equals direct seq_dist_ad -- argmax b=225 AD=16.5868; API 17 ms (server compute 13.1 ms)
+[PASS] node baselines TTAGGCTAGGCCGGAA-1 chr9[0,275) -- trimmed 1.0978 median 0.0000
+[PASS] node AD GAAGGATGTACGCGCA-1 chr9[276,1031) equals direct seq_dist_ad -- argmax b=10 AD=7.5053; API 56 ms (server compute 46.3 ms)
+[PASS] node baselines GAAGGATGTACGCGCA-1 chr9[276,1031) -- trimmed 2.9716 median 3.3997
+[PASS] node AD TGTGGAGCAGGCTAGA-1 chr1[0,2232) equals direct seq_dist_ad -- argmax b=1245 AD=287.9315; API 346 ms (server compute 332.7 ms)
+[PASS] node baselines TGTGGAGCAGGCTAGA-1 chr1[0,2232) -- trimmed 5.3347 median 4.5909
+[PASS] node AD TGTGGAGCAGGCTAGA-1 chr1[1245,2232) equals direct seq_dist_ad -- argmax b=71 AD=13.6608; API 85 ms (server compute 78.2 ms)
+[PASS] node baselines TGTGGAGCAGGCTAGA-1 chr1[1245,2232) -- trimmed 7.9177 median 7.3454
+[PASS] tests TTAGGCTAGGCCGGAA-1 chr9[0,1031) b=275 -- p_local=0.000999001 p_global=0.000999001 obs=30.0931; cached
+[PASS]   matches production breakpoints.csv row for bp 275 -- production p_local=0.000999001
+[PASS] tests TTAGGCTAGGCCGGAA-1 chr9[0,1031) b=200 (non-argmax) -- p_local=0.000999001 p_global=0.000999001 obs=9.1555; cached
+[PASS] tests TTAGGCTAGGCCGGAA-1 chr9[0,275) b=225 -- p_local=0.000999001 p_global=0.000999001 obs=16.5868; cached
+[PASS]   matches production breakpoints.csv row for bp 225 -- production p_local=0.000999001
+[PASS] tests GAAGGATGTACGCGCA-1 chr9[276,1031) b=10 (non-argmax) -- p_local=0.000999001 p_global=0.000999001 obs=7.5053; cached
+[PASS]   matches production breakpoints.csv row for bp 286 -- production p_local=0.000999001
+[PASS] tests TGTGGAGCAGGCTAGA-1 chr1[0,2232) b=1245 -- p_local=0.000999001 p_global=0.000999001 obs=287.9315; cached
+[PASS]   matches production breakpoints.csv row for bp 1245 -- production p_local=0.000999001
+[PASS] assign_cn with production boundaries reproduces production result
+[PASS] spliced clusters keep every other chromosome's segment structure
+[PASS] spliced cluster ids unique, contiguous and monotonic
+[PASS] manual boundaries [190,260] produce a full-genome refit -- best_s prod 0.575882 manual 0.575882; changed on chr9 50 bins; elsewhere []; 119.1 ms
+[PASS] literal median baseline reported as exactly 0 for a >50%-zero cell (UI shows log2FC undefined, no substitution) -- zero fraction 0.524, trimmed baseline 3.2997
+[PASS] cell endpoint x row equals h5ad row (float32 round-trip)
+[PASS] cluster order is a permutation of cohort rows
+[PASS] event index complete -- {'status': 'done', 'done': 300, 'total': 300, 'started': None, 'finished': None, 'error': None}
+[PASS] chr9 depth-0 candidates in 20-34 Mb reproduce the documented 203/300 -- 203/300 (67.7%)
+[PASS] every 'accepted' candidate is a production breakpoint -- 10820 accepted candidates of 19773
+
+32/32 checks passed

@@ -1,0 +1,12 @@
+{
+  "explorer_window_to_experiment": true,
+  "non_argmax_manual_split": 169,
+  "undo_redo": true,
+  "full_genome_cn": true,
+  "iqr_both_methods": true,
+  "iqr_stale_state": true,
+  "iqr_session_restore": true,
+  "iqr_csv": true,
+  "result_region_drag": true,
+  "errors": []
+}

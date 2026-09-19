@@ -1,0 +1,11 @@
+{
+  "chromosomes": [
+    "chr8",
+    "chr9"
+  ],
+  "profiles_checked": 10,
+  "internal_segments_checked": 35,
+  "bootstrap_cells": 182,
+  "paired_replicates": 200,
+  "passed": true
+}

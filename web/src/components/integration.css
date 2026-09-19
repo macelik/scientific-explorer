@@ -1,0 +1,34 @@
+.integ { max-width: 1700px; margin: 0 auto; }
+.integ .controls-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: end; margin-bottom: 12px; }
+.integ .controls-row label { display: flex; flex-direction: column; gap: 4px; font-size: 11px; font-weight: 600; color: var(--muted); }
+.integ .controls-row label.chk-inline { flex-direction: row; align-items: center; font-weight: 500; }
+.integ .controls-row select, .integ .controls-row input[type=number] { padding: 5px 8px; border: 1px solid #becbd2; font-size: 13px; font-weight: 400; color: var(--ink); min-height: 30px; background: white; }
+.integ .panel { background: white; padding: 14px; margin-bottom: 14px; border-top: 2px solid #24688a; }
+.integ .panel h3 { margin: 0 0 4px; font-size: 15px; }
+.integ .panel .lead { color: var(--muted); font-size: 12px; margin: 0 0 10px; line-height: 1.5; }
+.integ .emb-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+@media (max-width: 1250px) { .integ .emb-grid { grid-template-columns: 1fr; } }
+.integ .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 1100px) { .integ .two-col { grid-template-columns: 1fr; } }
+.integ .legend-chips { display: flex; gap: 6px; flex-wrap: wrap; margin: 6px 0; }
+.integ .chip { border: 1px solid var(--line); background: white; padding: 2px 8px; font-size: 12px; cursor: pointer; display: inline-flex; gap: 6px; align-items: center; }
+.integ .chip.on { background: #eaf2f6; border-color: var(--accent); font-weight: 600; }
+.integ .chip i { width: 10px; height: 10px; display: inline-block; }
+.integ .cell-card { background: #f7f9fa; padding: 10px 12px; font-size: 12px; }
+.integ .cell-card table td { padding: 2px 6px; }
+.integ .cell-card td:first-child { color: var(--muted); }
+.integ details.diag { border-top: 1px solid var(--line); padding: 8px 0; }
+.integ details.diag summary { cursor: pointer; font-weight: 600; font-size: 14px; color: var(--accent); }
+.integ details.diag .lead { margin-top: 6px; }
+.ckaryo-wrap { position: relative; }
+.integ .seg-legend { display: flex; gap: 12px; flex-wrap: wrap; font-size: 12px; align-items: center; margin: 6px 0; }
+.integ .seg-legend i { display: inline-block; width: 14px; height: 12px; border: 1px solid #94a3b8; margin-right: 4px; vertical-align: middle; }
+.integ .seg-legend .ln { display: inline-block; width: 18px; height: 0; border-top: 2px solid; margin-right: 4px; vertical-align: middle; }
+.integ .tbl tr.sel td { background: #fff7ed; }
+.integ .tbl tr.clickable { cursor: pointer; }
+.integ .kv { font-size: 12px; }
+.integ .kv td { padding: 2px 8px 2px 0; }
+.integ .status-box { padding: 10px 12px; background: #eaf2f6; border-left: 3px solid #24688a; font-size: 12px; line-height: 1.5; }
+.integ .notice { font-size: 12px; }
+.integ .row-list { display: flex; flex-wrap: wrap; gap: 4px; }
+body.presentation .integ .lead { font-size: 13px; }

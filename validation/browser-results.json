@@ -1,0 +1,12 @@
+{
+  "timings": {
+    "boot_ms": 1347,
+    "multiply_ms": 3588,
+    "simulate_ms": 3090,
+    "duplicate_ms": 3302,
+    "extend_ms": 3761
+  },
+  "errors": [],
+  "history_runs": 9,
+  "session_restored": true
+}

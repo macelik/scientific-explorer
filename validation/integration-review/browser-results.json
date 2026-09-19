@@ -1,0 +1,51 @@
+{
+  "segments": 6,
+  "original_flank_rows": 162,
+  "original_screening_rows": 196,
+  "original_bootstrap_rows": 196,
+  "candidate_audit_rows": 248,
+  "original_diagnostic_selection": true,
+  "merge_summary": true,
+  "paired_bootstrap": true,
+  "exports": true,
+  "stale_state": true,
+  "axes": {
+    "range": [
+      0,
+      21.110235515393708
+    ],
+    "allelic": [
+      {
+        "name": "cluster0 allelic",
+        "axis": "y6",
+        "valid": true,
+        "text": "nonzero imbalance in 7% of cells"
+      },
+      {
+        "name": "cluster1 allelic",
+        "axis": "y7",
+        "valid": true,
+        "text": "nonzero imbalance in 15% of cells"
+      },
+      {
+        "name": "cluster2 allelic",
+        "axis": "y8",
+        "valid": true,
+        "text": "nonzero imbalance in 12% of cells"
+      },
+      {
+        "name": "cluster3 allelic",
+        "axis": "y9",
+        "valid": true,
+        "text": "nonzero imbalance in 12% of cells"
+      },
+      {
+        "name": "cluster4 allelic",
+        "axis": "y10",
+        "valid": true,
+        "text": "nonzero imbalance in 11% of cells"
+      }
+    ]
+  },
+  "errors": []
+}

@@ -1,0 +1,119 @@
+{
+  "created": "2026-09-18T16:47:31",
+  "description": "per-cluster depth-segment merge prototype, 7-chr pilot",
+  "inputs": {
+    "adata": "/home/mami/Desktop/EGA/SNP_project/beta/pyepi_results/count_matrix.h5ad",
+    "integrated": "/home/mami/Desktop/EGA/SNP_project/beta/analysis/wnn_agg_exp/outputs/integrated.h5mu",
+    "breakpoints": "/home/mami/Desktop/EGA/SNP_project/beta_revised/outputs/segmentation/raw_accepted_breakpoints.tsv"
+  },
+  "params": {
+    "chromosomes": [
+      "chr1",
+      "chr2",
+      "chr5",
+      "chr7",
+      "chr8",
+      "chr9",
+      "chr13"
+    ],
+    "max_small_bins": 100,
+    "tau_default": 0.2,
+    "stab_default": 0.9,
+    "n_bootstrap": 200,
+    "seed": 20260907,
+    "sensitivity_taus": [
+      0.15,
+      0.2,
+      0.25
+    ],
+    "sensitivity_stabs": [
+      0.8,
+      0.9,
+      0.95
+    ]
+  },
+  "notes": "tau/stab are engineering settings, not calibrated p-values. Bootstrap fractions are stability scores, not probabilities.",
+  "reproduction_check": {
+    "status": "OK",
+    "n_rows": 162,
+    "n_match": 162,
+    "max_median_diff": 4.9784282665221724e-05
+  },
+  "cluster_sizes": {
+    "cluster0": 1286,
+    "cluster1": 833,
+    "cluster2": 603,
+    "cluster3": 556,
+    "cluster4": 182
+  },
+  "cluster_replicate_hashes": {
+    "cluster0": "e2c7d03db679c986953daeada22270e514685353ec464a401d9c8912503f094b",
+    "cluster1": "ffdc1ad10355ef767a1bc367bfbd440bae7f60fe5e013130d0b6c47cf01bcc0c",
+    "cluster2": "74d73442de3a80cb65c3fceccb07f7e10bfc8378d6718e5a6e2f63964f8d18c0",
+    "cluster3": "56829cd32a206592f7403196a276d8b69358a79d9a2cbb8a60371371736c24b7",
+    "cluster4": "8ab35e48b93b348ebefd6458d924a4a80abf1008b6ef6567812c4b0fbc36f6a4"
+  },
+  "n_processed_source_chrom": 35,
+  "totals_default": {
+    "merged_boundaries": 0,
+    "retained_boundaries": 299,
+    "simplified_segments": 334
+  },
+  "sensitivity_grid_max_merges": 0,
+  "figures": {
+    "chr1": "/home/mami/Desktop/EGA/SNP_project/beta_revised/outputs/depth_segment_prototype/v1/figures/chr1_small_segments.png",
+    "chr2": "/home/mami/Desktop/EGA/SNP_project/beta_revised/outputs/depth_segment_prototype/v1/figures/chr2_small_segments.png",
+    "chr5": "/home/mami/Desktop/EGA/SNP_project/beta_revised/outputs/depth_segment_prototype/v1/figures/chr5_small_segments.png",
+    "chr7": "/home/mami/Desktop/EGA/SNP_project/beta_revised/outputs/depth_segment_prototype/v1/figures/chr7_small_segments.png",
+    "chr8": "/home/mami/Desktop/EGA/SNP_project/beta_revised/outputs/depth_segment_prototype/v1/figures/chr8_small_segments.png",
+    "chr9": "/home/mami/Desktop/EGA/SNP_project/beta_revised/outputs/depth_segment_prototype/v1/figures/chr9_small_segments.png",
+    "chr13": "/home/mami/Desktop/EGA/SNP_project/beta_revised/outputs/depth_segment_prototype/v1/figures/chr13_small_segments.png"
+  },
+  "effect_figures": {
+    "chr1": {
+      "median_delta": "/home/mami/Desktop/EGA/SNP_project/beta_revised/outputs/depth_segment_prototype/v1/figures/chr1_small_segments_effect_median_delta.png",
+      "mean_delta": "/home/mami/Desktop/EGA/SNP_project/beta_revised/outputs/depth_segment_prototype/v1/figures/chr1_small_segments_effect_mean_delta.png",
+      "mean_srd": "/home/mami/Desktop/EGA/SNP_project/beta_revised/outputs/depth_segment_prototype/v1/figures/chr1_small_segments_effect_mean_srd.png"
+    },
+    "chr2": {
+      "median_delta": "/home/mami/Desktop/EGA/SNP_project/beta_revised/outputs/depth_segment_prototype/v1/figures/chr2_small_segments_effect_median_delta.png",
+      "mean_delta": "/home/mami/Desktop/EGA/SNP_project/beta_revised/outputs/depth_segment_prototype/v1/figures/chr2_small_segments_effect_mean_delta.png",
+      "mean_srd": "/home/mami/Desktop/EGA/SNP_project/beta_revised/outputs/depth_segment_prototype/v1/figures/chr2_small_segments_effect_mean_srd.png"
+    },
+    "chr5": {
+      "median_delta": "/home/mami/Desktop/EGA/SNP_project/beta_revised/outputs/depth_segment_prototype/v1/figures/chr5_small_segments_effect_median_delta.png",
+      "mean_delta": "/home/mami/Desktop/EGA/SNP_project/beta_revised/outputs/depth_segment_prototype/v1/figures/chr5_small_segments_effect_mean_delta.png",
+      "mean_srd": "/home/mami/Desktop/EGA/SNP_project/beta_revised/outputs/depth_segment_prototype/v1/figures/chr5_small_segments_effect_mean_srd.png"
+    },
+    "chr7": {
+      "median_delta": "/home/mami/Desktop/EGA/SNP_project/beta_revised/outputs/depth_segment_prototype/v1/figures/chr7_small_segments_effect_median_delta.png",
+      "mean_delta": "/home/mami/Desktop/EGA/SNP_project/beta_revised/outputs/depth_segment_prototype/v1/figures/chr7_small_segments_effect_mean_delta.png",
+      "mean_srd": "/home/mami/Desktop/EGA/SNP_project/beta_revised/outputs/depth_segment_prototype/v1/figures/chr7_small_segments_effect_mean_srd.png"
+    },
+    "chr8": {
+      "median_delta": "/home/mami/Desktop/EGA/SNP_project/beta_revised/outputs/depth_segment_prototype/v1/figures/chr8_small_segments_effect_median_delta.png",
+      "mean_delta": "/home/mami/Desktop/EGA/SNP_project/beta_revised/outputs/depth_segment_prototype/v1/figures/chr8_small_segments_effect_mean_delta.png",
+      "mean_srd": "/home/mami/Desktop/EGA/SNP_project/beta_revised/outputs/depth_segment_prototype/v1/figures/chr8_small_segments_effect_mean_srd.png"
+    },
+    "chr9": {
+      "median_delta": "/home/mami/Desktop/EGA/SNP_project/beta_revised/outputs/depth_segment_prototype/v1/figures/chr9_small_segments_effect_median_delta.png",
+      "mean_delta": "/home/mami/Desktop/EGA/SNP_project/beta_revised/outputs/depth_segment_prototype/v1/figures/chr9_small_segments_effect_mean_delta.png",
+      "mean_srd": "/home/mami/Desktop/EGA/SNP_project/beta_revised/outputs/depth_segment_prototype/v1/figures/chr9_small_segments_effect_mean_srd.png"
+    },
+    "chr13": {
+      "median_delta": "/home/mami/Desktop/EGA/SNP_project/beta_revised/outputs/depth_segment_prototype/v1/figures/chr13_small_segments_effect_median_delta.png",
+      "mean_delta": "/home/mami/Desktop/EGA/SNP_project/beta_revised/outputs/depth_segment_prototype/v1/figures/chr13_small_segments_effect_mean_delta.png",
+      "mean_srd": "/home/mami/Desktop/EGA/SNP_project/beta_revised/outputs/depth_segment_prototype/v1/figures/chr13_small_segments_effect_mean_srd.png"
+    }
+  },
+  "summary_figures": {
+    "small_segment_volcano": "/home/mami/Desktop/EGA/SNP_project/beta_revised/outputs/depth_segment_prototype/v1/figures/small_segment_volcano.png",
+    "srd_log2fc_noise_relationship": "/home/mami/Desktop/EGA/SNP_project/beta_revised/outputs/depth_segment_prototype/v1/figures/srd_log2fc_noise_relationship.png",
+    "srd_log2fc_noise_relationship_mean": "/home/mami/Desktop/EGA/SNP_project/beta_revised/outputs/depth_segment_prototype/v1/figures/srd_log2fc_noise_relationship_mean.png"
+  },
+  "source_modules": {
+    "merge_core": "0fc5f0da45b0f0cf",
+    "loader": "15c4565961aecb87",
+    "runner": "828d3542d0c920e8"
+  }
+}

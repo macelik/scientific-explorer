@@ -1,0 +1,4 @@
+# method=iqr_two_sided; scope=all full-genome segments; original genome baseline and bin-count weights; five-state 1=base
+segment_id,start_bin,end_bin_excl,n_bins,start_bp,end_bp,arithmetic_mean_x,selected_summary_x,selected_summary_norm,retained_bins,arithmetic_cn5,selected_cn5,cn_label,cn_int,cn_cont,changed_vs_arithmetic,changed_vs_production
+25,0,169,169,1,20000000,3.3190543972009032,1.3672789517719937,0.4143678181258383,148,1,0,loss,1,0.85,yes,yes
+26,169,1031,862,20000001,138200000,3.426573472654297,3.062037377881444,0.9279816277783839,851,1,1,base / diploid,2,1.91,no,yes
