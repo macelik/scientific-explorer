@@ -107,3 +107,102 @@ def test_classify_ambiguous_differs_ties_and_undefined():
     assert hm.classify_ambiguous(2.0, 2.0, 1.0, 3.0) == 'no_unique_preference'  # exact SRD tie
     assert hm.classify_ambiguous(1.0, 3.0, None, 3.0) == 'undefined'
     assert hm.classify_ambiguous(1.0, float('nan'), 1.0, 3.0) == 'undefined'
+
+
+def _toy_profile_and_bounds():
+    # chr-local bins 0..30; boundaries at 10 and 20 give three segments
+    profile = np.concatenate([np.full(10, 4.0), np.full(10, 4.2), np.full(10, 20.0)])
+    var_start = (np.arange(30) * 100).astype(float)
+    var_end = var_start + 100
+    return profile, [10, 20], 30, var_start, var_end
+
+
+def test_hatch_scores_reports_every_internal_segment_with_phi_and_gap_flags():
+    profile, boundaries, n_bins, var_start, var_end = _toy_profile_and_bounds()
+    out = hm.hatch_scores(profile, boundaries, n_bins, var_start, var_end, chrom_offset=0)
+    assert [tuple(s.values()) for s in out['segments']] == [(0, 10), (10, 20), (20, 30)]
+    assert len(out['rows']) == 1  # only the middle segment has both flanks
+    row = out['rows'][0]
+    assert row['start'] == 10 and row['end'] == 20
+    assert row['gap_left'] is False and row['gap_right'] is False
+    assert row['phi'] == out['phi']
+    assert row['delta_mean_left'] == pytest.approx(np.log2(4.2 / 4.0))
+    assert row['srd_left'] is not None and row['srd_phi_right'] is not None
+
+
+def test_hatch_scores_flags_a_genomic_gap():
+    profile, boundaries, n_bins, var_start, var_end = _toy_profile_and_bounds()
+    var_end = var_end.copy()
+    var_end[9] += 500  # open a gap between bin 9 and bin 10 (the first boundary)
+    out = hm.hatch_scores(profile, boundaries, n_bins, var_start, var_end, chrom_offset=0)
+    assert out['rows'][0]['gap_left'] is True
+
+
+def test_run_merge_rejects_bad_settings():
+    profile, boundaries, n_bins, var_start, var_end = _toy_profile_and_bounds()
+    with pytest.raises(ValueError):
+        hm.run_merge(profile, boundaries, n_bins, var_start, var_end, 0, 'bogus', 1.0)
+    with pytest.raises(ValueError):
+        hm.run_merge(profile, boundaries, n_bins, var_start, var_end, 0, 'delta_log2fc', 1.0, estimator='bogus')
+    with pytest.raises(ValueError):
+        hm.run_merge(profile, boundaries, n_bins, var_start, var_end, 0, 'srd', -1.0)
+
+
+def test_run_merge_merges_the_closest_pair_and_recomputes_before_next_step():
+    # three near-identical segments (0-10, 10-20) close, (20-30) far: expect exactly one merge
+    profile, boundaries, n_bins, var_start, var_end = _toy_profile_and_bounds()
+    out = hm.run_merge(profile, boundaries, n_bins, var_start, var_end, 0, 'delta_log2fc', 0.5, estimator='mean')
+    assert out['original'] == [{'start': 0, 'end': 10}, {'start': 10, 'end': 20}, {'start': 20, 'end': 30}]
+    assert out['final'] == [{'start': 0, 'end': 20}, {'start': 20, 'end': 30}]
+    assert len(out['steps']) == 2  # step 0 = original, step 1 = the one merge
+    assert out['steps'][1]['removed_boundary'] == 10
+    assert out['steps'][1]['merged_interval'] == [0, 20]
+    assert out['steps'][0]['segments'] == out['original']
+
+
+def test_run_merge_stops_when_nothing_eligible():
+    profile, boundaries, n_bins, var_start, var_end = _toy_profile_and_bounds()
+    out = hm.run_merge(profile, boundaries, n_bins, var_start, var_end, 0, 'delta_log2fc', 0.01, estimator='mean')
+    assert out['final'] == out['original']
+    assert len(out['steps']) == 1
+
+
+def test_run_merge_deterministic_tie_break_leftmost():
+    profile = np.concatenate([np.full(5, 4.0), np.full(5, 4.0), np.full(5, 4.0), np.full(5, 20.0)])
+    var_start = (np.arange(20) * 100).astype(float); var_end = var_start + 100
+    out = hm.run_merge(profile, [5, 10, 15], 20, var_start, var_end, 0, 'delta_log2fc', 1.0, estimator='mean')
+    assert out['steps'][1]['removed_boundary'] == 5  # both (5,10)-pair and (10,15)-pair tie at score 0; leftmost wins
+
+
+def test_run_merge_respects_gap_by_default_and_allows_opt_in():
+    profile, boundaries, n_bins, var_start, var_end = _toy_profile_and_bounds()
+    var_end = var_end.copy(); var_end[9] += 500  # gap right at the only cheap boundary
+    blocked = hm.run_merge(profile, boundaries, n_bins, var_start, var_end, 0, 'delta_log2fc', 0.5, estimator='mean')
+    assert blocked['final'] == blocked['original']
+    allowed = hm.run_merge(profile, boundaries, n_bins, var_start, var_end, 0, 'delta_log2fc', 0.5, estimator='mean', allow_gap_crossing=True)
+    assert allowed['final'] != allowed['original']
+
+
+def test_run_merge_small_max_bins_is_off_by_default_and_explicit_when_set():
+    profile = np.concatenate([np.full(50, 4.0), np.full(50, 4.2), np.full(50, 4.1)])
+    var_start = (np.arange(150) * 100).astype(float); var_end = var_start + 100
+    unrestricted = hm.run_merge(profile, [50, 100], 150, var_start, var_end, 0, 'delta_log2fc', 1.0, estimator='mean')
+    assert unrestricted['final'] != unrestricted['original']  # all three segments are 50 bins; still merges
+    restricted = hm.run_merge(profile, [50, 100], 150, var_start, var_end, 0, 'delta_log2fc', 1.0, estimator='mean', small_max_bins=10)
+    assert restricted['final'] == restricted['original']  # neither side of the only boundary is <=10 bins
+
+
+def test_run_merge_veto_transition_is_opt_in_and_does_not_veto_by_default():
+    # middle segment is a transition zone (opposite-sign flanks) under delta_log2fc:
+    # a monotonic 8 -> 4 -> 2 staircase, so the middle segment is below its left
+    # flank and above its right flank (seg-vs-left and seg-vs-right scores have
+    # opposite signs). NOTE: the brief's original profile here was
+    # (8.0, 4.0, 8.4), which is a dip (both flank scores negative, same sign,
+    # not a transition) -- verified by hand-trace and by running the test
+    # against the brief's own paired implementation, which fails on that input.
+    profile = np.concatenate([np.full(10, 8.0), np.full(10, 4.0), np.full(10, 2.0)])
+    var_start = (np.arange(30) * 100).astype(float); var_end = var_start + 100
+    default = hm.run_merge(profile, [10, 20], 30, var_start, var_end, 0, 'delta_log2fc', 3.0, estimator='mean')
+    assert default['final'] != default['original']
+    vetoed = hm.run_merge(profile, [10, 20], 30, var_start, var_end, 0, 'delta_log2fc', 3.0, estimator='mean', veto_transition=True)
+    assert vetoed['final'] == vetoed['original']

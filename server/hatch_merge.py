@@ -178,3 +178,133 @@ def classify_ambiguous(srd_left, srd_right, fc_left, fc_right):
     if srd_side == 'tie' or fc_side == 'tie':
         return 'no_unique_preference'
     return 'consistent' if srd_side == fc_side else 'ambiguous'
+
+
+def hatch_scores(profile, boundaries, n_bins, var_start, var_end, chrom_offset):
+    """Per internal segment: SRD, SRD/sqrt(phi) and delta-log2FC (all three
+    estimators) against both flanks, plus the shared pooled phi and per-side
+    genomic-gap flags. Computed genome-wide from live boundaries/profile, not
+    restricted to chromosomes with archived diagnostic tables."""
+    segs = flat_partition(boundaries, n_bins)
+    summaries = [segment_summary(profile, s, e) for s, e in segs]
+    phi = pooled_phi(profile, segs)
+    rows = []
+    for i in range(1, len(segs) - 1):
+        seg, left, right = summaries[i], summaries[i - 1], summaries[i + 1]
+        row = {
+            'start': seg['start'], 'end': seg['end'], 'phi': phi,
+            'gap_left': is_gap(var_start, var_end, chrom_offset + segs[i - 1][1] - 1, chrom_offset + segs[i][0]),
+            'gap_right': is_gap(var_start, var_end, chrom_offset + segs[i][1] - 1, chrom_offset + segs[i + 1][0]),
+        }
+        for m in ('srd', 'srd_phi'):
+            row[f'{m}_left'] = flank_score(m, seg, left, phi)
+            row[f'{m}_right'] = flank_score(m, seg, right, phi)
+        for est in ESTIMATORS:
+            row[f'delta_{est}_left'] = delta_log2fc(seg, left, est)
+            row[f'delta_{est}_right'] = delta_log2fc(seg, right, est)
+        rows.append(row)
+    return {'segments': [{'start': s, 'end': e} for s, e in segs], 'phi': phi, 'rows': rows}
+
+
+def _segment_status(idx, segs, summaries, phi, metric, estimator):
+    """Transition/ambiguous status of the internal segment at idx, or None for
+    a terminal segment (fewer than two neighbors)."""
+    if idx <= 0 or idx >= len(segs) - 1:
+        return None
+    seg, left, right = summaries[idx], summaries[idx - 1], summaries[idx + 1]
+    l_score = flank_score(metric, seg, left, phi, estimator)
+    r_score = flank_score(metric, seg, right, phi, estimator)
+    srd_l = flank_score('srd_phi', seg, left, phi)
+    srd_r = flank_score('srd_phi', seg, right, phi)
+    fc_l = delta_log2fc(seg, left, estimator)
+    fc_r = delta_log2fc(seg, right, estimator)
+    return {
+        'transition': classify_transition(l_score, r_score),
+        'ambiguous': classify_ambiguous(srd_l, srd_r, fc_l, fc_r) == 'ambiguous',
+    }
+
+
+def _vetoed(i, segs, summaries, phi, metric, estimator, veto_transition, veto_ambiguous):
+    if not (veto_transition or veto_ambiguous):
+        return False
+    for idx in (i, i + 1):
+        status = _segment_status(idx, segs, summaries, phi, metric, estimator)
+        if status is None:
+            continue
+        if veto_transition and status['transition']:
+            return True
+        if veto_ambiguous and status['ambiguous']:
+            return True
+    return False
+
+
+def _eligible_boundaries(segs, summaries, phi, metric, estimator, threshold,
+                          veto_transition, veto_ambiguous, small_max_bins,
+                          allow_gap_crossing, var_start, var_end, chrom_offset):
+    out = []
+    for i in range(len(segs) - 1):
+        left_s, left_e = segs[i]
+        right_s, right_e = segs[i + 1]
+        if not allow_gap_crossing and is_gap(var_start, var_end, chrom_offset + left_e - 1, chrom_offset + right_s):
+            continue
+        if small_max_bins is not None and (left_e - left_s) > small_max_bins and (right_e - right_s) > small_max_bins:
+            continue
+        score = flank_score(metric, summaries[i], summaries[i + 1], phi, estimator)
+        if score is None or not np.isfinite(score) or abs(score) >= threshold:
+            continue
+        if _vetoed(i, segs, summaries, phi, metric, estimator, veto_transition, veto_ambiguous):
+            continue
+        out.append((i, score))
+    return out
+
+
+def run_merge(profile, boundaries, n_bins, var_start, var_end, chrom_offset, metric, threshold,
+              estimator='mean', veto_transition=False, veto_ambiguous=False, small_max_bins=None,
+              allow_gap_crossing=False, max_steps=10000):
+    """Greedy exploratory adjacent-segment merge, operating on one source's
+    one-chromosome profile/boundaries. Repeatedly merges the eligible boundary
+    (abs(score) < threshold, strict) with the smallest absolute score,
+    tie-breaking on the leftmost boundary bin, recomputing every score
+    (including the shared pooled phi) after each merge, until none remain
+    eligible. Transition/ambiguous vetoes are off by default and explicit when
+    set; a genomic-gap boundary is never crossed unless allow_gap_crossing is
+    set. This is a new exploratory rule, independent of the original
+    bootstrap/chain-guard merge prototype.
+    """
+    if metric not in METRICS:
+        raise ValueError(f'Unknown merge metric {metric!r}')
+    if estimator not in ESTIMATORS:
+        raise ValueError(f'Unknown log2FC estimator {estimator!r}')
+    if not (isinstance(threshold, (int, float)) and np.isfinite(threshold) and threshold > 0):
+        raise ValueError('Threshold must be a positive finite number')
+    segs = flat_partition(boundaries, n_bins)
+    original = [{'start': s, 'end': e} for s, e in segs]
+    steps = [{'step': 0, 'segments': list(original), 'removed_boundary': None,
+              'merged_interval': None, 'score': None, 'phi': None}]
+    guard = 0
+    while True:
+        guard += 1
+        if guard > max_steps:
+            raise RuntimeError('Merge did not terminate within max_steps')
+        summaries = [segment_summary(profile, s, e) for s, e in segs]
+        phi = pooled_phi(profile, segs) if metric != 'delta_log2fc' else None
+        candidates = _eligible_boundaries(segs, summaries, phi, metric, estimator, threshold,
+                                           veto_transition, veto_ambiguous, small_max_bins,
+                                           allow_gap_crossing, var_start, var_end, chrom_offset)
+        if not candidates:
+            break
+        i, score = min(candidates, key=lambda t: (abs(t[1]), segs[t[0]][1]))
+        removed_boundary = segs[i][1]
+        merged = (segs[i][0], segs[i + 1][1])
+        segs = segs[:i] + [merged] + segs[i + 2:]
+        steps.append({
+            'step': len(steps), 'segments': [{'start': s, 'end': e} for s, e in segs],
+            'removed_boundary': removed_boundary, 'merged_interval': [merged[0], merged[1]],
+            'score': score, 'phi': phi,
+        })
+    return {
+        'original': original, 'final': steps[-1]['segments'], 'steps': steps,
+        'settings': {'metric': metric, 'estimator': estimator, 'threshold': threshold,
+                     'veto_transition': veto_transition, 'veto_ambiguous': veto_ambiguous,
+                     'small_max_bins': small_max_bins, 'allow_gap_crossing': allow_gap_crossing},
+    }
