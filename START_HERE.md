@@ -71,6 +71,12 @@ x/o// consistency, reason, values, CN strip, candidate audit, allelic). Click a 
 point in the diagnostics to open the segment's full flank table. τ and the SRD reference are
 inspection settings, not thresholds.
 
+### New: exploratory hatching and adjacent-segment merging
+
+Three new hatch layers in Chromosome tracks are computed live from the current accepted-breakpoint segmentation and pseudobulk profile, for any chromosome (not only the seven with archived diagnostic tables): **transition zone** (/, opposite-sign flank scores), **merge proposal** (×, at least one flank's |score| below its own threshold), and **ambiguous flank preference** (×, the weaker SRD/√φ flank disagrees with the weaker delta-log2FC flank). Each has its own metric/estimator/threshold controls and is clearly labelled "new" to distinguish it from the archived "flank-consistency hatch"/"SRD-screen proposal" layers above, which still reflect only the original prototype's saved tables.
+
+Below Chromosome tracks, **Exploratory adjacent-segment merge** runs a separate, new rule: it repeatedly merges the eligible adjacent boundary with the smallest absolute score (strictly below your threshold) until none remain eligible, recomputing every score — including the pooled dispersion φ, which is shared across the whole chromosome's segmentation — after each merge. Optional, off-by-default vetoes can exclude boundaries touching a transition or ambiguous segment; an optional, off-by-default size restriction can limit eligibility to boundaries touching a small segment; genomic gaps are never crossed unless you explicitly allow it. Use the step slider (or Reset/Undo) to inspect any intermediate segmentation, and download the full run (JSON) or just the merge-history table (CSV). This is an independent exploratory rule, not the original bootstrap/chain-guard merge prototype, and it does not recompute CN calls on the merged boundaries.
+
 ## Recompute integration flank comparisons
 
 In **Integration · segmentation & CN**, use **Generate alternative flank view**. Choose chromosome/source and maximum internal-segment size, then compare arithmetic, median and two-sided IQR effects against both adjacent segments. Click a point or choose a segment to see its unsmoothed bin values and summaries.

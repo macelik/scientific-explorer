@@ -1,0 +1,36 @@
+{
+  "trackShapeCount": 400,
+  "hatchNoticeCount": 0,
+  "mergeSummary": "cluster4 chr8: 11 original segments → 1 after 10 merge(s). Metric SRD/√φ, threshold 50.",
+  "nPlots": 2,
+  "secondPlotShapeCount": 10,
+  "hatchLineShapeCount": 9,
+  "hatchLineYrefSample": [
+    {
+      "type": "line",
+      "yref": "y domain"
+    },
+    {
+      "type": "line",
+      "yref": "y domain"
+    },
+    {
+      "type": "line",
+      "yref": "y domain"
+    }
+  ],
+  "badYrefFound": false,
+  "stepLabel": "step 10 of 10 — removed boundary at bin 416, score -18.021",
+  "jsonBtn": 1,
+  "csvBtn": 1,
+  "historyRows": 10,
+  "afterReset": "step 0 of 10 — original segmentation",
+  "afterUndo": "step 9 of 10 — removed boundary at bin 1259, score 5.822",
+  "staleText": "Settings changed; showing the previous run. cluster4 chr8: 11 original segments → 1 after 10 merge(s). Metric SRD/√φ, threshold 10.",
+  "staleClass": "notice",
+  "chromBefore": "chr8",
+  "chromAfter": "chr9",
+  "uncheckedBefore": false,
+  "restoredChecked": true,
+  "errors": []
+}

@@ -112,3 +112,9 @@ per-cluster pseudobulk profiles and the per-cell chr8 score. At first start a ba
 API: `/api/integration/{status,meta,pseudobulk.bin,percell_karyogram.bin,cell/{id},candidates}`.
 
 The integration has been reviewed and now includes an on-demand flank comparison and paired whole-cell bootstrap. See [integration review and verification](validation/integration-review/REVIEW.md).
+
+### Hatching and merge routes
+
+`POST /api/integration/hatch-scores` `{chrom, source}` returns per-internal-segment SRD, SRD/√φ and delta-log2FC (mean/median/two-sided-IQR-mean) scores against both flanks, plus the chromosome's pooled φ and per-side genomic-gap flags, computed live from `server/hatch_merge.py` — genome-wide, not limited to the archived pilot chromosomes.
+
+`POST /api/integration/hatch-merge` `{chrom, source, metric, threshold, estimator?, veto_transition?, veto_ambiguous?, small_max_bins?, allow_gap_crossing?}` runs the new exploratory greedy merge and returns the full step history (original → final), so the frontend can undo/reset/inspect any intermediate step purely by indexing into the response — no server-side session state. See `server/hatch_merge.py` for the numerical rules and `tests/test_hatch_merge.py` for their test coverage.
