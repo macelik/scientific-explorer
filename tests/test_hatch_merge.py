@@ -17,3 +17,58 @@ def test_segment_summary_adds_start_end_sum_to_summarize():
     assert s['start'] == 1 and s['end'] == 3
     assert s['sum'] == pytest.approx(6.0)
     assert s['mean'] == pytest.approx(3.0)
+
+
+def test_signed_srd_matches_reference_examples():
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'reference' / 'integration-prototype' / 'src' / 'srd_effect'))
+    from srd_pruning import exposure_aware_srd  # reference-only import, test comparison only
+    cases = [(10., 5., 10., 5.), (20., 5., 5., 5.), (0., 4., 0., 4.), (7., 3., 2., 9.)]
+    for y_t, e_t, y_r, e_r in cases:
+        assert hm.signed_srd(y_t, e_t, y_r, e_r) == pytest.approx(exposure_aware_srd(y_t, e_t, y_r, e_r))
+
+
+def test_signed_srd_zero_pair_and_validation():
+    assert hm.signed_srd(0., 4., 0., 4.) == 0.0
+    with pytest.raises(ValueError):
+        hm.signed_srd(1., 0., 1., 4.)
+    with pytest.raises(ValueError):
+        hm.signed_srd(-1., 4., 1., 4.)
+
+
+def test_pooled_phi_matches_reference_and_handles_short_segments():
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'reference' / 'integration-prototype' / 'src' / 'srd_effect'))
+    from flank_dispersion import pooled_phi as ref_pooled_phi
+    rng = np.random.default_rng(0)
+    profile = rng.poisson(5, size=40).astype(float)
+    bounds = [(0, 5), (5, 6), (6, 20), (20, 40)]  # one segment with only 1 bin
+    seg_ids = np.zeros(40, dtype=int)
+    for i, (s, e) in enumerate(bounds):
+        seg_ids[s:e] = i
+    assert hm.pooled_phi(profile, bounds) == pytest.approx(ref_pooled_phi(profile, seg_ids))
+
+
+def test_pooled_phi_none_when_no_segment_qualifies():
+    assert hm.pooled_phi(np.array([0., 0., 0.]), [(0, 1), (1, 3)]) is None
+
+
+def test_delta_log2fc_undefined_on_zero_level_no_pseudocode():
+    seg = hm.segment_summary(np.array([0., 0.]), 0, 2)
+    flank = hm.segment_summary(np.array([2., 2.]), 0, 2)
+    assert hm.delta_log2fc(seg, flank, 'mean') is None
+    flank2 = hm.segment_summary(np.array([4., 4.]), 0, 2)
+    assert hm.delta_log2fc(hm.segment_summary(np.array([2., 2.]), 0, 2), flank2, 'mean') == pytest.approx(-1.0)
+
+
+def test_flank_score_srd_phi_none_when_phi_undefined():
+    seg = hm.segment_summary(np.array([5., 5.]), 0, 2)
+    flank = hm.segment_summary(np.array([2., 2.]), 0, 2)
+    assert hm.flank_score('srd_phi', seg, flank, None) is None
+    assert hm.flank_score('srd_phi', seg, flank, 0.0) is None
+    assert hm.flank_score('srd', seg, flank, None) is not None
+
+
+def test_is_gap_detects_bp_discontinuity():
+    var_start = np.array([0, 100, 250])
+    var_end = np.array([100, 200, 350])
+    assert hm.is_gap(var_start, var_end, 1, 2) is True   # 200 != 250
+    assert hm.is_gap(var_start, var_end, 0, 1) is False  # 100 == 100
