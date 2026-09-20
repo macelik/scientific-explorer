@@ -65,7 +65,7 @@
   - `estimator_level(summary: dict, estimator: str) -> float`
   - `delta_log2fc(seg_summary: dict, flank_summary: dict, estimator: str) -> float | None`
   - `flank_score(metric: str, seg_summary: dict, flank_summary: dict, phi: float | None, estimator: str = 'mean') -> float | None`
-  - `is_gap(var_start: np.ndarray, var_end: np.ndarray, left_end_bin: int, right_start_bin: int) -> bool`
+  - `is_gap(var_start: np.ndarray, var_end: np.ndarray, left_end_bin: int, right_start_bin: int) -> bool` — `left_end_bin` is the direct array index of the left side's LAST bin (not an exclusive/half-open end); `right_start_bin` is the direct index of the right side's FIRST bin. A caller holding a half-open segment `(s, e)` as the left side must pass `e - 1`, not `e`.
 
 - [ ] **Step 1: Write the failing tests for segment building and level summaries**
 
@@ -560,8 +560,10 @@ def test_run_merge_small_max_bins_is_off_by_default_and_explicit_when_set():
 
 
 def test_run_merge_veto_transition_is_opt_in_and_does_not_veto_by_default():
-    # middle segment is a transition zone (opposite-sign flanks) under delta_log2fc
-    profile = np.concatenate([np.full(10, 8.0), np.full(10, 4.0), np.full(10, 8.4)])
+    # middle segment is a transition zone (opposite-sign flanks) under delta_log2fc:
+    # an 8 -> 4 -> 2 staircase puts the middle segment below its left flank and
+    # above its right flank (opposite-sign seg-vs-left / seg-vs-right scores)
+    profile = np.concatenate([np.full(10, 8.0), np.full(10, 4.0), np.full(10, 2.0)])
     var_start = (np.arange(30) * 100).astype(float); var_end = var_start + 100
     default = hm.run_merge(profile, [10, 20], 30, var_start, var_end, 0, 'delta_log2fc', 3.0, estimator='mean')
     assert default['final'] != default['original']
@@ -592,8 +594,8 @@ def hatch_scores(profile, boundaries, n_bins, var_start, var_end, chrom_offset):
         seg, left, right = summaries[i], summaries[i - 1], summaries[i + 1]
         row = {
             'start': seg['start'], 'end': seg['end'], 'phi': phi,
-            'gap_left': is_gap(var_start, var_end, chrom_offset + segs[i - 1][1], chrom_offset + segs[i][0]),
-            'gap_right': is_gap(var_start, var_end, chrom_offset + segs[i][1], chrom_offset + segs[i + 1][0]),
+            'gap_left': is_gap(var_start, var_end, chrom_offset + segs[i - 1][1] - 1, chrom_offset + segs[i][0]),
+            'gap_right': is_gap(var_start, var_end, chrom_offset + segs[i][1] - 1, chrom_offset + segs[i + 1][0]),
         }
         for m in ('srd', 'srd_phi'):
             row[f'{m}_left'] = flank_score(m, seg, left, phi)
@@ -644,7 +646,7 @@ def _eligible_boundaries(segs, summaries, phi, metric, estimator, threshold,
     for i in range(len(segs) - 1):
         left_s, left_e = segs[i]
         right_s, right_e = segs[i + 1]
-        if not allow_gap_crossing and is_gap(var_start, var_end, chrom_offset + left_e, chrom_offset + right_s):
+        if not allow_gap_crossing and is_gap(var_start, var_end, chrom_offset + left_e - 1, chrom_offset + right_s):
             continue
         if small_max_bins is not None and (left_e - left_s) > small_max_bins and (right_e - right_s) > small_max_bins:
             continue
