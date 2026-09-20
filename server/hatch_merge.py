@@ -121,3 +121,60 @@ def is_gap(var_start, var_end, left_end_bin, right_start_bin):
     """True if the two retained bins straddling a boundary are not genomically
     contiguous (a filtered/omitted interval sits between them)."""
     return float(var_start[right_start_bin]) != float(var_end[left_end_bin])
+
+
+def _finite(v):
+    return v is not None and np.isfinite(v)
+
+
+def classify_transition(left_score, right_score):
+    """True iff both scores are finite and have strictly opposite signs.
+
+    Zero never counts as an opposite sign; a missing/nonfinite score never
+    counts as a transition. Descriptive only, not a merge decision.
+    """
+    if not (_finite(left_score) and _finite(right_score)):
+        return False
+    return (left_score * right_score) < 0
+
+
+def weaker_side(left_score, right_score):
+    """Side with the smaller absolute score. 'tie' on exact equality (not
+    treated as evidence either way); None if either side is missing."""
+    if left_score is None or right_score is None:
+        return None
+    al, ar = abs(left_score), abs(right_score)
+    if al == ar:
+        return 'tie'
+    return 'left' if al < ar else 'right'
+
+
+def classify_merge_proposal(left_score, right_score, threshold):
+    """Eligible sides under abs(score) < threshold (strict), and the weaker
+    eligible side when both qualify. A terminal segment's missing side is
+    never invented as eligible."""
+    el = _finite(left_score) and abs(left_score) < threshold
+    er = _finite(right_score) and abs(right_score) < threshold
+    side = None
+    if el and er:
+        w = weaker_side(left_score, right_score)
+        side = 'both' if w == 'tie' else w
+    elif el:
+        side = 'left'
+    elif er:
+        side = 'right'
+    return {'eligible_left': bool(el), 'eligible_right': bool(er), 'weaker_side': side}
+
+
+def classify_ambiguous(srd_left, srd_right, fc_left, fc_right):
+    """'ambiguous' iff the weaker SRD-variant flank differs from the weaker
+    delta-log2FC flank; 'consistent' if they agree; 'no_unique_preference' on
+    an exact tie in either metric; 'undefined' if any input is missing or
+    nonfinite. Requires an internal segment (both sides present by construction)."""
+    vals = (srd_left, srd_right, fc_left, fc_right)
+    if any(v is None or not np.isfinite(v) for v in vals):
+        return 'undefined'
+    srd_side, fc_side = weaker_side(srd_left, srd_right), weaker_side(fc_left, fc_right)
+    if srd_side == 'tie' or fc_side == 'tie':
+        return 'no_unique_preference'
+    return 'consistent' if srd_side == fc_side else 'ambiguous'

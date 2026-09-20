@@ -72,3 +72,38 @@ def test_is_gap_detects_bp_discontinuity():
     var_end = np.array([100, 200, 350])
     assert hm.is_gap(var_start, var_end, 1, 2) is True   # 200 != 250
     assert hm.is_gap(var_start, var_end, 0, 1) is False  # 100 == 100
+
+
+def test_classify_transition_opposite_same_zero_missing():
+    assert hm.classify_transition(1.0, -1.0) is True
+    assert hm.classify_transition(1.0, 1.0) is False
+    assert hm.classify_transition(0.0, -1.0) is False    # zero is not an opposite sign
+    assert hm.classify_transition(None, -1.0) is False
+    assert hm.classify_transition(float('nan'), 1.0) is False
+
+
+def test_weaker_side_uses_absolute_magnitude_when_both_negative():
+    assert hm.weaker_side(-1.0, -3.0) == 'left'
+    assert hm.weaker_side(-3.0, -1.0) == 'right'
+    assert hm.weaker_side(-2.0, 2.0) == 'tie'
+    assert hm.weaker_side(None, 1.0) is None
+
+
+def test_classify_merge_proposal_strict_threshold_and_sides():
+    assert hm.classify_merge_proposal(0.5, 5.0, 1.0) == {'eligible_left': True, 'eligible_right': False, 'weaker_side': 'left'}
+    assert hm.classify_merge_proposal(1.0, 5.0, 1.0)['eligible_left'] is False  # strict <, not <=
+    assert hm.classify_merge_proposal(0.5, 0.5, 1.0)['weaker_side'] == 'both'
+    assert hm.classify_merge_proposal(None, 5.0, 1.0) == {'eligible_left': False, 'eligible_right': False, 'weaker_side': None}
+
+
+def test_classify_merge_proposal_terminal_segment_one_neighbor():
+    # a terminal segment only ever supplies one side; the other stays ineligible/None, never invented
+    assert hm.classify_merge_proposal(0.2, None, 1.0) == {'eligible_left': True, 'eligible_right': False, 'weaker_side': 'left'}
+
+
+def test_classify_ambiguous_differs_ties_and_undefined():
+    assert hm.classify_ambiguous(1.0, 3.0, 3.0, 1.0) == 'ambiguous'      # weaker SRD=left, weaker log2fc=right
+    assert hm.classify_ambiguous(1.0, 3.0, 1.0, 3.0) == 'consistent'
+    assert hm.classify_ambiguous(2.0, 2.0, 1.0, 3.0) == 'no_unique_preference'  # exact SRD tie
+    assert hm.classify_ambiguous(1.0, 3.0, None, 3.0) == 'undefined'
+    assert hm.classify_ambiguous(1.0, float('nan'), 1.0, 3.0) == 'undefined'
