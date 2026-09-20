@@ -206,3 +206,61 @@ def test_run_merge_veto_transition_is_opt_in_and_does_not_veto_by_default():
     assert default['final'] != default['original']
     vetoed = hm.run_merge(profile, [10, 20], 30, var_start, var_end, 0, 'delta_log2fc', 3.0, estimator='mean', veto_transition=True)
     assert vetoed['final'] == vetoed['original']
+
+
+from fastapi import FastAPI
+from fastapi.testclient import TestClient
+
+
+class _FakeStore:
+    """Minimal stand-in for IntegrationStore covering what the routes touch."""
+    def __init__(self):
+        self.identity = {'hash': 'fake', 'files': []}
+        self.var_seq = np.array(['chr1'] * 30)
+        self.var_start = (np.arange(30) * 100).astype(float)
+        self.var_end = self.var_start + 100
+        self.members = {'cluster0': np.arange(5), 'all': np.arange(5)}
+        pb = np.concatenate([np.full(10, 4.0), np.full(10, 4.2), np.full(10, 20.0)])
+        self.arrays = {'pb_x': np.tile(pb, (2, 1))}
+        import pandas as pd
+        self.tables = {'breakpoints': pd.DataFrame({'source': ['cluster0', 'cluster0'],
+                                                      'chromosome': ['chr1', 'chr1'],
+                                                      'absolute_bin': [10, 20]})}
+        self.available = True
+
+
+def _client():
+    from server.hatch_merge_api import register_hatch_merge
+    app = FastAPI()
+    store = _FakeStore()
+    register_hatch_merge(app, lambda: store)
+    return TestClient(app)
+
+
+def test_hatch_scores_route_returns_rows_and_bp_arrays():
+    resp = _client().post('/api/integration/hatch-scores', json={'chrom': 'chr1', 'source': 'cluster0'})
+    assert resp.status_code == 200
+    body = resp.json()
+    assert body['source'] == 'cluster0' and body['chrom'] == 'chr1'
+    assert len(body['start_bp']) == 30
+    assert len(body['rows']) == 1
+
+
+def test_hatch_scores_route_rejects_unknown_source():
+    resp = _client().post('/api/integration/hatch-scores', json={'chrom': 'chr1', 'source': 'nope'})
+    assert resp.status_code == 422
+
+
+def test_hatch_merge_route_runs_and_reports_provenance():
+    resp = _client().post('/api/integration/hatch-merge', json={
+        'chrom': 'chr1', 'source': 'cluster0', 'metric': 'delta_log2fc', 'threshold': 0.5, 'estimator': 'mean'})
+    assert resp.status_code == 200
+    body = resp.json()
+    assert body['final'] != body['original']
+    assert 'provenance' in body and body['provenance']['dataset'] == {'hash': 'fake', 'files': []}
+
+
+def test_hatch_merge_route_rejects_bad_threshold():
+    resp = _client().post('/api/integration/hatch-merge', json={
+        'chrom': 'chr1', 'source': 'cluster0', 'metric': 'srd', 'threshold': -1.0})
+    assert resp.status_code == 422

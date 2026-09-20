@@ -432,6 +432,9 @@ from .experiment_api import register_experiments
 register_experiments(app, _store, lambda: jobs, cfg)
 register_integration(app, lambda: integration)
 
+from .hatch_merge_api import register_hatch_merge
+register_hatch_merge(app, lambda: integration)
+
 DIST = os.path.join(APP_DIR, "web", "dist")
 if os.path.isdir(DIST):
     app.mount("/assets", StaticFiles(directory=os.path.join(DIST, "assets")), name="assets")
