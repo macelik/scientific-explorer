@@ -78,3 +78,7 @@ In **Integration · segmentation & CN**, use **Generate alternative flank view**
 **Compute paired cell bootstrap** provides a separate arithmetic-mean comparison using 200 paired whole-cell replicates (seed 42). It does not rerun clustering, segmentation, SRD or merging. Download the JSON/CSV to retain these generated results; they are not yet stored in normal app sessions.
 
 The original generators and configuration were found upstream and successfully rerun: all 11 diagnostic tables match their archived versions byte-for-byte. The app now loads these verified reference tables automatically, restoring the original SRD/noise diagnostics, merge summary and candidate audit. They are stored separately under [reference/integration-prototype](reference/integration-prototype/README.md); the deleted story prototype directory stays absent. The original median merge bootstrap uses seed 20260907 and remains distinct from the alternative arithmetic bootstrap above. See [the integration review](validation/integration-review/REVIEW.md) for details and scientific caveats.
+
+## Integration chart loading
+
+The segmentation tab renders its chromosome and diagnostic charts as you scroll them into view. This avoids initializing all eight plots during the initial CN-panel load. Once displayed, plots retain their zoom while scrolling. See [responsiveness checks](validation/integration-freeze/REPORT.md) for the reported freeze investigation and its current limits.

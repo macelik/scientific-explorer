@@ -32,6 +32,7 @@ const fs=require('fs'),path=require('path');
  await page.getByText(/Settings changed; showing the previous generated result/).waitFor();
  await page.getByRole('checkbox',{name:'allelic |dBAF| pseudobulk (right axis)',exact:true}).check();
  await page.getByLabel(/^track level/).selectOption('raw');
+ await page.locator('#cluster-tracks').scrollIntoViewIfNeeded();
  const plot=page.locator('#cluster-tracks .js-plotly-plot').first();
  await plot.scrollIntoViewIfNeeded();
  const axes=await plot.evaluate(el=>({range:el._fullLayout.yaxis.range,allelic:el.data.filter(t=>String(t.name).includes('allelic')).map(t=>({name:t.name,axis:t.yaxis,valid:!!el._fullLayout['yaxis'+t.yaxis.slice(1)],text:t.text?.find(Boolean)}))}));
@@ -39,6 +40,8 @@ const fs=require('fs'),path=require('path');
  await plot.screenshot({path:path.join(out,'raw-depth-allelic-tracks.png')});
  const diagnostics=page.locator('.panel').filter({has:page.getByRole('heading',{name:/Small-segment diagnostics across/})});
  await diagnostics.scrollIntoViewIfNeeded();
+ const diagnosticSlots=diagnostics.locator('.deferred-plot');
+ for(let i=0;i<await diagnosticSlots.count();i++){await diagnosticSlots.nth(i).scrollIntoViewIfNeeded();await diagnosticSlots.nth(i).locator('.js-plotly-plot').waitFor();}
  await diagnostics.screenshot({path:path.join(out,'original-diagnostics.png')});
  await diagnostics.locator('.js-plotly-plot').first().evaluate(el=>{
   const trace=el.data.find(t=>t.customdata?.length);

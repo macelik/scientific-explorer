@@ -1,6 +1,7 @@
 import AlternativeFlankView from './AlternativeFlankView'
-import { useEffect, useMemo, useState } from 'react'
-import Plot, { downloadPlot } from './Plot'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { downloadPlot } from './Plot'
+import Plot from './DeferredPlot'
 import ClusterKaryogram, { type KaryoRow } from './ClusterKaryogram'
 import { CellCard } from './IntegrationClustersView'
 import { useIntegration } from '../integrationStore'
@@ -22,7 +23,8 @@ export default function IntegrationSegmentationView() {
   const bins = useStore((s) => s.bins)!
   const presentation = useStore((s) => s.presentation)
   const setToast = useStore((s) => s.setToast)
-  const [plotEl, setPlotEl] = useState<any>(null)
+  const plotEl = useRef<any>(null)
+  const trackConfig = useMemo(() => ({ displayModeBar: presentation ? false : 'hover' }), [presentation])
   const [chromTable, setChromTable] = useState(true)
   useEffect(() => { ig.load() }, [])
   useEffect(() => { if (meta) { ig.ensurePseudobulk(); ig.ensureKaryo() } }, [meta])
@@ -256,7 +258,7 @@ export default function IntegrationSegmentationView() {
           {seg.labels.proposal && <span>segments with a proposal: colour = min-SRD flank |SRD/√φ| ({METRICS.find((m) => m.id === 'srd_phi')!.binLabels.join(' / ')}) · hatch / merge, × ambiguous, plain keep-focal</span>}
           {seg.labels.consistency && !seg.labels.proposal && <span>hatch × weak SRD, / inconsistent flank, plain strong/consistent</span>}
         </div>
-        {trackFig ? <><Plot data={trackFig.data} layout={trackFig.layout} config={{ displayModeBar: presentation ? false : 'hover' }} onClick={onTrackClick} onReady={setPlotEl} /><button className="btn-xs" onClick={() => plotEl && downloadPlot(plotEl, `tracks_${seg.chrom}`)}>PNG</button></> : <div className="muted small">{ig.pb ? 'select at least one cluster row' : 'loading pseudobulk profiles…'}</div>}
+        {trackFig ? <><Plot data={trackFig.data} layout={trackFig.layout} config={trackConfig} onClick={onTrackClick} onReady={el => { plotEl.current = el }} /><button className="btn-xs" onClick={() => plotEl.current && downloadPlot(plotEl.current, `tracks_${seg.chrom}`)}>PNG</button></> : <div className="muted small">{ig.pb ? 'select at least one cluster row' : 'loading pseudobulk profiles…'}</div>}
         {seg.selectedSegment && (() => { const s = ig.smallSegs.find((x) => x.key === seg.selectedSegment); if (!s) return null; const cc = consistencyClass(s, effectMetric, seg.srdRef); const bs = (meta.bootstrap || []).find((b: any) => b.source === s.source && b.chromosome === s.chrom && b.bin_start === s.s); return (
           <div className="cell-card"><div className="row wrap"><b>{s.source} {s.chrom} · segment {s.segId}</b> <span className="muted">bins [{s.s}, {s.e}) · {s.len} bins · {s.mbStart}–{s.mbEnd} Mb</span><span className="spacer" /><button className="btn-xs" onClick={() => ig.setSeg({ selectedSegment: null })}>✕</button></div>
             <div className="table-scroll"><table className="tbl"><thead><tr><th></th><th>left flank ({s.flank.n_bins_left_flank ?? '–'} bins)</th><th>right flank ({s.flank.n_bins_right_flank ?? '–'} bins)</th></tr></thead><tbody>

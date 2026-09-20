@@ -1,0 +1,15 @@
+{
+  "offscreen_charts_on_load": 0,
+  "axes": {
+    "traces": 20,
+    "shapes": 136,
+    "range": [
+      0.200001,
+      145.1
+    ]
+  },
+  "diagnostics_loaded": 7,
+  "controls": true,
+  "navigation": true,
+  "errors": []
+}
