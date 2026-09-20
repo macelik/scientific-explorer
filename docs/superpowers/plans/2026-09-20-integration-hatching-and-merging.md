@@ -851,7 +851,7 @@ def _resolve(ig: IntegrationStore, chrom: str, source: str):
         raise HTTPException(422, f'Unknown chromosome {chrom!r}')
     if not np.array_equal(idx, np.arange(idx[0], idx[-1] + 1)):
         raise HTTPException(422, 'Chromosome bins are not contiguous')
-    si = list(ig.members).index(source) if not isinstance(ig.members, dict) else list(ig.members.keys()).index(source)
+    si = list(ig.members).index(source)  # ig.members is a dict {source: cell-index-array}; list() gives its keys in insertion order
     profile = ig.arrays['pb_x'][si, idx]
     bp = ig.tables['breakpoints']
     boundaries = bp.loc[(bp.source == source) & (bp.chromosome == chrom), 'absolute_bin'].tolist()
