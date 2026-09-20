@@ -1,4 +1,5 @@
 import AlternativeFlankView from './AlternativeFlankView'
+import HatchMergeView from './HatchMergeView'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { downloadPlot } from './Plot'
 import Plot from './DeferredPlot'
@@ -324,6 +325,8 @@ export default function IntegrationSegmentationView() {
             {segTable.map((g) => { const sm = smallHere.find((s) => s.source === g.group && s.s === g.s); const mv = sm ? metricValue(sm, seg.metric, seg.flank, effectMetric) : null; return <tr key={`${g.group}-${g.segment}`} className={`${sm ? 'clickable' : ''} ${sm && sm.key === seg.selectedSegment ? 'sel' : ''}`} onClick={() => sm && selectSeg(sm)}><td style={{ color: SOURCE_COLORS[g.group] }}>{g.group}</td><td>{g.segment}</td><td>[{g.s}, {g.e})</td><td>{g.n_bins}</td><td>{(bins[2 * (chromMeta.offset + g.s)] / MB).toFixed(1)}–{(bins[2 * (chromMeta.offset + g.e - 1) + 1] / MB).toFixed(1)}</td><td><i className="sw" style={{ background: (seg.karyoPalette === 'story' ? STORY_CN : CN_COLORS)[g.cn_call] }} />{g.cn_call} {STORY_CN_LABELS[g.cn_call]}</td><td>{g.continuous_cn}</td><td>{g.integer_cn}</td><td>{sm ? `${fmt(mv!.value)} (${mv!.flank})` : ''}</td><td>{sm ? consistencyClass(sm, effectMetric, seg.srdRef).cls : ''}</td><td>{sm?.proposal ? PROPOSAL_LABEL[sm.proposal] || sm.proposal : ''}</td></tr> })}
           </tbody></table></div></details>
       </div>
+
+      <HatchMergeView />
 
       {allSmall.length > 0 && <div className="panel">
         <h3>Small-segment diagnostics across the pilot chromosomes ({allSmall.length} segments; figs 4, 6, 7, 8)</h3>
