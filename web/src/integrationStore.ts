@@ -2,10 +2,21 @@ import { create } from 'zustand'
 import { api } from './api'
 import { buildSmallSegments, type FlankRule, type Metric, type SmallSeg } from './integration'
 import type { CandidateRow, CellDetail, IntegrationMeta, IntegrationStatus } from './types'
+import { fetchHatchScores, type Estimator, type HatchMetric, type HatchScoresResult } from './hatchMerge'
 
 export type ColorBy = 'cluster' | 'log10_raw' | 'sumX' | 'HA_HB' | 'n_bins_snp' | 'depth_weight' | 'haplo_weight' | 'chr8_score' | 'zero_frac' | 'in_cohort' | 'selected'
 export type LevelBasis = 'chrmedian' | 'genome_trimmed' | 'raw'
 export interface LabelLayers { breakpoints: boolean; depthColor: boolean; small: boolean; proposal: boolean; consistency: boolean; reason: boolean; cn: boolean; candidates: boolean; allelic: boolean; segLabels: boolean }
+export interface HatchLayerSettings {
+  transition: { on: boolean; metric: HatchMetric; estimator: Estimator }
+  proposal: { on: boolean; metric: HatchMetric; estimator: Estimator; threshold: number }
+  ambiguous: { on: boolean; estimator: Estimator }
+}
+const defaultHatchLayers: HatchLayerSettings = {
+  transition: { on: false, metric: 'srd_phi', estimator: 'mean' },
+  proposal: { on: false, metric: 'srd_phi', estimator: 'mean', threshold: 3.3 },
+  ambiguous: { on: false, estimator: 'mean' },
+}
 
 export interface SegSettings {
   chrom: string; sources: string[]; metric: Metric; effectMetric: Metric; flank: FlankRule; scale: 'binned' | 'continuous'; basis: LevelBasis; smoothing: number
@@ -21,6 +32,11 @@ export interface IntegrationState {
   cellDetail: CellDetail | null; dimOthers: boolean; pointSize: number; compareKey: string
   seg: SegSettings
   candidates: Record<string, CandidateRow[]>
+  hatchLayers: HatchLayerSettings
+  hatchScores: Record<string, HatchScoresResult>
+  hatchScoresError: string | null
+  setHatchLayers: (p: Partial<HatchLayerSettings>) => void
+  ensureHatchScores: (source: string, chrom: string) => Promise<void>
   load: () => Promise<void>
   ensurePseudobulk: () => Promise<void>
   ensureKaryo: () => Promise<void>
@@ -45,6 +61,7 @@ export const useIntegration = create<IntegrationState>((set, get) => ({
   status: null, meta: null, loading: false, error: null, pb: null, karyo: null, karyoLoading: false, smallSegs: [],
   clusterKey: 'wnn_leiden_0.3', colorBy: 'cluster', selectedCluster: null, highlight: [], hoverCell: null, focusCell: null, cellDetail: null, dimOthers: false, pointSize: 3, compareKey: 'wnn_leiden_1.0',
   seg: defaultSeg, candidates: {},
+  hatchLayers: defaultHatchLayers, hatchScores: {}, hatchScoresError: null,
 
   load: async () => {
     if (get().meta || get().loading) return
@@ -76,6 +93,13 @@ export const useIntegration = create<IntegrationState>((set, get) => ({
     const k = `${source}|${chrom}`; if (get().candidates[k]) return
     try { const r = await api.integrationCandidates(source, chrom); set({ candidates: { ...get().candidates, [k]: r.rows } }) } catch { /* ignore */ }
   },
-  serialize: () => { const s = get(); return { clusterKey: s.clusterKey, colorBy: s.colorBy, selectedCluster: s.selectedCluster, highlight: s.highlight, focusCell: s.focusCell, dimOthers: s.dimOthers, pointSize: s.pointSize, compareKey: s.compareKey, seg: s.seg } },
-  restore: (p) => { if (!p) return; set({ clusterKey: p.clusterKey || 'wnn_leiden_0.3', colorBy: p.colorBy || 'cluster', selectedCluster: p.selectedCluster ?? null, highlight: p.highlight || [], focusCell: p.focusCell ?? null, dimOthers: !!p.dimOthers, pointSize: p.pointSize || 3, compareKey: p.compareKey || 'wnn_leiden_1.0', seg: { ...defaultSeg, ...(p.seg || {}), labels: { ...defaultSeg.labels, ...((p.seg || {}).labels || {}) } } }) },
+  setHatchLayers: (p) => set({ hatchLayers: { ...get().hatchLayers, ...p } }),
+  ensureHatchScores: async (source, chrom) => {
+    const k = `${source}|${chrom}`
+    if (get().hatchScores[k]) return
+    try { const r = await fetchHatchScores(chrom, source); set({ hatchScores: { ...get().hatchScores, [k]: r } }) }
+    catch (e: any) { set({ hatchScoresError: `hatch-scores: ${e.message || e}` }) }
+  },
+  serialize: () => { const s = get(); return { clusterKey: s.clusterKey, colorBy: s.colorBy, selectedCluster: s.selectedCluster, highlight: s.highlight, focusCell: s.focusCell, dimOthers: s.dimOthers, pointSize: s.pointSize, compareKey: s.compareKey, seg: s.seg, hatchLayers: s.hatchLayers } },
+  restore: (p) => { if (!p) return; set({ clusterKey: p.clusterKey || 'wnn_leiden_0.3', colorBy: p.colorBy || 'cluster', selectedCluster: p.selectedCluster ?? null, highlight: p.highlight || [], focusCell: p.focusCell ?? null, dimOthers: !!p.dimOthers, pointSize: p.pointSize || 3, compareKey: p.compareKey || 'wnn_leiden_1.0', seg: { ...defaultSeg, ...(p.seg || {}), labels: { ...defaultSeg.labels, ...((p.seg || {}).labels || {}) } }, hatchLayers: { ...defaultHatchLayers, ...(p.hatchLayers || {}) } }) },
 }))
