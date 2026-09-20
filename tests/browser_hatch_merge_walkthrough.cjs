@@ -38,22 +38,55 @@ const fs=require('fs'),path=require('path'),os=require('os'),assert=require('ass
  const shapesAfterProposal = await shapeCount();
  const legendAfterProposal = await legend();
 
- await page.getByRole('checkbox',{name:'ambiguous flank preference (×)',exact:true}).check();
+ await page.getByRole('checkbox',{name:'ambiguous flank preference (\\)',exact:true}).check();
  await page.waitForTimeout(600);
  const shapesAfterAmbiguous = await shapeCount();
  const legendAfterAmbiguous = await legend();
+
+ // ---- Metric/estimator selector on a hatch layer actually gets exercised (not just the
+ // three checkboxes): switch the transition layer's metric dropdown and confirm both the
+ // selected value round-trips and it has a concrete, measurable effect (shape count changes
+ // or stays the same for a documented reason -- either way we record the real number).
+ const transitionMetricSelect = page.locator('select[aria-label="Transition metric"]');
+ const transitionMetricBefore = await transitionMetricSelect.inputValue();
+ await transitionMetricSelect.selectOption('delta_log2fc');
+ await page.waitForTimeout(600);
+ const transitionMetricAfter = await transitionMetricSelect.inputValue();
+ const shapesAfterTransitionMetricChange = await shapeCount();
+ const legendAfterTransitionMetricChange = await legend();
+ // switch it back so the rest of the walkthrough (which assumes the default metric set) is unaffected
+ await transitionMetricSelect.selectOption(transitionMetricBefore);
+ await page.waitForTimeout(400);
 
  const hatchToggles = {
    shapesBaseline, shapesAfterTransition, shapesAfterProposal, shapesAfterAmbiguous,
    legendMentionsTransition: legendAfterTransition.includes('opposite signs'),
    legendMentionsProposal: legendAfterProposal.includes("at least one flank's"),
    legendMentionsAmbiguous: legendAfterAmbiguous.includes('differs from the weaker'),
+   metricSelector: {
+     transitionMetricBefore, transitionMetricAfter,
+     roundTripped: transitionMetricAfter === 'delta_log2fc',
+     shapesAfterTransitionMetricChange,
+     legendReflectsDeltaLog2fc: legendAfterTransitionMetricChange.includes('delta log2FC'),
+   },
  };
 
  // ---- Exploratory adjacent-segment merge panel ----
  const mergePanel = page.locator('.hatch-merge');
  await mergePanel.scrollIntoViewIfNeeded();
  await page.getByRole('heading',{name:'Exploratory adjacent-segment merge'}).waitFor();
+
+ // ---- Default-settings merge run: the panel's own shipped defaults are source=cluster4,
+ // chrom=chr8, metric=srd_phi, threshold=3.3, no vetoes, allow_gap_crossing off. Run it
+ // untouched, before changing any control, and record however many merges it actually
+ // produces on real data -- zero is a valid, honest result worth recording.
+ await page.getByRole('button',{name:'Run merge'}).click();
+ await page.waitForFunction(() => document.querySelectorAll('.hatch-merge .js-plotly-plot').length >= 2, {timeout: 30000});
+ await page.waitForTimeout(500);
+ const defaultRunSummaryText = await mergePanel.locator('p[role="status"]').innerText();
+ const defaultRunHistoryRows = await mergePanel.locator('table.tbl tbody tr').count();
+ const mergeRunDefaults = { summaryText: defaultRunSummaryText, mergeCount: defaultRunHistoryRows };
+
  const thresholdInput = mergePanel.locator('input[aria-label="Merge threshold"]');
  await thresholdInput.fill('50');
  await mergePanel.getByRole('checkbox',{name:'allow merging across a genomic gap (off by default)'}).check();
@@ -137,6 +170,7 @@ const fs=require('fs'),path=require('path'),os=require('os'),assert=require('ass
  const result = {
    generated_at: new Date().toISOString(),
    hatchToggles,
+   mergeRunDefaults,
    mergeRun: { summaryText, nPlots, secondPlotShapeCount: secondPlotShapes.length,
      hatchLineShapeCount: hatchLineShapes.length, hatchLineYrefSample: hatchLineShapes.slice(0,3),
      badYrefFound: badYref, stepLabel, jsonBtn, csvBtn, historyRows },

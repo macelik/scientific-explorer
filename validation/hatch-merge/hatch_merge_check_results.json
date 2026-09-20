@@ -1,13 +1,24 @@
 {
-  "generated_at": "2026-09-20T11:30:12.143Z",
+  "generated_at": "2026-09-20T15:58:59.713Z",
   "hatchToggles": {
     "shapesBaseline": 136,
-    "shapesAfterTransition": 220,
-    "shapesAfterProposal": 364,
-    "shapesAfterAmbiguous": 400,
+    "shapesAfterTransition": 250,
+    "shapesAfterProposal": 394,
+    "shapesAfterAmbiguous": 412,
     "legendMentionsTransition": true,
     "legendMentionsProposal": true,
-    "legendMentionsAmbiguous": true
+    "legendMentionsAmbiguous": true,
+    "metricSelector": {
+      "transitionMetricBefore": "srd_phi",
+      "transitionMetricAfter": "delta_log2fc",
+      "roundTripped": true,
+      "shapesAfterTransitionMetricChange": 412,
+      "legendReflectsDeltaLog2fc": true
+    }
+  },
+  "mergeRunDefaults": {
+    "summaryText": "cluster4 chr8: 11 original segments → 11 after 0 merge(s). Metric SRD/√φ, threshold 3.3.",
+    "mergeCount": 0
   },
   "mergeRun": {
     "summaryText": "cluster4 chr8: 11 original segments → 1 after 10 merge(s). Metric SRD/√φ, threshold 50.",
@@ -39,7 +50,7 @@
     "afterUndo": "step 9 of 10 — removed boundary at bin 1259, score 5.822"
   },
   "staleNotice": {
-    "staleText": "Settings changed; showing the previous run. cluster4 chr8: 11 original segments → 1 after 10 merge(s). Metric SRD/√φ, threshold 10.",
+    "staleText": "Settings changed; showing the previous run. cluster4 chr8: 11 original segments → 1 after 10 merge(s). Metric SRD/√φ, threshold 50.",
     "staleClass": "notice"
   },
   "chromosomeChange": {

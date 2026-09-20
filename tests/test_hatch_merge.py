@@ -22,7 +22,7 @@ def test_segment_summary_adds_start_end_sum_to_summarize():
 def test_signed_srd_matches_reference_examples():
     sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'reference' / 'integration-prototype' / 'src' / 'srd_effect'))
     from srd_pruning import exposure_aware_srd  # reference-only import, test comparison only
-    cases = [(10., 5., 10., 5.), (20., 5., 5., 5.), (0., 4., 0., 4.), (7., 3., 2., 9.)]
+    cases = [(10., 5., 10., 5.), (20., 5., 5., 5.), (0., 4., 0., 4.), (7., 3., 2., 9.), (5., 5., 20., 5.)]
     for y_t, e_t, y_r, e_r in cases:
         assert hm.signed_srd(y_t, e_t, y_r, e_r) == pytest.approx(exposure_aware_srd(y_t, e_t, y_r, e_r))
 
@@ -206,6 +206,52 @@ def test_run_merge_veto_transition_is_opt_in_and_does_not_veto_by_default():
     assert default['final'] != default['original']
     vetoed = hm.run_merge(profile, [10, 20], 30, var_start, var_end, 0, 'delta_log2fc', 3.0, estimator='mean', veto_transition=True)
     assert vetoed['final'] == vetoed['original']
+
+
+def test_run_merge_veto_ambiguous_is_not_a_silent_no_op_under_delta_log2fc():
+    # Regression test for a bug where `phi` was only ever computed when
+    # `metric != 'delta_log2fc'`, so under metric='delta_log2fc' the
+    # srd_phi-based ambiguous check inside _segment_status always saw
+    # phi=None and classify_ambiguous always returned 'undefined' -- making
+    # veto_ambiguous a silent no-op whenever the merge metric was
+    # delta_log2fc, even though the checkbox is presented as a working
+    # setting independent of the merge metric.
+    #
+    # Segment B's weaker SRD/sqrt(phi) flank (left, |14.51| < |14.88|) differs
+    # from its weaker delta-log2FC flank (right, |-0.585| < |1.0|) -- a
+    # genuinely ambiguous segment by construction (verified by hand and by
+    # direct computation of classify_ambiguous on these summaries).
+    n_a, n_b, n_c = 2, 2, 30
+    seg_a = np.full(n_a, 1.0)
+    seg_b = np.full(n_b, 2.0)
+    # alternating +-0.1 around 3.0 keeps the mean exactly 3.0 (so the tuned
+    # ratios/lengths above are exact) while giving pooled_phi a nonzero
+    # variance to work with (an exactly-constant profile has phi == 0.0,
+    # which flank_score treats as undefined for srd_phi).
+    seg_c = np.array([3.0 + (0.1 if i % 2 == 0 else -0.1) for i in range(n_c)])
+    profile = np.concatenate([seg_a, seg_b, seg_c])
+    n_bins = n_a + n_b + n_c
+    boundaries = [n_a, n_a + n_b]
+    var_start = (np.arange(n_bins) * 100).astype(float)
+    var_end = var_start + 100
+
+    # Sanity-check the constructed scenario is genuinely ambiguous and that
+    # only the B-C boundary is eligible at this threshold (A-B's score is
+    # 1.0, above threshold; B-C's is 0.585, below it).
+    segs = hm.flat_partition(boundaries, n_bins)
+    summaries = [hm.segment_summary(profile, s, e) for s, e in segs]
+    phi = hm.pooled_phi(profile, segs)
+    srd_l = hm.flank_score('srd_phi', summaries[1], summaries[0], phi)
+    srd_r = hm.flank_score('srd_phi', summaries[1], summaries[2], phi)
+    fc_l = hm.delta_log2fc(summaries[1], summaries[0], 'mean')
+    fc_r = hm.delta_log2fc(summaries[1], summaries[2], 'mean')
+    assert hm.classify_ambiguous(srd_l, srd_r, fc_l, fc_r) == 'ambiguous'
+
+    default = hm.run_merge(profile, boundaries, n_bins, var_start, var_end, 0, 'delta_log2fc', 0.7, estimator='mean')
+    assert default['final'] != default['original']  # the B-C boundary merges by default
+
+    vetoed = hm.run_merge(profile, boundaries, n_bins, var_start, var_end, 0, 'delta_log2fc', 0.7, estimator='mean', veto_ambiguous=True)
+    assert vetoed['final'] == vetoed['original']  # veto_ambiguous actually blocks it under this metric
 
 
 from fastapi import FastAPI

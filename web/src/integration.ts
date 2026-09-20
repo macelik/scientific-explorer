@@ -90,11 +90,11 @@ function unitDiag(step: number, back: boolean): { x0: number; y0: number; x1: nu
   }
   return out
 }
-/** Plotly `line` shapes hatching a rect (x0..x1 data units, y 0..1 of the given axis' domain): '/' single diagonal, 'x' crossed, 'none' nothing. */
-export function hatchShapes(x0: number, x1: number, yref: string, style: 'none' | '/' | 'x', color = 'rgba(17,24,39,0.55)'): any[] {
+/** Plotly `line` shapes hatching a rect (x0..x1 data units, y 0..1 of the given axis' domain): '/' single forward diagonal, '\' single backward diagonal, 'x' both crossed, 'none' nothing. */
+export function hatchShapes(x0: number, x1: number, yref: string, style: 'none' | '/' | '\\' | 'x', color = 'rgba(17,24,39,0.55)'): any[] {
   if (style === 'none') return []
   const step = 0.22, w = x1 - x0
-  const lines = style === 'x' ? [...unitDiag(step, false), ...unitDiag(step, true)] : unitDiag(step, false)
+  const lines = style === 'x' ? [...unitDiag(step, false), ...unitDiag(step, true)] : style === '\\' ? unitDiag(step, true) : unitDiag(step, false)
   return lines.map((l) => ({ type: 'line', xref: 'x', yref: `${yref} domain`, x0: x0 + l.x0 * w, x1: x0 + l.x1 * w, y0: l.y0, y1: l.y1, line: { color, width: 1 }, layer: 'above' }))
 }
 export function binIndex(v: number, bins: number[]): number { let i = 0; while (i < bins.length && v >= bins[i]) i++; return i }

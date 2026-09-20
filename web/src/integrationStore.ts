@@ -97,7 +97,7 @@ export const useIntegration = create<IntegrationState>((set, get) => ({
   ensureHatchScores: async (source, chrom) => {
     const k = `${source}|${chrom}`
     if (get().hatchScores[k]) return
-    try { const r = await fetchHatchScores(chrom, source); set({ hatchScores: { ...get().hatchScores, [k]: r } }) }
+    try { const r = await fetchHatchScores(chrom, source); set({ hatchScores: { ...get().hatchScores, [k]: r }, hatchScoresError: null }) }
     catch (e: any) { set({ hatchScoresError: `hatch-scores: ${e.message || e}` }) }
   },
   serialize: () => { const s = get(); return { clusterKey: s.clusterKey, colorBy: s.colorBy, selectedCluster: s.selectedCluster, highlight: s.highlight, focusCell: s.focusCell, dimOthers: s.dimOthers, pointSize: s.pointSize, compareKey: s.compareKey, seg: s.seg, hatchLayers: s.hatchLayers } },

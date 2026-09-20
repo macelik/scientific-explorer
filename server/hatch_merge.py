@@ -13,8 +13,6 @@ on shared examples so the two never silently drift apart.
 """
 from __future__ import annotations
 
-from typing import Optional
-
 import numpy as np
 from scipy.special import xlogy
 
@@ -84,7 +82,7 @@ def pooled_phi(profile, seg_bounds):
 def estimator_level(summary, estimator):
     if estimator not in ESTIMATORS:
         raise ValueError(f'Unknown estimator {estimator!r}')
-    return summary[estimator if estimator != 'iqr_mean' else 'iqr_mean']
+    return summary[estimator]
 
 
 def delta_log2fc(seg_summary, flank_summary, estimator):
@@ -287,7 +285,11 @@ def run_merge(profile, boundaries, n_bins, var_start, var_end, chrom_offset, met
         if guard > max_steps:
             raise RuntimeError('Merge did not terminate within max_steps')
         summaries = [segment_summary(profile, s, e) for s, e in segs]
-        phi = pooled_phi(profile, segs) if metric != 'delta_log2fc' else None
+        # phi is needed whenever the merge metric itself uses it (srd_phi), or whenever
+        # veto_ambiguous is set: _segment_status/_vetoed compute an srd_phi-based ambiguous
+        # check regardless of the merge metric, so phi must not stay None in that case
+        # (otherwise veto_ambiguous silently becomes a no-op under metric='delta_log2fc').
+        phi = pooled_phi(profile, segs) if (metric != 'delta_log2fc' or veto_ambiguous) else None
         candidates = _eligible_boundaries(segs, summaries, phi, metric, estimator, threshold,
                                            veto_transition, veto_ambiguous, small_max_bins,
                                            allow_gap_crossing, var_start, var_end, chrom_offset)

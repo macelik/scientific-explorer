@@ -45,6 +45,13 @@ export default function HatchMergeView() {
   const reset = () => setStepIdx(0)
   const undo = () => setStepIdx((i) => Math.max(0, i - 1))
   const step = result?.steps[stepIdx]
+  // Read the *displayed* run's settings from result.settings, not the live control
+  // state above: once a control changes after a run, the live state no longer
+  // describes the scores actually shown (see the `stale` notice) and must not be
+  // used for the summary/history/export of that still-displayed result.
+  const rMetric = (result?.settings.metric as HatchMetric | undefined) ?? metric
+  const rEstimator = (result?.settings.estimator as Estimator | undefined) ?? estimator
+  const rThreshold = (result?.settings.threshold as number | undefined) ?? threshold
 
   const layout = { height: 260, margin: { l: 60, r: 20, t: 30, b: 45 }, paper_bgcolor: '#fff', plot_bgcolor: '#fff', font: { family: 'system-ui', size: 12 }, hovermode: presentation ? false : 'closest' as const }
   const segmentTrace = (segs: { start: number; end: number }[], startBp: number[], endBp: number[], color: string, name: string) => ({
@@ -75,7 +82,7 @@ export default function HatchMergeView() {
     </div>
     {error && <p role="alert">{error}</p>}
     {result && step && <>
-      <p className={stale ? 'notice' : 'muted'} role="status">{stale ? 'Settings changed; showing the previous run. ' : ''}{result.source} {result.chrom}: {result.original.length} original segments → {result.final.length} after {result.steps.length - 1} merge(s). Metric {METRIC_NAMES[metric]}{metric === 'delta_log2fc' ? ` (${estimator})` : ''}, threshold {threshold}.</p>
+      <p className={stale ? 'notice' : 'muted'} role="status">{stale ? 'Settings changed; showing the previous run. ' : ''}{result.source} {result.chrom}: {result.original.length} original segments → {result.final.length} after {result.steps.length - 1} merge(s). Metric {METRIC_NAMES[rMetric]}{rMetric === 'delta_log2fc' ? ` (${rEstimator})` : ''}, threshold {rThreshold}.</p>
       <div className="controls-row">
         <label>Step<input aria-label="Merge step" type="range" min={0} max={result.steps.length - 1} value={stepIdx} onChange={(e) => setStepIdx(+e.target.value)} /></label>
         <span className="muted small">step {stepIdx} of {result.steps.length - 1}{step.removed_boundary !== null ? ` — removed boundary at bin ${step.removed_boundary}, score ${step.score?.toFixed(3)}` : ' — original segmentation'}</span>
@@ -85,7 +92,7 @@ export default function HatchMergeView() {
         <button className="btn-sm" onClick={() => download(JSON.stringify(result, null, 2), `hatch-merge-${result.chrom}-${result.source}.json`, 'application/json')}>Download JSON</button>
         <button className="btn-sm" onClick={() => {
           const rows = [['step', 'source', 'chromosome', 'merged_start', 'merged_end', 'removed_boundary', 'metric', 'estimator', 'score', 'threshold', 'phi'],
-            ...result.steps.filter((s) => s.removed_boundary !== null).map((s) => [s.step, result.source, result.chrom, s.merged_interval?.[0], s.merged_interval?.[1], s.removed_boundary, metric, metric === 'delta_log2fc' ? estimator : '', s.score, threshold, s.phi ?? ''])]
+            ...result.steps.filter((s) => s.removed_boundary !== null).map((s) => [s.step, result.source, result.chrom, s.merged_interval?.[0], s.merged_interval?.[1], s.removed_boundary, rMetric, rMetric === 'delta_log2fc' ? rEstimator : '', s.score, rThreshold, s.phi ?? ''])]
           download(rows.map((r) => r.join(',')).join('\n') + '\n', `hatch-merge-history-${result.chrom}-${result.source}.csv`, 'text/csv')
         }}>Download merge-history CSV</button>
       </div>
@@ -96,10 +103,10 @@ export default function HatchMergeView() {
       <div className="table-scroll"><table className="tbl"><thead><tr><th>step</th><th>source</th><th>chromosome</th><th>merged interval (bins)</th><th>removed boundary</th><th>metric</th><th>estimator</th><th>score</th><th>threshold</th><th>φ</th></tr></thead><tbody>
         {result.steps.filter((s) => s.removed_boundary !== null).map((s) => <tr key={s.step} className={s.step === stepIdx ? 'sel' : 'clickable'} onClick={() => setStepIdx(s.step)}>
           <td>{s.step}</td><td>{result.source}</td><td>{result.chrom}</td><td>[{s.merged_interval?.[0]}, {s.merged_interval?.[1]})</td><td>{s.removed_boundary}</td>
-          <td>{METRIC_NAMES[metric]}</td><td>{metric === 'delta_log2fc' ? estimator : '–'}</td><td>{s.score?.toFixed(3)}</td><td>{threshold}</td><td>{s.phi != null ? s.phi.toFixed(3) : '–'}</td>
+          <td>{METRIC_NAMES[rMetric]}</td><td>{rMetric === 'delta_log2fc' ? rEstimator : '–'}</td><td>{s.score?.toFixed(3)}</td><td>{rThreshold}</td><td>{s.phi != null ? s.phi.toFixed(3) : '–'}</td>
         </tr>)}
       </tbody></table></div>
-      <p className="small muted">Segment summaries and hatch classifications for this step's segmentation use the "new exploratory hatch layers" controls above once you tick a layer — those recompute from live boundaries and are not tied to this panel's step selection. CN calls are not recomputed on merged boundaries; any CN shown elsewhere in this tab still reflects the original accepted-breakpoint segmentation.</p>
+      <p className="small muted">Segment summaries and hatch classifications for this step's segmentation use the "new exploratory hatch layers" controls above once you tick a layer — those recompute from live boundaries and are not tied to this panel's step selection. This panel itself shows only the merged segmentation's boundaries (original vs. current-step spans in the two plots above and the history table); it does not display recomputed per-segment summaries or scores for the merged partition — that combination is not yet implemented here. CN calls are not recomputed on merged boundaries; any CN shown elsewhere in this tab still reflects the original accepted-breakpoint segmentation.</p>
       <details><summary>Merge run provenance and settings</summary><pre style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>{JSON.stringify({ settings: result.settings, provenance: result.provenance }, null, 2)}</pre></details>
     </>}
   </section>

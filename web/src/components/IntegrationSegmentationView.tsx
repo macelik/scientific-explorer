@@ -145,27 +145,41 @@ export default function IntegrationSegmentationView() {
       const hs = ig.hatchScores[`${src}|${seg.chrom}`]
       if (hs && (hatchLayers.transition.on || hatchLayers.proposal.on || hatchLayers.ambiguous.on)) for (const row of hs.rows) {
         const x0 = mb[row.start], x1 = row.end < chromMeta.n ? mb[row.end] : bins[2 * (chromMeta.offset + chromMeta.n - 1) + 1] / MB
-        const styles: ('none' | '/' | 'x')[] = []
+        const styles: ('none' | '/' | '\\' | 'x')[] = []
+        const fired: string[] = []
+        const scoreLines: string[] = []
         if (hatchLayers.transition.on) {
           const l = scoreForMetric(row, 'left', hatchLayers.transition.metric, hatchLayers.transition.estimator)
           const r = scoreForMetric(row, 'right', hatchLayers.transition.metric, hatchLayers.transition.estimator)
-          if (classifyTransition(l, r)) styles.push('/')
+          const isTransition = classifyTransition(l, r)
+          const mname = hatchLayers.transition.metric === 'delta_log2fc' ? `delta log2FC (${hatchLayers.transition.estimator})` : hatchLayers.transition.metric
+          if (isTransition) { styles.push('/'); fired.push('transition zone (/)') }
+          scoreLines.push(`transition · ${mname} L/R ${fmt(l, 3)} / ${fmt(r, 3)}${isTransition ? ' — opposite signs' : ''}`)
         }
         if (hatchLayers.proposal.on) {
           const l = scoreForMetric(row, 'left', hatchLayers.proposal.metric, hatchLayers.proposal.estimator)
           const r = scoreForMetric(row, 'right', hatchLayers.proposal.metric, hatchLayers.proposal.estimator)
           const cls = classifyMergeProposal(l, r, hatchLayers.proposal.threshold)
-          if (cls.weakerSide) styles.push('x')
+          const mname = hatchLayers.proposal.metric === 'delta_log2fc' ? `delta log2FC (${hatchLayers.proposal.estimator})` : hatchLayers.proposal.metric
+          if (cls.weakerSide) { styles.push('x'); fired.push(`merge proposal (×), eligible side: ${cls.weakerSide}`) }
+          scoreLines.push(`merge proposal · ${mname} L/R ${fmt(l, 3)} / ${fmt(r, 3)} vs threshold ${hatchLayers.proposal.threshold} — eligible ${cls.eligibleLeft ? 'L' : ''}${cls.eligibleLeft && cls.eligibleRight ? '+' : ''}${cls.eligibleRight ? 'R' : ''}${!cls.eligibleLeft && !cls.eligibleRight ? 'none' : ''}${cls.weakerSide ? `, weaker side ${cls.weakerSide}` : ''}`)
         }
         if (hatchLayers.ambiguous.on) {
           const srdL = scoreForMetric(row, 'left', 'srd_phi', hatchLayers.ambiguous.estimator)
           const srdR = scoreForMetric(row, 'right', 'srd_phi', hatchLayers.ambiguous.estimator)
           const fcL = scoreForMetric(row, 'left', 'delta_log2fc', hatchLayers.ambiguous.estimator)
           const fcR = scoreForMetric(row, 'right', 'delta_log2fc', hatchLayers.ambiguous.estimator)
-          if (classifyAmbiguous(srdL, srdR, fcL, fcR) === 'ambiguous') styles.push('x')
+          const cls = classifyAmbiguous(srdL, srdR, fcL, fcR)
+          if (cls === 'ambiguous') { styles.push('\\'); fired.push('ambiguous flank preference (\\)') }
+          scoreLines.push(`ambiguous check · SRD/√φ L/R ${fmt(srdL, 3)} / ${fmt(srdR, 3)} vs delta log2FC (${hatchLayers.ambiguous.estimator}) L/R ${fmt(fcL, 3)} / ${fmt(fcR, 3)} → ${cls}`)
         }
         for (const style of styles) shapes.push(...hatchShapes(x0, x1, yref, style, 'rgba(21,94,117,0.6)'))
-        if (row.gap_left || row.gap_right) shapes.push({ type: 'line', xref: 'x', yref: `${yref} domain`, x0: row.gap_left ? x0 : x1, x1: row.gap_left ? x0 : x1, y0: 0, y1: 1, line: { color: '#b91c1c', width: 2, dash: 'dot' }, opacity: 0.7 })
+        if (row.gap_left) shapes.push({ type: 'line', xref: 'x', yref: `${yref} domain`, x0, x1: x0, y0: 0, y1: 1, line: { color: '#b91c1c', width: 2, dash: 'dot' }, opacity: 0.7 })
+        if (row.gap_right) shapes.push({ type: 'line', xref: 'x', yref: `${yref} domain`, x0: x1, x1, y0: 0, y1: 1, line: { color: '#b91c1c', width: 2, dash: 'dot' }, opacity: 0.7 })
+        // hover carrier: why a segment did (or didn't) get hatched by the new layers — only added
+        // when at least one layer actually fired, so it doesn't clutter every segment in view.
+        if (fired.length) data.push({ type: 'scatter', mode: 'markers', x: [(x0 + x1) / 2], y: [seg.basis === 'raw' ? 0 : yr[0] + 0.2], marker: { size: 7, color: 'rgba(21,94,117,0.35)', line: { color: '#155e75', width: 1 }, symbol: 'diamond' }, xaxis: 'x', yaxis: yref, showlegend: false, name: 'new hatch layer',
+          hovertemplate: `<b>${src} ${seg.chrom} · new exploratory hatch layer(s)</b><br>bins [${row.start}, ${row.end})<br>fired: ${fired.join(', ')}<br>${scoreLines.join('<br>')}${row.gap_left || row.gap_right ? `<br>genomic gap: ${row.gap_left ? 'left ' : ''}${row.gap_right ? 'right' : ''}` : ''}<extra></extra>` })
       }
       // candidate audit
       if (seg.labels.candidates) {
@@ -291,7 +305,7 @@ export default function IntegrationSegmentationView() {
           <select aria-label="Merge-proposal metric" value={hatchLayers.proposal.metric} onChange={(e) => ig.setHatchLayers({ proposal: { ...hatchLayers.proposal, metric: e.target.value as HatchMetric } })}><option value="srd">SRD</option><option value="srd_phi">SRD/√φ</option><option value="delta_log2fc">delta log2FC</option></select>
           {hatchLayers.proposal.metric === 'delta_log2fc' && <select aria-label="Merge-proposal estimator" value={hatchLayers.proposal.estimator} onChange={(e) => ig.setHatchLayers({ proposal: { ...hatchLayers.proposal, estimator: e.target.value as Estimator } })}><option value="mean">mean</option><option value="median">median</option><option value="iqr_mean">two-sided IQR mean</option></select>}
           <label>threshold<input aria-label="Merge-proposal threshold" type="number" step={0.1} value={hatchLayers.proposal.threshold} onChange={(e) => ig.setHatchLayers({ proposal: { ...hatchLayers.proposal, threshold: +e.target.value } })} style={{ width: 64 }} /></label>
-          <label className="chk-inline"><input type="checkbox" checked={hatchLayers.ambiguous.on} onChange={(e) => ig.setHatchLayers({ ambiguous: { ...hatchLayers.ambiguous, on: e.target.checked } })} />ambiguous flank preference (×)</label>
+          <label className="chk-inline"><input type="checkbox" checked={hatchLayers.ambiguous.on} onChange={(e) => ig.setHatchLayers({ ambiguous: { ...hatchLayers.ambiguous, on: e.target.checked } })} />ambiguous flank preference (\)</label>
           <select aria-label="Ambiguous estimator" value={hatchLayers.ambiguous.estimator} onChange={(e) => ig.setHatchLayers({ ambiguous: { ...hatchLayers.ambiguous, estimator: e.target.value as Estimator } })}><option value="mean">mean</option><option value="median">median</option><option value="iqr_mean">two-sided IQR mean</option></select>
           {ig.hatchScoresError && <span className="notice small">{ig.hatchScoresError}</span>}
         </div>
@@ -305,8 +319,8 @@ export default function IntegrationSegmentationView() {
           {seg.labels.consistency && !seg.labels.proposal && <span>hatch × weak SRD, / inconsistent flank, plain strong/consistent</span>}
           {hatchLayers.transition.on && <span>new: hatch / where left/right {hatchLayers.transition.metric === 'delta_log2fc' ? `delta log2FC (${hatchLayers.transition.estimator})` : hatchLayers.transition.metric} scores have opposite signs (descriptive, not a merge decision)</span>}
           {hatchLayers.proposal.on && <span>new: hatch × where at least one flank's |{hatchLayers.proposal.metric === 'delta_log2fc' ? `delta log2FC (${hatchLayers.proposal.estimator})` : hatchLayers.proposal.metric}| &lt; {hatchLayers.proposal.threshold}</span>}
-          {hatchLayers.ambiguous.on && <span>new: hatch × where the weaker SRD/√φ flank differs from the weaker delta log2FC ({hatchLayers.ambiguous.estimator}) flank</span>}
-          <span><i className="ln" style={{ borderColor: '#b91c1c' }} />dotted red = a genomic gap sits at that flank boundary</span>
+          {hatchLayers.ambiguous.on && <span>new: hatch \ where the weaker SRD/√φ flank differs from the weaker delta log2FC ({hatchLayers.ambiguous.estimator}) flank</span>}
+          {(hatchLayers.transition.on || hatchLayers.proposal.on || hatchLayers.ambiguous.on) && <span><i className="ln" style={{ borderColor: '#b91c1c' }} />dotted red = a genomic gap sits at that flank boundary</span>}
         </div>
         {trackFig ? <><Plot data={trackFig.data} layout={trackFig.layout} config={trackConfig} onClick={onTrackClick} onReady={el => { plotEl.current = el }} /><button className="btn-xs" onClick={() => plotEl.current && downloadPlot(plotEl.current, `tracks_${seg.chrom}`)}>PNG</button></> : <div className="muted small">{ig.pb ? 'select at least one cluster row' : 'loading pseudobulk profiles…'}</div>}
         {seg.selectedSegment && (() => { const s = ig.smallSegs.find((x) => x.key === seg.selectedSegment); if (!s) return null; const cc = consistencyClass(s, effectMetric, seg.srdRef); const bs = (meta.bootstrap || []).find((b: any) => b.source === s.source && b.chromosome === s.chrom && b.bin_start === s.s); return (
