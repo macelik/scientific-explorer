@@ -222,23 +222,53 @@ def _segment_status(idx, segs, summaries, phi, metric, estimator):
     }
 
 
-def _vetoed(i, segs, summaries, phi, metric, estimator, veto_transition, veto_ambiguous):
-    if not (veto_transition or veto_ambiguous):
-        return False
-    for idx in (i, i + 1):
-        status = _segment_status(idx, segs, summaries, phi, metric, estimator)
-        if status is None:
-            continue
-        if veto_transition and status['transition']:
-            return True
-        if veto_ambiguous and status['ambiguous']:
-            return True
-    return False
+def _layer_eligibility(i, segs, summaries, phi, transition, proposal, ambiguous):
+    """Which of up to three independently-configured hatch layers flag the
+    boundary between segs[i] and segs[i+1] as eligible, and a rank key for
+    picking among several eligible boundaries.
+
+    - proposal: a direct threshold check on the boundary itself (segs[i] vs
+      segs[i+1]), exactly as the hatch layer's own "merge proposal"
+      classification does. This is the only layer with a natural magnitude,
+      so its |score| is used for ranking when available.
+    - transition/ambiguous: these classify a SEGMENT (comparing its own left
+      vs right flank), matching the hatch layers' per-segment classification
+      exactly. A boundary is flagged if either adjacent segment (segs[i] or
+      segs[i+1]) is itself classified transition/ambiguous -- the same
+      adjacency check the retired veto logic used, now used to trigger
+      eligibility instead of exclude it.
+
+    Returns (fired: set[str] naming which layers matched, rank_key: tuple)
+    where rank_key sorts boundaries with a real proposal score first (by
+    ascending |score|), then boundaries with no score at all.
+    """
+    fired = set()
+    rank_score = None
+    if proposal is not None:
+        score = flank_score(proposal['metric'], summaries[i], summaries[i + 1], phi, proposal['estimator'])
+        if score is not None and np.isfinite(score) and abs(score) < proposal['threshold']:
+            fired.add('proposal')
+            rank_score = abs(score)
+    if transition is not None:
+        for idx in (i, i + 1):
+            status = _segment_status(idx, segs, summaries, phi, transition['metric'], transition['estimator'])
+            if status is not None and status['transition']:
+                fired.add('transition')
+                break
+    if ambiguous is not None:
+        for idx in (i, i + 1):
+            # 'srd_phi' is a required positional arg but unused by the 'ambiguous' field,
+            # which _segment_status always derives from srd_phi/delta_log2fc internally.
+            status = _segment_status(idx, segs, summaries, phi, 'srd_phi', ambiguous['estimator'])
+            if status is not None and status['ambiguous']:
+                fired.add('ambiguous')
+                break
+    rank_key = (0, rank_score) if rank_score is not None else (1, 0.0)
+    return fired, rank_key
 
 
-def _eligible_boundaries(segs, summaries, phi, metric, estimator, threshold,
-                          veto_transition, veto_ambiguous, small_max_bins,
-                          allow_gap_crossing, var_start, var_end, chrom_offset):
+def _eligible_boundaries(segs, summaries, phi, transition, proposal, ambiguous,
+                          small_max_bins, allow_gap_crossing, var_start, var_end, chrom_offset):
     out = []
     for i in range(len(segs) - 1):
         left_s, left_e = segs[i]
@@ -247,66 +277,77 @@ def _eligible_boundaries(segs, summaries, phi, metric, estimator, threshold,
             continue
         if small_max_bins is not None and (left_e - left_s) > small_max_bins and (right_e - right_s) > small_max_bins:
             continue
-        score = flank_score(metric, summaries[i], summaries[i + 1], phi, estimator)
-        if score is None or not np.isfinite(score) or abs(score) >= threshold:
+        fired, rank_key = _layer_eligibility(i, segs, summaries, phi, transition, proposal, ambiguous)
+        if not fired:
             continue
-        if _vetoed(i, segs, summaries, phi, metric, estimator, veto_transition, veto_ambiguous):
-            continue
-        out.append((i, score))
+        out.append((i, rank_key, fired))
     return out
 
 
-def run_merge(profile, boundaries, n_bins, var_start, var_end, chrom_offset, metric, threshold,
-              estimator='mean', veto_transition=False, veto_ambiguous=False, small_max_bins=None,
-              allow_gap_crossing=False, max_steps=10000):
+def _validate_layer(name, cfg):
+    if cfg is None:
+        return
+    if name != 'ambiguous':
+        if cfg.get('metric') not in METRICS:
+            raise ValueError(f'Unknown {name} metric {cfg.get("metric")!r}')
+    if cfg.get('estimator', 'mean') not in ESTIMATORS:
+        raise ValueError(f'Unknown {name} estimator {cfg.get("estimator")!r}')
+    if name == 'proposal':
+        threshold = cfg.get('threshold')
+        if not (isinstance(threshold, (int, float)) and np.isfinite(threshold) and threshold > 0):
+            raise ValueError('Proposal threshold must be a positive finite number')
+
+
+def run_merge(profile, boundaries, n_bins, var_start, var_end, chrom_offset,
+              transition=None, proposal=None, ambiguous=None,
+              small_max_bins=None, allow_gap_crossing=False, max_steps=10000):
     """Greedy exploratory adjacent-segment merge, operating on one source's
-    one-chromosome profile/boundaries. Repeatedly merges the eligible boundary
-    (abs(score) < threshold, strict) with the smallest absolute score,
-    tie-breaking on the leftmost boundary bin, recomputing every score
-    (including the shared pooled phi) after each merge, until none remain
-    eligible. Transition/ambiguous vetoes are off by default and explicit when
-    set; a genomic-gap boundary is never crossed unless allow_gap_crossing is
-    set. This is a new exploratory rule, independent of the original
-    bootstrap/chain-guard merge prototype.
+    one-chromosome profile/boundaries.
+
+    Eligibility is the UNION of up to three independently-configured, opt-in
+    hatch layers (transition/proposal/ambiguous; at least one is required):
+    a boundary is eligible if ANY enabled layer flags it, using that layer's
+    own metric/estimator/threshold -- the exact same classification rules the
+    Chromosome tracks hatch layers use. Repeatedly merges one eligible
+    boundary (the one with the smallest proposal |score| if any eligible
+    boundary has one, else the leftmost eligible boundary), recomputing every
+    score (including the shared pooled phi, always recomputed -- it is cheap,
+    and conditionally skipping it previously caused a silent-no-op bug) after
+    each merge, until none remain eligible. A genomic-gap boundary is never
+    crossed unless allow_gap_crossing is set. This is a new exploratory rule,
+    independent of the original bootstrap/chain-guard merge prototype.
     """
-    if metric not in METRICS:
-        raise ValueError(f'Unknown merge metric {metric!r}')
-    if estimator not in ESTIMATORS:
-        raise ValueError(f'Unknown log2FC estimator {estimator!r}')
-    if not (isinstance(threshold, (int, float)) and np.isfinite(threshold) and threshold > 0):
-        raise ValueError('Threshold must be a positive finite number')
+    if transition is None and proposal is None and ambiguous is None:
+        raise ValueError('At least one of transition, proposal or ambiguous must be enabled to run a merge')
+    _validate_layer('transition', transition)
+    _validate_layer('proposal', proposal)
+    _validate_layer('ambiguous', ambiguous)
     segs = flat_partition(boundaries, n_bins)
     original = [{'start': s, 'end': e} for s, e in segs]
     steps = [{'step': 0, 'segments': list(original), 'removed_boundary': None,
-              'merged_interval': None, 'score': None, 'phi': None}]
+              'merged_interval': None, 'fired': [], 'score': None, 'phi': None}]
     guard = 0
     while True:
         guard += 1
         if guard > max_steps:
             raise RuntimeError('Merge did not terminate within max_steps')
         summaries = [segment_summary(profile, s, e) for s, e in segs]
-        # phi is needed whenever the merge metric itself uses it (srd_phi), or whenever
-        # veto_ambiguous is set: _segment_status/_vetoed compute an srd_phi-based ambiguous
-        # check regardless of the merge metric, so phi must not stay None in that case
-        # (otherwise veto_ambiguous silently becomes a no-op under metric='delta_log2fc').
-        phi = pooled_phi(profile, segs) if (metric != 'delta_log2fc' or veto_ambiguous) else None
-        candidates = _eligible_boundaries(segs, summaries, phi, metric, estimator, threshold,
-                                           veto_transition, veto_ambiguous, small_max_bins,
-                                           allow_gap_crossing, var_start, var_end, chrom_offset)
+        phi = pooled_phi(profile, segs)
+        candidates = _eligible_boundaries(segs, summaries, phi, transition, proposal, ambiguous,
+                                           small_max_bins, allow_gap_crossing, var_start, var_end, chrom_offset)
         if not candidates:
             break
-        i, score = min(candidates, key=lambda t: (abs(t[1]), segs[t[0]][1]))
+        i, rank_key, fired = min(candidates, key=lambda t: (t[1][0], t[1][1], segs[t[0]][1]))
         removed_boundary = segs[i][1]
         merged = (segs[i][0], segs[i + 1][1])
         segs = segs[:i] + [merged] + segs[i + 2:]
         steps.append({
             'step': len(steps), 'segments': [{'start': s, 'end': e} for s, e in segs],
             'removed_boundary': removed_boundary, 'merged_interval': [merged[0], merged[1]],
-            'score': score, 'phi': phi,
+            'fired': sorted(fired), 'score': rank_key[1] if rank_key[0] == 0 else None, 'phi': phi,
         })
     return {
         'original': original, 'final': steps[-1]['segments'], 'steps': steps,
-        'settings': {'metric': metric, 'estimator': estimator, 'threshold': threshold,
-                     'veto_transition': veto_transition, 'veto_ambiguous': veto_ambiguous,
+        'settings': {'transition': transition, 'proposal': proposal, 'ambiguous': ambiguous,
                      'small_max_bins': small_max_bins, 'allow_gap_crossing': allow_gap_crossing},
     }

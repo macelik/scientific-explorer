@@ -20,14 +20,27 @@ class HatchScoresRequest(BaseModel):
     source: str
 
 
+class TransitionLayer(BaseModel):
+    metric: str
+    estimator: str = 'mean'
+
+
+class ProposalLayer(BaseModel):
+    metric: str
+    estimator: str = 'mean'
+    threshold: float
+
+
+class AmbiguousLayer(BaseModel):
+    estimator: str = 'mean'
+
+
 class HatchMergeRequest(BaseModel):
     chrom: str
     source: str
-    metric: str
-    threshold: float
-    estimator: str = 'mean'
-    veto_transition: bool = False
-    veto_ambiguous: bool = False
+    transition: Optional[TransitionLayer] = None
+    proposal: Optional[ProposalLayer] = None
+    ambiguous: Optional[AmbiguousLayer] = None
     small_max_bins: Optional[int] = Field(default=None, ge=1)
     allow_gap_crossing: bool = False
 
@@ -73,8 +86,9 @@ def register_hatch_merge(app, get_integration):
         try:
             profile, boundaries, idx = _resolve(ig, req.chrom, req.source)
             result = hm.run_merge(profile, boundaries, len(idx), ig.var_start, ig.var_end, chrom_offset=int(idx[0]),
-                                   metric=req.metric, threshold=req.threshold, estimator=req.estimator,
-                                   veto_transition=req.veto_transition, veto_ambiguous=req.veto_ambiguous,
+                                   transition=req.transition.model_dump() if req.transition else None,
+                                   proposal=req.proposal.model_dump() if req.proposal else None,
+                                   ambiguous=req.ambiguous.model_dump() if req.ambiguous else None,
                                    small_max_bins=req.small_max_bins, allow_gap_crossing=req.allow_gap_crossing)
         except ValueError as e:
             raise HTTPException(422, str(e)) from e

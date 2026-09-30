@@ -24,16 +24,27 @@ export interface HatchScoresResult {
 export interface MergeStep {
   step: number; segments: { start: number; end: number }[]
   removed_boundary: number | null; merged_interval: [number, number] | null
-  score: number | null; phi: number | null
+  fired: ('transition' | 'proposal' | 'ambiguous')[]; score: number | null; phi: number | null
+}
+export interface TransitionLayerConfig { metric: HatchMetric; estimator: Estimator }
+export interface ProposalLayerConfig { metric: HatchMetric; estimator: Estimator; threshold: number }
+export interface AmbiguousLayerConfig { estimator: Estimator }
+export interface MergeSettings {
+  transition: TransitionLayerConfig | null; proposal: ProposalLayerConfig | null; ambiguous: AmbiguousLayerConfig | null
+  small_max_bins: number | null; allow_gap_crossing: boolean
 }
 export interface MergeResult {
   original: { start: number; end: number }[]; final: { start: number; end: number }[]
-  steps: MergeStep[]; settings: Record<string, unknown>
+  steps: MergeStep[]; settings: MergeSettings
   source: string; chrom: string; start_bp: number[]; end_bp: number[]; provenance: unknown
 }
+/** Eligibility is the union of whichever of these three layers is present
+ * (at least one required); each uses its own metric/estimator/threshold,
+ * matching the Chromosome tracks hatch layers exactly. */
 export interface MergeRequest {
-  chrom: string; source: string; metric: HatchMetric; threshold: number; estimator?: Estimator
-  veto_transition?: boolean; veto_ambiguous?: boolean; small_max_bins?: number; allow_gap_crossing?: boolean
+  chrom: string; source: string
+  transition?: TransitionLayerConfig; proposal?: ProposalLayerConfig; ambiguous?: AmbiguousLayerConfig
+  small_max_bins?: number; allow_gap_crossing?: boolean
 }
 
 async function postJson<T>(url: string, body: unknown): Promise<T> {

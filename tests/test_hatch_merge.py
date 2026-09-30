@@ -140,29 +140,44 @@ def test_hatch_scores_flags_a_genomic_gap():
 
 def test_run_merge_rejects_bad_settings():
     profile, boundaries, n_bins, var_start, var_end = _toy_profile_and_bounds()
-    with pytest.raises(ValueError):
-        hm.run_merge(profile, boundaries, n_bins, var_start, var_end, 0, 'bogus', 1.0)
-    with pytest.raises(ValueError):
-        hm.run_merge(profile, boundaries, n_bins, var_start, var_end, 0, 'delta_log2fc', 1.0, estimator='bogus')
-    with pytest.raises(ValueError):
-        hm.run_merge(profile, boundaries, n_bins, var_start, var_end, 0, 'srd', -1.0)
+    with pytest.raises(ValueError):  # no layer enabled at all
+        hm.run_merge(profile, boundaries, n_bins, var_start, var_end, 0)
+    with pytest.raises(ValueError):  # bad proposal metric
+        hm.run_merge(profile, boundaries, n_bins, var_start, var_end, 0,
+                      proposal={'metric': 'bogus', 'estimator': 'mean', 'threshold': 1.0})
+    with pytest.raises(ValueError):  # bad proposal estimator
+        hm.run_merge(profile, boundaries, n_bins, var_start, var_end, 0,
+                      proposal={'metric': 'delta_log2fc', 'estimator': 'bogus', 'threshold': 1.0})
+    with pytest.raises(ValueError):  # bad threshold
+        hm.run_merge(profile, boundaries, n_bins, var_start, var_end, 0,
+                      proposal={'metric': 'srd', 'estimator': 'mean', 'threshold': -1.0})
+    with pytest.raises(ValueError):  # bad transition metric
+        hm.run_merge(profile, boundaries, n_bins, var_start, var_end, 0,
+                      transition={'metric': 'bogus', 'estimator': 'mean'})
+    with pytest.raises(ValueError):  # bad ambiguous estimator
+        hm.run_merge(profile, boundaries, n_bins, var_start, var_end, 0,
+                      ambiguous={'estimator': 'bogus'})
 
 
 def test_run_merge_merges_the_closest_pair_and_recomputes_before_next_step():
     # three near-identical segments (0-10, 10-20) close, (20-30) far: expect exactly one merge
     profile, boundaries, n_bins, var_start, var_end = _toy_profile_and_bounds()
-    out = hm.run_merge(profile, boundaries, n_bins, var_start, var_end, 0, 'delta_log2fc', 0.5, estimator='mean')
+    out = hm.run_merge(profile, boundaries, n_bins, var_start, var_end, 0,
+                        proposal={'metric': 'delta_log2fc', 'estimator': 'mean', 'threshold': 0.5})
     assert out['original'] == [{'start': 0, 'end': 10}, {'start': 10, 'end': 20}, {'start': 20, 'end': 30}]
     assert out['final'] == [{'start': 0, 'end': 20}, {'start': 20, 'end': 30}]
     assert len(out['steps']) == 2  # step 0 = original, step 1 = the one merge
     assert out['steps'][1]['removed_boundary'] == 10
     assert out['steps'][1]['merged_interval'] == [0, 20]
+    assert out['steps'][1]['fired'] == ['proposal']
+    assert out['steps'][1]['score'] == pytest.approx(abs(np.log2(4.0 / 4.2)))
     assert out['steps'][0]['segments'] == out['original']
 
 
 def test_run_merge_stops_when_nothing_eligible():
     profile, boundaries, n_bins, var_start, var_end = _toy_profile_and_bounds()
-    out = hm.run_merge(profile, boundaries, n_bins, var_start, var_end, 0, 'delta_log2fc', 0.01, estimator='mean')
+    out = hm.run_merge(profile, boundaries, n_bins, var_start, var_end, 0,
+                        proposal={'metric': 'delta_log2fc', 'estimator': 'mean', 'threshold': 0.01})
     assert out['final'] == out['original']
     assert len(out['steps']) == 1
 
@@ -170,64 +185,56 @@ def test_run_merge_stops_when_nothing_eligible():
 def test_run_merge_deterministic_tie_break_leftmost():
     profile = np.concatenate([np.full(5, 4.0), np.full(5, 4.0), np.full(5, 4.0), np.full(5, 20.0)])
     var_start = (np.arange(20) * 100).astype(float); var_end = var_start + 100
-    out = hm.run_merge(profile, [5, 10, 15], 20, var_start, var_end, 0, 'delta_log2fc', 1.0, estimator='mean')
+    out = hm.run_merge(profile, [5, 10, 15], 20, var_start, var_end, 0,
+                        proposal={'metric': 'delta_log2fc', 'estimator': 'mean', 'threshold': 1.0})
     assert out['steps'][1]['removed_boundary'] == 5  # both (5,10)-pair and (10,15)-pair tie at score 0; leftmost wins
 
 
 def test_run_merge_respects_gap_by_default_and_allows_opt_in():
     profile, boundaries, n_bins, var_start, var_end = _toy_profile_and_bounds()
     var_end = var_end.copy(); var_end[9] += 500  # gap right at the only cheap boundary
-    blocked = hm.run_merge(profile, boundaries, n_bins, var_start, var_end, 0, 'delta_log2fc', 0.5, estimator='mean')
+    proposal = {'metric': 'delta_log2fc', 'estimator': 'mean', 'threshold': 0.5}
+    blocked = hm.run_merge(profile, boundaries, n_bins, var_start, var_end, 0, proposal=proposal)
     assert blocked['final'] == blocked['original']
-    allowed = hm.run_merge(profile, boundaries, n_bins, var_start, var_end, 0, 'delta_log2fc', 0.5, estimator='mean', allow_gap_crossing=True)
+    allowed = hm.run_merge(profile, boundaries, n_bins, var_start, var_end, 0, proposal=proposal, allow_gap_crossing=True)
     assert allowed['final'] != allowed['original']
 
 
 def test_run_merge_small_max_bins_is_off_by_default_and_explicit_when_set():
     profile = np.concatenate([np.full(50, 4.0), np.full(50, 4.2), np.full(50, 4.1)])
     var_start = (np.arange(150) * 100).astype(float); var_end = var_start + 100
-    unrestricted = hm.run_merge(profile, [50, 100], 150, var_start, var_end, 0, 'delta_log2fc', 1.0, estimator='mean')
+    proposal = {'metric': 'delta_log2fc', 'estimator': 'mean', 'threshold': 1.0}
+    unrestricted = hm.run_merge(profile, [50, 100], 150, var_start, var_end, 0, proposal=proposal)
     assert unrestricted['final'] != unrestricted['original']  # all three segments are 50 bins; still merges
-    restricted = hm.run_merge(profile, [50, 100], 150, var_start, var_end, 0, 'delta_log2fc', 1.0, estimator='mean', small_max_bins=10)
+    restricted = hm.run_merge(profile, [50, 100], 150, var_start, var_end, 0, proposal=proposal, small_max_bins=10)
     assert restricted['final'] == restricted['original']  # neither side of the only boundary is <=10 bins
 
 
-def test_run_merge_veto_transition_is_opt_in_and_does_not_veto_by_default():
-    # middle segment is a transition zone (opposite-sign flanks) under delta_log2fc:
-    # a monotonic 8 -> 4 -> 2 staircase, so the middle segment is below its left
-    # flank and above its right flank (seg-vs-left and seg-vs-right scores have
-    # opposite signs). NOTE: the brief's original profile here was
-    # (8.0, 4.0, 8.4), which is a dip (both flank scores negative, same sign,
-    # not a transition) -- verified by hand-trace and by running the test
-    # against the brief's own paired implementation, which fails on that input.
+def test_run_merge_transition_layer_triggers_a_merge_when_enabled():
+    # segment B (middle) is itself a transition zone (opposite-sign flanks) under
+    # delta_log2fc: a monotonic 8 -> 4 -> 2 staircase puts it below its left flank
+    # and above its right flank. Transition is now a positive eligibility trigger
+    # (like the hatch layer), not a veto: enabling it alone (no proposal/ambiguous)
+    # is sufficient to merge; without it, this same data does not merge at a
+    # deliberately strict proposal threshold.
     profile = np.concatenate([np.full(10, 8.0), np.full(10, 4.0), np.full(10, 2.0)])
     var_start = (np.arange(30) * 100).astype(float); var_end = var_start + 100
-    default = hm.run_merge(profile, [10, 20], 30, var_start, var_end, 0, 'delta_log2fc', 3.0, estimator='mean')
-    assert default['final'] != default['original']
-    vetoed = hm.run_merge(profile, [10, 20], 30, var_start, var_end, 0, 'delta_log2fc', 3.0, estimator='mean', veto_transition=True)
-    assert vetoed['final'] == vetoed['original']
+    with_transition = hm.run_merge(profile, [10, 20], 30, var_start, var_end, 0,
+                                    transition={'metric': 'delta_log2fc', 'estimator': 'mean'})
+    assert with_transition['final'] != with_transition['original']
+    assert with_transition['steps'][1]['fired'] == ['transition']
+    without_transition = hm.run_merge(profile, [10, 20], 30, var_start, var_end, 0,
+                                       proposal={'metric': 'delta_log2fc', 'estimator': 'mean', 'threshold': 0.5})
+    assert without_transition['final'] == without_transition['original']
 
 
-def test_run_merge_veto_ambiguous_is_not_a_silent_no_op_under_delta_log2fc():
-    # Regression test for a bug where `phi` was only ever computed when
-    # `metric != 'delta_log2fc'`, so under metric='delta_log2fc' the
-    # srd_phi-based ambiguous check inside _segment_status always saw
-    # phi=None and classify_ambiguous always returned 'undefined' -- making
-    # veto_ambiguous a silent no-op whenever the merge metric was
-    # delta_log2fc, even though the checkbox is presented as a working
-    # setting independent of the merge metric.
-    #
-    # Segment B's weaker SRD/sqrt(phi) flank (left, |14.51| < |14.88|) differs
-    # from its weaker delta-log2FC flank (right, |-0.585| < |1.0|) -- a
-    # genuinely ambiguous segment by construction (verified by hand and by
-    # direct computation of classify_ambiguous on these summaries).
+def test_run_merge_ambiguous_layer_triggers_a_merge_when_enabled():
+    # Same constructed scenario as classify_ambiguous's own unit test: segment B's
+    # weaker SRD/sqrt(phi) flank differs from its weaker delta-log2FC flank, a
+    # genuinely ambiguous segment by construction.
     n_a, n_b, n_c = 2, 2, 30
     seg_a = np.full(n_a, 1.0)
     seg_b = np.full(n_b, 2.0)
-    # alternating +-0.1 around 3.0 keeps the mean exactly 3.0 (so the tuned
-    # ratios/lengths above are exact) while giving pooled_phi a nonzero
-    # variance to work with (an exactly-constant profile has phi == 0.0,
-    # which flank_score treats as undefined for srd_phi).
     seg_c = np.array([3.0 + (0.1 if i % 2 == 0 else -0.1) for i in range(n_c)])
     profile = np.concatenate([seg_a, seg_b, seg_c])
     n_bins = n_a + n_b + n_c
@@ -235,9 +242,6 @@ def test_run_merge_veto_ambiguous_is_not_a_silent_no_op_under_delta_log2fc():
     var_start = (np.arange(n_bins) * 100).astype(float)
     var_end = var_start + 100
 
-    # Sanity-check the constructed scenario is genuinely ambiguous and that
-    # only the B-C boundary is eligible at this threshold (A-B's score is
-    # 1.0, above threshold; B-C's is 0.585, below it).
     segs = hm.flat_partition(boundaries, n_bins)
     summaries = [hm.segment_summary(profile, s, e) for s, e in segs]
     phi = hm.pooled_phi(profile, segs)
@@ -247,11 +251,26 @@ def test_run_merge_veto_ambiguous_is_not_a_silent_no_op_under_delta_log2fc():
     fc_r = hm.delta_log2fc(summaries[1], summaries[2], 'mean')
     assert hm.classify_ambiguous(srd_l, srd_r, fc_l, fc_r) == 'ambiguous'
 
-    default = hm.run_merge(profile, boundaries, n_bins, var_start, var_end, 0, 'delta_log2fc', 0.7, estimator='mean')
-    assert default['final'] != default['original']  # the B-C boundary merges by default
+    with_ambiguous = hm.run_merge(profile, boundaries, n_bins, var_start, var_end, 0,
+                                   ambiguous={'estimator': 'mean'})
+    assert with_ambiguous['final'] != with_ambiguous['original']
+    assert with_ambiguous['steps'][1]['fired'] == ['ambiguous']
+    without_ambiguous = hm.run_merge(profile, boundaries, n_bins, var_start, var_end, 0,
+                                      proposal={'metric': 'srd', 'estimator': 'mean', 'threshold': 1e-6})
+    assert without_ambiguous['final'] == without_ambiguous['original']
 
-    vetoed = hm.run_merge(profile, boundaries, n_bins, var_start, var_end, 0, 'delta_log2fc', 0.7, estimator='mean', veto_ambiguous=True)
-    assert vetoed['final'] == vetoed['original']  # veto_ambiguous actually blocks it under this metric
+
+def test_run_merge_union_semantics_any_enabled_layer_can_trigger():
+    # transition and proposal both enabled; only transition actually fires
+    # (proposal's threshold is unreachably strict) -- proves the eligibility
+    # rule is an OR over enabled layers, not an AND.
+    profile = np.concatenate([np.full(10, 8.0), np.full(10, 4.0), np.full(10, 2.0)])
+    var_start = (np.arange(30) * 100).astype(float); var_end = var_start + 100
+    out = hm.run_merge(profile, [10, 20], 30, var_start, var_end, 0,
+                        transition={'metric': 'delta_log2fc', 'estimator': 'mean'},
+                        proposal={'metric': 'delta_log2fc', 'estimator': 'mean', 'threshold': 1e-9})
+    assert out['final'] != out['original']
+    assert out['steps'][1]['fired'] == ['transition']
 
 
 from fastapi import FastAPI
@@ -299,7 +318,8 @@ def test_hatch_scores_route_rejects_unknown_source():
 
 def test_hatch_merge_route_runs_and_reports_provenance():
     resp = _client().post('/api/integration/hatch-merge', json={
-        'chrom': 'chr1', 'source': 'cluster0', 'metric': 'delta_log2fc', 'threshold': 0.5, 'estimator': 'mean'})
+        'chrom': 'chr1', 'source': 'cluster0',
+        'proposal': {'metric': 'delta_log2fc', 'estimator': 'mean', 'threshold': 0.5}})
     assert resp.status_code == 200
     body = resp.json()
     assert body['final'] != body['original']
@@ -308,5 +328,20 @@ def test_hatch_merge_route_runs_and_reports_provenance():
 
 def test_hatch_merge_route_rejects_bad_threshold():
     resp = _client().post('/api/integration/hatch-merge', json={
-        'chrom': 'chr1', 'source': 'cluster0', 'metric': 'srd', 'threshold': -1.0})
+        'chrom': 'chr1', 'source': 'cluster0',
+        'proposal': {'metric': 'srd', 'estimator': 'mean', 'threshold': -1.0}})
     assert resp.status_code == 422
+
+
+def test_hatch_merge_route_rejects_no_layer_enabled():
+    resp = _client().post('/api/integration/hatch-merge', json={'chrom': 'chr1', 'source': 'cluster0'})
+    assert resp.status_code == 422
+
+
+def test_hatch_merge_route_accepts_transition_or_ambiguous_alone():
+    resp = _client().post('/api/integration/hatch-merge', json={
+        'chrom': 'chr1', 'source': 'cluster0', 'transition': {'metric': 'delta_log2fc', 'estimator': 'mean'}})
+    assert resp.status_code == 200
+    resp = _client().post('/api/integration/hatch-merge', json={
+        'chrom': 'chr1', 'source': 'cluster0', 'ambiguous': {'estimator': 'mean'}})
+    assert resp.status_code == 200
