@@ -1,0 +1,8 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "Scientific Explorer"
+authors:
+  - name: "macelik"
+repository-code: "https://github.com/macelik/scientific-explorer"
+license: MIT
