@@ -1,6 +1,6 @@
 # pyEpi scientific explorer
 
-Separate React/TypeScript + Plotly and FastAPI application, adapted from the supplied Fable explorer. The original `interactive-explorer` is not modified. See [START_HERE.md](START_HERE.md) for the experimental workflow and scientific interpretation, and [validation/VALIDATION_REPORT.md](validation/VALIDATION_REPORT.md) for verification.
+Separate React/TypeScript + Plotly and FastAPI application, adapted from the supplied Fable explorer. The original `interactive-explorer` is not modified. See [docs/USAGE.md](docs/USAGE.md) for the experimental workflow and scientific interpretation, and [validation/VALIDATION_REPORT.md](validation/VALIDATION_REPORT.md) for verification.
 
 ## Launch on Linux
 
@@ -68,7 +68,7 @@ Simulation samples independently from bins with an exact original same-cell prod
 
 The most recent 12 experiments per cell/chromosome are retained in browser state and ordinary saved/downloaded sessions. Export before leaving the page. Individual and history JSON exports contain full arrays, transformation parameters, dataset/scientific-code identities, test parameters, and provenance. CSV exports contain the full experimental event span, including extensions. A changed draft never silently relabels an older result as current.
 
-Manual segmentation also supports arithmetic, upper-tail IQR, and two-sided IQR segment means. See [START_HERE.md](START_HERE.md) for definitions, matched-boundary comparisons and scope. Validation evidence is in [validation/VALIDATION_REPORT.md](validation/VALIDATION_REPORT.md).
+Manual segmentation also supports arithmetic, upper-tail IQR, and two-sided IQR segment means. See [docs/USAGE.md](docs/USAGE.md) for definitions, matched-boundary comparisons and scope. Validation evidence is in [validation/VALIDATION_REPORT.md](validation/VALIDATION_REPORT.md).
 
 ## Next design phase
 

@@ -1,12 +1,9 @@
-# Scientific explorer
+# Usage
 
-Open **http://127.0.0.1:8766**. This is the separate version; Fable's `interactive-explorer` is untouched.
+Open **http://127.0.0.1:8766** (see the root README's [Quick start](../README.md#quick-start)
+for how to launch it).
 
-If the service is stopped, run from this directory:
-
-```bash
-python3 run.py
-```
+## X experiments
 
 Choose a reference cell from the cohort, then open **X experiments**.
 
@@ -21,7 +18,7 @@ Choose a reference cell from the cohort, then open **X experiments**.
 
 Extension overwrites existing neighbouring bins. It does not insert genomic coordinates. Every experiment starts from original X; edits never accumulate silently. The optional total-preservation checkbox rescales the entire genome after editing.
 
-## Reading the result
+### Reading the result
 
 - The original/edited AD curves show whether the winning candidate moves. Both child curves and exact split tests are expandable.
 - **Event-edge diagnostics** show whether each intended boundary was accepted, its rank among candidates in the tested node, and both permutation p-values.
@@ -31,7 +28,7 @@ Extension overwrites existing neighbouring bins. It does not insert genomic coor
 
 Save/download a normal session to preserve drafts, retained experiments, comparison windows, and manual trees. Reload and upload that JSON to restore them. Export a single experiment as JSON for provenance and arrays, or export regional values as CSV. Sessions are separate from Fable's sessions.
 
-## Interpretation
+### Interpretation
 
 These are interventions on **GC-corrected, normalized X**, not simulated raw fragments or a rerun of preprocessing. Empirical class sampling is conditioned on existing calls, retains the donor value distribution in expectation, and discards spatial correlation. It is not a validated biological CN simulator. Pattern duplication introduces repeated structure deliberately.
 
@@ -39,7 +36,7 @@ The copied production functions have no hard 50/100-bin size cutoff. Candidate c
 
 Automatic experiments offer **Recursion limit k** from 1 to 10 (default 2). A run tests depths 0 through k−1, with 1,000 permutations, seed 42 for tests, and strict `p < 0.001` for both tests. Increasing k continues only through accepted parents. The immediate children of a rejected root remain explicitly hypothetical and never expand further. The sampling seed is separate from the test seed. Edited global tests use the edited full-genome X row. Only the selected chromosome is automatically resegmented; other chromosomes retain their production boundaries. All CN rows are fitted genome-wide. Inside **Both children and exact split tests**, use **Inspection depth** to view deeper tested nodes. Orange shading marks the modified target clipped to the displayed child intervals; for extend/duplicate it highlights the overwritten bins, not the untouched donor region. Solid vertical lines show accepted breakpoints (including accepted descendants); dashed lines show unaccepted candidates. Blue represents original X and brown edited X. Changing k marks the last result stale; rerun to update it. Depth is retained in sessions and exports. Manual segmentation remains available for user-directed boundaries on original X.
 
-## Compare arithmetic and IQR segment means
+## Manual segmentation / segment estimators
 
 In **Manual segmentation**, place or accept breakpoints, then use **Segment summary**:
 
@@ -52,7 +49,6 @@ Press **Finish & assign CN** after choosing the method. The table shows each seg
 The selected estimator applies to **all genome segments**. Full-genome normalization retains its original upper-tail IQR baseline; segment lengths still weight the scale search even when some values are trimmed. Consequently, both summaries and the shared scale can change calls on other chromosomes. AD curves and split tests remain based on original X. If the selected estimates cannot produce a positive scale grid, the app reports an undefined fit instead of inventing CN calls.
 
 Changing the method marks the previous result outdated. The option and frozen result are saved in sessions, and CSV exports record the method and retained counts. This is an exploratory alternative to production CN assignment, not a validated replacement.
-
 
 ## Integration tabs
 
@@ -71,7 +67,7 @@ x/o// consistency, reason, values, CN strip, candidate audit, allelic). Click a 
 point in the diagnostics to open the segment's full flank table. τ and the SRD reference are
 inspection settings, not thresholds.
 
-### New: exploratory hatching and adjacent-segment merging
+### Exploratory hatching and adjacent-segment merging
 
 Three new hatch layers in Chromosome tracks are computed live from the current accepted-breakpoint segmentation and pseudobulk profile, for any chromosome (not only the seven with archived diagnostic tables): **transition zone** (/, opposite-sign flank scores), **merge proposal** (×, at least one flank's |score| below its own threshold), and **ambiguous flank preference** (×, the weaker SRD/√φ flank disagrees with the weaker delta-log2FC flank). Each has its own metric/estimator/threshold controls and is clearly labelled "new" to distinguish it from the archived "flank-consistency hatch"/"SRD-screen proposal" layers above, which still reflect only the original prototype's saved tables.
 
@@ -83,8 +79,8 @@ In **Integration · segmentation & CN**, use **Generate alternative flank view**
 
 **Compute paired cell bootstrap** provides a separate arithmetic-mean comparison using 200 paired whole-cell replicates (seed 42). It does not rerun clustering, segmentation, SRD or merging. Download the JSON/CSV to retain these generated results; they are not yet stored in normal app sessions.
 
-The original generators and configuration were found upstream and successfully rerun: all 11 diagnostic tables match their archived versions byte-for-byte. The app now loads these verified reference tables automatically, restoring the original SRD/noise diagnostics, merge summary and candidate audit. They are stored separately under [reference/integration-prototype](reference/integration-prototype/README.md); the deleted story prototype directory stays absent. The original median merge bootstrap uses seed 20260907 and remains distinct from the alternative arithmetic bootstrap above. See [the integration review](validation/integration-review/REVIEW.md) for details and scientific caveats.
+The original generators and configuration were found upstream and successfully rerun: all 11 diagnostic tables match their archived versions byte-for-byte. The app now loads these verified reference tables automatically, restoring the original SRD/noise diagnostics, merge summary and candidate audit. They are stored separately under [reference/integration-prototype](../reference/integration-prototype/README.md); the deleted story prototype directory stays absent. The original median merge bootstrap uses seed 20260907 and remains distinct from the alternative arithmetic bootstrap above. See [the integration review](../validation/integration-review/REVIEW.md) for details and scientific caveats.
 
 ## Integration chart loading
 
-The segmentation tab renders its chromosome and diagnostic charts as you scroll them into view. This avoids initializing all eight plots during the initial CN-panel load. Once displayed, plots retain their zoom while scrolling. See [responsiveness checks](validation/integration-freeze/REPORT.md) for the reported freeze investigation and its current limits.
+The segmentation tab renders its chromosome and diagnostic charts as you scroll them into view. This avoids initializing all eight plots during the initial CN-panel load. Once displayed, plots retain their zoom while scrolling. See [responsiveness checks](../validation/integration-freeze/REPORT.md) for the reported freeze investigation and its current limits.
