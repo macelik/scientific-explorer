@@ -178,12 +178,10 @@ def classify_ambiguous(srd_left, srd_right, fc_left, fc_right):
     return 'consistent' if srd_side == fc_side else 'ambiguous'
 
 
-def hatch_scores(profile, boundaries, n_bins, var_start, var_end, chrom_offset):
-    """Per internal segment: SRD, SRD/sqrt(phi) and delta-log2FC (all three
-    estimators) against both flanks, plus the shared pooled phi and per-side
-    genomic-gap flags. Computed genome-wide from live boundaries/profile, not
-    restricted to chromosomes with archived diagnostic tables."""
-    segs = flat_partition(boundaries, n_bins)
+def score_rows(profile, segs, var_start, var_end, chrom_offset):
+    """Pooled phi and one row per internal segment of the partition `segs`
+    ((start, end) chromosome-local bins): SRD, SRD/sqrt(phi) and delta-log2FC
+    (all three estimators) against both flanks, plus per-side genomic-gap flags."""
     summaries = [segment_summary(profile, s, e) for s, e in segs]
     phi = pooled_phi(profile, segs)
     rows = []
@@ -201,6 +199,16 @@ def hatch_scores(profile, boundaries, n_bins, var_start, var_end, chrom_offset):
             row[f'delta_{est}_left'] = delta_log2fc(seg, left, est)
             row[f'delta_{est}_right'] = delta_log2fc(seg, right, est)
         rows.append(row)
+    return phi, rows
+
+
+def hatch_scores(profile, boundaries, n_bins, var_start, var_end, chrom_offset):
+    """Per internal segment: SRD, SRD/sqrt(phi) and delta-log2FC (all three
+    estimators) against both flanks, plus the shared pooled phi and per-side
+    genomic-gap flags. Computed genome-wide from live boundaries/profile, not
+    restricted to chromosomes with archived diagnostic tables."""
+    segs = flat_partition(boundaries, n_bins)
+    phi, rows = score_rows(profile, segs, var_start, var_end, chrom_offset)
     return {'segments': [{'start': s, 'end': e} for s, e in segs], 'phi': phi, 'rows': rows}
 
 
