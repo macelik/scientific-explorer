@@ -1,0 +1,43 @@
+{
+  "generated_at": "2026-10-02T11:10:44.462Z",
+  "visHeading": 1,
+  "shapesBaseline": 136,
+  "shapesWithRule": 736,
+  "runDisabledWithNoRules": true,
+  "flagsHigh": 30,
+  "flagsLow": 0,
+  "emptyThresholdProblem": true,
+  "runDisabledWhenIncomplete": true,
+  "legendHasBothRules": true,
+  "rule1NameAfterMove": "flank signs disagree",
+  "summaryText": "cluster4 chr8: 11 original segments → 10 after 1 merge(s). Rules: 1. flank signs disagree: SRD/√φ flank signs disagree | 2. weak SRD/√φ flank: weaker flank |SRD/√φ| < 3.3 · gap crossing allowed.",
+  "headers": [
+    "step",
+    "source",
+    "chromosome",
+    "merged interval (bins)",
+    "removed boundary",
+    "segment",
+    "rule",
+    "side",
+    "score",
+    "φ"
+  ],
+  "historyRows": 1,
+  "firstRuleCell": "flank signs disagree",
+  "staleText": "Settings changed; showing the previous run. cluster4 chr8: 11 original segments → 10 after 1 merge(s). Rules: 1. flank signs disagree: SRD/√φ flank signs disagree | 2. weak SRD/√φ flank: weaker flank |SRD/√φ| < 3.3 · gap crossing allowed.",
+  "enabledBeforeRestore": false,
+  "enabledAfterRestore": true,
+  "rulesAfterRestore": 2,
+  "legacyNames": [
+    "transition zone (from saved session)",
+    "merge proposal (from saved session)",
+    "ambiguous flank preference (from saved session)"
+  ],
+  "legacyEnabled": [
+    true,
+    false,
+    true
+  ],
+  "errors": []
+}

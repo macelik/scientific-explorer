@@ -78,3 +78,18 @@ To re-run this exact walkthrough later (e.g. after a future change to this featu
 4. Use the **Step** slider (or **Reset to original** / **Undo one step** / **Jump to final**) to move through the merge history; the two plots above the table always show the original segmentation and the currently selected step's segmentation, with the most recently merged interval hatched. The table below lists every merge with its metric, score, threshold and pooled φ at that step.
 5. **Download JSON** saves the full run (every step); **Download merge-history CSV** saves just the merge table. Neither is stored in normal app sessions — download before navigating away if you need to keep a specific run.
 6. Remember: this tool does not touch CN calls, and its thresholds are for exploration, not for making a calibrated merge decision.
+
+## Merge rules redesign (2026-10-02)
+
+Command run (server on port 8767, started from this branch with a fresh `web/dist` build):
+
+```
+BASE_URL=http://127.0.0.1:8767 \
+PLAYWRIGHT_MODULE=/home/mami/Desktop/EGA/job_search/career-ops/node_modules/playwright \
+CHROMIUM_PATH=/home/mami/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome \
+node tests/browser_hatch_merge_walkthrough.cjs
+```
+
+Result: PASS. For the weak-flank rule, `flagsHigh` = 30 (threshold 1000) and `flagsLow` = 0 (threshold 0.0001); hatch shapes on the tracks rose from 136 to 736 with the rule enabled. The merge run (rules: flank signs disagree, then weak flank at 3.3, gap crossing allowed) gave `historyRows` = 1; summary: "cluster4 chr8: 11 original segments → 10 after 1 merge(s)". Session restore and legacy `hatchLayers` migration (three preset rules, enabled states true/false/true) both passed, and `errors` was empty. Backend suite: 114 passed. The script scrolls the result table into view after a run because the result plots are lazy (DeferredPlot).
+
+This supersedes the union-of-layers model from commit `3c86329`, whose UI-level check this run also covers.
