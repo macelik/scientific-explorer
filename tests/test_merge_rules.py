@@ -182,3 +182,149 @@ def test_presets_reproduce_old_layer_classifications(metric, estimator):
         fc_r = mr.row_score(row, 'right', 'delta_log2fc', estimator)
         assert mr.condition_holds({'kind': 'ambiguous', 'srdMetric': 'srd_phi', 'estimator': estimator}, row) \
             == (hm.classify_ambiguous(srd_l, srd_r, fc_l, fc_r) == 'ambiguous')
+
+
+def _staircase(gap_at=None):
+    levels = np.concatenate([np.full(10, 4.0), np.full(10, 4.2), np.full(5, 8.0), np.full(15, 9.0)])
+    profile = levels + np.where(np.arange(40) % 2 == 0, 0.05, -0.05)
+    var_start = (np.arange(40) * 100).astype(float)
+    var_end = var_start + 100
+    if gap_at is not None:
+        var_end[gap_at - 1] += 500
+    return profile, [10, 20, 25], 40, var_start, var_end
+
+
+def _delta_rule(rid, conditions):
+    return _rule(rid, conditions, merge_metric='delta_log2fc', merge_estimator='mean')
+
+
+WEAK_DELTA = {'kind': 'weak_flank', 'metric': 'delta_log2fc', 'estimator': 'mean', 'threshold': 0.5}
+
+
+def test_run_rule_merge_within_a_rule_smallest_score_first():
+    profile, bounds, n, vs, ve = _staircase()
+    out = mr.run_rule_merge(profile, bounds, n, vs, ve, 0, [_delta_rule('r', [WEAK_DELTA])])
+    assert [s['removed_boundary'] for s in out['steps'][1:]] == [10, 25]
+    assert out['steps'][1]['segment'] == [10, 20] and out['steps'][1]['side'] == 'left'
+    assert out['steps'][1]['score'] == pytest.approx(np.log2(4.2 / 4.0))
+    assert out['steps'][1]['rule_id'] == 'r' and out['steps'][1]['rule_name'] == 'r'
+    assert out['final'] == [{'start': 0, 'end': 20}, {'start': 20, 'end': 40}]
+
+
+def test_run_rule_merge_rule_order_beats_score():
+    profile, bounds, n, vs, ve = _staircase()
+    first = _delta_rule('small-and-weak', [{'kind': 'max_size', 'maxBins': 5}, WEAK_DELTA])
+    second = _delta_rule('weak', [WEAK_DELTA])
+    out = mr.run_rule_merge(profile, bounds, n, vs, ve, 0, [first, second])
+    s1, s2 = out['steps'][1], out['steps'][2]
+    assert (s1['removed_boundary'], s1['rule_id'], s1['side']) == (25, 'small-and-weak', 'right')
+    assert (s2['removed_boundary'], s2['rule_id'], s2['side']) == (10, 'weak', 'left')
+
+
+def test_run_rule_merge_equal_scores_merge_leftmost_first():
+    profile = np.concatenate([np.full(15, 4.0), np.full(5, 20.0)])
+    vs = (np.arange(20) * 100).astype(float)
+    out = mr.run_rule_merge(profile, [5, 10, 15], 20, vs, vs + 100, 0,
+                            [_delta_rule('r', [{**WEAK_DELTA, 'threshold': 1.0}])])
+    assert out['steps'][1]['removed_boundary'] == 5
+
+
+def test_run_rule_merge_recomputes_phi_every_step():
+    profile, bounds, n, vs, ve = _staircase()
+    out = mr.run_rule_merge(profile, bounds, n, vs, ve, 0, [_delta_rule('r', [WEAK_DELTA])])
+    for k in (1, 2):
+        before = [(s['start'], s['end']) for s in out['steps'][k - 1]['segments']]
+        assert out['steps'][k]['phi'] == pytest.approx(hm.pooled_phi(profile, before))
+    assert out['steps'][1]['phi'] != pytest.approx(out['steps'][2]['phi'])
+
+
+def test_run_rule_merge_gap_blocks_without_redirect():
+    profile, bounds, n, vs, ve = _staircase(gap_at=10)
+    rules = [_delta_rule('r', [{**WEAK_DELTA, 'threshold': 0.1}])]
+    blocked = mr.run_rule_merge(profile, bounds, n, vs, ve, 0, rules)
+    assert len(blocked['steps']) == 1 and blocked['final'] == blocked['original']
+    allowed = mr.run_rule_merge(profile, bounds, n, vs, ve, 0, rules, allow_gap_crossing=True)
+    assert [s['removed_boundary'] for s in allowed['steps'][1:]] == [10]
+
+
+def test_run_rule_merge_no_internal_segments():
+    profile, _, n, vs, ve = _staircase()
+    out = mr.run_rule_merge(profile, [20], n, vs, ve, 0, [_delta_rule('r', [WEAK_DELTA])])
+    assert len(out['steps']) == 1 and out['final'] == out['original']
+
+
+def test_run_rule_merge_terminates_when_every_flag_is_nonfinite():
+    vs = (np.arange(40) * 100).astype(float)
+    out = mr.run_rule_merge(np.zeros(40), [10, 20, 30], 40, vs, vs + 100, 0,
+                            [_rule('r', [{'kind': 'max_size', 'maxBins': 100}])])
+    assert len(out['steps']) == 1
+
+
+def test_run_rule_merge_echoes_settings_and_step_zero_shape():
+    profile, bounds, n, vs, ve = _staircase()
+    rules = [_delta_rule('r', [WEAK_DELTA]), _rule('off', [], enabled=False)]
+    out = mr.run_rule_merge(profile, bounds, n, vs, ve, 0, rules)
+    assert out['settings'] == {'rules': rules, 'allow_gap_crossing': False}
+    assert out['steps'][0] == {'step': 0, 'segments': out['original'], 'removed_boundary': None,
+                               'merged_interval': None, 'segment': None, 'rule_id': None,
+                               'rule_name': None, 'side': None, 'score': None, 'phi': None}
+    with pytest.raises(ValueError):
+        mr.run_rule_merge(profile, bounds, n, vs, ve, 0, [])
+
+
+from fastapi import FastAPI
+from fastapi.testclient import TestClient
+
+
+class _FakeStore:
+    def __init__(self):
+        import pandas as pd
+        self.identity = {'hash': 'fake', 'files': []}
+        self.var_seq = np.array(['chr1'] * 30)
+        self.var_start = (np.arange(30) * 100).astype(float)
+        self.var_end = self.var_start + 100
+        self.members = {'cluster0': np.arange(5), 'all': np.arange(5)}
+        pb = np.concatenate([np.full(10, 4.0), np.full(10, 4.2), np.full(10, 20.0)])
+        self.arrays = {'pb_x': np.tile(pb, (2, 1))}
+        self.tables = {'breakpoints': pd.DataFrame({'source': ['cluster0', 'cluster0'],
+                                                      'chromosome': ['chr1', 'chr1'],
+                                                      'absolute_bin': [10, 20]})}
+        self.available = True
+
+
+def _client():
+    from server.hatch_merge_api import register_hatch_merge
+    app = FastAPI()
+    store = _FakeStore()
+    register_hatch_merge(app, lambda: store)
+    return TestClient(app)
+
+
+def test_hatch_merge_route_runs_rules_and_reports_rule_per_step():
+    resp = _client().post('/api/integration/hatch-merge', json={
+        'chrom': 'chr1', 'source': 'cluster0', 'rules': [_delta_rule('weak', [WEAK_DELTA])]})
+    assert resp.status_code == 200
+    body = resp.json()
+    assert body['final'] == [{'start': 0, 'end': 20}, {'start': 20, 'end': 30}]
+    assert body['steps'][1]['rule_id'] == 'weak' and body['steps'][1]['side'] == 'left'
+    assert body['settings']['allow_gap_crossing'] is False
+    assert body['provenance']['dataset'] == {'hash': 'fake', 'files': []}
+
+
+@pytest.mark.parametrize('rules', [
+    [],
+    [_rule('off', [WEAK_DELTA], enabled=False)],
+    [_rule('empty', [])],
+    [_rule('t', [{**WEAK_DELTA, 'threshold': -1.0}])],
+    [_rule('k', [{'kind': 'bogus'}])],
+    [_rule('p', [WEAK_DELTA], pattern='#')],
+    [_rule('dup', [WEAK_DELTA]), _rule('dup', [WEAK_DELTA])],
+])
+def test_hatch_merge_route_rejects_bad_rules(rules):
+    resp = _client().post('/api/integration/hatch-merge', json={'chrom': 'chr1', 'source': 'cluster0', 'rules': rules})
+    assert resp.status_code == 422
+
+
+def test_hatch_merge_route_requires_rules_field():
+    resp = _client().post('/api/integration/hatch-merge', json={'chrom': 'chr1', 'source': 'cluster0'})
+    assert resp.status_code == 422

@@ -5,14 +5,17 @@ from __future__ import annotations
 
 import hashlib
 from pathlib import Path
-from typing import Optional
+from typing import Any, Dict, List
 
 import numpy as np
 from fastapi import HTTPException
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 from . import hatch_merge as hm
+from . import merge_rules as mr
 from .integration import IntegrationStore
+
+_IMPLEMENTATION_FILES = (Path(__file__).with_name('merge_rules.py'), Path(__file__).with_name('hatch_merge.py'))
 
 
 class HatchScoresRequest(BaseModel):
@@ -20,28 +23,12 @@ class HatchScoresRequest(BaseModel):
     source: str
 
 
-class TransitionLayer(BaseModel):
-    metric: str
-    estimator: str = 'mean'
-
-
-class ProposalLayer(BaseModel):
-    metric: str
-    estimator: str = 'mean'
-    threshold: float
-
-
-class AmbiguousLayer(BaseModel):
-    estimator: str = 'mean'
-
-
 class HatchMergeRequest(BaseModel):
+    """Rules are validated by merge_rules.validate_rules, not by this model, so
+    disabled (possibly half-edited) rules can be sent and are ignored."""
     chrom: str
     source: str
-    transition: Optional[TransitionLayer] = None
-    proposal: Optional[ProposalLayer] = None
-    ambiguous: Optional[AmbiguousLayer] = None
-    small_max_bins: Optional[int] = Field(default=None, ge=1)
+    rules: List[Dict[str, Any]]
     allow_gap_crossing: bool = False
 
 
@@ -85,16 +72,14 @@ def register_hatch_merge(app, get_integration):
         ig = _ig()
         try:
             profile, boundaries, idx = _resolve(ig, req.chrom, req.source)
-            result = hm.run_merge(profile, boundaries, len(idx), ig.var_start, ig.var_end, chrom_offset=int(idx[0]),
-                                   transition=req.transition.model_dump() if req.transition else None,
-                                   proposal=req.proposal.model_dump() if req.proposal else None,
-                                   ambiguous=req.ambiguous.model_dump() if req.ambiguous else None,
-                                   small_max_bins=req.small_max_bins, allow_gap_crossing=req.allow_gap_crossing)
+            result = mr.run_rule_merge(profile, boundaries, len(idx), ig.var_start, ig.var_end,
+                                       chrom_offset=int(idx[0]), rules=req.rules,
+                                       allow_gap_crossing=req.allow_gap_crossing)
         except ValueError as e:
             raise HTTPException(422, str(e)) from e
         return {**result, 'source': req.source, 'chrom': req.chrom,
                 'start_bp': ig.var_start[idx].tolist(), 'end_bp': ig.var_end[idx].tolist(),
                 'provenance': {'dataset': ig.identity,
-                               'implementation_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
-                               'scope': 'New exploratory merge rule; independent of the original bootstrap/chain-guard '
+                               'implementation_sha256': hashlib.sha256(b''.join(p.read_bytes() for p in _IMPLEMENTATION_FILES)).hexdigest(),
+                               'scope': 'User-defined exploratory merge rules; independent of the original bootstrap/chain-guard '
                                         'merge prototype and the archived SRD screen. No CN recomputation on merged boundaries.'}}

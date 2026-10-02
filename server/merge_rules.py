@@ -138,3 +138,42 @@ def evaluate_rules(rows, rules, allow_gap_crossing=False):
                     ev['blocked'] = 'gap'
         out.append(ev)
     return out
+
+
+def run_rule_merge(profile, boundaries, n_bins, var_start, var_end, chrom_offset,
+                   rules, allow_gap_crossing=False, max_steps=10000):
+    """Greedy exploratory merge driven by user-defined rules, one merge per
+    step. Each step recomputes every score (pooled phi included) for the
+    current partition, evaluates the enabled rules, and merges the candidate
+    with the lowest (claiming-rule index, weaker-flank |score|, start bin).
+    Gap-blocked and non-finite candidates are skipped, never redirected.
+    Stops when no candidate remains."""
+    enabled = validate_rules(rules)
+    order = {r['id']: k for k, r in enumerate(enabled)}
+    names = {r['id']: (r.get('name') or r['id']) for r in enabled}
+    segs = hm.flat_partition(boundaries, n_bins)
+    original = [{'start': s, 'end': e} for s, e in segs]
+    steps = [{'step': 0, 'segments': list(original), 'removed_boundary': None, 'merged_interval': None,
+              'segment': None, 'rule_id': None, 'rule_name': None, 'side': None, 'score': None, 'phi': None}]
+    for _ in range(max_steps + 1):
+        phi, rows = hm.score_rows(profile, segs, var_start, var_end, chrom_offset)
+        evals = evaluate_rules(rows, enabled, allow_gap_crossing)
+        candidates = [(k + 1, ev) for k, ev in enumerate(evals)
+                      if ev['claimed_by'] is not None and ev['blocked'] is None]
+        if not candidates:
+            break
+        i, ev = min(candidates, key=lambda t: (order[t[1]['claimed_by']], t[1]['score'], t[1]['start']))
+        a = i - 1 if ev['side'] == 'left' else i
+        removed = segs[a][1]
+        merged = (segs[a][0], segs[a + 1][1])
+        segs = segs[:a] + [merged] + segs[a + 2:]
+        steps.append({
+            'step': len(steps), 'segments': [{'start': s, 'end': e} for s, e in segs],
+            'removed_boundary': removed, 'merged_interval': [merged[0], merged[1]],
+            'segment': [ev['start'], ev['end']], 'rule_id': ev['claimed_by'],
+            'rule_name': names[ev['claimed_by']], 'side': ev['side'], 'score': ev['score'], 'phi': phi,
+        })
+    else:
+        raise RuntimeError('Merge did not terminate within max_steps')
+    return {'original': original, 'final': steps[-1]['segments'], 'steps': steps,
+            'settings': {'rules': rules, 'allow_gap_crossing': allow_gap_crossing}}
