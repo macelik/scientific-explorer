@@ -53,6 +53,7 @@ export default function MergeRulesEditor() {
   const ig = useIntegration()
   const rules = ig.mergeRules
   const counts = ruleFlagCounts(evaluateForSources(ig.hatchScores, ig.seg.sources, ig.seg.chrom, rules, ig.allowGapCrossing))
+  const scoresLoaded = ig.seg.sources.some((s) => ig.hatchScores[`${s}|${ig.seg.chrom}`])
   const update = (id: string, patch: Partial<MergeRule>) => ig.setMergeRules(rules.map((r) => (r.id === id ? { ...r, ...patch } : r)))
   const setConditions = (r: MergeRule, conditions: Condition[]) =>
     update(r.id, r.conditions.length === 0 ? { conditions, mergeInto: defaultMergeInto(conditions) } : { conditions })
@@ -99,6 +100,8 @@ export default function MergeRulesEditor() {
         </div>
         <div className="small" role="status" aria-label={`Rule ${n} status`}>
           {problems.length ? <span className="notice small">{problems.join('; ')}</span>
+                        : r.enabled && ig.hatchScoresError ? 'scores unavailable'
+            : r.enabled && !scoresLoaded ? 'loading scores…'
             : r.enabled ? `→ flags ${counts[r.id] || 0} segment(s) on ${ig.seg.chrom} across the displayed rows` : 'disabled'}
         </div>
       </div>

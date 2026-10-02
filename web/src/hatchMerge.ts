@@ -39,7 +39,10 @@ export interface MergeRequest { chrom: string; source: string; rules: MergeRule[
 
 async function postJson<T>(url: string, body: unknown): Promise<T> {
   const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
-  if (!res.ok) throw new Error((await res.json().catch(() => ({}))).detail ?? res.statusText)
+  if (!res.ok) {
+    const detail = (await res.json().catch(() => ({}))).detail
+    throw new Error(Array.isArray(detail) ? detail.map((d) => d?.msg ?? JSON.stringify(d)).join('; ') : typeof detail === 'string' ? detail : res.statusText)
+  }
   return res.json()
 }
 export const fetchHatchScores = (chrom: string, source: string) =>

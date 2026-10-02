@@ -8,3 +8,5 @@ sessions/
 *.pid
 .venv-scientific-explorer/
 .superpowers/
+tests/_bundle/hatch_merge_helpers.mjs
+tests/_bundle/merge_rules_helpers.mjs

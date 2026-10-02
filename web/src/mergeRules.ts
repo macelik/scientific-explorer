@@ -78,10 +78,10 @@ export function ruleProblems(rule: MergeRule): string[] {
   return problems
 }
 
-export const activeRules = (rules: MergeRule[]): MergeRule[] => rules.filter((r) => r.enabled && ruleProblems(r).length === 0)
+export const activeRules = (rules: MergeRule[]): MergeRule[] => rules.filter((r) => r.enabled === true && ruleProblems(r).length === 0)
 
 export function canRunMerge(rules: MergeRule[]): boolean {
-  const enabled = rules.filter((r) => r.enabled)
+  const enabled = rules.filter((r) => r.enabled === true)
   return enabled.length > 0 && enabled.every((r) => ruleProblems(r).length === 0)
 }
 

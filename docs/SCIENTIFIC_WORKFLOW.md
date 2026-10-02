@@ -67,7 +67,9 @@ consequences before deciding whether to run another.
   combines conditions on a segment's flank scores (e.g. "weaker SRD/√φ flank
   below 3 AND segment ≤ 20 bins", or "Δlog2FC flank signs disagree") and
   hatches the segments it flags, followed by the exploratory adjacent-segment
-  merge, which acts on exactly those flagged segments.
+  merge, which starts from those flagged segments and re-evaluates every
+  rule after each merge, so segments not hatched at the start can become
+  eligible later.
 - **Recompute:** one segment merges per step, into its more similar
   neighbour under the claiming rule's metric; pooled dispersion φ is
   recomputed, unconditionally, after every merge, since it is shared across

@@ -341,3 +341,8 @@ def test_python_evaluator_matches_parity_fixture():
             assert (g['score'] is None) == (exp['score'] is None), case['name']
             if exp['score'] is not None:
                 assert g['score'] == pytest.approx(exp['score']), case['name']
+
+
+def test_non_boolean_enabled_is_ignored():
+    out = mr.validate_rules([GOOD, {**GOOD, 'id': 'x', 'enabled': 'false'}])
+    assert [r['id'] for r in out] == [GOOD['id']]

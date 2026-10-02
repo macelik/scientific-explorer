@@ -69,7 +69,7 @@ def validate_rules(rules):
         raise ValueError('every rule needs a non-empty string id')
     if len(set(ids)) != len(ids):
         raise ValueError('rule ids must be unique')
-    enabled = [r for r in rules if r.get('enabled')]
+    enabled = [r for r in rules if r.get('enabled') is True]
     if not enabled:
         raise ValueError('At least one merge rule must be enabled')
     for r in enabled:
