@@ -88,7 +88,7 @@ consequences before deciding whether to run another.
   breakpoint placement.
 - **Recomputing under the perturbation:** automatic resegmentation at
   configurable recursion depth (k = 1–10), full-genome CN fitting, the
-  hatch-layer scores and adjacent-segment merge tool, alternative segment
+  user-defined merge rules with hatching and adjacent-segment merge, alternative segment
   estimators (arithmetic / upper-tail IQR / two-sided IQR).
 - **Inspecting consequences:** event-edge diagnostics, both permutation
   tests, four CN comparison rows, the alternative flank view and paired-cell
@@ -114,7 +114,7 @@ See [VALIDATION.md](VALIDATION.md) for what has actually been checked —
 byte-for-byte reproduction of archived tables, and browser/parity test
 coverage — versus what remains exploratory or descriptive. Some concrete
 examples of language this repository uses deliberately: SRD/√φ is "a
-dispersion-scaled deviance statistic, not a p-value"; the hatch/merge layers
+dispersion-scaled deviance statistic, not a p-value"; the merge rules
 are "an independent exploratory rule"; the simulation transformation "is not
 a validated biological CN simulator." None of these are hedges — they are
 precise statements of scope.

@@ -19,9 +19,11 @@ to do it without silently changing what the tool already claims to do.
    ported SRD/pooled-φ functions are both used across otherwise-independent
    modules rather than each reimplementing the statistic.
 4. **Keep exploratory alternatives explicitly labelled.** See how the
-   hatch-merge layers are labelled "new" in the UI and kept visually and
-   textually distinct from the archived consistency/proposal layers in
-   `IntegrationSegmentationView.tsx`.
+   merge-rules panel states its rules are user-defined exploratory
+   diagnostics, not validated decision rules, and how the tracks panel in
+   `IntegrationSegmentationView.tsx` separates "1. Visualization" (display
+   only) from "2. Merge rules", while the archived consistency/proposal
+   label layers stay labelled as archived.
 5. **Add the backend contract:** a Pydantic request model and a
    `register_X(app, get_integration)` function following
    `server/hatch_merge_api.py`'s pattern, registered in `server/app.py`
@@ -123,20 +125,22 @@ new feature's own code never goes there.
 The feature started from a scientific question (worked example 2 in
 [SCIENTIFIC_WORKFLOW.md](SCIENTIFIC_WORKFLOW.md)): is a small segment a real
 boundary or an artifact of weak flank support? It touched, in order:
-`server/hatch_merge.py` (pure classification + merge functions) →
-`server/hatch_merge_api.py` (Pydantic layer models, the `register_hatch_merge`
-route) → `web/src/hatchMerge.ts` (types, API client, ported classifiers) →
-`web/src/integrationStore.ts` (hatch-layer settings state) →
-`web/src/components/IntegrationSegmentationView.tsx` +
-`web/src/components/HatchMergeView.tsx` (the hatch-layer controls and the
-merge panel) → `tests/test_hatch_merge.py` +
-`tests/hatch_merge_helpers.ts` + `tests/browser_hatch_merge_walkthrough.cjs`
-(unit, parity, and browser coverage) →
-`validation/hatch-merge/HANDOFF.md` (what was checked). The feature went
+`server/hatch_merge.py` (flank scoring, `score_rows`) →
+`server/merge_rules.py` (rule validation, evaluation, `run_rule_merge`) →
+`server/hatch_merge_api.py` (the `rules` request, `register_hatch_merge`) →
+`web/src/hatchMerge.ts` (types, API client) + `web/src/mergeRules.ts`
+(TypeScript evaluator port, presets, legacy-session migration) →
+`web/src/integrationStore.ts` (`mergeRules`, `allowGapCrossing`) →
+`web/src/components/MergeRulesEditor.tsx`, `HatchMergeView.tsx` and
+`IntegrationSegmentationView.tsx` (rule editing, merge panel, tracks) →
+`tests/test_merge_rules.py` + `tests/merge_rules_helpers.ts` +
+`tests/fixtures/merge_rules_parity.json` +
+`tests/browser_hatch_merge_walkthrough.cjs` (unit, Python/TypeScript
+parity, and browser coverage) → `validation/hatch-merge/HANDOFF.md` (what
+was checked). History: the feature first shipped as a
+single-metric-with-vetoes scheme, was redesigned to a union of three fixed
+hatch layers, and was then replaced by user-defined merge rules. It went
 through an individual-task review process and then a whole-branch review
-that caught and fixed six real cross-cutting issues before merge — a
-concrete demonstration that step 7 above ("add tests") is not a formality.
-Its eligibility model was later redesigned from a single-metric-with-vetoes
-scheme to a union-of-independently-configured-layers scheme, on the same
-files, which is why several of the file references above describe the
-current, not the original, shape of that feature.
+that caught and fixed six real cross-cutting issues before the first
+version merged, a concrete demonstration that step 7 above ("add tests")
+is not a formality.

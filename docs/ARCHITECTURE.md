@@ -27,7 +27,7 @@ test evidence and screenshots.
 | Module | Responsibility |
 |---|---|
 | `store.ts` | Main cohort/cell/experiment state; session serialize/restore. |
-| `integrationStore.ts` | Integration/multimodal state — hatch-layer settings persistence, candidate/score caching, cluster selection. |
+| `integrationStore.ts` | Integration/multimodal state — merge-rule and visualization settings persistence, candidate/score caching, cluster selection. |
 | `experimentStore.ts` | Per-cell/chromosome experiment drafts and run history. |
 | `integration.ts` | Pure helpers: consistency classes, flank picking, hatch-shape rendering geometry. |
 | `hatchMerge.ts` | Score/result types and the API client for `hatch-scores` / `hatch-merge`. |
@@ -40,8 +40,9 @@ test evidence and screenshots.
 Browser action (e.g. clicking "Run merge") → HatchMergeView reads the merge rules from the
 integration store → `hatchMerge.ts`'s `runHatchMerge()` posts to
 `/api/integration/hatch-merge` → `server/hatch_merge_api.py`'s route resolves
-the current integration profile and validates the request → `server/hatch_merge.py`'s
-pure `run_merge()` computes the full step history → JSON response → the store
+the current integration profile → `server/merge_rules.py`'s `run_rule_merge()`
+validates the rules (`validate_rules`; the route maps a `ValueError` to a 422)
+and computes the full step history → JSON response → the store
 updates → `HatchMergeView.tsx` re-renders the step history and plots.
 
 ```mermaid
@@ -50,7 +51,7 @@ flowchart TD
     Components --> Stores[Zustand stores]
     Stores --> APIClient["API client (api.ts / hatchMerge.ts)"]
     APIClient --> Routes["FastAPI routes (server/*_api.py)"]
-    Routes --> Science["Scientific modules\n(science.py, flank_view.py, hatch_merge.py)"]
+    Routes --> Science["Scientific modules\n(science.py, flank_view.py, hatch_merge.py, merge_rules.py)"]
     Science --> PyEpi["pyEpiAneufinder (external, not vendored)"]
     Science --> Reference["reference/ (archival tables)"]
     Science --> Cache["cache/ (integration index)"]
