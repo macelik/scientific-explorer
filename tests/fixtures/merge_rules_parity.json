@@ -1,0 +1,81 @@
+{
+  "rows": [
+    {"start": 10, "end": 20, "phi": 1.0, "gap_left": false, "gap_right": false,
+     "srd_left": 1.0, "srd_right": -3.0, "srd_phi_left": 0.5, "srd_phi_right": -1.5,
+     "delta_mean_left": 0.07, "delta_mean_right": -0.9, "delta_median_left": 0.05, "delta_median_right": -0.8,
+     "delta_iqr_mean_left": 0.06, "delta_iqr_mean_right": -0.85},
+    {"start": 20, "end": 25, "phi": 1.0, "gap_left": false, "gap_right": true,
+     "srd_left": 4.0, "srd_right": -0.4, "srd_phi_left": 2.0, "srd_phi_right": -0.2,
+     "delta_mean_left": 0.9, "delta_mean_right": -0.17, "delta_median_left": 0.9, "delta_median_right": -0.2,
+     "delta_iqr_mean_left": 0.9, "delta_iqr_mean_right": -0.18},
+    {"start": 25, "end": 30, "phi": 1.0, "gap_left": false, "gap_right": false,
+     "srd_left": 1.0, "srd_right": 1.2, "srd_phi_left": null, "srd_phi_right": null,
+     "delta_mean_left": 0.3, "delta_mean_right": 0.2, "delta_median_left": 0.3, "delta_median_right": 0.2,
+     "delta_iqr_mean_left": 0.3, "delta_iqr_mean_right": 0.2},
+    {"start": 30, "end": 40, "phi": 1.0, "gap_left": false, "gap_right": false,
+     "srd_left": 3.0, "srd_right": -3.0, "srd_phi_left": -2.0, "srd_phi_right": 2.0,
+     "delta_mean_left": -0.5, "delta_mean_right": 0.5, "delta_median_left": -0.5, "delta_median_right": 0.5,
+     "delta_iqr_mean_left": -0.5, "delta_iqr_mean_right": 0.5},
+    {"start": 40, "end": 41, "phi": 1.0, "gap_left": false, "gap_right": false,
+     "srd_left": 1.0, "srd_right": 3.0, "srd_phi_left": 1.0, "srd_phi_right": 3.0,
+     "delta_mean_left": 3.0, "delta_mean_right": 1.0, "delta_median_left": 3.0, "delta_median_right": 1.0,
+     "delta_iqr_mean_left": 3.0, "delta_iqr_mean_right": 1.0}
+  ],
+  "cases": [
+    {
+      "name": "weak_srd_phi_gap_blocked",
+      "allowGapCrossing": false,
+      "rules": [
+        {"id": "a", "name": "a", "enabled": true,
+         "conditions": [{"kind": "weak_flank", "metric": "srd_phi", "estimator": "mean", "threshold": 1.0}],
+         "mergeInto": {"metric": "srd_phi", "estimator": "mean"}, "hatch": {"pattern": "x", "color": "#b91c1c"}}
+      ],
+      "expected": [
+        {"start": 10, "end": 20, "matched": ["a"], "claimedBy": "a", "side": "left", "score": 0.5, "blocked": null},
+        {"start": 20, "end": 25, "matched": ["a"], "claimedBy": "a", "side": "right", "score": 0.2, "blocked": "gap"},
+        {"start": 25, "end": 30, "matched": [], "claimedBy": null, "side": null, "score": null, "blocked": null},
+        {"start": 30, "end": 40, "matched": [], "claimedBy": null, "side": null, "score": null, "blocked": null},
+        {"start": 40, "end": 41, "matched": [], "claimedBy": null, "side": null, "score": null, "blocked": null}
+      ]
+    },
+    {
+      "name": "sign_mismatch_or_small_gap_allowed",
+      "allowGapCrossing": true,
+      "rules": [
+        {"id": "b1", "name": "b1", "enabled": true,
+         "conditions": [{"kind": "sign_mismatch", "metric": "delta_log2fc", "estimator": "median"}],
+         "mergeInto": {"metric": "delta_log2fc", "estimator": "median"}, "hatch": {"pattern": "/", "color": "#1d4ed8"}},
+        {"id": "b2", "name": "b2", "enabled": true,
+         "conditions": [{"kind": "max_size", "maxBins": 5}],
+         "mergeInto": {"metric": "srd_phi", "estimator": "mean"}, "hatch": {"pattern": ".", "color": "#047857"}}
+      ],
+      "expected": [
+        {"start": 10, "end": 20, "matched": ["b1"], "claimedBy": "b1", "side": "left", "score": 0.05, "blocked": null},
+        {"start": 20, "end": 25, "matched": ["b1", "b2"], "claimedBy": "b1", "side": "right", "score": 0.2, "blocked": null},
+        {"start": 25, "end": 30, "matched": ["b2"], "claimedBy": "b2", "side": null, "score": null, "blocked": "nonfinite"},
+        {"start": 30, "end": 40, "matched": ["b1"], "claimedBy": "b1", "side": "left", "score": 0.5, "blocked": null},
+        {"start": 40, "end": 41, "matched": ["b2"], "claimedBy": "b2", "side": "left", "score": 1.0, "blocked": null}
+      ]
+    },
+    {
+      "name": "ambiguous_and_weak_srd_disabled_rule_ignored",
+      "allowGapCrossing": false,
+      "rules": [
+        {"id": "c0", "name": "c0", "enabled": false,
+         "conditions": [{"kind": "weak_flank", "metric": "srd", "estimator": "mean", "threshold": 100}],
+         "mergeInto": {"metric": "srd", "estimator": "mean"}, "hatch": {"pattern": "|", "color": "#7c3aed"}},
+        {"id": "c1", "name": "c1", "enabled": true,
+         "conditions": [{"kind": "ambiguous", "srdMetric": "srd_phi", "estimator": "mean"},
+                        {"kind": "weak_flank", "metric": "srd", "estimator": "mean", "threshold": 3.5}],
+         "mergeInto": {"metric": "delta_log2fc", "estimator": "mean"}, "hatch": {"pattern": "\\", "color": "#b45309"}}
+      ],
+      "expected": [
+        {"start": 10, "end": 20, "matched": [], "claimedBy": null, "side": null, "score": null, "blocked": null},
+        {"start": 20, "end": 25, "matched": [], "claimedBy": null, "side": null, "score": null, "blocked": null},
+        {"start": 25, "end": 30, "matched": [], "claimedBy": null, "side": null, "score": null, "blocked": null},
+        {"start": 30, "end": 40, "matched": [], "claimedBy": null, "side": null, "score": null, "blocked": null},
+        {"start": 40, "end": 41, "matched": ["c1"], "claimedBy": "c1", "side": "right", "score": 1.0, "blocked": null}
+      ]
+    }
+  ]
+}

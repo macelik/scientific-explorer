@@ -328,3 +328,16 @@ def test_hatch_merge_route_rejects_bad_rules(rules):
 def test_hatch_merge_route_requires_rules_field():
     resp = _client().post('/api/integration/hatch-merge', json={'chrom': 'chr1', 'source': 'cluster0'})
     assert resp.status_code == 422
+
+
+def test_python_evaluator_matches_parity_fixture():
+    fixture = json.loads(FIXTURE.read_text())
+    for case in fixture['cases']:
+        got = mr.evaluate_rules(fixture['rows'], mr.validate_rules(case['rules']), case['allowGapCrossing'])
+        assert len(got) == len(case['expected']), case['name']
+        for g, exp in zip(got, case['expected']):
+            assert (g['start'], g['end'], g['matched'], g['claimed_by'], g['side'], g['blocked']) == \
+                (exp['start'], exp['end'], exp['matched'], exp['claimedBy'], exp['side'], exp['blocked']), case['name']
+            assert (g['score'] is None) == (exp['score'] is None), case['name']
+            if exp['score'] is not None:
+                assert g['score'] == pytest.approx(exp['score']), case['name']

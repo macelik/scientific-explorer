@@ -1,0 +1,65 @@
+// tests/merge_rules_helpers.ts
+// Run with: web/node_modules/.bin/esbuild tests/merge_rules_helpers.ts --bundle --format=esm --platform=node --outfile=tests/_bundle/merge_rules_helpers.mjs
+//           node tests/_bundle/merge_rules_helpers.mjs
+import fixture from './fixtures/merge_rules_parity.json'
+import { canRunMerge, defaultMergeInto, evaluateRules, makeRule, migrateHatchLayers, ruleProblems, type MergeRule } from '../web/src/mergeRules'
+
+let failures = 0
+function eq(actual: unknown, expected: unknown, label: string) {
+  const a = JSON.stringify(actual), e = JSON.stringify(expected)
+  if (a !== e) { failures++; console.error(`FAIL ${label}: got ${a}, expected ${e}`) } else console.log(`ok ${label}`)
+}
+const close = (a: number | null, b: number | null) => (a === null || b === null ? a === b : Math.abs(a - b) < 1e-9)
+
+const fx = fixture as any
+for (const c of fx.cases) {
+  const got = evaluateRules(fx.rows, c.rules as MergeRule[], c.allowGapCrossing)
+  eq(got.length, c.expected.length, `parity ${c.name} row count`)
+  c.expected.forEach((exp: any, i: number) => {
+    const g = got[i]
+    const same = g.start === exp.start && g.end === exp.end && JSON.stringify(g.matched) === JSON.stringify(exp.matched) &&
+      g.claimedBy === exp.claimedBy && g.side === exp.side && g.blocked === exp.blocked && close(g.score, exp.score)
+    if (!same) { failures++; console.error(`FAIL parity ${c.name} row ${i}: got ${JSON.stringify(g)}, expected ${JSON.stringify(exp)}`) }
+    else console.log(`ok parity ${c.name} row ${i}`)
+  })
+}
+
+const legacy = migrateHatchLayers({
+  transition: { on: true, metric: 'delta_log2fc', estimator: 'median' },
+  proposal: { on: false, metric: 'srd_phi', estimator: 'mean', threshold: 2.5 },
+  ambiguous: { on: true, estimator: 'iqr_mean' },
+})
+eq(legacy.map((r) => [r.id, r.name, r.enabled, r.hatch.pattern]), [
+  ['legacy-transition', 'transition zone (from saved session)', true, '/'],
+  ['legacy-proposal', 'merge proposal (from saved session)', false, 'x'],
+  ['legacy-ambiguous', 'ambiguous flank preference (from saved session)', true, '\\'],
+], 'migration ids, names, on/off, patterns')
+eq(legacy[0].conditions, [{ kind: 'sign_mismatch', metric: 'delta_log2fc', estimator: 'median' }], 'migration transition condition')
+eq(legacy[0].mergeInto, { metric: 'delta_log2fc', estimator: 'median' }, 'migration transition mergeInto')
+eq(legacy[1].conditions, [{ kind: 'weak_flank', metric: 'srd_phi', estimator: 'mean', threshold: 2.5 }], 'migration proposal keeps threshold')
+eq(legacy[2].conditions, [{ kind: 'ambiguous', srdMetric: 'srd_phi', estimator: 'iqr_mean' }], 'migration ambiguous condition')
+eq(legacy[2].mergeInto, { metric: 'srd_phi', estimator: 'iqr_mean' }, 'migration ambiguous mergeInto')
+eq(migrateHatchLayers(undefined), [], 'no legacy layers -> no rules')
+
+const base = makeRule('weak_flank', [])
+eq(ruleProblems(base), [], 'preset rule is complete')
+eq(ruleProblems({ ...base, conditions: [] }), ['add at least one condition'], 'empty rule')
+eq(ruleProblems({ ...base, conditions: [{ kind: 'weak_flank', metric: 'srd_phi', estimator: 'mean', threshold: 0 }] }).length, 1, 'zero threshold')
+eq(ruleProblems({ ...base, conditions: [{ kind: 'weak_flank', metric: 'srd_phi', estimator: 'mean', threshold: NaN }] }).length, 1, 'cleared threshold box (NaN)')
+eq(ruleProblems({ ...base, conditions: [{ kind: 'max_size', maxBins: 2.5 }] }).length, 1, 'fractional size limit')
+eq(canRunMerge([]), false, 'no rules -> cannot run')
+eq(canRunMerge([{ ...base, enabled: false }]), false, 'only disabled rules -> cannot run')
+eq(canRunMerge([base, { ...base, id: 'b', conditions: [] }]), false, 'an incomplete enabled rule blocks the run')
+eq(canRunMerge([base, { ...base, id: 'b', enabled: false, conditions: [] }]), true, 'an incomplete disabled rule does not block')
+eq(evaluateRules(fx.rows, [{ ...base, conditions: [{ kind: 'weak_flank', metric: 'srd_phi', estimator: 'mean', threshold: NaN }] }], false).map((e) => e.matched),
+  [[], [], [], [], []], 'an incomplete rule never hatches')
+eq(defaultMergeInto([{ kind: 'max_size', maxBins: 3 }]), { metric: 'srd_phi', estimator: 'mean' }, 'size-only rule defaults to SRD/√φ')
+eq(defaultMergeInto([{ kind: 'max_size', maxBins: 3 }, { kind: 'sign_mismatch', metric: 'delta_log2fc', estimator: 'median' }]),
+  { metric: 'delta_log2fc', estimator: 'median' }, 'first metric condition sets mergeInto')
+const r1 = makeRule('blank', []), r2 = makeRule('blank', [r1])
+eq(r1.id !== r2.id, true, 'new rule ids are unique')
+eq([makeRule('weak_flank', []).name, makeRule('sign_mismatch', []).name, makeRule('ambiguous', []).name, makeRule('small', []).name],
+  ['weak SRD/√φ flank', 'flank signs disagree', 'ambiguous flank preference', 'small segment'], 'preset names')
+
+if (failures) { console.error(`${failures} failure(s)`); process.exit(1) }
+console.log('all merge_rules_helpers checks passed')
