@@ -135,3 +135,9 @@ body.presentation .tbl { font-size: 14px; }
 body.presentation .tooltip, body.presentation .toast, body.presentation .modebar { display: none !important; }
 body.presentation .sel-handles .grip.m { opacity: 0.35; }
 body.presentation .inspector details:not([open]) { display: none; }
+
+.rule-card { border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 10px; margin: 8px 0; background: #fafafa; }
+.rule-head, .rule-cond { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 4px 0; }
+.rule-cond { margin-left: 16px; }
+.rule-swatch { display: inline-block; min-width: 16px; margin-right: 4px; text-align: center; font-weight: 700; }
+.vis-heading { margin: 6px 0 4px; font-size: 13px; }
