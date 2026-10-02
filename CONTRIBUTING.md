@@ -30,7 +30,7 @@ This is different from a UI bug report. Please include:
 Read [AGENTS.md](AGENTS.md) first. Run the test suite before opening a PR:
 
 ```bash
-python3 -m pytest -q tests/test_hatch_merge.py tests/test_experiments.py tests/test_segment_estimators.py tests/test_integration_review.py
+python3 -m pytest -q tests/test_merge_rules.py tests/test_hatch_merge.py tests/test_experiments.py tests/test_segment_estimators.py tests/test_integration_review.py
 cd web && npm run build
 ```
 

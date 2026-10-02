@@ -63,13 +63,13 @@ consequences before deciding whether to run another.
 - **Hypothesis:** specific adjacent segments should not have been split, or
   the metric used to judge that boundary is itself ambiguous at that
   location.
-- **Diagnostic:** the three hatch layers in Chromosome tracks — transition
-  zone (opposite-sign flank scores), merge proposal (a flank score below
-  threshold), and ambiguous flank preference (the weaker SRD-variant flank
-  disagrees with the weaker delta-log2FC flank) — followed by the
-  exploratory adjacent-segment merge tool, whose eligibility is the union of
-  whichever layers are enabled.
-- **Recompute:** one boundary merges per step; pooled dispersion φ is
+- **Diagnostic:** user-defined merge rules on the Chromosome tracks. Each rule
+  combines conditions on a segment's flank scores (e.g. "weaker SRD/√φ flank
+  below 3 AND segment ≤ 20 bins", or "Δlog2FC flank signs disagree") and
+  hatches the segments it flags, followed by the exploratory adjacent-segment
+  merge, which acts on exactly those flagged segments.
+- **Recompute:** one segment merges per step, into its more similar
+  neighbour under the claiming rule's metric; pooled dispersion φ is
   recomputed, unconditionally, after every merge, since it is shared across
   the whole chromosome's segmentation.
 - **Inspect:** the merge-history table, the step slider, and the

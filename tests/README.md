@@ -12,19 +12,23 @@ Three kinds of tests live here:
 ## Files
 
 - `test_experiments.py`, `test_segment_estimators.py`, `test_jobs.py`,
-  `test_hatch_merge.py`, `test_integration_review.py` — pytest unit/route
+  `test_hatch_merge.py`, `test_merge_rules.py`, `test_integration_review.py` — pytest unit/route
   tests.
 - `validate.py`, `validate_integration_review.py` — standalone API
   validation scripts (run against a live server).
 - `parity_reference.py` / `parity_browser.mjs` — Python-vs-TypeScript
   numerical parity.
-- `experiment_overlays.ts`, `hatch_merge_helpers.ts`, `integration_helpers.ts`
-  — TypeScript logic ported from Python, bundled with esbuild and run under
-  Node so it can be tested without a browser.
+- `experiment_overlays.ts`, `hatch_merge_helpers.ts`,
+  `merge_rules_helpers.ts`, `integration_helpers.ts` — TypeScript logic
+  ported from Python, bundled with esbuild and run under Node so it can be
+  tested without a browser. For example:
+  `web/node_modules/.bin/esbuild tests/merge_rules_helpers.ts --bundle --format=esm --platform=node --outfile=tests/_bundle/merge_rules_helpers.mjs && node tests/_bundle/merge_rules_helpers.mjs`
+- `fixtures/merge_rules_parity.json` — shared by the Python and TypeScript
+  merge-rule evaluator tests.
 - `browser_experiments.cjs`, `browser_workflows.cjs`,
   `browser_experiment_depth.cjs`, `browser_integration_rendering.cjs`,
   `browser_integration_review.cjs`, `browser_integration_freeze.cjs`,
-  `browser_hatch_merge_walkthrough.cjs`, `browser_restore.cjs` — Playwright
+  `browser_hatch_merge_walkthrough.cjs` (set `BASE_URL` to target a server other than http://127.0.0.1:8766), `browser_restore.cjs` — Playwright
   workflow tests, one per feature area.
 
 ## Prerequisites
@@ -38,6 +42,6 @@ otherwise normal Node module/browser discovery is used.
 ## Minimal sanity check after a small change
 
 ```bash
-python3 -m pytest -q tests/test_hatch_merge.py tests/test_experiments.py tests/test_segment_estimators.py tests/test_integration_review.py
+python3 -m pytest -q tests/test_merge_rules.py tests/test_hatch_merge.py tests/test_experiments.py tests/test_segment_estimators.py tests/test_integration_review.py
 cd web && npm run build
 ```

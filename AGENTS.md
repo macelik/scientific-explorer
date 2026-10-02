@@ -25,7 +25,7 @@ repository — read this before making changes.
   caught six real issues in one large feature; smaller changes are easier to
   verify.
 - Run the relevant Python tests
-  (`python3 -m pytest -q tests/test_hatch_merge.py tests/test_experiments.py tests/test_segment_estimators.py tests/test_integration_review.py`)
+  (`python3 -m pytest -q tests/test_merge_rules.py tests/test_hatch_merge.py tests/test_experiments.py tests/test_segment_estimators.py tests/test_integration_review.py`)
   and, for frontend changes, `npm run build` in `web/`, before considering a
   change done.
 - Update the relevant `docs/*.md` file when adding a scientific feature — an

@@ -54,7 +54,7 @@ worked examples of this loop in this repository.
 - **Manual segmentation** — user-selected boundaries, exact tests, undo/redo, full-genome CN fitting, and alternative (arithmetic/IQR) segment estimators.
 - **X experiments** — original-vs-edited data, empirical state simulations, region extension/duplication, width series, event-edge tests, four CN comparisons.
 - **Integration · clusters** — multimodal WNN/depth/allelic UMAPs with linked selection and per-cell inspection.
-- **Integration · segmentation & CN** — cluster-level and per-cell karyograms, configurable chromosome tracks, an on-demand alternative flank view and paired-cell bootstrap, and the exploratory hatch-layer/adjacent-segment merge tool.
+- **Integration · segmentation & CN** — cluster-level and per-cell karyograms, configurable chromosome tracks, an on-demand alternative flank view and paired-cell bootstrap, and user-defined merge rules with per-rule hatching and an exploratory adjacent-segment merge.
 
 See [docs/USAGE.md](docs/USAGE.md) for the full operational detail.
 
@@ -121,7 +121,7 @@ For frontend development, `npm run dev` serves port 5174 and proxies API request
 ### Tests
 
 ```bash
-python3 -m pytest -q tests/test_hatch_merge.py tests/test_experiments.py tests/test_segment_estimators.py tests/test_integration_review.py
+python3 -m pytest -q tests/test_merge_rules.py tests/test_hatch_merge.py tests/test_experiments.py tests/test_segment_estimators.py tests/test_integration_review.py
 ```
 
 See [tests/README.md](tests/README.md) for the full test suite, browser-test prerequisites, and parity checks.
@@ -176,6 +176,6 @@ API: `/api/integration/{status,meta,pseudobulk.bin,percell_karyogram.bin,cell/{i
 
 `POST /api/integration/hatch-scores` `{chrom, source}` returns per-internal-segment SRD, SRD/√φ and delta-log2FC (mean/median/two-sided-IQR-mean) scores against both flanks, plus the chromosome's pooled φ and per-side genomic-gap flags, computed live from `server/hatch_merge.py` — genome-wide, not limited to the archived pilot chromosomes.
 
-`POST /api/integration/hatch-merge` `{chrom, source, transition?, proposal?, ambiguous?, small_max_bins?, allow_gap_crossing?}` runs the new exploratory greedy merge. Eligibility is the union of whichever of the three layers is present (at least one is required): `transition` and `ambiguous` each carry `{metric, estimator}` and fire when either adjacent segment is itself so classified; `proposal` carries `{metric, estimator, threshold}` and fires on a direct threshold comparison between the two flanks. Each layer reuses the same metric/estimator/threshold already visible in the Chromosome tracks hatch controls of the same name — there is no separate metric configuration in the merge tool itself. Pooled dispersion φ is recomputed every iteration; one boundary merges per step, ranked by the smallest proposal `|score|` when available, else leftmost. The response returns the full step history (original → final), so the frontend can undo/reset/inspect any intermediate step purely by indexing into the response — no server-side session state. See `server/hatch_merge.py` for the numerical rules and `tests/test_hatch_merge.py` for their test coverage.
+`POST /api/integration/hatch-merge` `{chrom, source, rules, allow_gap_crossing?}` runs the exploratory greedy merge driven by user-defined rules. Each rule is `{id, name, enabled, conditions, mergeInto, hatch}`; its conditions (`weak_flank`, `sign_mismatch`, `ambiguous`, `max_size`) must all hold for an internal segment, and a segment is flagged when any enabled rule matches. The topmost matching rule claims the segment and its `mergeInto` metric picks the neighbour to merge into (smaller |score|, ties left). One merge happens per step, ordered by rule, then score, then position, with every score and the pooled φ recomputed after each merge; gap-blocked segments are skipped, not redirected. Disabled rules are ignored; invalid enabled rules return 422. The response returns the full step history (original → final), naming the rule behind each merge. See `server/merge_rules.py` and `tests/test_merge_rules.py`.
 
 See [the multimodal design handoff](../HANDOFF_FOR_MULTIMODAL_DESIGN_AGENT.md) for the next design phase's architecture, proposed visualization workspaces, scientific constraints, data contracts and setup lessons.

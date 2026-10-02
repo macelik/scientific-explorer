@@ -18,7 +18,8 @@ test evidence and screenshots.
 | `server/segment_estimators.py` | Manual segmentation's alternative segment-mean estimators (arithmetic, upper-tail IQR, two-sided IQR). |
 | `server/integration.py` / `server/integration_api.py` | Multimodal clustering/pseudobulk data adapter for the Integration tabs — loads the depth + haplotype integration story's exported artifacts read-only (nothing is re-clustered, re-integrated, or re-segmented here), with background indexing/caching under `cache/`. |
 | `server/flank_view.py` | The on-demand "alternative flank view" and paired-cell bootstrap: descriptive flank-comparison recomputation independent of the archived SRD-screen tables. |
-| `server/hatch_merge.py` / `server/hatch_merge_api.py` | The exploratory hatch-layer scoring and adjacent-segment merge module. Independent of, and does not modify, `flank_view.py` or the archived merge prototype under `reference/integration-prototype/`. Union-of-enabled-layers eligibility; pooled dispersion φ recomputed every merge iteration; see [SCIENTIFIC_WORKFLOW.md](SCIENTIFIC_WORKFLOW.md)'s worked example 2. |
+| `server/hatch_merge.py` | Flank scoring for the exploratory tools: SRD, SRD/√φ, Δlog2FC, pooled φ, gap flags, and `score_rows()` / `hatch_scores()`. Independent of `flank_view.py` and the archived merge prototype. |
+| `server/merge_rules.py` / `server/hatch_merge_api.py` | User-defined merge rules: validation, per-segment evaluation (OR of ANDs), and the one-merge-per-step loop with φ recomputed every step; the `hatch-scores` and `hatch-merge` routes. See [SCIENTIFIC_WORKFLOW.md](SCIENTIFIC_WORKFLOW.md)'s worked example 2. |
 | `server/jobs.py` | Bounded worker-process pool for expensive computation. Workers use multiprocessing `spawn` — worker functions must be importable/picklable at module level, not defined as closures. |
 
 ## Frontend (`web/src/`)
@@ -29,14 +30,15 @@ test evidence and screenshots.
 | `integrationStore.ts` | Integration/multimodal state — hatch-layer settings persistence, candidate/score caching, cluster selection. |
 | `experimentStore.ts` | Per-cell/chromosome experiment drafts and run history. |
 | `integration.ts` | Pure helpers: consistency classes, flank picking, hatch-shape rendering geometry. |
-| `hatchMerge.ts` | Types, API client, and a 1:1 TypeScript port of `server/hatch_merge.py`'s classification rules — kept in sync deliberately so a threshold change reclassifies client-side without a network round trip. |
+| `hatchMerge.ts` | Score/result types and the API client for `hatch-scores` / `hatch-merge`. |
+| `mergeRules.ts` | Rule types, presets, legacy-session migration, and a 1:1 TypeScript port of `server/merge_rules.py`'s evaluator, so hatches update live while rules are edited. `tests/fixtures/merge_rules_parity.json` is checked against both implementations. |
 | `api.ts` | Fetch wrapper. |
-| `components/` | Major workspaces: `CohortView`, `ExplorerView`, `ManualView`, `ExperimentView`, `IntegrationClustersView`, `IntegrationSegmentationView`, `HatchMergeView`, `AlternativeFlankView`, `PairedFlankBootstrap`, plus shared `Plot`/`DeferredPlot` Plotly wrappers. `DeferredPlot` exists specifically to defer initializing off-screen charts until scrolled into view — see [`validation/integration-freeze/REPORT.md`](../validation/integration-freeze/REPORT.md) for the responsiveness investigation that motivated it. |
+| `components/` | Major workspaces: `CohortView`, `ExplorerView`, `ManualView`, `ExperimentView`, `IntegrationClustersView`, `IntegrationSegmentationView`, `HatchMergeView`, `MergeRulesEditor`, `AlternativeFlankView`, `PairedFlankBootstrap`, plus shared `Plot`/`DeferredPlot` Plotly wrappers. `DeferredPlot` exists specifically to defer initializing off-screen charts until scrolled into view — see [`validation/integration-freeze/REPORT.md`](../validation/integration-freeze/REPORT.md) for the responsiveness investigation that motivated it. |
 
 ## Data flow: one representative request
 
-Browser action (e.g. clicking "Run merge") → a Zustand store action reads the
-relevant settings → `hatchMerge.ts`'s `runHatchMerge()` posts to
+Browser action (e.g. clicking "Run merge") → HatchMergeView reads the merge rules from the
+integration store → `hatchMerge.ts`'s `runHatchMerge()` posts to
 `/api/integration/hatch-merge` → `server/hatch_merge_api.py`'s route resolves
 the current integration profile and validates the request → `server/hatch_merge.py`'s
 pure `run_merge()` computes the full step history → JSON response → the store

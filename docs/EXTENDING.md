@@ -27,7 +27,7 @@ to do it without silently changing what the tool already claims to do.
    `server/hatch_merge_api.py`'s pattern, registered in `server/app.py`
    *before* the SPA catch-all route (see below for why).
 6. **Add frontend state + visualization:** a Zustand store slice (see
-   `integrationStore.ts`'s `hatchLayers`/`ensureHatchScores` pattern for
+   `integrationStore.ts`'s `mergeRules`/`ensureHatchScores` pattern for
    settings + fetch/cache) and a component under `web/src/components/`.
 7. **Add unit/parity tests:** a `tests/test_*.py` file mirroring
    `tests/test_hatch_merge.py` (pure-function tests first, route tests with
@@ -74,8 +74,9 @@ to the relevant store's `serialize()`/`restore()` functions.
 Settings that should persist across a saved/reloaded session belong in a
 store's `serialize()`/`restore()`, merged onto sensible defaults on restore
 so an older saved session without the new field doesn't crash —
-`integrationStore.ts`'s hatch-layer restore does exactly this
-(`{ ...defaultHatchLayers, ...(p.hatchLayers || {}) }`). Generated *results*
+`integrationStore.ts`'s merge-rule restore does exactly this
+(`Array.isArray(p.mergeRules) ? p.mergeRules : migrateHatchLayers(p.hatchLayers)`,
+converting pre-merge-rules sessions). Generated *results*
 (not settings) are typically kept local to the component instead —
 `AlternativeFlankView.tsx` keeps its generated result in local `useState`
 plus a frozen-settings signature comparison, not in a store.
