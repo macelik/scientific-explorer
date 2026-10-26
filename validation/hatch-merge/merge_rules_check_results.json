@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-26T15:28:04.764Z",
+  "generated_at": "2026-10-26T16:18:51.438Z",
   "visHeading": 1,
   "shapesBaseline": 65,
   "shapesWithRule": 335,
@@ -43,7 +43,7 @@
   "depthLayerCount": 0,
   "layerLabels": [
     "small segments",
-    "signs-disagree hatch (amber |) on segments that do not pass Rule 0",
+    "signs-disagree hatch (black |) on segments that do not pass Rule 0",
     "retained reason (archived prototype, where available)",
     "length + value labels",
     "cluster CN strip",

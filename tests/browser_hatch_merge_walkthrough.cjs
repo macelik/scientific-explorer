@@ -63,7 +63,7 @@ function findOwner(obj,key){if(!obj||typeof obj!=='object')return null;if(Object
  const flankSwitchCount=await page.getByLabel('Merge flank-conflict segments').count();
  const breakpointLayerCount=await tracks.getByLabel('accepted breakpoints').count();
  const layerLabels=(await tracks.locator('span:text-is("layers:") ~ label').allInnerTexts()).map(t=>t.trim());
- const expectedLayerLabels=['small segments','signs-disagree hatch (amber |) on segments that do not pass Rule 0','retained reason (archived prototype, where available)','length + value labels','cluster CN strip','candidate audit (rejected / blocked)','allelic |dBAF| pseudobulk (right axis)'];
+ const expectedLayerLabels=['small segments','signs-disagree hatch (black |) on segments that do not pass Rule 0','retained reason (archived prototype, where available)','length + value labels','cluster CN strip','candidate audit (rejected / blocked)','allelic |dBAF| pseudobulk (right axis)'];
  const depthLayerCount=await tracks.getByLabel('colour by recursion depth').count();
 
  // gap fix: on chr8 only some small segments touch a genomic gap

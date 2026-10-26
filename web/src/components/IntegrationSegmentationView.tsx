@@ -131,7 +131,9 @@ export default function IntegrationSegmentationView() {
         const outline = (c: string) => shapes.push({ type: 'rect', xref: 'x', yref: `${yref} domain`, x0, x1, y0: 0.02, y1: 0.98, fillcolor: 'rgba(0,0,0,0)', line: { width: 1.5, color: c, dash: 'dot' }, layer: 'above' })
         if (merging) { if (r0!.blocked === null) shapes.push(...hatchShapes(x0, x1, yref, 'x', rule0.hatch.color)); else outline(rule0.hatch.color) }
         if (signsMerge) { if (r0!.blocked === null) shapes.push(...hatchShapes(x0, x1, yref, 'x', SIGNS_MERGE_COLOR)); else if (r0!.blocked === 'gap') outline(SIGNS_MERGE_COLOR) }
-        if (r0 && r0.signMismatch && (merging || held || (r0.outcome === 'signs_only' && seg.labels.signs))) shapes.push(...hatchShapes(x0, x1, yref, '|', SIGN_COLOR))
+        // passes Rule 0 but flank signs disagree: amber |; fails Rule 0 with disagreeing signs and not hatched × for the last phase: black | (layer toggle)
+        if (r0 && r0.signMismatch && (merging || held)) shapes.push(...hatchShapes(x0, x1, yref, '|', SIGN_COLOR))
+        else if (r0 && r0.signMismatch && !r0.passed && seg.labels.signs && !(signsMerge && r0.blocked === null)) shapes.push(...hatchShapes(x0, x1, yref, '|', SIGNS_MERGE_COLOR))
         for (const id of ev.matched) if (id !== 'rule0') { const rule = ig.mergeRules.find((r) => r.id === id); if (rule) shapes.push(...hatchShapes(x0, x1, yref, rule.hatch.pattern, rule.hatch.color)) }
         if (row.gap_left) shapes.push({ type: 'line', xref: 'x', yref: `${yref} domain`, x0, x1: x0, y0: 0, y1: 1, line: { color: '#b91c1c', width: 2, dash: 'dot' }, opacity: 0.7 })
         if (row.gap_right) shapes.push({ type: 'line', xref: 'x', yref: `${yref} domain`, x0: x1, x1, y0: 0, y1: 1, line: { color: '#b91c1c', width: 2, dash: 'dot' }, opacity: 0.7 })
@@ -249,7 +251,7 @@ export default function IntegrationSegmentationView() {
 
       <div className="panel" id="cluster-tracks">
         <h3>Chromosome tracks — pseudobulk depth, accepted breakpoints and small segments</h3>
-        <p className="lead">Grey line: per-bin pseudobulk depth, broken at genomic gaps. Vertical lines: accepted breakpoints by recursion depth. Shaded spans: internal segments ≤ {seg.smallMax} bins, coloured by live flank scores (any chromosome) on the colour metric's smaller-|value| flank. Rule 0 hatches × the segments whose checked flank criteria are below τ / the SRD/√φ ref; merges go toward the flank of the criterion furthest below its threshold. An amber | marks flank SRD/√φ signs that disagree; when the option below is on, a black × marks signs-disagree segments that fail Rule 0 and merge last.</p>
+        <p className="lead">Grey line: per-bin pseudobulk depth, broken at genomic gaps. Vertical lines: accepted breakpoints by recursion depth. Shaded spans: internal segments ≤ {seg.smallMax} bins, coloured by live flank scores (any chromosome) on the colour metric's smaller-|value| flank. Rule 0 hatches × the segments whose checked flank criteria are below τ / the SRD/√φ ref; merges go toward the flank of the criterion furthest below its threshold. An amber | marks segments that pass Rule 0 but whose flank SRD/√φ signs disagree; a black | marks segments that fail Rule 0 with disagreeing signs, and when the option below is on they are hatched with a black × and merge last.</p>
         <h4 className="vis-heading">1. Visualization and Rule 0 <span className="muted small">— colouring is display only; Rule 0 below hatches the segments the merge in section 2 would merge now</span></h4>
         <div className="controls-row">
           <label>chromosome<select value={seg.chrom} onChange={(e) => ig.setSeg({ chrom: e.target.value, selectedSegment: null })}>{exMeta.chromosomes.map((c) => <option key={c.name} value={c.name}>{c.name}{meta.pilot_chromosomes.includes(c.name) ? ' · pilot' : ''}</option>)}</select></label>
@@ -275,7 +277,7 @@ export default function IntegrationSegmentationView() {
         <div className="controls-row">
           <span className="small muted">rows:</span>{meta.sources.map((s) => <label key={s} className="chk-inline"><input type="checkbox" checked={seg.sources.includes(s)} onChange={(e) => ig.setSeg({ sources: e.target.checked ? meta.sources.filter((x) => x === s || seg.sources.includes(x)) : seg.sources.filter((x) => x !== s) })} /><i className="sw" style={{ background: SOURCE_COLORS[s] }} />{s}</label>)}
           <span className="small muted" style={{ marginLeft: 12 }}>layers:</span>
-          {([['small', 'small segments'], ['signs', 'signs-disagree hatch (amber |) on segments that do not pass Rule 0'], ['reason', 'retained reason (archived prototype, where available)'], ['segLabels', 'length + value labels'], ['cn', 'cluster CN strip'], ['candidates', 'candidate audit (rejected / blocked)'], ['allelic', 'allelic |dBAF| pseudobulk (right axis)']] as const).map(([k, l]) => <label key={k} className="chk-inline"><input type="checkbox" checked={(seg.labels as any)[k]} onChange={(e) => ig.setLabels({ [k]: e.target.checked } as any)} />{l}</label>)}
+          {([['small', 'small segments'], ['signs', 'signs-disagree hatch (black |) on segments that do not pass Rule 0'], ['reason', 'retained reason (archived prototype, where available)'], ['segLabels', 'length + value labels'], ['cn', 'cluster CN strip'], ['candidates', 'candidate audit (rejected / blocked)'], ['allelic', 'allelic |dBAF| pseudobulk (right axis)']] as const).map(([k, l]) => <label key={k} className="chk-inline"><input type="checkbox" checked={(seg.labels as any)[k]} onChange={(e) => ig.setLabels({ [k]: e.target.checked } as any)} />{l}</label>)}
         </div>
         {ig.hatchScoresError && <div className="notice small">{ig.hatchScoresError}</div>}
         <div className="seg-legend">
@@ -288,7 +290,7 @@ export default function IntegrationSegmentationView() {
           {anyGap && <span><i className="ln" style={{ borderColor: '#b91c1c' }} />dotted red = a genomic gap sits at that flank boundary</span>}
           {rule0Issues.length === 0 && <span className="rule0-legend"><b className="rule-swatch" style={{ color: rule0.hatch.color }}>×</b>Rule 0 would merge now: {r0Counts.wouldMerge}{r0Counts.gap ? ` · blocked by gap: ${r0Counts.gap} (merge only with gap crossing)` : ''}{r0Counts.signs ? ` · signs disagree: ${r0Counts.signs}` : ''} · <b style={{ color: SIGN_COLOR }}>|</b> ⚠ held back: {r0Counts.heldBack}{seg.mergeSignsOnly
             ? <> · <b className="rule-swatch" style={{ color: SIGNS_MERGE_COLOR }}>×</b> signs disagree, fails Rule 0, merges last: {r0Counts.signsMerge}{r0Counts.signsMergeBlocked ? ` (+${r0Counts.signsMergeBlocked} blocked by gap)` : ''}{r0Counts.signsMergeNoValue ? ` (+${r0Counts.signsMergeNoValue} no flank value)` : ''}</>
-            : <> · <b style={{ color: SIGN_COLOR }}>|</b> signs disagree only: {r0Counts.signsOnly}</>}</span>}
+            : <> · <b style={{ color: SIGNS_MERGE_COLOR }}>|</b> signs disagree only: {r0Counts.signsOnly}</>}</span>}
         </div>
         {trackFig ? <><Plot data={trackFig.data} layout={trackFig.layout} config={trackConfig} onClick={onTrackClick} onReady={el => { plotEl.current = el }} /><button className="btn-xs" onClick={() => plotEl.current && downloadPlot(plotEl.current, `tracks_${seg.chrom}`)}>PNG</button></> : <div className="muted small">{ig.pb ? 'select at least one cluster row' : 'loading pseudobulk profiles…'}</div>}
         {seg.selectedSegment && (() => {
