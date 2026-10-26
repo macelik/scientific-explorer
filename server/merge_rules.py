@@ -8,6 +8,9 @@ left). Rows are the per-segment dicts produced by hatch_merge.score_rows, the
 same rows /api/integration/hatch-scores returns, so web/src/mergeRules.ts can
 evaluate identical rules client-side (see tests/fixtures/merge_rules_parity.json).
 
+rules[0] is Rule 0, the always-active rule built from the tracks' section-1
+settings; it is evaluated first and claims before any user rule.
+
 These are exploratory diagnostics, independent of the original
 bootstrap/chain-guard merge prototype; nothing here recomputes CN.
 """
@@ -20,6 +23,10 @@ from . import hatch_merge as hm
 CONDITION_KINDS = ('weak_flank', 'sign_mismatch', 'ambiguous', 'max_size')
 SRD_METRICS = ('srd', 'srd_phi')
 HATCH_PATTERNS = ('/', '\\', 'x', '-', '|', '.')
+RULE0_ID = 'rule0'
+RULE0_TYPE = 'flank_threshold'
+RULE0_CRITERIA = ('delta_median', 'delta_mean', 'delta_iqr_mean', 'srd_phi')
+RULE0_COMBINE = ('all', 'any')
 
 
 def _number(v):
@@ -57,11 +64,43 @@ def _validate_condition(c, where):
         raise ValueError(f'{where}: unknown condition kind {kind!r}')
 
 
-def validate_rules(rules):
-    """Validate and return the enabled rules, in list order.
+def _positive(v):
+    return _number(v) and math.isfinite(v) and v > 0
 
-    Disabled rules are ignored apart from the id checks, so a half-edited
-    disabled rule never blocks a run. Raises ValueError on any problem."""
+
+def _check_hatch(r, where):
+    hatch = r.get('hatch') if isinstance(r.get('hatch'), dict) else {}
+    if hatch.get('pattern') not in HATCH_PATTERNS:
+        raise ValueError(f'{where}: unknown hatch pattern {hatch.get("pattern")!r}')
+
+
+def _validate_rule0(r):
+    where = 'Rule 0'
+    criteria = r.get('criteria')
+    if not isinstance(criteria, list) or not criteria:
+        raise ValueError(f'{where}: check at least one criterion')
+    if len(set(criteria)) != len(criteria) or any(c not in RULE0_CRITERIA for c in criteria):
+        raise ValueError(f'{where}: criteria must be distinct values from {RULE0_CRITERIA}')
+    if r.get('combine') not in RULE0_COMBINE:
+        raise ValueError(f'{where}: combine must be one of {RULE0_COMBINE}')
+    for key in ('tau', 'srdRef'):
+        if not _positive(r.get(key)):
+            raise ValueError(f'{where}: {key} must be a positive finite number')
+    n = r.get('maxBins')
+    if not (isinstance(n, int) and not isinstance(n, bool) and n >= 1):
+        raise ValueError(f'{where}: maxBins must be an integer >= 1')
+    for key in ('mergeSignMismatch', 'mergeFlankConflict'):
+        if not isinstance(r.get(key), bool):
+            raise ValueError(f'{where}: {key} must be true or false')
+    _check_hatch(r, where)
+
+
+def validate_rules(rules):
+    """Validate and return [Rule 0, *enabled user rules], in list order.
+
+    rules[0] must be Rule 0 (always active). Disabled user rules are ignored
+    apart from the id checks, so a half-edited disabled rule never blocks a
+    run. Raises ValueError on any problem."""
     if not isinstance(rules, list) or not all(isinstance(r, dict) for r in rules):
         raise ValueError('rules must be a list of objects')
     ids = [r.get('id') for r in rules]
@@ -69,9 +108,13 @@ def validate_rules(rules):
         raise ValueError('every rule needs a non-empty string id')
     if len(set(ids)) != len(ids):
         raise ValueError('rule ids must be unique')
-    enabled = [r for r in rules if r.get('enabled') is True]
-    if not enabled:
-        raise ValueError('At least one merge rule must be enabled')
+    if not rules or rules[0].get('id') != RULE0_ID or rules[0].get('type') != RULE0_TYPE:
+        raise ValueError('rules[0] must be Rule 0 (id "rule0", type "flank_threshold")')
+    for r in rules[1:]:
+        if r.get('type', 'conditions') != 'conditions':
+            raise ValueError(f'rule {r["id"]!r}: only rules[0] may be Rule 0')
+    _validate_rule0(rules[0])
+    enabled = [r for r in rules[1:] if r.get('enabled') is True]
     for r in enabled:
         where = f'rule {r["id"]!r}'
         conditions = r.get('conditions')
@@ -81,10 +124,8 @@ def validate_rules(rules):
             _validate_condition(c, where)
         merge_into = r.get('mergeInto') if isinstance(r.get('mergeInto'), dict) else {}
         _check_metric(merge_into.get('metric'), merge_into.get('estimator', 'mean'), f'{where} mergeInto')
-        hatch = r.get('hatch') if isinstance(r.get('hatch'), dict) else {}
-        if hatch.get('pattern') not in HATCH_PATTERNS:
-            raise ValueError(f'{where}: unknown hatch pattern {hatch.get("pattern")!r}')
-    return enabled
+        _check_hatch(r, where)
+    return [rules[0], *enabled]
 
 
 def row_score(row, side, metric, estimator='mean'):
@@ -113,16 +154,82 @@ def condition_holds(c, row):
     raise ValueError(f'unknown condition kind {kind!r}')
 
 
+def _criterion_value(row, side, criterion):
+    v = row.get(f'{criterion}_{side}')
+    return float(v) if v is not None and math.isfinite(v) else None
+
+
+def _smaller_side(left, right):
+    if left is None and right is None:
+        return None
+    if right is None:
+        return 'left'
+    if left is None:
+        return 'right'
+    return 'left' if abs(left) <= abs(right) else 'right'
+
+
+def evaluate_rule0(row, r0, allow_gap_crossing=False):
+    """Rule 0 on one score row: per-criterion flank/threshold checks, the
+    all/any test, sign and flank-conflict checks, direction, ordering score
+    and outcome. See docs/superpowers/specs/2026-10-26-rule0-visual-merge-design.md §3."""
+    out = {'start': row['start'], 'end': row['end'], 'evaluated': False, 'criteria': [], 'passed': False,
+           'sign_mismatch': False, 'flank_conflict': False, 'held_back': [], 'outcome': 'none',
+           'side': None, 'score': None, 'blocked': None}
+    if row['end'] - row['start'] > r0['maxBins']:
+        return out
+    out['evaluated'] = True
+    for c in r0['criteria']:
+        left, right = _criterion_value(row, 'left', c), _criterion_value(row, 'right', c)
+        threshold = r0['srdRef'] if c == 'srd_phi' else r0['tau']
+        side = _smaller_side(left, right)
+        value = None if side is None else abs(left if side == 'left' else right)
+        out['criteria'].append({'criterion': c, 'side': side, 'value': value, 'threshold': threshold,
+                                'fraction': None if value is None else value / threshold,
+                                'passed': value is not None and value < threshold})
+    passing = [c for c in out['criteria'] if c['passed']]
+    out['passed'] = len(passing) == len(out['criteria']) if r0['combine'] == 'all' else bool(passing)
+    sl, sr = _criterion_value(row, 'left', 'srd_phi'), _criterion_value(row, 'right', 'srd_phi')
+    out['sign_mismatch'] = sl is not None and sr is not None and sl * sr < 0
+    if not out['passed']:
+        if out['sign_mismatch']:
+            out['outcome'] = 'signs_only'
+        return out
+    out['flank_conflict'] = len({c['side'] for c in passing}) > 1
+    fractions = [c['fraction'] for c in passing]
+    out['score'] = max(fractions) if r0['combine'] == 'all' else min(fractions)
+    best = min(passing, key=lambda c: (c['fraction'], 0 if c['side'] == 'left' else 1))
+    out['side'] = best['side'] if out['flank_conflict'] else passing[0]['side']
+    if out['sign_mismatch'] and not r0['mergeSignMismatch']:
+        out['held_back'].append('signs')
+    if out['flank_conflict'] and not r0['mergeFlankConflict']:
+        out['held_back'].append('flanks')
+    if out['held_back']:
+        out['outcome'] = 'held_back'
+        return out
+    out['outcome'] = 'would_merge'
+    if not allow_gap_crossing and row[f'gap_{out["side"]}']:
+        out['blocked'] = 'gap'
+    return out
+
+
 def evaluate_rules(rows, rules, allow_gap_crossing=False):
     """Per score row: which rules match, which claims it, and the merge
-    direction/score or why it cannot merge. `rules` must be validated."""
+    direction/score or why it cannot merge. `rules` must be validated; a
+    leading Rule 0 is evaluated first and claims before user rules."""
+    r0 = rules[0] if rules and rules[0].get('type') == RULE0_TYPE else None
+    user = rules[1:] if r0 is not None else rules
     out = []
     for row in rows:
-        matched = [r['id'] for r in rules if all(condition_holds(c, row) for c in r['conditions'])]
+        r0ev = evaluate_rule0(row, r0, allow_gap_crossing) if r0 is not None else None
+        matched = ([RULE0_ID] if r0ev is not None and r0ev['outcome'] == 'would_merge' else []) + \
+            [r['id'] for r in user if all(condition_holds(c, row) for c in r['conditions'])]
         ev = {'start': row['start'], 'end': row['end'], 'matched': matched,
-              'claimed_by': None, 'side': None, 'score': None, 'blocked': None}
-        if matched:
-            rule = next(r for r in rules if r['id'] == matched[0])
+              'claimed_by': None, 'side': None, 'score': None, 'blocked': None, 'rule0': r0ev}
+        if matched and matched[0] == RULE0_ID:
+            ev.update(claimed_by=RULE0_ID, side=r0ev['side'], score=r0ev['score'], blocked=r0ev['blocked'])
+        elif matched:
+            rule = next(r for r in user if r['id'] == matched[0])
             ev['claimed_by'] = rule['id']
             metric = rule['mergeInto']['metric']
             estimator = rule['mergeInto'].get('estimator', 'mean')
