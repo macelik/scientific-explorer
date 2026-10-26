@@ -21,9 +21,10 @@ to do it without silently changing what the tool already claims to do.
 4. **Keep exploratory alternatives explicitly labelled.** See how the
    merge-rules panel states its rules are user-defined exploratory
    diagnostics, not validated decision rules, and how the tracks panel in
-   `IntegrationSegmentationView.tsx` separates "1. Visualization" (display
-   only) from "2. Merge rules", while the archived consistency/proposal
-   label layers stay labelled as archived.
+   `IntegrationSegmentationView.tsx` separates "1. Visualization and Rule 0"
+   (colouring is display-only; Rule 0 hatches what the merge starts from)
+   from "2. Merge rules", while the remaining archived layer ("retained
+   reason") stays labelled as archived.
 5. **Add the backend contract:** a Pydantic request model and a
    `register_X(app, get_integration)` function following
    `server/hatch_merge_api.py`'s pattern, registered in `server/app.py`

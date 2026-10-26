@@ -61,11 +61,12 @@ coverage, weights, chr8 group and what a higher resolution adds).
 
 **Integration · segmentation & CN**: the cluster-level and per-cell karyograms come first (click a
 cluster row to jump its chromosome into the tracks; click a cell for its card). In the tracks,
-choose the metric that colours small segments and which flank it is read from, switch between
-binned bands and a continuous scale, and add the label layers you want to talk about (proposal,
-x/o// consistency, reason, values, CN strip, candidate audit, allelic). Click a shaded segment or a
-point in the diagnostics to open the segment's full flank table. τ and the SRD reference are
-inspection settings, not thresholds.
+choose the metric that colours small segments (read on its own smaller-|value| flank), switch between
+binned bands and a continuous scale, and add the label layers you want to talk about (accepted
+breakpoints, recursion-depth colour, small segments, signs-disagree hatch, retained reason (archived),
+length + value labels, cluster CN strip, candidate audit, allelic). Click a shaded segment or a
+point in the diagnostics to open the segment's full flank table. τ and SRD/√φ ref are Rule 0's
+thresholds (see the section below).
 
 ### Visualization and merge rules
 
