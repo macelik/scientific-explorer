@@ -117,8 +117,10 @@ def flank_score(metric, seg_summary, flank_summary, phi, estimator='mean'):
 
 def is_gap(var_start, var_end, left_end_bin, right_start_bin):
     """True if the two retained bins straddling a boundary are not genomically
-    contiguous (a filtered/omitted interval sits between them)."""
-    return float(var_start[right_start_bin]) != float(var_end[left_end_bin])
+    contiguous (a filtered/omitted interval sits between them). Works for
+    1-based inclusive bins (next start = end + 1) and half-open bins (next
+    start = end)."""
+    return bool(float(var_start[right_start_bin]) > float(var_end[left_end_bin]) + 1)
 
 
 def _finite(v):

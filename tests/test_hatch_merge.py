@@ -74,6 +74,14 @@ def test_is_gap_detects_bp_discontinuity():
     assert hm.is_gap(var_start, var_end, 0, 1) is False  # 100 == 100
 
 
+def test_is_gap_one_based_inclusive_coordinates():
+    # pyEpiAneufinder bins: [800001, 900000], [900001, 1000000], then a 100 kb hole
+    var_start = np.array([800001, 900001, 1100001], dtype=float)
+    var_end = np.array([900000, 1000000, 1200000], dtype=float)
+    assert hm.is_gap(var_start, var_end, 0, 1) is False
+    assert hm.is_gap(var_start, var_end, 1, 2) is True
+
+
 def test_classify_transition_opposite_same_zero_missing():
     assert hm.classify_transition(1.0, -1.0) is True
     assert hm.classify_transition(1.0, 1.0) is False
