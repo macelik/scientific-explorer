@@ -1,6 +1,6 @@
 import { useIntegration } from '../integrationStore'
 import type { Estimator, HatchMetric } from '../hatchMerge'
-import { describeRule0, rule0FromSeg, rule0Problems, isFlankRule, CONDITION_KINDS, HATCH_PATTERNS, defaultMergeInto, evaluateForSources, makeRule, newCondition, rule0CaseCounts, ruleFlagCounts, ruleProblems, type Condition, type ConditionKind, type HatchPattern, type MergeRule, type PresetName, type UserRule } from '../mergeRules'
+import { CRITERION_LABEL, RULE0_CRITERIA, describeRule0, flankRuleProblems, makeRule0Copy, newUserRuleId, rule0FromSeg, rule0Problems, isFlankRule, CONDITION_KINDS, HATCH_PATTERNS, defaultMergeInto, evaluateForSources, makeRule, newCondition, rule0CaseCounts, ruleFlagCounts, ruleProblems, type Condition, type ConditionKind, type FlankRule, type HatchPattern, type MergeRule, type PresetName, type UserRule } from '../mergeRules'
 
 const KIND_LABEL: Record<ConditionKind, string> = {
   weak_flank: 'weaker flank below threshold', sign_mismatch: 'flank signs disagree',
@@ -58,22 +58,25 @@ export default function MergeRulesEditor() {
   const counts = ruleFlagCounts(evals)
   const r0c = rule0CaseCounts(evals)
   const scoresLoaded = ig.seg.sources.some((s) => ig.hatchScores[`${s}|${ig.seg.chrom}`])
-  const update = (id: string, patch: Partial<MergeRule>) => ig.setMergeRules(rules.map((r) => (r.id === id ? { ...r, ...patch } as UserRule : r)))
+  const update = (id: string, patch: Partial<MergeRule> | Partial<FlankRule>) => ig.setMergeRules(rules.map((r) => (r.id === id ? { ...r, ...patch } as UserRule : r)))
   const setConditions = (r: MergeRule, conditions: Condition[]) =>
     update(r.id, r.conditions.length === 0 ? { conditions, mergeInto: defaultMergeInto(conditions) } : { conditions })
   const move = (i: number, d: -1 | 1) => {
     const j = i + d; if (j < 0 || j >= rules.length) return
     const next = [...rules]; [next[i], next[j]] = [next[j], next[i]]; ig.setMergeRules(next)
   }
-  const duplicate = (r: MergeRule, i: number) => {
-    const copy: MergeRule = { ...makeRule('blank', rules), name: `${r.name} (copy)`, enabled: r.enabled,
-      conditions: r.conditions.map((c) => ({ ...c })), mergeInto: { ...r.mergeInto }, hatch: { ...r.hatch } }
+  const duplicate = (r: UserRule, i: number) => {
+    const copy: UserRule = isFlankRule(r)
+      ? { ...r, id: newUserRuleId(rules), name: `${r.name} (copy)`, criteria: [...r.criteria], hatch: { ...r.hatch } }
+      : { ...makeRule('blank', rules), name: `${r.name} (copy)`, enabled: r.enabled,
+        conditions: r.conditions.map((c) => ({ ...c })), mergeInto: { ...r.mergeInto }, hatch: { ...r.hatch } }
     ig.setMergeRules([...rules.slice(0, i + 1), copy, ...rules.slice(i + 1)])
   }
   return <div className="merge-rules">
     <div className="controls-row">
-      <select aria-label="Add rule" value="" onChange={(e) => { if (e.target.value) ig.setMergeRules([...rules, makeRule(e.target.value as PresetName, rules)]) }}>
+      <select aria-label="Add rule" value="" onChange={(e) => { const v = e.target.value; if (v === 'rule0copy') ig.setMergeRules([...rules, makeRule0Copy(ig.seg, rules)]); else if (v) ig.setMergeRules([...rules, makeRule(v as PresetName, rules)]) }}>
         <option value="">+ Add rule…</option>
+        <option value="rule0copy">Rule 0 copy (current section-1 settings)</option>
         {PRESET_OPTIONS.map(([k, l]) => <option key={k} value={k}>{l}</option>)}
       </select>
       <span className="muted small">A segment is flagged when ANY enabled rule matches; a rule matches when ALL its conditions hold. Rule order is merge priority.</span>
@@ -85,11 +88,45 @@ export default function MergeRulesEditor() {
       <div className="small" role="status" aria-label="Rule 0 status">
         {r0Issues.length ? <span className="notice small">{r0Issues.join('; ')}</span>
           : ig.hatchScoresError ? 'scores unavailable' : !scoresLoaded ? 'loading scores…'
-          : `→ would merge now: ${r0c.wouldMerge} segment(s) on ${ig.seg.chrom} across the displayed rows${r0c.gap ? ` · blocked by gap: ${r0c.gap}` : ''}`}
+          : `→ would merge now: ${r0c.wouldMerge} segment(s) on ${ig.seg.chrom} across the displayed rows${r0c.gap ? ` · blocked by gap: ${r0c.gap}` : ''}${rule0.mergeSignsOnly ? ` · merges last: ${r0c.signsMerge}` : ''}`}
       </div>
     </div>
     {rules.map((r, i) => {
-      if (isFlankRule(r)) return null // Rule 0 copies get their editor in Task 4
+      if (isFlankRule(r)) {
+        const n = i + 1, problems = flankRuleProblems(r)
+        const num = (label: string, v: number, step: number, k: 'tau' | 'srdRef' | 'maxBins') => <label>{label}<input aria-label={`Rule ${n} ${label}`} type="number" step={step} value={Number.isFinite(v) ? v : ''}
+          onChange={(e) => update(r.id, { [k]: e.target.value === '' ? NaN : +e.target.value })} style={{ width: 72 }} /></label>
+        return <div key={r.id} className="rule-card">
+          <div className="rule-head">
+            <label className="chk-inline"><input type="checkbox" aria-label={`Rule ${n} enabled`} checked={r.enabled === true} onChange={(e) => update(r.id, { enabled: e.target.checked })} /><b>{n}</b></label>
+            <input aria-label={`Rule ${n} name`} value={r.name} onChange={(e) => update(r.id, { name: e.target.value })} style={{ width: 240 }} />
+            <label>hatch<select aria-label={`Rule ${n} pattern`} value={r.hatch.pattern} onChange={(e) => update(r.id, { hatch: { ...r.hatch, pattern: e.target.value as HatchPattern } })}>{HATCH_PATTERNS.map((p) => <option key={p} value={p}>{PATTERN_LABEL[p]}</option>)}</select></label>
+            <input aria-label={`Rule ${n} colour`} type="color" value={r.hatch.color} onChange={(e) => update(r.id, { hatch: { ...r.hatch, color: e.target.value } })} />
+            <span className="spacer" />
+            <button className="btn-xs" aria-label={`Move rule ${n} up`} disabled={i === 0} onClick={() => move(i, -1)}>↑</button>
+            <button className="btn-xs" aria-label={`Move rule ${n} down`} disabled={i === rules.length - 1} onClick={() => move(i, 1)}>↓</button>
+            <button className="btn-xs" aria-label={`Duplicate rule ${n}`} onClick={() => duplicate(r, i)}>⧉</button>
+            <button className="btn-xs" aria-label={`Delete rule ${n}`} onClick={() => ig.setMergeRules(rules.filter((x) => x.id !== r.id))}>🗑</button>
+          </div>
+          <div className="rule-cond">
+            <span className="small">Rule 0 copy — merge segments where</span>
+            <select aria-label={`Rule ${n} combine`} value={r.combine} onChange={(e) => update(r.id, { combine: e.target.value as 'all' | 'any' })}><option value="all">all</option><option value="any">any</option></select>
+            <span className="small">of these hold:</span>
+            {RULE0_CRITERIA.map((c) => <label key={c} className="chk-inline"><input type="checkbox" aria-label={`Rule ${n} criterion ${CRITERION_LABEL[c]}`} checked={r.criteria.includes(c)}
+              onChange={(e) => update(r.id, { criteria: RULE0_CRITERIA.filter((x) => (x === c ? e.target.checked : r.criteria.includes(x))) })} />{CRITERION_LABEL[c]} &lt; {c === 'srd_phi' ? 'SRD/√φ ref' : 'τ'}</label>)}
+          </div>
+          <div className="rule-cond">
+            {num('tau', r.tau, 0.05, 'tau')}{num('SRD/√φ ref', r.srdRef, 0.1, 'srdRef')}{num('size limit', r.maxBins, 1, 'maxBins')}
+            <label className="chk-inline"><input type="checkbox" aria-label={`Rule ${n} merge sign-disagreeing`} checked={r.mergeSignMismatch} onChange={(e) => update(r.id, { mergeSignMismatch: e.target.checked })} />merge segments whose flank signs disagree</label>
+          </div>
+          <div className="small" role="status" aria-label={`Rule ${n} status`}>
+            {problems.length ? <span className="notice small">{problems.join('; ')}</span>
+              : r.enabled && ig.hatchScoresError ? 'scores unavailable'
+              : r.enabled && !scoresLoaded ? 'loading scores…'
+              : r.enabled ? `→ flags ${counts[r.id] || 0} segment(s) on ${ig.seg.chrom} across the displayed rows` : 'disabled'}
+          </div>
+        </div>
+      }
       const n = i + 1, problems = ruleProblems(r)
       return <div key={r.id} className="rule-card">
         <div className="rule-head">

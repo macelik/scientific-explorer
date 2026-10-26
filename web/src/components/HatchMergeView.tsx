@@ -40,7 +40,7 @@ export default function HatchMergeView() {
   }
   const step = result?.steps[stepIdx]
   // Describe the displayed run from result.settings, never from the live editor state.
-  const ruleSummary = result ? result.settings.rules.filter((r) => isRule0(r) || r.enabled).map((r) => isRule0(r) ? `Rule 0: ${describeRule0(r)}` : isFlankRule(r) ? `${r.name}: ${describeRule0(r)}` : `${r.name}: ${r.conditions.map(describeCondition).join(' AND ')}`).join(' | ') : ''
+  const ruleSummary = result ? result.settings.rules.filter((r) => isRule0(r) || r.enabled).map((r) => isRule0(r) ? `Rule 0: ${describeRule0(r)}` : isFlankRule(r) ? `“${r.name}” (Rule 0 copy): ${describeRule0(r)}` : `${r.name}: ${r.conditions.map(describeCondition).join(' AND ')}`).join(' | ') : ''
 
   const layout = { height: 260, margin: { l: 60, r: 20, t: 30, b: 45 }, paper_bgcolor: '#fff', plot_bgcolor: '#fff', font: { family: 'system-ui', size: 12 }, hovermode: presentation ? false : 'closest' as const }
   const segmentTrace = (segs: { start: number; end: number }[], startBp: number[], endBp: number[], color: string, name: string) => ({
@@ -69,7 +69,7 @@ export default function HatchMergeView() {
       <p className={stale ? 'notice' : 'muted'} role="status">{stale ? 'Settings changed; showing the previous run. ' : ''}{result.source} {result.chrom}: {result.original.length} original segments → {result.final.length} after {result.steps.length - 1} merge(s). Rules: {ruleSummary}{result.settings.allow_gap_crossing ? ' · gap crossing allowed' : ''}.</p>
       <div className="controls-row">
         <label>Step<input aria-label="Merge step" type="range" min={0} max={result.steps.length - 1} value={stepIdx} onChange={(e) => setStepIdx(+e.target.value)} /></label>
-        <span className="muted small">step {stepIdx} of {result.steps.length - 1}{step.removed_boundary !== null ? ` — removed boundary at bin ${step.removed_boundary}: rule "${step.rule_name}" merged segment [${step.segment?.[0]}, ${step.segment?.[1]}) ${step.side}${step.score !== null ? `, |score| ${step.score.toFixed(3)}` : ''}` : ' — original segmentation'}</span>
+        <span className="muted small">step {stepIdx} of {result.steps.length - 1}{step.removed_boundary !== null ? ` — removed boundary at bin ${step.removed_boundary}: ${step.phase === 2 ? 'phase 2 (last): ' : ''}rule "${step.rule_name}" merged segment [${step.segment?.[0]}, ${step.segment?.[1]}) ${step.side}${step.score !== null ? `, |score| ${step.score.toFixed(3)}` : ''}` : ' — original segmentation'}</span>
         <button className="btn-sm" onClick={() => setStepIdx(0)} disabled={stepIdx === 0}>Reset to original</button>
         <button className="btn-sm" onClick={() => setStepIdx((i) => Math.max(0, i - 1))} disabled={stepIdx === 0}>Undo one step</button>
         <button className="btn-sm" onClick={() => setStepIdx(result.steps.length - 1)} disabled={stepIdx === result.steps.length - 1}>Jump to final</button>

@@ -196,7 +196,7 @@ export function rule0FromSeg(s: SegRule0Input): Rule0 {
 }
 
 export function makeRule0Copy(s: SegRule0Input, existing: UserRule[]): FlankRule {
-  return { id: newRuleId(existing), type: 'flank_threshold', name: 'Rule 0 copy', enabled: true, criteria: [...s.criteria], combine: s.combine,
+  return { id: newUserRuleId(existing), type: 'flank_threshold', name: 'Rule 0 copy', enabled: true, criteria: [...s.criteria], combine: s.combine,
     tau: s.tau, srdRef: s.srdRef, maxBins: s.smallMax, mergeSignMismatch: s.mergeSignMismatch,
     hatch: { pattern: 'x', color: RULE_COLORS[existing.length % RULE_COLORS.length] } }
 }
@@ -298,7 +298,7 @@ export function defaultMergeInto(conditions: Condition[]): { metric: HatchMetric
 }
 
 let ruleSeq = 0
-function newRuleId(existing: UserRule[]): string {
+export function newUserRuleId(existing: UserRule[]): string {
   let id = ''
   do { id = `rule-${Date.now().toString(36)}-${++ruleSeq}` } while (existing.some((r) => r.id === id))
   return id
@@ -315,7 +315,7 @@ const PRESETS: Record<PresetName, { name: string; kinds: ConditionKind[]; patter
 export function makeRule(preset: PresetName, existing: UserRule[]): MergeRule {
   const p = PRESETS[preset]
   const conditions = p.kinds.map(newCondition)
-  return { id: newRuleId(existing), name: p.name, enabled: true, conditions, mergeInto: defaultMergeInto(conditions),
+  return { id: newUserRuleId(existing), name: p.name, enabled: true, conditions, mergeInto: defaultMergeInto(conditions),
     hatch: { pattern: p.pattern, color: RULE_COLORS[existing.length % RULE_COLORS.length] } }
 }
 
