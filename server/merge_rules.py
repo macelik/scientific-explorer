@@ -9,7 +9,12 @@ same rows /api/integration/hatch-scores returns, so web/src/mergeRules.ts can
 evaluate identical rules client-side (see tests/fixtures/merge_rules_parity.json).
 
 rules[0] is Rule 0, the always-active rule built from the tracks' section-1
-settings; it is evaluated first and claims before any user rule.
+settings; it is evaluated first and claims before any user rule. Enabled user
+rules of type 'flank_threshold' are Rule 0 copies: same test and direction
+(toward the smallest fraction), but never a signs merge. Rule 0 may also merge,
+in a last phase after everything else, segments that fail the test but whose
+flanks have disagreeing signs (mergeSignsOnly). See
+docs/superpowers/specs/2026-10-26-rule0-revision-2-design.md.
 
 These are exploratory diagnostics, independent of the original
 bootstrap/chain-guard merge prototype; nothing here recomputes CN.
@@ -74,8 +79,7 @@ def _check_hatch(r, where):
         raise ValueError(f'{where}: unknown hatch pattern {hatch.get("pattern")!r}')
 
 
-def _validate_rule0(r):
-    where = 'Rule 0'
+def _validate_flank_rule(r, where, signs_only):
     criteria = r.get('criteria')
     if not isinstance(criteria, list) or not criteria:
         raise ValueError(f'{where}: check at least one criterion')
@@ -89,7 +93,8 @@ def _validate_rule0(r):
     n = r.get('maxBins')
     if not (isinstance(n, int) and not isinstance(n, bool) and n >= 1):
         raise ValueError(f'{where}: maxBins must be an integer >= 1')
-    for key in ('mergeSignMismatch', 'mergeFlankConflict'):
+    keys = ('mergeSignMismatch', 'mergeSignsOnly') if signs_only else ('mergeSignMismatch',)
+    for key in keys:
         if not isinstance(r.get(key), bool):
             raise ValueError(f'{where}: {key} must be true or false')
     _check_hatch(r, where)
@@ -111,12 +116,18 @@ def validate_rules(rules):
     if not rules or rules[0].get('id') != RULE0_ID or rules[0].get('type') != RULE0_TYPE:
         raise ValueError('rules[0] must be Rule 0 (id "rule0", type "flank_threshold")')
     for r in rules[1:]:
-        if r.get('type', 'conditions') != 'conditions':
-            raise ValueError(f'rule {r["id"]!r}: only rules[0] may be Rule 0')
-    _validate_rule0(rules[0])
+        if r['id'] == RULE0_ID:
+            raise ValueError(f'rule {r["id"]!r}: only rules[0] may use id "rule0"')
+        t = r.get('type', 'conditions')
+        if t not in ('conditions', RULE0_TYPE):
+            raise ValueError(f'rule {r["id"]!r}: unknown rule type {t!r}')
+    _validate_flank_rule(rules[0], 'Rule 0', signs_only=True)
     enabled = [r for r in rules[1:] if r.get('enabled') is True]
     for r in enabled:
         where = f'rule {r["id"]!r}'
+        if r.get('type') == RULE0_TYPE:
+            _validate_flank_rule(r, where, signs_only=False)
+            continue
         conditions = r.get('conditions')
         if not isinstance(conditions, list) or not conditions:
             raise ValueError(f'{where}: needs at least one condition')
@@ -171,8 +182,12 @@ def _smaller_side(left, right):
 
 def evaluate_rule0(row, r0, allow_gap_crossing=False):
     """Rule 0 on one score row: per-criterion flank/threshold checks, the
-    all/any test, sign and flank-conflict checks, direction, ordering score
-    and outcome. See docs/superpowers/specs/2026-10-26-rule0-visual-merge-design.md §3."""
+    all/any test, sign check, direction (always toward the smallest fraction;
+    flank_conflict is informational), ordering score and outcome. When the test
+    fails with disagreeing signs and mergeSignsOnly is on, outcome is
+    'signs_merge' (direction/score from the failing criteria). See
+    docs/superpowers/specs/2026-10-26-rule0-visual-merge-design.md §3 and
+    docs/superpowers/specs/2026-10-26-rule0-revision-2-design.md §4-§5."""
     out = {'start': row['start'], 'end': row['end'], 'evaluated': False, 'criteria': [], 'passed': False,
            'sign_mismatch': False, 'flank_conflict': False, 'held_back': [], 'outcome': 'none',
            'side': None, 'score': None, 'blocked': None}
@@ -194,17 +209,24 @@ def evaluate_rule0(row, r0, allow_gap_crossing=False):
     if not out['passed']:
         if out['sign_mismatch']:
             out['outcome'] = 'signs_only'
+            if r0.get('mergeSignsOnly') is True:
+                out['outcome'] = 'signs_merge'
+                valued = [c for c in out['criteria'] if c['fraction'] is not None]
+                if not valued:
+                    out['blocked'] = 'nonfinite'
+                    return out
+                best = min(valued, key=lambda c: (c['fraction'], 0 if c['side'] == 'left' else 1))
+                out['side'], out['score'] = best['side'], best['fraction']
+                if not allow_gap_crossing and row[f'gap_{out["side"]}']:
+                    out['blocked'] = 'gap'
         return out
     out['flank_conflict'] = len({c['side'] for c in passing}) > 1
     fractions = [c['fraction'] for c in passing]
     out['score'] = max(fractions) if r0['combine'] == 'all' else min(fractions)
     best = min(passing, key=lambda c: (c['fraction'], 0 if c['side'] == 'left' else 1))
-    out['side'] = best['side'] if out['flank_conflict'] else passing[0]['side']
+    out['side'] = best['side']
     if out['sign_mismatch'] and not r0['mergeSignMismatch']:
         out['held_back'].append('signs')
-    if out['flank_conflict'] and not r0['mergeFlankConflict']:
-        out['held_back'].append('flanks')
-    if out['held_back']:
         out['outcome'] = 'held_back'
         return out
     out['outcome'] = 'would_merge'
@@ -214,37 +236,59 @@ def evaluate_rule0(row, r0, allow_gap_crossing=False):
 
 
 def evaluate_rules(rows, rules, allow_gap_crossing=False):
-    """Per score row: which rules match, which claims it, and the merge
-    direction/score or why it cannot merge. `rules` must be validated; a
-    leading Rule 0 is evaluated first and claims before user rules."""
-    r0 = rules[0] if rules and rules[0].get('type') == RULE0_TYPE else None
+    """Per score row: which rules match, which claims it (and in which phase),
+    and the merge direction/score or why it cannot merge. `rules` must be
+    validated; a leading Rule 0 is evaluated first and claims before user rules.
+    Phase 1: Rule 0 would-merge and every user-rule claim. Phase 2: Rule 0
+    signs_merge (fails the test, signs disagree) when no user rule matches."""
+    r0 = rules[0] if rules and rules[0].get('id') == RULE0_ID else None
     user = rules[1:] if r0 is not None else rules
     out = []
     for row in rows:
         r0ev = evaluate_rule0(row, r0, allow_gap_crossing) if r0 is not None else None
-        matched = ([RULE0_ID] if r0ev is not None and r0ev['outcome'] == 'would_merge' else []) + \
-            [r['id'] for r in user if all(condition_holds(c, row) for c in r['conditions'])]
-        ev = {'start': row['start'], 'end': row['end'], 'matched': matched,
-              'claimed_by': None, 'side': None, 'score': None, 'blocked': None, 'rule0': r0ev}
+        user_evals = {}
+        matched = [RULE0_ID] if r0ev is not None and r0ev['outcome'] == 'would_merge' else []
+        for r in user:
+            if r.get('type') == RULE0_TYPE:
+                e = evaluate_rule0(row, {**r, 'mergeSignsOnly': False}, allow_gap_crossing)
+                if e['outcome'] == 'would_merge':
+                    user_evals[r['id']] = e
+                    matched.append(r['id'])
+            elif all(condition_holds(c, row) for c in r['conditions']):
+                matched.append(r['id'])
+        ev = {'start': row['start'], 'end': row['end'], 'matched': matched, 'claimed_by': None, 'phase': None,
+              'side': None, 'score': None, 'blocked': None, 'rule0': r0ev}
         if matched and matched[0] == RULE0_ID:
-            ev.update(claimed_by=RULE0_ID, side=r0ev['side'], score=r0ev['score'], blocked=r0ev['blocked'])
+            ev.update(claimed_by=RULE0_ID, phase=1, side=r0ev['side'], score=r0ev['score'], blocked=r0ev['blocked'])
         elif matched:
             rule = next(r for r in user if r['id'] == matched[0])
-            ev['claimed_by'] = rule['id']
-            metric = rule['mergeInto']['metric']
-            estimator = rule['mergeInto'].get('estimator', 'mean')
-            left = row_score(row, 'left', metric, estimator)
-            right = row_score(row, 'right', metric, estimator)
-            if left is None or right is None:
-                ev['blocked'] = 'nonfinite'
+            ev.update(claimed_by=rule['id'], phase=1)
+            if rule['id'] in user_evals:
+                e = user_evals[rule['id']]
+                ev.update(side=e['side'], score=e['score'], blocked=e['blocked'])
             else:
-                side = 'left' if abs(left) <= abs(right) else 'right'
-                ev['side'] = side
-                ev['score'] = abs(left) if side == 'left' else abs(right)
-                if not allow_gap_crossing and row[f'gap_{side}']:
-                    ev['blocked'] = 'gap'
+                metric = rule['mergeInto']['metric']
+                estimator = rule['mergeInto'].get('estimator', 'mean')
+                left = row_score(row, 'left', metric, estimator)
+                right = row_score(row, 'right', metric, estimator)
+                if left is None or right is None:
+                    ev['blocked'] = 'nonfinite'
+                else:
+                    side = 'left' if abs(left) <= abs(right) else 'right'
+                    ev['side'] = side
+                    ev['score'] = abs(left) if side == 'left' else abs(right)
+                    if not allow_gap_crossing and row[f'gap_{side}']:
+                        ev['blocked'] = 'gap'
+        elif r0ev is not None and r0ev['outcome'] == 'signs_merge':
+            ev.update(matched=[RULE0_ID], claimed_by=RULE0_ID, phase=2, side=r0ev['side'],
+                      score=r0ev['score'], blocked=r0ev['blocked'])
         out.append(ev)
     return out
+
+
+def _candidate_key(order, ev):
+    """Merge-candidate ordering: phase, claiming-rule index, score, start bin."""
+    return (ev['phase'], order[ev['claimed_by']], ev['score'], ev['start'])
 
 
 def run_rule_merge(profile, boundaries, n_bins, var_start, var_end, chrom_offset,
@@ -252,7 +296,9 @@ def run_rule_merge(profile, boundaries, n_bins, var_start, var_end, chrom_offset
     """Greedy exploratory merge driven by user-defined rules, one merge per
     step. Each step recomputes every score (pooled phi included) for the
     current partition, evaluates the enabled rules, and merges the candidate
-    with the lowest (claiming-rule index, weaker-flank |score|, start bin).
+    with the lowest (phase, claiming-rule index, score, start bin): phase 1
+    (Rule 0 would-merge, Rule 0 copies, user rules) always runs before phase 2
+    (Rule 0 signs-disagree merges, only with mergeSignsOnly).
     Gap-blocked and non-finite candidates are skipped, never redirected.
     Stops when no candidate remains."""
     enabled = validate_rules(rules)
@@ -261,7 +307,7 @@ def run_rule_merge(profile, boundaries, n_bins, var_start, var_end, chrom_offset
     segs = hm.flat_partition(boundaries, n_bins)
     original = [{'start': s, 'end': e} for s, e in segs]
     steps = [{'step': 0, 'segments': list(original), 'removed_boundary': None, 'merged_interval': None,
-              'segment': None, 'rule_id': None, 'rule_name': None, 'side': None, 'score': None, 'phi': None}]
+              'segment': None, 'rule_id': None, 'rule_name': None, 'phase': None, 'side': None, 'score': None, 'phi': None}]
     for _ in range(max_steps + 1):
         phi, rows = hm.score_rows(profile, segs, var_start, var_end, chrom_offset)
         evals = evaluate_rules(rows, enabled, allow_gap_crossing)
@@ -269,7 +315,7 @@ def run_rule_merge(profile, boundaries, n_bins, var_start, var_end, chrom_offset
                       if ev['claimed_by'] is not None and ev['blocked'] is None]
         if not candidates:
             break
-        i, ev = min(candidates, key=lambda t: (order[t[1]['claimed_by']], t[1]['score'], t[1]['start']))
+        i, ev = min(candidates, key=lambda t: _candidate_key(order, t[1]))
         a = i - 1 if ev['side'] == 'left' else i
         removed = segs[a][1]
         merged = (segs[a][0], segs[a + 1][1])
@@ -278,7 +324,9 @@ def run_rule_merge(profile, boundaries, n_bins, var_start, var_end, chrom_offset
             'step': len(steps), 'segments': [{'start': s, 'end': e} for s, e in segs],
             'removed_boundary': removed, 'merged_interval': [merged[0], merged[1]],
             'segment': [ev['start'], ev['end']], 'rule_id': ev['claimed_by'],
-            'rule_name': names[ev['claimed_by']], 'side': ev['side'], 'score': ev['score'], 'phi': phi,
+            'rule_name': names[ev['claimed_by']] if ev['phase'] == 1
+            else f"{names[RULE0_ID]} · signs disagree, fails Rule 0 (last phase)",
+            'phase': ev['phase'], 'side': ev['side'], 'score': ev['score'], 'phi': phi,
         })
     else:
         raise RuntimeError('Merge did not terminate within max_steps')

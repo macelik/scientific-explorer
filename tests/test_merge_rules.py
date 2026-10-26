@@ -32,9 +32,16 @@ GOOD = _rule('ok', [WEAK_SRD_PHI])
 def _rule0(**kw):
     r = {'id': 'rule0', 'type': 'flank_threshold', 'name': 'Rule 0', 'criteria': ['delta_mean'],
          'combine': 'all', 'tau': 0.5, 'srdRef': 3.3, 'maxBins': 100,
-         'mergeSignMismatch': False, 'mergeFlankConflict': False,
+         'mergeSignMismatch': False, 'mergeSignsOnly': False,
          'hatch': {'pattern': 'x', 'color': '#b91c1c'}}
     r.update(kw)
+    return r
+
+
+def _copy(rid='c1', enabled=True, **kw):
+    r = _rule0(**kw)
+    r.pop('mergeSignsOnly')
+    r.update(id=rid, name=rid, enabled=enabled)
     return r
 
 
@@ -286,7 +293,7 @@ def test_run_rule_merge_echoes_settings_and_step_zero_shape():
     assert out['settings'] == {'rules': rules, 'allow_gap_crossing': False}
     assert out['steps'][0] == {'step': 0, 'segments': out['original'], 'removed_boundary': None,
                                'merged_interval': None, 'segment': None, 'rule_id': None,
-                               'rule_name': None, 'side': None, 'score': None, 'phi': None}
+                               'rule_name': None, 'phase': None, 'side': None, 'score': None, 'phi': None}
     with pytest.raises(ValueError):
         mr.run_rule_merge(profile, bounds, n, vs, ve, 0, [])
 
@@ -359,6 +366,7 @@ def test_python_evaluator_matches_parity_fixture():
         for g, exp in zip(got, case['expected']):
             assert (g['start'], g['end'], g['matched'], g['claimed_by'], g['side'], g['blocked']) == \
                 (exp['start'], exp['end'], exp['matched'], exp['claimedBy'], exp['side'], exp['blocked']), case['name']
+            assert g['phase'] == exp['phase'], case['name']
             assert (g['score'] is None) == (exp['score'] is None), case['name']
             if exp['score'] is not None:
                 assert g['score'] == pytest.approx(exp['score']), case['name']
@@ -435,24 +443,93 @@ def test_rule0_signs_only_when_test_fails():
     assert ev['passed'] is False and ev['outcome'] == 'signs_only' and ev['score'] is None
 
 
-def test_rule0_flank_conflict_direction_and_switch():
-    # delta_mean picks right (0.1/0.5 = 0.2), srd_phi picks left (0.33/3.3 = 0.1): conflict, smaller fraction is srd_phi -> left
-    row = _r0_row(delta_mean_left=0.4, delta_mean_right=0.1, srd_phi_left=0.33, srd_phi_right=3.0)
+def test_flank_conflict_always_merges_toward_smallest_fraction():
     both = ['delta_mean', 'srd_phi']
+    # delta_mean picks left (0.1/0.5 = 0.2); srd_phi picks right (0.33/3.3 = 0.1)
+    row = _row(delta_mean_left=0.1, delta_mean_right=0.4, srd_phi_left=3.0, srd_phi_right=0.33)
     ev = mr.evaluate_rule0(row, _rule0(criteria=both))
-    assert ev['flank_conflict'] is True and ev['held_back'] == ['flanks'] and ev['outcome'] == 'held_back'
-    assert ev['side'] == 'left' and ev['score'] == pytest.approx(0.2)
-    ev = mr.evaluate_rule0(row, _rule0(criteria=both, mergeFlankConflict=True))
-    assert ev['outcome'] == 'would_merge' and ev['side'] == 'left'
-
-
-def test_rule0_both_switches_needed_when_both_disagree():
-    row = _r0_row(delta_mean_left=0.4, delta_mean_right=0.1, srd_phi_left=0.33, srd_phi_right=-3.0)
-    both = ['delta_mean', 'srd_phi']
-    assert mr.evaluate_rule0(row, _rule0(criteria=both))['held_back'] == ['signs', 'flanks']
-    assert mr.evaluate_rule0(row, _rule0(criteria=both, mergeSignMismatch=True))['held_back'] == ['flanks']
-    ev = mr.evaluate_rule0(row, _rule0(criteria=both, mergeSignMismatch=True, mergeFlankConflict=True))
+    assert ev['flank_conflict'] is True
+    assert ev['held_back'] == []
     assert ev['outcome'] == 'would_merge'
+    assert ev['side'] == 'right'
+
+
+def test_merge_flank_conflict_key_is_ignored():
+    row = _row(delta_mean_left=0.1, delta_mean_right=0.4)
+    rules = mr.validate_rules([_rule0(mergeFlankConflict=False)])
+    assert mr.evaluate_rule0(row, rules[0])['outcome'] == 'would_merge'
+
+
+def test_signs_only_display_when_option_off():
+    row = _row(delta_mean_left=0.9, delta_mean_right=-0.8, srd_phi_left=-2.0, srd_phi_right=2.0)
+    ev = mr.evaluate_rule0(row, _rule0())
+    assert (ev['outcome'], ev['side'], ev['score']) == ('signs_only', None, None)
+
+
+def test_signs_merge_direction_and_score_from_failing_criteria():
+    both = ['delta_mean', 'srd_phi']
+    # fails: delta_mean min 0.8 >= 0.5; srd_phi min 2.0 < 3.3 passes, but combine=all needs both
+    row = _row(delta_mean_left=0.9, delta_mean_right=-0.8, srd_phi_left=-2.0, srd_phi_right=2.5)
+    ev = mr.evaluate_rule0(row, _rule0(criteria=both, mergeSignsOnly=True))
+    assert ev['passed'] is False
+    assert ev['outcome'] == 'signs_merge'
+    # fractions: delta_mean right 0.8/0.5 = 1.6; srd_phi left 2.0/3.3 = 0.606 -> left
+    assert ev['side'] == 'left'
+    assert ev['score'] == pytest.approx(2.0 / 3.3)
+    assert ev['blocked'] is None
+
+
+def test_signs_merge_gap_and_nonfinite():
+    row = _row(gap_left=True, delta_mean_left=0.9, delta_mean_right=-1.0, srd_phi_left=-2.0, srd_phi_right=2.0)
+    assert mr.evaluate_rule0(row, _rule0(mergeSignsOnly=True))['blocked'] == 'gap'
+    assert mr.evaluate_rule0(row, _rule0(mergeSignsOnly=True), allow_gap_crossing=True)['blocked'] is None
+    row2 = _row(srd_phi_left=-2.0, srd_phi_right=2.0)  # delta_mean missing on both sides
+    ev = mr.evaluate_rule0(row2, _rule0(mergeSignsOnly=True))
+    assert (ev['outcome'], ev['side'], ev['blocked']) == ('signs_merge', None, 'nonfinite')
+
+
+def test_held_back_is_not_signs_merge():
+    row = _row(delta_mean_left=0.1, delta_mean_right=0.4, srd_phi_left=-1.0, srd_phi_right=1.0)
+    ev = mr.evaluate_rule0(row, _rule0(mergeSignsOnly=True))
+    assert (ev['outcome'], ev['held_back']) == ('held_back', ['signs'])
+
+
+def test_evaluate_rules_phases():
+    r0 = _rule0(mergeSignsOnly=True)
+    merge_row = _row(start=10, end=20, delta_mean_left=0.1, delta_mean_right=0.4)
+    signs_row = _row(start=20, end=30, delta_mean_left=0.9, delta_mean_right=-0.8, srd_phi_left=-2.0, srd_phi_right=2.0)
+    evs = mr.evaluate_rules([merge_row, signs_row], mr.validate_rules([r0]))
+    assert [(e['claimed_by'], e['phase'], e['matched']) for e in evs] == [('rule0', 1, ['rule0']), ('rule0', 2, ['rule0'])]
+
+
+def test_user_rule_claims_signs_merge_segment_in_phase_1():
+    r0 = _rule0(mergeSignsOnly=True)
+    user = _rule('u', [{'kind': 'sign_mismatch', 'metric': 'srd_phi', 'estimator': 'mean'}])
+    signs_row = _row(start=20, end=30, delta_mean_left=0.9, delta_mean_right=-0.8, srd_phi_left=-2.0, srd_phi_right=2.5)
+    ev = mr.evaluate_rules([signs_row], mr.validate_rules([r0, user]))[0]
+    assert (ev['claimed_by'], ev['phase'], ev['matched']) == ('u', 1, ['u'])
+    assert ev['rule0']['outcome'] == 'signs_merge'
+
+
+def test_rule0_copy_matches_on_would_merge_and_claims_with_its_side():
+    copy = _copy(criteria=['srd_phi'], srdRef=1.0)
+    row = _row(srd_phi_left=0.9, srd_phi_right=0.2, delta_mean_left=5.0, delta_mean_right=5.0)
+    ev = mr.evaluate_rules([row], mr.validate_rules([_rule0(), copy]))[0]
+    assert (ev['matched'], ev['claimed_by'], ev['side'], ev['phase']) == (['c1'], 'c1', 'right', 1)
+    assert ev['score'] == pytest.approx(0.2)
+
+
+def test_disabled_copy_is_ignored_even_if_invalid():
+    rules = mr.validate_rules([_rule0(), _copy(enabled=False, criteria=[])])
+    assert [r['id'] for r in rules] == ['rule0']
+
+
+def test_copy_ignores_merge_signs_only():
+    copy = _copy(criteria=['delta_mean'])
+    copy['mergeSignsOnly'] = True
+    row = _row(delta_mean_left=0.9, delta_mean_right=-0.8, srd_phi_left=-2.0, srd_phi_right=2.0)
+    ev = mr.evaluate_rules([row], mr.validate_rules([_rule0(), copy]))[0]
+    assert ev['matched'] == [] and ev['claimed_by'] is None
 
 
 def test_rule0_size_limit_and_gap_block():
@@ -496,7 +573,10 @@ def test_evaluate_rules_rule0_claims_before_user_rules():
     [_rule0(maxBins=2.5)],
     [_rule0(maxBins=True)],
     [_rule0(mergeSignMismatch='false')],
-    [_rule0(mergeFlankConflict=None)],
+    [_rule0(mergeSignsOnly='yes')],
+    [_rule0(), _copy(rid='rule0')],
+    [_rule0(), _copy(tau=0)],
+    [_rule0(), {**_copy(), 'type': 'bogus'}],
     [_rule0(hatch={'pattern': '#', 'color': '#000'})],
     [{**_rule0(), 'type': 'conditions'}],
 ])
@@ -509,6 +589,49 @@ def test_validate_rules_rule0_alone_is_valid_and_first():
     assert mr.validate_rules([INERT_RULE0]) == [INERT_RULE0]
     off = _rule('off', [], enabled=False)
     assert [r['id'] for r in mr.validate_rules([INERT_RULE0, off, GOOD])] == ['rule0', 'ok']
+
+
+def _step_profile(levels, width=5):
+    return np.concatenate([np.full(width, float(v)) for v in levels])
+
+
+def _run_steps(levels):
+    profile = _step_profile(levels)
+    n = len(profile)
+    vs = np.arange(n, dtype=float) * 100
+    ve = vs + 100
+    return mr.run_rule_merge(profile, [5 * k for k in range(1, len(levels))], n, vs, ve, 0,
+                             [_rule0(tau=0.2, maxBins=5, mergeSignMismatch=False, mergeSignsOnly=True)])['steps']
+
+
+def test_run_merges_phase1_before_lower_score_phase2():
+    # 5-bin segments. Searched levels: the first merge is Rule 0 (phase 1, score 0.209); the
+    # second is a signs-disagree merge (phase 2, score 3.685) that runs only after phase 1 is exhausted.
+    steps = _run_steps([10.2, 10.5, 20, 10.2, 30, 5, 12, 20])
+    phases = [s['phase'] for s in steps[1:]]
+    assert steps[0]['phase'] is None
+    assert 1 in phases and 2 in phases
+    assert phases == sorted(phases), f'phase 2 ran before phase 1 finished: {phases}'
+    k = phases.index(2) + 1
+    assert steps[k]['rule_name'] == 'Rule 0 · signs disagree, fails Rule 0 (last phase)'
+    assert steps[1]['rule_name'] == 'Rule 0'
+
+
+def test_phase1_candidate_created_by_phase2_goes_next():
+    # Searched levels: a phase-2 merge of [5, 10) into its right neighbour creates a segment that
+    # passes Rule 0, and that phase-1 merge runs next, so the phase list is not sorted.
+    steps = _run_steps([40, 12, 10.2, 10, 10.2, 10.5, 10.5, 10.5])
+    phases = [s['phase'] for s in steps[1:]]
+    assert phases == [1, 1, 2, 1]
+    assert any(a == 2 and b == 1 for a, b in zip(phases, phases[1:]))
+
+
+def test_candidate_key_orders_phase_before_rule_and_score():
+    order = {'rule0': 0, 'u': 1}
+    p1 = {'phase': 1, 'claimed_by': 'u', 'score': 9.0, 'start': 50}
+    p2 = {'phase': 2, 'claimed_by': 'rule0', 'score': 0.1, 'start': 10}
+    assert mr._candidate_key(order, p1) < mr._candidate_key(order, p2)
+    assert mr._candidate_key(order, p2) == (2, 0, 0.1, 10)
 
 
 def _two_small_bumps(gap_at=None):
