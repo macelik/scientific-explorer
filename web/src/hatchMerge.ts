@@ -25,7 +25,7 @@ export interface HatchScoresResult {
 export interface MergeStep {
   step: number; segments: { start: number; end: number }[]
   removed_boundary: number | null; merged_interval: [number, number] | null
-  segment: [number, number] | null; rule_id: string | null; rule_name: string | null
+  segment: [number, number] | null; rule_id: string | null; rule_name: string | null; phase: 1 | 2 | null
   side: 'left' | 'right' | null; score: number | null; phi: number | null
 }
 export interface MergeSettings { rules: AnyRule[]; allow_gap_crossing: boolean }

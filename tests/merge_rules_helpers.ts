@@ -2,7 +2,7 @@
 // Run with: web/node_modules/.bin/esbuild tests/merge_rules_helpers.ts --bundle --format=esm --platform=node --outfile=tests/_bundle/merge_rules_helpers.mjs
 //           node tests/_bundle/merge_rules_helpers.mjs
 import fixture from './fixtures/merge_rules_parity.json'
-import { canRunMerge, defaultMergeInto, evaluateRules, makeRule, migrateHatchLayers, ruleProblems, rule0FromSeg, rule0Problems, rule0CaseCounts, describeRule0, type AnyRule, type MergeRule, type Rule0 } from '../web/src/mergeRules'
+import { canRunMerge, criterionSideLine, defaultMergeInto, evaluateRules, makeRule, makeRule0Copy, migrateHatchLayers, ruleProblems, rule0FromSeg, rule0Problems, rule0CaseCounts, describeRule0, type AnyRule, type MergeRule, type Rule0 } from '../web/src/mergeRules'
 
 let failures = 0
 function eq(actual: unknown, expected: unknown, label: string) {
@@ -18,7 +18,7 @@ for (const c of fx.cases) {
   c.expected.forEach((exp: any, i: number) => {
     const g = got[i]
     const same = g.start === exp.start && g.end === exp.end && JSON.stringify(g.matched) === JSON.stringify(exp.matched) &&
-      g.claimedBy === exp.claimedBy && g.side === exp.side && g.blocked === exp.blocked && close(g.score, exp.score)
+      g.claimedBy === exp.claimedBy && g.phase === exp.phase && g.side === exp.side && g.blocked === exp.blocked && close(g.score, exp.score)
     if (!same) { failures++; console.error(`FAIL parity ${c.name} row ${i}: got ${JSON.stringify(g)}, expected ${JSON.stringify(exp)}`) }
     else console.log(`ok parity ${c.name} row ${i}`)
     if (exp.rule0) {
@@ -55,7 +55,7 @@ eq(ruleProblems({ ...base, conditions: [] }), ['add at least one condition'], 'e
 eq(ruleProblems({ ...base, conditions: [{ kind: 'weak_flank', metric: 'srd_phi', estimator: 'mean', threshold: 0 }] }).length, 1, 'zero threshold')
 eq(ruleProblems({ ...base, conditions: [{ kind: 'weak_flank', metric: 'srd_phi', estimator: 'mean', threshold: NaN }] }).length, 1, 'cleared threshold box (NaN)')
 eq(ruleProblems({ ...base, conditions: [{ kind: 'max_size', maxBins: 2.5 }] }).length, 1, 'fractional size limit')
-const r0 = rule0FromSeg({ criteria: ['delta_mean', 'srd_phi'], combine: 'all', tau: 0.2, srdRef: 3.3, smallMax: 100, mergeSignMismatch: false, mergeFlankConflict: false })
+const r0 = rule0FromSeg({ criteria: ['delta_mean', 'srd_phi'], combine: 'all', tau: 0.2, srdRef: 3.3, smallMax: 100, mergeSignMismatch: false, mergeSignsOnly: false })
 eq(canRunMerge(r0, []), true, 'Rule 0 alone can run')
 eq(canRunMerge(r0, [{ ...base, enabled: false }]), true, 'disabled user rules do not block')
 eq(canRunMerge(r0, [base, { ...base, id: 'b', conditions: [] }]), false, 'an incomplete enabled rule blocks the run')
@@ -81,9 +81,19 @@ const fx2 = fixture as any
 eq(evaluateRules(fx2.rows, [{ ...r0, tau: NaN }], false).map((e) => e.rule0), [null, null, null, null, null], 'an invalid Rule 0 is ignored')
 const anyCase = fx2.cases.find((c: any) => c.name === 'rule0_any_signs_allowed_gap_blocks')
 const heldCase = fx2.cases.find((c: any) => c.name === 'rule0_all_mean_srd_held_back_by_signs')
-eq(rule0CaseCounts({ a: evaluateRules(fx2.rows, anyCase.rules, false) }), { wouldMerge: 3, signs: 3, flanks: 0, heldBack: 0, signsOnly: 0, gap: 1 }, 'case counts (any, signs allowed)')
-eq(rule0CaseCounts({ a: evaluateRules(fx2.rows, heldCase.rules, false) }), { wouldMerge: 0, signs: 0, flanks: 0, heldBack: 2, signsOnly: 1, gap: 0 }, 'case counts (held back)')
-eq(describeRule0(r0), 'all of: min |Δlog2FC mean| flank < 0.2, min |SRD/√φ| flank < 3.3 · segments ≤ 100 bins · signs disagree: held back · flanks disagree: held back', 'describeRule0')
+eq(rule0CaseCounts({ a: evaluateRules(fx2.rows, anyCase.rules, false) }), { wouldMerge: 3, signs: 3, heldBack: 0, signsOnly: 0, gap: 1, signsMerge: 0, signsMergeBlocked: 0 }, 'case counts (any, signs allowed)')
+eq(rule0CaseCounts({ a: evaluateRules(fx2.rows, heldCase.rules, false) }), { wouldMerge: 0, signs: 0, heldBack: 2, signsOnly: 1, gap: 0, signsMerge: 0, signsMergeBlocked: 0 }, 'case counts (held back)')
+eq(describeRule0(r0), 'all of: min |Δlog2FC mean| flank < 0.2, min |SRD/√φ| flank < 3.3 · segments ≤ 100 bins · signs disagree: held back · fails Rule 0 with signs disagreeing: not merged', 'describeRule0')
+
+const copy = makeRule0Copy({ criteria: ['srd_phi'], combine: 'all', tau: 0.2, srdRef: 1.0, smallMax: 100, mergeSignMismatch: true, mergeSignsOnly: true }, [])
+eq([copy.type, copy.name, copy.enabled, copy.maxBins, copy.hatch.pattern, 'mergeSignsOnly' in copy, copy.id !== 'rule0'],
+  ['flank_threshold', 'Rule 0 copy', true, 100, 'x', false, true], 'makeRule0Copy shape')
+eq(canRunMerge(r0, [{ ...copy, tau: NaN }]), false, 'enabled copy with cleared τ blocks the run')
+eq(canRunMerge(r0, [{ ...copy, tau: NaN, enabled: false }]), true, 'disabled invalid copy does not block')
+eq(evaluateRules(fx.rows, [r0, { ...copy, srdRef: NaN }], false).every((e) => !e.matched.includes(copy.id)), true, 'invalid copy never hatches')
+const row0 = fx.rows[0]
+eq(criterionSideLine(row0, { criterion: 'delta_mean', side: 'left', value: 0.07, threshold: 0.2, fraction: 0.35, passed: true }),
+  'min |Δlog2FC mean| flank < 0.2: L 0.070 ✓ · R −0.900 ✗ → left (fraction 0.35) pass', 'per-side tooltip line')
 
 if (failures) { console.error(`${failures} failure(s)`); process.exit(1) }
 console.log('all merge_rules_helpers checks passed')

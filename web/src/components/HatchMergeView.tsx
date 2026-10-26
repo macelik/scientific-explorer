@@ -4,7 +4,7 @@ import MergeRulesEditor from './MergeRulesEditor'
 import { useIntegration } from '../integrationStore'
 import { useStore } from '../store'
 import { runHatchMerge, hatchShapes, type MergeResult } from '../hatchMerge'
-import { canRunMerge, describeCondition, describeRule0, isRule0, rule0FromSeg } from '../mergeRules'
+import { canRunMerge, describeCondition, describeRule0, isFlankRule, isRule0, rule0FromSeg } from '../mergeRules'
 
 function download(text: string, name: string, type: string) {
   const url = URL.createObjectURL(new Blob([text], { type })); const a = document.createElement('a')
@@ -40,7 +40,7 @@ export default function HatchMergeView() {
   }
   const step = result?.steps[stepIdx]
   // Describe the displayed run from result.settings, never from the live editor state.
-  const ruleSummary = result ? result.settings.rules.filter((r) => isRule0(r) || r.enabled).map((r) => isRule0(r) ? `Rule 0: ${describeRule0(r)}` : `${r.name}: ${r.conditions.map(describeCondition).join(' AND ')}`).join(' | ') : ''
+  const ruleSummary = result ? result.settings.rules.filter((r) => isRule0(r) || r.enabled).map((r) => isRule0(r) ? `Rule 0: ${describeRule0(r)}` : isFlankRule(r) ? `${r.name}: ${describeRule0(r)}` : `${r.name}: ${r.conditions.map(describeCondition).join(' AND ')}`).join(' | ') : ''
 
   const layout = { height: 260, margin: { l: 60, r: 20, t: 30, b: 45 }, paper_bgcolor: '#fff', plot_bgcolor: '#fff', font: { family: 'system-ui', size: 12 }, hovermode: presentation ? false : 'closest' as const }
   const segmentTrace = (segs: { start: number; end: number }[], startBp: number[], endBp: number[], color: string, name: string) => ({

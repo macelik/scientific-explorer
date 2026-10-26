@@ -28,6 +28,10 @@ const old = { chrom: 'chr9', metric: 'log2fc', effectMetric: 'delta_trim', flank
 eq(migrateSegSettings(old), { chrom: 'chr9', tau: 0.3, labels: { cn: true, signs: false }, colorMetric: 'delta_mean' }, 'old session migrates')
 eq(migrateSegSettings({ colorMetric: 'srd', labels: { signs: true } }), { colorMetric: 'srd', labels: { signs: true } }, 'new session passes through')
 eq(migrateSegSettings(undefined), {}, 'missing seg -> empty')
+{
+  const m = migrateSegSettings({ mergeFlankConflict: true, labels: { breakpoints: false, depthColor: false, signs: true } })
+  eq([('mergeFlankConflict' in m), !!m.mergeSignsOnly, 'breakpoints' in m.labels, 'depthColor' in m.labels, m.labels.signs], [false, false, false, false, true], 'drops flank-conflict and retired label layers')
+}
 
 const base = { selected_for_significance: true, accepted: false, rejection_reasons: null, p_local: 0.002997, p_global: null }
 eq(derivedRejectionReason(base), 'local permutation p = 0.003 ≥ 0.001 (cutoff inferred: all accepted candidates have p < 0.001)', 'local p reason')

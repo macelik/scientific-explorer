@@ -20,7 +20,7 @@ export interface MergeRule {
 }
 export type PresetName = 'blank' | 'weak_flank' | 'sign_mismatch' | 'ambiguous' | 'small'
 export interface SegmentEval {
-  start: number; end: number; matched: string[]; claimedBy: string | null
+  start: number; end: number; matched: string[]; claimedBy: string | null; phase: 1 | 2 | null
   side: 'left' | 'right' | null; score: number | null; blocked: null | 'gap' | 'nonfinite'
   rule0: Rule0Eval | null
 }
@@ -31,19 +31,22 @@ export const CRITERION_LABEL: Record<Rule0Criterion, string> = {
   delta_median: 'min |Δlog2FC median| flank', delta_mean: 'min |Δlog2FC mean| flank',
   delta_iqr_mean: 'min |Δlog2FC IQR-mean| flank', srd_phi: 'min |SRD/√φ| flank',
 }
-export const RULE0_COLOR = '#b91c1c', SIGN_COLOR = '#d97706', FLANK_COLOR = '#7c3aed'
-export interface Rule0 {
-  id: 'rule0'; type: 'flank_threshold'; name: string; criteria: Rule0Criterion[]; combine: 'all' | 'any'
-  tau: number; srdRef: number; maxBins: number; mergeSignMismatch: boolean; mergeFlankConflict: boolean
+export const RULE0_COLOR = '#b91c1c', SIGN_COLOR = '#d97706', SIGNS_MERGE_COLOR = '#111827'
+export interface FlankRule {
+  id: string; type: 'flank_threshold'; name: string; enabled?: boolean; criteria: Rule0Criterion[]; combine: 'all' | 'any'
+  tau: number; srdRef: number; maxBins: number; mergeSignMismatch: boolean; mergeSignsOnly?: boolean
   hatch: { pattern: HatchPattern; color: string }
 }
-export type AnyRule = Rule0 | MergeRule
-export const isRule0 = (r: AnyRule): r is Rule0 => (r as Rule0).type === 'flank_threshold'
+export type Rule0 = FlankRule & { id: 'rule0'; mergeSignsOnly: boolean }
+export type UserRule = MergeRule | FlankRule
+export type AnyRule = Rule0 | UserRule
+export const isRule0 = (r: AnyRule): r is Rule0 => r.id === 'rule0'
+export const isFlankRule = (r: AnyRule): r is FlankRule => r.type === 'flank_threshold'
 export interface CriterionEval { criterion: Rule0Criterion; side: 'left' | 'right' | null; value: number | null; threshold: number; fraction: number | null; passed: boolean }
 export interface Rule0Eval {
   start: number; end: number; evaluated: boolean; criteria: CriterionEval[]; passed: boolean
-  signMismatch: boolean; flankConflict: boolean; heldBack: ('signs' | 'flanks')[]
-  outcome: 'none' | 'would_merge' | 'held_back' | 'signs_only'; side: 'left' | 'right' | null; score: number | null; blocked: null | 'gap'
+  signMismatch: boolean; flankConflict: boolean; heldBack: 'signs'[]
+  outcome: 'none' | 'would_merge' | 'held_back' | 'signs_only' | 'signs_merge'; side: 'left' | 'right' | null; score: number | null; blocked: null | 'gap' | 'nonfinite'
 }
 
 const RULE_COLORS = ['#b91c1c', '#1d4ed8', '#047857', '#7c3aed', '#b45309', '#0f766e']
@@ -101,7 +104,7 @@ function smallerSide(l: number | null, r: number | null): 'left' | 'right' | nul
   return Math.abs(l) <= Math.abs(r) ? 'left' : 'right'
 }
 
-export function evaluateRule0(row: HatchScoreRow, r0: Rule0, allowGapCrossing: boolean): Rule0Eval {
+export function evaluateRule0(row: HatchScoreRow, r0: FlankRule, allowGapCrossing: boolean): Rule0Eval {
   const out: Rule0Eval = { start: row.start, end: row.end, evaluated: false, criteria: [], passed: false, signMismatch: false,
     flankConflict: false, heldBack: [], outcome: 'none', side: null, score: null, blocked: null }
   if (row.end - row.start > r0.maxBins) return out
@@ -117,60 +120,95 @@ export function evaluateRule0(row: HatchScoreRow, r0: Rule0, allowGapCrossing: b
   out.passed = r0.combine === 'all' ? passing.length === out.criteria.length : passing.length > 0
   const sl = criterionValue(row, 'left', 'srd_phi'), sr = criterionValue(row, 'right', 'srd_phi')
   out.signMismatch = sl !== null && sr !== null && sl * sr < 0
-  if (!out.passed) { if (out.signMismatch) out.outcome = 'signs_only'; return out }
+  const leftFirst = (s: 'left' | 'right' | null) => (s === 'left' ? 0 : 1)
+  const byFraction = (a: CriterionEval, b: CriterionEval) => (a.fraction as number) - (b.fraction as number) || leftFirst(a.side) - leftFirst(b.side)
+  const gapBlocked = (side: 'left' | 'right' | null) => !allowGapCrossing && !!(side === 'left' ? row.gap_left : row.gap_right)
+  if (!out.passed) {
+    if (out.signMismatch) {
+      out.outcome = 'signs_only'
+      if (r0.mergeSignsOnly === true) {
+        out.outcome = 'signs_merge'
+        const valued = out.criteria.filter((c) => c.fraction !== null)
+        if (!valued.length) { out.blocked = 'nonfinite'; return out }
+        const best = [...valued].sort(byFraction)[0]
+        out.side = best.side; out.score = best.fraction
+        if (gapBlocked(out.side)) out.blocked = 'gap'
+      }
+    }
+    return out
+  }
   out.flankConflict = new Set(passing.map((c) => c.side)).size > 1
   const fractions = passing.map((c) => c.fraction as number)
   out.score = r0.combine === 'all' ? Math.max(...fractions) : Math.min(...fractions)
-  const leftFirst = (s: 'left' | 'right' | null) => (s === 'left' ? 0 : 1)
-  const best = [...passing].sort((a, b) => (a.fraction as number) - (b.fraction as number) || leftFirst(a.side) - leftFirst(b.side))[0]
-  out.side = out.flankConflict ? best.side : passing[0].side
-  if (out.signMismatch && !r0.mergeSignMismatch) out.heldBack.push('signs')
-  if (out.flankConflict && !r0.mergeFlankConflict) out.heldBack.push('flanks')
-  if (out.heldBack.length) { out.outcome = 'held_back'; return out }
+  out.side = [...passing].sort(byFraction)[0].side
+  if (out.signMismatch && !r0.mergeSignMismatch) { out.heldBack.push('signs'); out.outcome = 'held_back'; return out }
   out.outcome = 'would_merge'
-  if (!allowGapCrossing && (out.side === 'left' ? row.gap_left : row.gap_right)) out.blocked = 'gap'
+  if (gapBlocked(out.side)) out.blocked = 'gap'
   return out
 }
 
-export function rule0Problems(r0: Rule0): string[] {
+export function flankRuleProblems(r: FlankRule): string[] {
   const p: string[] = []
-  if (!r0.criteria.length) p.push('check at least one criterion')
-  if (!(Number.isFinite(r0.tau) && r0.tau > 0)) p.push('τ must be a positive number')
-  if (!(Number.isFinite(r0.srdRef) && r0.srdRef > 0)) p.push('SRD/√φ ref must be a positive number')
-  if (!(Number.isInteger(r0.maxBins) && r0.maxBins >= 1)) p.push('size limit must be a whole number ≥ 1')
+  if (!r.criteria.length) p.push('check at least one criterion')
+  if (!(Number.isFinite(r.tau) && r.tau > 0)) p.push('τ must be a positive number')
+  if (!(Number.isFinite(r.srdRef) && r.srdRef > 0)) p.push('SRD/√φ ref must be a positive number')
+  if (!(Number.isInteger(r.maxBins) && r.maxBins >= 1)) p.push('size limit must be a whole number ≥ 1')
   return p
 }
+export const rule0Problems = flankRuleProblems
 
-export function describeRule0(r0: Rule0): string {
+export function describeRule0(r0: FlankRule): string {
   const crit = r0.criteria.map((c) => `${CRITERION_LABEL[c]} < ${c === 'srd_phi' ? r0.srdRef : r0.tau}`).join(', ')
-  return `${r0.combine} of: ${crit} · segments ≤ ${r0.maxBins} bins · signs disagree: ${r0.mergeSignMismatch ? 'merged' : 'held back'} · flanks disagree: ${r0.mergeFlankConflict ? 'merged' : 'held back'}`
+  const base = `${r0.combine} of: ${crit} · segments ≤ ${r0.maxBins} bins · signs disagree: ${r0.mergeSignMismatch ? 'merged' : 'held back'}`
+  return r0.id === 'rule0' ? `${base} · fails Rule 0 with signs disagreeing: ${r0.mergeSignsOnly ? 'merged last' : 'not merged'}` : base
 }
 
-export function rule0Lines(e: Rule0Eval): string[] {
+const signed = (v: number) => v.toFixed(3).replace(/^-/, '−')
+
+/** One criterion's tooltip line with both flank values: `✓` when |value| < threshold. */
+export function criterionSideLine(row: HatchScoreRow, c: CriterionEval): string {
+  const l = criterionValue(row, 'left', c.criterion), r = criterionValue(row, 'right', c.criterion)
+  const side = (tag: string, v: number | null) => (v === null ? `${tag} N/A` : `${tag} ${signed(v)} ${Math.abs(v) < c.threshold ? '✓' : '✗'}`)
+  const head = `${CRITERION_LABEL[c.criterion]} < ${String(c.threshold)}: ${side('L', l)} · ${side('R', r)}`
+  return c.side === null || c.fraction === null ? `${head} → – fail` : `${head} → ${c.side} (fraction ${c.fraction.toFixed(2)}) ${c.passed ? 'pass' : 'fail'}`
+}
+
+export function rule0Lines(e: Rule0Eval, row: HatchScoreRow): string[] {
   if (!e.evaluated) return ['Rule 0: segment longer than the size limit, not evaluated']
-  const f = (v: number | null) => (v === null ? 'N/A' : v.toFixed(3))
-  const lines = e.criteria.map((c) => `${CRITERION_LABEL[c.criterion]}: ${c.side ?? '–'} ${f(c.value)} vs ${c.threshold} (fraction ${f(c.fraction)}) → ${c.passed ? 'pass' : 'fail'}`)
-  lines.push(`signs ${e.signMismatch ? 'disagree' : 'agree or N/A'} · criteria flanks ${e.flankConflict ? 'disagree' : 'agree'}`)
-  const outcome = e.outcome === 'would_merge' ? `would merge ${e.side}${e.blocked === 'gap' ? ', blocked by gap' : ''} (score ${f(e.score)})`
-    : e.outcome === 'held_back' ? `⚠ held back (${e.heldBack.map((h) => (h === 'signs' ? 'signs disagree' : 'flanks disagree')).join(', ')}); would merge ${e.side}`
-    : e.outcome === 'signs_only' ? 'fails the test; signs disagree' : 'fails the test'
+  const lines = e.criteria.map((c) => criterionSideLine(row, c))
+  lines.push(`SRD/√φ flank signs ${e.signMismatch ? 'disagree' : 'agree or N/A'}`)
+  if (e.flankConflict) lines.push(`criteria pick different flanks → toward ${e.side}`)
+  const gap = e.blocked === 'gap'
+  const outcome = e.outcome === 'would_merge' ? `merges into ${e.side}${gap ? ', blocked by genomic gap' : ''}`
+    : e.outcome === 'held_back' ? `⚠ held back: signs disagree (would merge into ${e.side})`
+    : e.outcome === 'signs_merge' ? `fails the test; signs disagree, merges last into ${e.side}${gap ? ', blocked by genomic gap' : e.blocked === 'nonfinite' ? ', no flank value' : ''}`
+    : e.outcome === 'signs_only' ? 'fails the test; signs disagree (not merged)' : 'fails the test'
   lines.push(`Rule 0 → ${outcome}`)
   return lines
 }
 
-export function rule0FromSeg(s: { criteria: Rule0Criterion[]; combine: 'all' | 'any'; tau: number; srdRef: number; smallMax: number; mergeSignMismatch: boolean; mergeFlankConflict: boolean }): Rule0 {
+type SegRule0Input = { criteria: Rule0Criterion[]; combine: 'all' | 'any'; tau: number; srdRef: number; smallMax: number; mergeSignMismatch: boolean; mergeSignsOnly: boolean }
+
+export function rule0FromSeg(s: SegRule0Input): Rule0 {
   return { id: 'rule0', type: 'flank_threshold', name: 'Rule 0 — shown on the tracks', criteria: [...s.criteria], combine: s.combine,
-    tau: s.tau, srdRef: s.srdRef, maxBins: s.smallMax, mergeSignMismatch: s.mergeSignMismatch, mergeFlankConflict: s.mergeFlankConflict,
+    tau: s.tau, srdRef: s.srdRef, maxBins: s.smallMax, mergeSignMismatch: s.mergeSignMismatch, mergeSignsOnly: s.mergeSignsOnly,
     hatch: { pattern: 'x', color: RULE0_COLOR } }
 }
 
+export function makeRule0Copy(s: SegRule0Input, existing: UserRule[]): FlankRule {
+  return { id: newRuleId(existing), type: 'flank_threshold', name: 'Rule 0 copy', enabled: true, criteria: [...s.criteria], combine: s.combine,
+    tau: s.tau, srdRef: s.srdRef, maxBins: s.smallMax, mergeSignMismatch: s.mergeSignMismatch,
+    hatch: { pattern: 'x', color: RULE_COLORS[existing.length % RULE_COLORS.length] } }
+}
+
 export function rule0CaseCounts(evals: Record<string, SegmentEval[]>) {
-  const c = { wouldMerge: 0, signs: 0, flanks: 0, heldBack: 0, signsOnly: 0, gap: 0 }
+  const c = { wouldMerge: 0, signs: 0, heldBack: 0, signsOnly: 0, gap: 0, signsMerge: 0, signsMergeBlocked: 0 }
   for (const list of Object.values(evals)) for (const e of list) {
     const r = e.rule0; if (!r) continue
-    if (r.outcome === 'would_merge') { if (r.blocked === 'gap') c.gap++; else c.wouldMerge++; if (r.signMismatch) c.signs++; if (r.flankConflict) c.flanks++ }
+    if (r.outcome === 'would_merge') { if (r.blocked === 'gap') c.gap++; else c.wouldMerge++; if (r.signMismatch) c.signs++ }
     else if (r.outcome === 'held_back') c.heldBack++
     else if (r.outcome === 'signs_only') c.signsOnly++
+    else if (r.outcome === 'signs_merge') { if (r.blocked) c.signsMergeBlocked++; else c.signsMerge++ }
   }
   return c
 }
@@ -185,30 +223,47 @@ export function ruleProblems(rule: MergeRule): string[] {
   return problems
 }
 
-export const activeRules = (rules: MergeRule[]): MergeRule[] => rules.filter((r) => r.enabled === true && ruleProblems(r).length === 0)
+export const userRuleProblems = (r: UserRule): string[] => (isFlankRule(r) ? flankRuleProblems(r) : ruleProblems(r))
 
-export function canRunMerge(rule0: Rule0, rules: MergeRule[]): boolean {
-  return rule0Problems(rule0).length === 0 && rules.filter((r) => r.enabled === true).every((r) => ruleProblems(r).length === 0)
+export const activeRules = (rules: UserRule[]): UserRule[] => rules.filter((r) => r.enabled === true && userRuleProblems(r).length === 0)
+
+export function canRunMerge(rule0: Rule0, rules: UserRule[]): boolean {
+  return flankRuleProblems(rule0).length === 0 && rules.filter((r) => r.enabled === true).every((r) => userRuleProblems(r).length === 0)
 }
 
 export function evaluateRules(rows: HatchScoreRow[], rules: AnyRule[], allowGapCrossing: boolean): SegmentEval[] {
   const first = rules[0]
-  const r0 = first && isRule0(first) && rule0Problems(first).length === 0 ? first : null
-  const act = activeRules(rules.filter((r): r is MergeRule => !isRule0(r)))
+  const r0 = first && isRule0(first) && flankRuleProblems(first).length === 0 ? first : null
+  const act = activeRules(rules.filter((r): r is UserRule => !isRule0(r)))
   return rows.map((row) => {
     const r0ev = r0 ? evaluateRule0(row, r0, allowGapCrossing) : null
-    const matched = [...(r0ev && r0ev.outcome === 'would_merge' ? ['rule0'] : []), ...act.filter((r) => r.conditions.every((c) => conditionHolds(c, row))).map((r) => r.id)]
-    const ev: SegmentEval = { start: row.start, end: row.end, matched, claimedBy: null, side: null, score: null, blocked: null, rule0: r0ev }
-    if (!matched.length) return ev
-    if (matched[0] === 'rule0' && r0ev) { ev.claimedBy = 'rule0'; ev.side = r0ev.side; ev.score = r0ev.score; ev.blocked = r0ev.blocked; return ev }
-    const rule = act.find((r) => r.id === matched[0])!
-    ev.claimedBy = rule.id
-    const l = rowScore(row, 'left', rule.mergeInto.metric, rule.mergeInto.estimator)
-    const r = rowScore(row, 'right', rule.mergeInto.metric, rule.mergeInto.estimator)
-    if (l === null || r === null) { ev.blocked = 'nonfinite'; return ev }
-    ev.side = Math.abs(l) <= Math.abs(r) ? 'left' : 'right'
-    ev.score = ev.side === 'left' ? Math.abs(l) : Math.abs(r)
-    if (!allowGapCrossing && (ev.side === 'left' ? row.gap_left : row.gap_right)) ev.blocked = 'gap'
+    const userEvals: Record<string, Rule0Eval> = {}
+    const matched: string[] = r0ev && r0ev.outcome === 'would_merge' ? ['rule0'] : []
+    for (const r of act) {
+      if (isFlankRule(r)) {
+        const e = evaluateRule0(row, { ...r, mergeSignsOnly: false }, allowGapCrossing)
+        if (e.outcome === 'would_merge') { userEvals[r.id] = e; matched.push(r.id) }
+      } else if (r.conditions.every((c) => conditionHolds(c, row))) matched.push(r.id)
+    }
+    const ev: SegmentEval = { start: row.start, end: row.end, matched, claimedBy: null, phase: null, side: null, score: null, blocked: null, rule0: r0ev }
+    if (matched.length && matched[0] === 'rule0' && r0ev) { ev.claimedBy = 'rule0'; ev.phase = 1; ev.side = r0ev.side; ev.score = r0ev.score; ev.blocked = r0ev.blocked as SegmentEval['blocked']; return ev }
+    if (matched.length) {
+      const rule = act.find((r) => r.id === matched[0])!
+      ev.claimedBy = rule.id; ev.phase = 1
+      const fe = userEvals[rule.id]
+      if (fe) { ev.side = fe.side; ev.score = fe.score; ev.blocked = fe.blocked; return ev }
+      if (isFlankRule(rule)) return ev
+      const l = rowScore(row, 'left', rule.mergeInto.metric, rule.mergeInto.estimator)
+      const r = rowScore(row, 'right', rule.mergeInto.metric, rule.mergeInto.estimator)
+      if (l === null || r === null) { ev.blocked = 'nonfinite'; return ev }
+      ev.side = Math.abs(l) <= Math.abs(r) ? 'left' : 'right'
+      ev.score = ev.side === 'left' ? Math.abs(l) : Math.abs(r)
+      if (!allowGapCrossing && (ev.side === 'left' ? row.gap_left : row.gap_right)) ev.blocked = 'gap'
+      return ev
+    }
+    if (r0ev && r0ev.outcome === 'signs_merge') {
+      ev.matched = ['rule0']; ev.claimedBy = 'rule0'; ev.phase = 2; ev.side = r0ev.side; ev.score = r0ev.score; ev.blocked = r0ev.blocked
+    }
     return ev
   })
 }
@@ -243,7 +298,7 @@ export function defaultMergeInto(conditions: Condition[]): { metric: HatchMetric
 }
 
 let ruleSeq = 0
-function newRuleId(existing: MergeRule[]): string {
+function newRuleId(existing: UserRule[]): string {
   let id = ''
   do { id = `rule-${Date.now().toString(36)}-${++ruleSeq}` } while (existing.some((r) => r.id === id))
   return id
@@ -257,7 +312,7 @@ const PRESETS: Record<PresetName, { name: string; kinds: ConditionKind[]; patter
   small: { name: 'small segment', kinds: ['max_size'], pattern: '.' },
 }
 
-export function makeRule(preset: PresetName, existing: MergeRule[]): MergeRule {
+export function makeRule(preset: PresetName, existing: UserRule[]): MergeRule {
   const p = PRESETS[preset]
   const conditions = p.kinds.map(newCondition)
   return { id: newRuleId(existing), name: p.name, enabled: true, conditions, mergeInto: defaultMergeInto(conditions),

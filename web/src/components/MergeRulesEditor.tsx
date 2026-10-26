@@ -1,6 +1,6 @@
 import { useIntegration } from '../integrationStore'
 import type { Estimator, HatchMetric } from '../hatchMerge'
-import { describeRule0, rule0FromSeg, rule0Problems, CONDITION_KINDS, HATCH_PATTERNS, defaultMergeInto, evaluateForSources, makeRule, newCondition, rule0CaseCounts, ruleFlagCounts, ruleProblems, type Condition, type ConditionKind, type HatchPattern, type MergeRule, type PresetName } from '../mergeRules'
+import { describeRule0, rule0FromSeg, rule0Problems, isFlankRule, CONDITION_KINDS, HATCH_PATTERNS, defaultMergeInto, evaluateForSources, makeRule, newCondition, rule0CaseCounts, ruleFlagCounts, ruleProblems, type Condition, type ConditionKind, type HatchPattern, type MergeRule, type PresetName, type UserRule } from '../mergeRules'
 
 const KIND_LABEL: Record<ConditionKind, string> = {
   weak_flank: 'weaker flank below threshold', sign_mismatch: 'flank signs disagree',
@@ -58,7 +58,7 @@ export default function MergeRulesEditor() {
   const counts = ruleFlagCounts(evals)
   const r0c = rule0CaseCounts(evals)
   const scoresLoaded = ig.seg.sources.some((s) => ig.hatchScores[`${s}|${ig.seg.chrom}`])
-  const update = (id: string, patch: Partial<MergeRule>) => ig.setMergeRules(rules.map((r) => (r.id === id ? { ...r, ...patch } : r)))
+  const update = (id: string, patch: Partial<MergeRule>) => ig.setMergeRules(rules.map((r) => (r.id === id ? { ...r, ...patch } as UserRule : r)))
   const setConditions = (r: MergeRule, conditions: Condition[]) =>
     update(r.id, r.conditions.length === 0 ? { conditions, mergeInto: defaultMergeInto(conditions) } : { conditions })
   const move = (i: number, d: -1 | 1) => {
@@ -89,6 +89,7 @@ export default function MergeRulesEditor() {
       </div>
     </div>
     {rules.map((r, i) => {
+      if (isFlankRule(r)) return null // Rule 0 copies get their editor in Task 4
       const n = i + 1, problems = ruleProblems(r)
       return <div key={r.id} className="rule-card">
         <div className="rule-head">

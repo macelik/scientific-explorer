@@ -40,11 +40,11 @@ export function diagnosticsEffectMetric(m: TrackMetric): Metric {
 export function migrateSegSettings(old: any): any {
   const o: any = { ...(old || {}) }
   if (o.colorMetric === undefined && 'metric' in o) o.colorMetric = archivedColourToTrack(o.metric)
-  delete o.metric; delete o.effectMetric; delete o.flank
+  delete o.metric; delete o.effectMetric; delete o.flank; delete o.mergeFlankConflict
   if (o.labels && typeof o.labels === 'object') {
     const l: any = { ...o.labels }
     if (l.signs === undefined && typeof l.consistency === 'boolean') l.signs = l.consistency
-    delete l.consistency; delete l.proposal
+    delete l.consistency; delete l.proposal; delete l.breakpoints; delete l.depthColor
     o.labels = l
   }
   return o
