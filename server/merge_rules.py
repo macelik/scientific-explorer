@@ -79,7 +79,7 @@ def _validate_rule0(r):
     criteria = r.get('criteria')
     if not isinstance(criteria, list) or not criteria:
         raise ValueError(f'{where}: check at least one criterion')
-    if len(set(criteria)) != len(criteria) or any(c not in RULE0_CRITERIA for c in criteria):
+    if not all(isinstance(c, str) for c in criteria) or len(set(criteria)) != len(criteria) or any(c not in RULE0_CRITERIA for c in criteria):
         raise ValueError(f'{where}: criteria must be distinct values from {RULE0_CRITERIA}')
     if r.get('combine') not in RULE0_COMBINE:
         raise ValueError(f'{where}: combine must be one of {RULE0_COMBINE}')

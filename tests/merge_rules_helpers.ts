@@ -81,7 +81,7 @@ const fx2 = fixture as any
 eq(evaluateRules(fx2.rows, [{ ...r0, tau: NaN }], false).map((e) => e.rule0), [null, null, null, null, null], 'an invalid Rule 0 is ignored')
 const anyCase = fx2.cases.find((c: any) => c.name === 'rule0_any_signs_allowed_gap_blocks')
 const heldCase = fx2.cases.find((c: any) => c.name === 'rule0_all_mean_srd_held_back_by_signs')
-eq(rule0CaseCounts({ a: evaluateRules(fx2.rows, anyCase.rules, false) }), { wouldMerge: 4, signs: 3, flanks: 0, heldBack: 0, signsOnly: 0, gap: 1 }, 'case counts (any, signs allowed)')
+eq(rule0CaseCounts({ a: evaluateRules(fx2.rows, anyCase.rules, false) }), { wouldMerge: 3, signs: 3, flanks: 0, heldBack: 0, signsOnly: 0, gap: 1 }, 'case counts (any, signs allowed)')
 eq(rule0CaseCounts({ a: evaluateRules(fx2.rows, heldCase.rules, false) }), { wouldMerge: 0, signs: 0, flanks: 0, heldBack: 2, signsOnly: 1, gap: 0 }, 'case counts (held back)')
 eq(describeRule0(r0), 'all of: min |Δlog2FC mean| flank < 0.2, min |SRD/√φ| flank < 3.3 · segments ≤ 100 bins · signs disagree: held back · flanks disagree: held back', 'describeRule0')
 

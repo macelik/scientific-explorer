@@ -168,7 +168,7 @@ export function rule0CaseCounts(evals: Record<string, SegmentEval[]>) {
   const c = { wouldMerge: 0, signs: 0, flanks: 0, heldBack: 0, signsOnly: 0, gap: 0 }
   for (const list of Object.values(evals)) for (const e of list) {
     const r = e.rule0; if (!r) continue
-    if (r.outcome === 'would_merge') { c.wouldMerge++; if (r.signMismatch) c.signs++; if (r.flankConflict) c.flanks++; if (r.blocked === 'gap') c.gap++ }
+    if (r.outcome === 'would_merge') { if (r.blocked === 'gap') c.gap++; else c.wouldMerge++; if (r.signMismatch) c.signs++; if (r.flankConflict) c.flanks++ }
     else if (r.outcome === 'held_back') c.heldBack++
     else if (r.outcome === 'signs_only') c.signsOnly++
   }

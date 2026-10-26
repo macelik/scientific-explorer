@@ -483,6 +483,7 @@ def test_evaluate_rules_rule0_claims_before_user_rules():
     [_rule0(criteria=['bogus'])],
     [_rule0(criteria=['delta_mean', 'delta_mean'])],
     [_rule0(criteria='delta_mean')],
+    [_rule0(criteria=[['delta_mean']])],
     [_rule0(combine='some')],
     [_rule0(tau=0)],
     [_rule0(tau=float('nan'))],

@@ -33,7 +33,7 @@ export default function IntegrationSegmentationView() {
   useEffect(() => { if (seg.labels.candidates && meta) for (const s of seg.sources) ig.ensureCandidates(s, seg.chrom) }, [seg.labels.candidates, seg.chrom, seg.sources, meta])
   useEffect(() => { if (meta) for (const s of seg.sources) ig.ensureHatchScores(s, seg.chrom) }, [seg.chrom, seg.sources, meta])
   const rule0 = useMemo(() => rule0FromSeg(seg), [seg.criteria, seg.combine, seg.tau, seg.srdRef, seg.smallMax, seg.mergeSignMismatch, seg.mergeFlankConflict])
-  const rule0Issues = rule0Problems(rule0)
+  const rule0Issues = useMemo(() => rule0Problems(rule0), [rule0])
   const allRules = useMemo(() => [rule0, ...ig.mergeRules], [rule0, ig.mergeRules])
   const ruleEvals = useMemo(() => evaluateForSources(ig.hatchScores, seg.sources, seg.chrom, allRules, ig.allowGapCrossing), [ig.hatchScores, seg.sources, seg.chrom, allRules, ig.allowGapCrossing])
   const ruleCounts = useMemo(() => ruleFlagCounts(ruleEvals), [ruleEvals])
@@ -125,7 +125,7 @@ export default function IntegrationSegmentationView() {
         if (seg.labels.small) shapes.push({ type: 'rect', xref: 'x', yref: `${yref} domain`, x0, x1, y0: 0, y1: 1, fillcolor: color, opacity: selected ? 0.75 : 0.5, line: { width: selected ? 2.5 : 0.6, color: '#111827' }, layer: 'below' })
         const merging = !!r0 && r0.outcome === 'would_merge'
         const held = !!r0 && r0.outcome === 'held_back'
-        if (merging) shapes.push(...hatchShapes(x0, x1, yref, 'x', rule0.hatch.color))
+        if (merging && r0!.blocked === null) shapes.push(...hatchShapes(x0, x1, yref, 'x', rule0.hatch.color))
         if (r0 && r0.signMismatch && (merging || held || (r0.outcome === 'signs_only' && seg.labels.signs))) shapes.push(...hatchShapes(x0, x1, yref, '|', SIGN_COLOR))
         if (r0 && r0.flankConflict && (merging || r0.heldBack.includes('flanks'))) shapes.push(...hatchShapes(x0, x1, yref, '-', FLANK_COLOR))
         if (merging && r0!.blocked === 'gap') shapes.push({ type: 'rect', xref: 'x', yref: `${yref} domain`, x0, x1, y0: 0.02, y1: 0.98, fillcolor: 'rgba(0,0,0,0)', line: { width: 1.5, color: rule0.hatch.color, dash: 'dot' }, layer: 'above' })
@@ -155,7 +155,7 @@ export default function IntegrationSegmentationView() {
         mk(acc, 'accepted candidate', 'triangle-up', '#440154'); mk(rej, 'tested, rejected', 'x', '#c1121f'); mk(geo, 'rank-1 candidate blocked by geometry', 'diamond-open', '#f59e0b')
       }
     })
-    Object.assign(layout, { height: Math.max(260, 150 * nS + 70), margin: { l: 56, r: seg.labels.allelic ? 46 : 14, t: 30, b: 40 }, paper_bgcolor: 'white', plot_bgcolor: 'white', font: { size: 11 }, hovermode: presentation ? false : 'closest', dragmode: 'zoom', shapes, annotations, showlegend: false, xaxis: { title: { text: `${seg.chrom} position (Mb)` }, range: [mb[0], bins[2 * (chromMeta.offset + chromMeta.n - 1) + 1] / MB], gridcolor: '#f1f5f9', anchor: `y${nS === 1 ? '' : nS}` } })
+    Object.assign(layout, { height: Math.max(260, 150 * nS + 70), margin: { l: 56, r: seg.labels.allelic ? 46 : 14, t: 30, b: 40 }, paper_bgcolor: 'white', plot_bgcolor: 'white', font: { size: 11 }, hovermode: presentation ? false : 'closest', dragmode: 'zoom', shapes, annotations, showlegend: false, uirevision: seg.chrom, xaxis: { title: { text: `${seg.chrom} position (Mb)` }, range: [mb[0], bins[2 * (chromMeta.offset + chromMeta.n - 1) + 1] / MB], gridcolor: '#f1f5f9', anchor: `y${nS === 1 ? '' : nS}` } })
     layout.title = { text: `${seg.chrom} · pseudobulk depth per WNN cluster${seg.basis === 'chrmedian' ? ' · log2(depth / chromosome median)' : seg.basis === 'genome_trimmed' ? ' · log2(depth / genome trimmed mean)' : ' · mean X'} · small segments (≤ ${seg.smallMax} bins) coloured by ${trackDef.label} (smaller-|value| flank) · Rule 0 hatched`, font: { size: 12 }, x: 0 }
     return { data, layout }
   }, [meta, ig.pb, seg, chromMeta, bins, trackDef, rule0, rule0Issues, ig.smallSegs, clSegs, ig.candidates, presentation, nBins, ig.mergeRules, ig.hatchScores, ruleEvals])
@@ -246,7 +246,7 @@ export default function IntegrationSegmentationView() {
       <div className="panel" id="cluster-tracks">
         <h3>Chromosome tracks — pseudobulk depth, accepted breakpoints and small segments</h3>
         <p className="lead">Grey line: per-bin pseudobulk depth, broken at genomic gaps. Vertical lines: accepted breakpoints by recursion depth. Shaded spans: internal segments ≤ {seg.smallMax} bins, coloured by live flank scores (any chromosome) on the colour metric's smaller-|value| flank. Rule 0 hatches × the segments whose checked flank criteria are below τ / the SRD/√φ ref; an amber | marks flank SRD/√φ signs that disagree and a violet ― marks criteria that pick different flanks.</p>
-        <h4 className="vis-heading">1. Visualization and Rule 0 <span className="muted small">— colouring is display only; Rule 0 below hatches the segments that the merge in section 2 starts from</span></h4>
+        <h4 className="vis-heading">1. Visualization and Rule 0 <span className="muted small">— colouring is display only; Rule 0 below hatches the segments the merge in section 2 would merge now</span></h4>
         <div className="controls-row">
           <label>chromosome<select value={seg.chrom} onChange={(e) => ig.setSeg({ chrom: e.target.value, selectedSegment: null })}>{exMeta.chromosomes.map((c) => <option key={c.name} value={c.name}>{c.name}{meta.pilot_chromosomes.includes(c.name) ? ' · pilot' : ''}</option>)}</select></label>
           <label>colour by<select value={seg.colorMetric} onChange={(e) => ig.setSeg({ colorMetric: e.target.value as any })}>{TRACK_METRICS.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}</select></label>
@@ -266,6 +266,7 @@ export default function IntegrationSegmentationView() {
           <label className="chk-inline"><input type="checkbox" aria-label="Merge sign-disagreeing segments" checked={seg.mergeSignMismatch} onChange={(e) => ig.setSeg({ mergeSignMismatch: e.target.checked })} />merge would-merge segments whose flank signs disagree</label>
           <label className="chk-inline"><input type="checkbox" aria-label="Merge flank-conflict segments" checked={seg.mergeFlankConflict} onChange={(e) => ig.setSeg({ mergeFlankConflict: e.target.checked })} />merge segments whose criteria pick different flanks, toward the one furthest below its threshold</label>
           {rule0Issues.length > 0 && <span className="notice small">Rule 0 inactive: {rule0Issues.join('; ')}</span>}
+          {rule0Issues.length === 0 && r0Counts.wouldMerge === 0 && r0Counts.gap > 0 && <span className="notice small">All Rule 0 segments here are next to a genomic gap; tick 'allow merging across a genomic gap' in section 2 to merge them.</span>}
         </div>
         <div className="controls-row">
           <span className="small muted">rows:</span>{meta.sources.map((s) => <label key={s} className="chk-inline"><input type="checkbox" checked={seg.sources.includes(s)} onChange={(e) => ig.setSeg({ sources: e.target.checked ? meta.sources.filter((x) => x === s || seg.sources.includes(x)) : seg.sources.filter((x) => x !== s) })} /><i className="sw" style={{ background: SOURCE_COLORS[s] }} />{s}</label>)}
@@ -281,7 +282,7 @@ export default function IntegrationSegmentationView() {
           {seg.labels.cn && <span>CN strip: {[0, 0.5, 1, 1.5, 2].map((v) => <i key={v} style={{ background: (seg.karyoPalette === 'story' ? STORY_CN : CN_COLORS)[v] }} />)}</span>}
           {activeRules(ig.mergeRules).map((r) => <span key={r.id}><b className="rule-swatch" style={{ color: r.hatch.color }}>{r.hatch.pattern}</b>rule {ig.mergeRules.indexOf(r) + 1} “{r.name}” · flags {ruleCounts[r.id] || 0}</span>)}
           {(userRulesOn || rule0Issues.length === 0) && <span><i className="ln" style={{ borderColor: '#b91c1c' }} />dotted red = a genomic gap sits at that flank boundary</span>}
-          {rule0Issues.length === 0 && <span className="rule0-legend"><b className="rule-swatch" style={{ color: rule0.hatch.color }}>×</b>Rule 0 would merge: {r0Counts.wouldMerge}{r0Counts.signs ? ` · signs disagree: ${r0Counts.signs}` : ''}{r0Counts.flanks ? ` · flanks disagree: ${r0Counts.flanks}` : ''}{r0Counts.gap ? ` · blocked by gap: ${r0Counts.gap}` : ''} · <b style={{ color: SIGN_COLOR }}>|</b>/<b style={{ color: FLANK_COLOR }}>―</b> ⚠ held back: {r0Counts.heldBack} · <b style={{ color: SIGN_COLOR }}>|</b> signs disagree only: {r0Counts.signsOnly}</span>}
+          {rule0Issues.length === 0 && <span className="rule0-legend"><b className="rule-swatch" style={{ color: rule0.hatch.color }}>×</b>Rule 0 would merge now: {r0Counts.wouldMerge}{r0Counts.gap ? ` · blocked by gap: ${r0Counts.gap} (merge only with gap crossing)` : ''}{r0Counts.signs ? ` · signs disagree: ${r0Counts.signs}` : ''}{r0Counts.flanks ? ` · flanks disagree: ${r0Counts.flanks}` : ''} · <b style={{ color: SIGN_COLOR }}>|</b>/<b style={{ color: FLANK_COLOR }}>―</b> ⚠ held back: {r0Counts.heldBack} · <b style={{ color: SIGN_COLOR }}>|</b> signs disagree only: {r0Counts.signsOnly}</span>}
         </div>
         {trackFig ? <><Plot data={trackFig.data} layout={trackFig.layout} config={trackConfig} onClick={onTrackClick} onReady={el => { plotEl.current = el }} /><button className="btn-xs" onClick={() => plotEl.current && downloadPlot(plotEl.current, `tracks_${seg.chrom}`)}>PNG</button></> : <div className="muted small">{ig.pb ? 'select at least one cluster row' : 'loading pseudobulk profiles…'}</div>}
         {seg.selectedSegment && (() => {
