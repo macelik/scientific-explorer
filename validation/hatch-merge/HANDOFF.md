@@ -107,7 +107,9 @@ node tests/browser_hatch_merge_walkthrough.cjs
 
 Key values from `merge_rules_check_results.json`:
 - Rule 0 flags on chr8: `r0High` = 13 (tau 5, combine any), `r0Low` = 0 (tau 0.0001, SRD/√φ criterion off). `runEnabledWithRule0Only` = true.
-- Merge switches (tau 5, any): `wmOff` = 13, `hbOff` = 2, `wmOn` = 15, `hbOn` = 0.
+- Merge switches, one at a time (SRD/√φ ref 8, tau 5, combine all; legend held back / would merge, plus the hover-text hold reasons): off/off 2 / 13 (1 signs only, 1 signs+flanks), sign switch only 1 / 14 (the flank-conflict hold remains), flank switch only 2 / 13 (both sign holds remain), both on 0 / 15 (`wmOff` 13 + `hbOff` 2 = `wmOn` 15). No segment is held for flanks only on chr8 at any tried setting.
+- Combine alone (tau 0.2, both criteria checked): flags all = 0, any = 4 (`combineAll`, `combineAny`).
+- Default run on chr8 (gap crossing off) shows "blocked by gap: 13" in the legend.
 - `chr3SmallSegments` = 4 (non-pilot chromosome gets live small segments); `auditDerivedReason` = true.
 - `rule0HistoryRows` = 2 for a Rule 0-only run on cluster0 chr8 with gap crossing allowed; the first row's rule is "Rule 0 — shown on the tracks". Without gap crossing the same run makes 0 merges for every cluster on chr8, because every would-merge segment there sits next to a genomic gap.
 - A cleared tau gives "τ must be a positive number" and disables Run merge. `errors` was empty.

@@ -1,6 +1,6 @@
 // Merge-rules + Rule 0 browser walkthrough (2026-10-02, extended 2026-10-26): visualization/merge split, rule editor,
 // live per-rule hatches, reorder, run, stale notice, session restore, legacy migration.
-// Requires a running server (python3 run.py --port 8766; override the page URL with BASE_URL) and Playwright + Chromium, e.g.:
+// Requires a running server (BASE_URL defaults to http://127.0.0.1:8766; the Rule 0 runs used a private server: python3 run.py --port 8767 with BASE_URL=http://127.0.0.1:8767) and Playwright + Chromium, e.g.:
 //   PLAYWRIGHT_MODULE=/path/to/node_modules/playwright CHROMIUM_PATH=/path/to/chrome \
 //   node tests/browser_hatch_merge_walkthrough.cjs
 // Writes validation/hatch-merge/merge_rules_check_results.json and validation/hatch-merge/merge-rules.png.
@@ -36,7 +36,7 @@ function findOwner(obj,key){if(!obj||typeof obj!=='object')return null;if(Object
  const mergeSigns=page.getByLabel('Merge sign-disagreeing segments'),mergeFlanks=page.getByLabel('Merge flank-conflict segments');
  const waitR0Flags=()=>page.waitForFunction(()=>/flags \d+/.test(document.querySelector('[aria-label="Rule 0 status"]')?.textContent||''),{timeout:30000});
  const restoreR0=async()=>{await tau.fill('0.2');await combine.selectOption('all')};
- const legendCounts=async()=>{const t=await page.locator('.rule0-legend').innerText();const w=t.match(/would merge: (\d+)/),h=t.match(/held back: (\d+)/);return {wm:w?+w[1]:null,hb:h?+h[1]:null}};
+ const legendCounts=async()=>{const t=await page.locator('.rule0-legend').innerText();const w=t.match(/would merge: (\d+)/),h=t.match(/held back: (\d+)/),g=t.match(/blocked by gap: (\d+)/);return {wm:w?+w[1]:null,hb:h?+h[1]:null,gap:g?+g[1]:0}};
  const runEnabledWithRule0Only=!(await runBtn.isDisabled());
 
  // Rule 0 responds to its settings
@@ -46,13 +46,20 @@ function findOwner(obj,key){if(!obj||typeof obj!=='object')return null;if(Object
  const r0Low=await r0Flags();
  await restoreR0();await srdCrit.check();await page.waitForTimeout(400);
 
- // the two merge switches change which Rule 0 cases merge
- await tau.fill('5');await combine.selectOption('any');
- await mergeSigns.uncheck();await mergeFlanks.uncheck();await page.waitForTimeout(600);
- const {wm:wmOff,hb:hbOff}=await legendCounts();
- await mergeSigns.check();await mergeFlanks.check();await page.waitForTimeout(600);
- const {wm:wmOn,hb:hbOn}=await legendCounts();
- await mergeSigns.uncheck();await mergeFlanks.uncheck();await restoreR0();await page.waitForTimeout(400);
+ // each merge switch on its own, then both: legend counts + the held-back reasons in the hover text
+ const heldReasons=()=>plot.evaluate(el=>{const c={signs:0,flanks:0,both:0};for(const d of el.data){if(d.name!=='small segment')continue;const m=String(d.hovertemplate||'').match(/⚠ held back \(([^)]*)\)/);if(!m)continue;const sg=m[1].includes('signs disagree'),fl=m[1].includes('flanks disagree');if(sg&&fl)c.both++;else if(sg)c.signs++;else if(fl)c.flanks++}return c});
+ const state=async(sg,fl)=>{await (sg?mergeSigns.check():mergeSigns.uncheck());await (fl?mergeFlanks.check():mergeFlanks.uncheck());await page.waitForTimeout(700);return {...(await legendCounts()),reasons:await heldReasons()}};
+ // tau 5 + combine any only has sign holds; SRD/√φ ref 8 + combine all gives one sign-only and one sign+flank hold on chr8
+ const srdRef=page.getByLabel('Rule 0 SRD/√φ ref');
+ await srdRef.fill('8');await tau.fill('5');await combine.selectOption('all');
+ const swOffOff=await state(false,false),swSignOnly=await state(true,false),swFlankOnly=await state(false,true),swBoth=await state(true,true);
+ const {wm:wmOff,hb:hbOff}=swOffOff,{wm:wmOn,hb:hbOn}=swBoth;
+ await state(false,false);await srdRef.fill('3.3');await restoreR0();await page.waitForTimeout(400);
+
+ // combine alone: same tau and criteria, all vs any
+ const combineTried=[];let combineAll=null,combineAny=null;
+ for(const t of ['0.2','0.5','1','5']){await tau.fill(t);await combine.selectOption('all');await page.waitForTimeout(500);const a=await r0Flags();await combine.selectOption('any');await page.waitForTimeout(500);const b=await r0Flags();combineTried.push({tau:t,all:a,any:b});if(combineAll===null||b>a){combineAll=a;combineAny=b}if(b>a)break}
+ await restoreR0();await page.waitForTimeout(300);
 
  // invalid Rule 0 blocks the run
  await tau.fill('');await page.waitForTimeout(400);
@@ -153,12 +160,19 @@ function findOwner(obj,key){if(!obj||typeof obj!=='object')return null;if(Object
  const signsLayerAfterLegacy=await tracks.getByLabel('signs-disagree hatch').isChecked();
  fs.rmSync(dir,{recursive:true,force:true});
 
- const result={generated_at:new Date().toISOString(),visHeading,shapesBaseline,shapesWithRule,runEnabledWithRule0Only,r0High,r0Low,wmOff,hbOff,wmOn,hbOn,invalidR0Status,runDisabledWhenR0Invalid,chr3SmallSegments,auditDerivedReason,rule0HistoryRows,rule0FirstRuleCell,colourByAfterLegacy,signsLayerAfterLegacy,flagsHigh,flagsLow,emptyThresholdProblem,runDisabledWhenIncomplete,legendHasBothRules,rule1NameAfterMove,summaryText,headers,historyRows,firstRuleCell,staleText,enabledBeforeRestore,enabledAfterRestore,rulesAfterRestore,legacyNames,legacyEnabled,errors};
+ const result={generated_at:new Date().toISOString(),visHeading,shapesBaseline,shapesWithRule,runEnabledWithRule0Only,r0High,r0Low,wmOff,hbOff,wmOn,hbOn,swOffOff,swSignOnly,swFlankOnly,swBoth,combineAll,combineAny,combineTried,invalidR0Status,runDisabledWhenR0Invalid,chr3SmallSegments,auditDerivedReason,rule0HistoryRows,rule0FirstRuleCell,colourByAfterLegacy,signsLayerAfterLegacy,flagsHigh,flagsLow,emptyThresholdProblem,runDisabledWhenIncomplete,legendHasBothRules,rule1NameAfterMove,summaryText,headers,historyRows,firstRuleCell,staleText,enabledBeforeRestore,enabledAfterRestore,rulesAfterRestore,legacyNames,legacyEnabled,errors};
  fs.writeFileSync(path.join(out,'merge_rules_check_results.json'),JSON.stringify(result,null,2));
  console.log(JSON.stringify(result,null,2));
  assert.ok(visHeading>0,'visualization section heading missing');
  assert.equal(runEnabledWithRule0Only,true,'Rule 0 alone should allow a run');
  assert.ok(r0High>r0Low&&r0Low===0,'Rule 0 should flag more at tau 5 than at tau 0.0001 without the SRD criterion');
+ assert.ok(swOffOff.reasons.both>0&&swOffOff.reasons.signs>0,'test data should hold segments for signs only and for signs+flanks');
+ assert.ok(swOffOff.wm>0&&swOffOff.gap>0,'default (gap crossing off) legend should show blocked-by-gap');
+ assert.ok(swSignOnly.hb<=swOffOff.hb&&swFlankOnly.hb<=swOffOff.hb,'a single switch must not increase held-back');
+ assert.equal(swSignOnly.reasons.signs+swSignOnly.reasons.flanks+swSignOnly.reasons.both,swSignOnly.hb,'hover held-back reasons should match the legend');
+ assert.equal(swSignOnly.hb,swOffOff.reasons.flanks+swOffOff.reasons.both,'sign switch on: only flank-conflict holds remain');
+ assert.equal(swFlankOnly.hb,swOffOff.reasons.signs+swOffOff.reasons.both,'flank switch on: only sign holds remain');
+ assert.ok(combineAny>=combineAll,'combine any should flag at least as many segments as all');
  assert.equal(hbOn,0,'with both merge switches on nothing is held back');
  assert.equal(wmOn,wmOff+hbOff,'switching both on should move every held-back segment to would-merge');
  assert.ok(invalidR0Status.includes('τ'),'a cleared tau should be reported in the Rule 0 status');

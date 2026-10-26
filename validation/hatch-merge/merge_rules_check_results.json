@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-26T08:41:34.023Z",
+  "generated_at": "2026-10-26T08:46:50.814Z",
   "visHeading": 1,
   "shapesBaseline": 95,
   "shapesWithRule": 365,
@@ -10,6 +10,55 @@
   "hbOff": 2,
   "wmOn": 15,
   "hbOn": 0,
+  "swOffOff": {
+    "wm": 13,
+    "hb": 2,
+    "gap": 13,
+    "reasons": {
+      "signs": 1,
+      "flanks": 0,
+      "both": 1
+    }
+  },
+  "swSignOnly": {
+    "wm": 14,
+    "hb": 1,
+    "gap": 14,
+    "reasons": {
+      "signs": 0,
+      "flanks": 1,
+      "both": 0
+    }
+  },
+  "swFlankOnly": {
+    "wm": 13,
+    "hb": 2,
+    "gap": 13,
+    "reasons": {
+      "signs": 2,
+      "flanks": 0,
+      "both": 0
+    }
+  },
+  "swBoth": {
+    "wm": 15,
+    "hb": 0,
+    "gap": 15,
+    "reasons": {
+      "signs": 0,
+      "flanks": 0,
+      "both": 0
+    }
+  },
+  "combineAll": 0,
+  "combineAny": 4,
+  "combineTried": [
+    {
+      "tau": "0.2",
+      "all": 0,
+      "any": 4
+    }
+  ],
   "invalidR0Status": "τ must be a positive number",
   "runDisabledWhenR0Invalid": true,
   "chr3SmallSegments": 4,
