@@ -140,8 +140,10 @@ def test_hatch_scores_reports_every_internal_segment_with_phi_and_gap_flags():
 
 def test_hatch_scores_flags_a_genomic_gap():
     profile, boundaries, n_bins, var_start, var_end = _toy_profile_and_bounds()
+    var_start = var_start.copy()
     var_end = var_end.copy()
-    var_end[9] += 500  # open a gap between bin 9 and bin 10 (the first boundary)
+    var_start[10:] += 500  # open a gap between bin 9 and bin 10 (the first boundary)
+    var_end[10:] += 500
     out = hm.hatch_scores(profile, boundaries, n_bins, var_start, var_end, chrom_offset=0)
     assert out['rows'][0]['gap_left'] is True
 

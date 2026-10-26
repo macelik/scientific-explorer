@@ -206,7 +206,10 @@ def _staircase(gap_at=None):
     var_start = (np.arange(40) * 100).astype(float)
     var_end = var_start + 100
     if gap_at is not None:
-        var_end[gap_at - 1] += 500
+        var_start = var_start.copy()
+        var_end = var_end.copy()
+        var_start[gap_at:] += 500
+        var_end[gap_at:] += 500
     return profile, [10, 20, 25], 40, var_start, var_end
 
 
@@ -514,7 +517,10 @@ def _two_small_bumps(gap_at=None):
     var_start = (np.arange(40) * 100).astype(float)
     var_end = var_start + 100
     if gap_at is not None:
-        var_end[gap_at - 1] += 500
+        var_start = var_start.copy()
+        var_end = var_end.copy()
+        var_start[gap_at:] += 500
+        var_end[gap_at:] += 500
     return profile, [10, 15, 25, 30], 40, var_start, var_end
 
 

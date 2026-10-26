@@ -26,3 +26,7 @@ boundaries 25336 old rule (start != end) 25336 new rule (start > end+1) 528
 - **New rule flagged as gap**: 528
 
 Before this fix every internal boundary was flagged as a genomic gap; revision 1's 'blocked by gap: 13' on chr8 came from this bug.
+
+### Note on Counts
+
+The new-rule count (528) counts positive jumps > 1 bp only (start[right] > end[left] + 1). Chromosome transitions, where start decreases or resets, are not counted as gaps by this metric.
