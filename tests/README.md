@@ -19,10 +19,16 @@ Three kinds of tests live here:
 - `parity_reference.py` / `parity_browser.mjs` — Python-vs-TypeScript
   numerical parity.
 - `experiment_overlays.ts`, `hatch_merge_helpers.ts`,
-  `merge_rules_helpers.ts`, `integration_helpers.ts` — TypeScript logic
+  `merge_rules_helpers.ts`, `track_helpers.ts` (live track metrics, session migration, audit reasons), `integration_helpers.ts` — TypeScript logic
   ported from Python, bundled with esbuild and run under Node so it can be
   tested without a browser. For example:
   `web/node_modules/.bin/esbuild tests/merge_rules_helpers.ts --bundle --format=esm --platform=node --outfile=tests/_bundle/merge_rules_helpers.mjs && node tests/_bundle/merge_rules_helpers.mjs`
+- `compare_archived_live.py` — compares the archived flank/screening tables
+  with live `hatch-scores` on the pilot chromosomes (needs a running server;
+  set `BASE_URL`, e.g. `BASE_URL=http://127.0.0.1:8766 python3 tests/compare_archived_live.py`).
+  The recorded result is in `validation/rule0/README.md`.
+- `track_helpers.ts` is bundled the same way as the other helpers:
+  `web/node_modules/.bin/esbuild tests/track_helpers.ts --bundle --format=esm --platform=node --outfile=tests/_bundle/track_helpers.mjs && node tests/_bundle/track_helpers.mjs`
 - `fixtures/merge_rules_parity.json` — shared by the Python and TypeScript
   merge-rule evaluator tests.
 - `browser_experiments.cjs`, `browser_workflows.cjs`,

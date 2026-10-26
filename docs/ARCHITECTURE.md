@@ -19,7 +19,7 @@ test evidence and screenshots.
 | `server/integration.py` / `server/integration_api.py` | Multimodal clustering/pseudobulk data adapter for the Integration tabs — loads the depth + haplotype integration story's exported artifacts read-only (nothing is re-clustered, re-integrated, or re-segmented here), with background indexing/caching under `cache/`. |
 | `server/flank_view.py` | The on-demand "alternative flank view" and paired-cell bootstrap: descriptive flank-comparison recomputation independent of the archived SRD-screen tables. |
 | `server/hatch_merge.py` | Flank scoring for the exploratory tools: SRD, SRD/√φ, Δlog2FC, pooled φ, gap flags, and `score_rows()` / `hatch_scores()`. Independent of `flank_view.py` and the archived merge prototype. |
-| `server/merge_rules.py` / `server/hatch_merge_api.py` | User-defined merge rules: validation, per-segment evaluation (OR of ANDs), and the one-merge-per-step loop with φ recomputed every step; the `hatch-scores` and `hatch-merge` routes. See [SCIENTIFIC_WORKFLOW.md](SCIENTIFIC_WORKFLOW.md)'s worked example 2. |
+| `server/merge_rules.py` / `server/hatch_merge_api.py` | Rule 0 (criteria checklist, all/any, sign and flank-conflict switches) plus user-defined merge rules: validation, per-segment evaluation (Rule 0 first, then OR of ANDs), and the one-merge-per-step loop with φ recomputed every step; the `hatch-scores` and `hatch-merge` routes. See [SCIENTIFIC_WORKFLOW.md](SCIENTIFIC_WORKFLOW.md)'s worked example 2. |
 | `server/jobs.py` | Bounded worker-process pool for expensive computation. Workers use multiprocessing `spawn` — worker functions must be importable/picklable at module level, not defined as closures. |
 
 ## Frontend (`web/src/`)
@@ -31,7 +31,8 @@ test evidence and screenshots.
 | `experimentStore.ts` | Per-cell/chromosome experiment drafts and run history. |
 | `integration.ts` | Pure helpers: consistency classes, flank picking, hatch-shape rendering geometry. |
 | `hatchMerge.ts` | Score/result types and the API client for `hatch-scores` / `hatch-merge`. |
-| `mergeRules.ts` | Rule types, presets, legacy-session migration, and a 1:1 TypeScript port of `server/merge_rules.py`'s evaluator, so hatches update live while rules are edited. `tests/fixtures/merge_rules_parity.json` is checked against both implementations. |
+| `mergeRules.ts` | Rule types (including Rule 0 and its display outcome / `rule0FromSeg`), presets, legacy-session migration, and a 1:1 TypeScript port of `server/merge_rules.py`'s evaluator, so hatches update live while rules are edited. `tests/fixtures/merge_rules_parity.json` is checked against both implementations. |
+| `trackMetrics.ts` | Live colour metrics for the tracks (smaller-\|value\| flank), migration of archived colour ids in saved sessions, and derivation of candidate-audit rejection reasons from p-values. |
 | `api.ts` | Fetch wrapper. |
 | `components/` | Major workspaces: `CohortView`, `ExplorerView`, `ManualView`, `ExperimentView`, `IntegrationClustersView`, `IntegrationSegmentationView`, `HatchMergeView`, `MergeRulesEditor`, `AlternativeFlankView`, `PairedFlankBootstrap`, plus shared `Plot`/`DeferredPlot` Plotly wrappers. `DeferredPlot` exists specifically to defer initializing off-screen charts until scrolled into view — see [`validation/integration-freeze/REPORT.md`](../validation/integration-freeze/REPORT.md) for the responsiveness investigation that motivated it. |
 

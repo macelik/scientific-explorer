@@ -63,11 +63,12 @@ consequences before deciding whether to run another.
 - **Hypothesis:** specific adjacent segments should not have been split, or
   the metric used to judge that boundary is itself ambiguous at that
   location.
-- **Diagnostic:** user-defined merge rules on the Chromosome tracks. Each rule
-  combines conditions on a segment's flank scores (e.g. "weaker SRD/√φ flank
-  below 3 AND segment ≤ 20 bins", or "Δlog2FC flank signs disagree") and
-  hatches the segments it flags, followed by the exploratory adjacent-segment
-  merge, which starts from those flagged segments and re-evaluates every
+- **Diagnostic:** the Chromosome tracks' Rule 0 criteria (chosen flank below
+  τ / SRD/√φ ref) hatch candidate segments from live flank scores, with
+  amber/violet marks for flank-sign and flank-choice disagreement. User-defined
+  rules add further conditions (e.g. "weaker SRD/√φ flank below 3 AND segment
+  ≤ 20 bins", or "Δlog2FC flank signs disagree") and hatch the segments they
+  flag, followed by the exploratory adjacent-segment merge, which starts from those flagged segments and re-evaluates every
   rule after each merge, so segments not hatched at the start can become
   eligible later.
 - **Recompute:** one segment merges per step, into its more similar

@@ -8,7 +8,9 @@ Plotly.js for genomic tracks and plots.
 - `store.ts` — main cohort/cell/experiment state; session serialize/restore.
 - `integrationStore.ts` — Integration/multimodal state, merge rules and
   visualization settings, candidate/score caching.
-- `mergeRules.ts` — rule types and the client-side evaluator (a port of
+- `trackMetrics.ts` — live colour metrics for the tracks, archived-colour
+  session migration, candidate-audit reason derivation.
+- `mergeRules.ts` — Rule 0 and user rule types and the client-side evaluator (a port of
   `server/merge_rules.py`).
 - `experimentStore.ts` — per-cell/chromosome experiment drafts and history.
 
