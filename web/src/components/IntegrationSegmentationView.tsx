@@ -7,14 +7,13 @@ import ClusterKaryogram, { type KaryoRow } from './ClusterKaryogram'
 import { CellCard } from './IntegrationClustersView'
 import { useIntegration } from '../integrationStore'
 import { useStore } from '../store'
-import { DEPTH_COLORS, METRICS, NOISE_CV_BINS, SOURCE_COLORS, STORY_CN, STORY_CN_LABELS, VIRIDIS, binColor, binIndex, clusterColor, clusterLevels, clusterOf, clusterSegmentsLocal, consistencyClass, hatchShapes, levelTrack, metricValue, pickFlank, rollingMean, segmentsFromBreakpoints, viridisAt, withGaps, type Metric, type SmallSeg } from '../integration'
+import { DEPTH_COLORS, METRICS, NOISE_CV_BINS, SOURCE_COLORS, STORY_CN, STORY_CN_LABELS, VIRIDIS, binColor, binIndex, clusterColor, clusterLevels, clusterOf, clusterSegmentsLocal, hatchShapes, levelTrack, pickFlank, rollingMean, segmentsFromBreakpoints, viridisAt, withGaps, type Metric, type SmallSeg } from '../integration'
 import { CN_COLORS } from '../colors'
 import { MB } from '../coords'
-import { activeRules, conditionDetail, evaluateForSources, ruleFlagCounts } from '../mergeRules'
+import { CRITERION_LABEL, FLANK_COLOR, RULE0_CRITERIA, SIGN_COLOR, activeRules, conditionDetail, evaluateForSources, rule0CaseCounts, rule0FromSeg, rule0Lines, rule0Problems, ruleFlagCounts } from '../mergeRules'
+import { TRACK_METRICS, colourValue, derivedRejectionReason, diagnosticsEffectMetric } from '../trackMetrics'
 
 const fmt = (v: number | null | undefined, d = 3) => (v === null || v === undefined || !Number.isFinite(v) ? 'N/A' : v.toFixed(d))
-const PROPOSAL_LABEL: Record<string, string> = { merge_left: 'merge ←', merge_right: 'merge →', ambiguous_keep: 'ambiguous', keep_focal: 'keep focal' }
-const PROPOSAL_SHORT: Record<string, string> = { merge_left: 'merge←', merge_right: 'merge→', ambiguous_keep: 'ambig.', keep_focal: 'keep' }
 const REASON_LABEL: Record<string, string> = { effect_ge_tau: 'effect ≥ τ', terminal_unchanged: 'terminal', long_long: 'long–long' }
 const REASON_SHORT: Record<string, string> = { effect_ge_tau: '≥τ', terminal_unchanged: 'term', long_long: 'LL' }
 
@@ -32,20 +31,21 @@ export default function IntegrationSegmentationView() {
   useEffect(() => { if (meta) { ig.ensurePseudobulk(); ig.ensureKaryo() } }, [meta])
   const seg = ig.seg
   useEffect(() => { if (seg.labels.candidates && meta) for (const s of seg.sources) ig.ensureCandidates(s, seg.chrom) }, [seg.labels.candidates, seg.chrom, seg.sources, meta])
-  const rulesOn = activeRules(ig.mergeRules).length > 0
-  useEffect(() => {
-    if (!meta || !rulesOn) return
-    for (const s of seg.sources) ig.ensureHatchScores(s, seg.chrom)
-  }, [rulesOn, seg.chrom, seg.sources, meta])
-  const ruleEvals = useMemo(() => evaluateForSources(ig.hatchScores, seg.sources, seg.chrom, ig.mergeRules, ig.allowGapCrossing), [ig.hatchScores, seg.sources, seg.chrom, ig.mergeRules, ig.allowGapCrossing])
+  useEffect(() => { if (meta) for (const s of seg.sources) ig.ensureHatchScores(s, seg.chrom) }, [seg.chrom, seg.sources, meta])
+  const rule0 = useMemo(() => rule0FromSeg(seg), [seg.criteria, seg.combine, seg.tau, seg.srdRef, seg.smallMax, seg.mergeSignMismatch, seg.mergeFlankConflict])
+  const rule0Issues = rule0Problems(rule0)
+  const allRules = useMemo(() => [rule0, ...ig.mergeRules], [rule0, ig.mergeRules])
+  const ruleEvals = useMemo(() => evaluateForSources(ig.hatchScores, seg.sources, seg.chrom, allRules, ig.allowGapCrossing), [ig.hatchScores, seg.sources, seg.chrom, allRules, ig.allowGapCrossing])
   const ruleCounts = useMemo(() => ruleFlagCounts(ruleEvals), [ruleEvals])
+  const r0Counts = useMemo(() => rule0CaseCounts(ruleEvals), [ruleEvals])
+  const userRulesOn = activeRules(ig.mergeRules).length > 0
   const nBins = exMeta.dataset.identity.n_bins
   const chromMeta = exMeta.chromosomes.find((c) => c.name === seg.chrom)!
   const cells = meta?.cells || []
   const levels = useMemo(() => (meta ? clusterLevels(cells, 'wnn_leiden_0.3') : []), [meta])
   const clSegs = useMemo(() => clusterSegmentsLocal(meta?.cluster_segments ?? null, exMeta.chromosomes), [meta])
-  const metricDef = METRICS.find((m) => m.id === seg.metric)!
-  const effectMetric: Metric = metricDef.kind === 'effect' ? seg.metric : seg.effectMetric
+  const trackDef = TRACK_METRICS.find((m) => m.id === seg.colorMetric) ?? TRACK_METRICS[1]
+  const effectMetric: Metric = diagnosticsEffectMetric(trackDef.id)
 
   // ---------------- cluster-level karyogram rows (fig 3c)
   const clusterRows: KaryoRow[] = useMemo(() => {
@@ -72,8 +72,6 @@ export default function IntegrationSegmentationView() {
   const selectedCellRow = useMemo(() => (ig.focusCell ? cellOrder.findIndex((i) => cells[i].cell === ig.focusCell) : -1), [ig.focusCell, cellOrder, cells])
 
   // ---------------- small segments on the chromosome
-  const smallHere = useMemo(() => ig.smallSegs.filter((s) => s.chrom === seg.chrom && s.len <= seg.smallMax), [ig.smallSegs, seg.chrom, seg.smallMax])
-  const pilot = meta?.pilot_chromosomes?.includes(seg.chrom)
 
   // ---------------- tracks figure
   const trackFig = useMemo(() => {
@@ -113,67 +111,54 @@ export default function IntegrationSegmentationView() {
         const x = mb[Math.min(bp.absolute_bin, chromMeta.n - 1)]
         shapes.push({ type: 'line', xref: 'x', yref: `${yref} domain`, x0: x, x1: x, y0: 0, y1: 1, line: { color: seg.labels.depthColor ? DEPTH_COLORS[Math.min(bp.recursion_depth, DEPTH_COLORS.length - 1)] : '#440154', width: 1.2 }, opacity: 0.9 })
       }
-      // small segments
-      if (seg.labels.small) for (const s of smallHere.filter((s) => s.source === src)) {
-        const mv = metricValue(s, seg.metric, seg.flank, effectMetric)
-        const cc = consistencyClass(s, effectMetric, seg.srdRef)
-        // SRD-screen proposal layer: colour by the min-SRD flank's |SRD/√φ| (one of the segment's two flank values) instead of the selected "colour by" metric
-        const srdPhiMetric = METRICS.find((m) => m.id === 'srd_phi')!
-        const srdPhiMin = metricValue(s, 'srd_phi', 'min_srd', effectMetric)
-        const proposalActive = seg.labels.proposal && !!s.proposal
-        const color = proposalActive
-          ? (seg.scale === 'binned' ? binColor(srdPhiMin.value, srdPhiMetric.bins) : (srdPhiMin.value === null ? '#e5e7eb' : viridisAt(Math.min(1, Math.abs(srdPhiMin.value) / 8))))
-          : (seg.scale === 'binned' ? binColor(mv.value, metricDef.bins) : (mv.value === null ? '#e5e7eb' : viridisAt(Math.min(1, Math.abs(mv.value) / (metricDef.kind === 'stat' ? 8 : 2)))))
-        const selected = seg.selectedSegment === s.key
-        // hatch: SRD-screen proposal type takes priority when its layer is on, else flank-consistency class
-        const hatch: 'none' | '/' | 'x' = proposalActive
-          ? (s.proposal === 'ambiguous_keep' ? 'x' : s.proposal === 'keep_focal' ? 'none' : '/')
-          : (seg.labels.consistency ? (cc.cls === 'weak' ? 'x' : cc.cls === 'inconsistent' ? '/' : 'none') : 'none')
-        const x0 = mb[s.s], x1 = s.e < chromMeta.n ? mb[s.e] : bins[2 * (chromMeta.offset + chromMeta.n - 1) + 1] / MB
-        shapes.push({ type: 'rect', xref: 'x', yref: `${yref} domain`, x0, x1, y0: 0, y1: 1, fillcolor: color, opacity: selected ? 0.75 : 0.5, line: { width: selected ? 2.5 : 0.6, color: '#111827' }, layer: 'below' })
-        shapes.push(...hatchShapes(x0, x1, yref, hatch))
-        const labels: string[] = []
-        if (seg.labels.proposal && s.proposal) labels.push(PROPOSAL_SHORT[s.proposal] || s.proposal)
-        if (seg.labels.consistency) labels.push(cc.cls === 'weak' ? 'x' : cc.cls === 'strong' ? 'o' : cc.cls === 'inconsistent' ? '/' : '')
-        if (seg.labels.reason) labels.push(`${REASON_SHORT[s.reasonL] || s.reasonL}|${REASON_SHORT[s.reasonR] || s.reasonR}`)
-        if (seg.labels.segLabels) labels.push(`${s.len}b ${mv.value === null ? 'N/A' : mv.value.toFixed(2)}`)
-        // vertical, inside the span: adjacent segments then never overlap horizontally
-        if (labels.length) annotations.push({ xref: 'x', yref, x: (x0 + x1) / 2, y: seg.basis === 'raw' ? 0 : yr[1] - 0.15, yanchor: 'top', xanchor: 'center', textangle: -90, showarrow: false, font: { size: 9, color: '#111827' }, bgcolor: 'rgba(255,255,255,0.7)', text: labels.filter(Boolean).join(' · ') })
-        // hover/click carrier
-        data.push({ type: 'scatter', mode: 'markers', x: [(x0 + x1) / 2], y: [seg.basis === 'raw' ? 0 : yr[1] - 0.35], marker: { size: 9, color, line: { color: '#111827', width: 1 }, symbol: 'square' }, customdata: [s.key], xaxis: 'x', yaxis: yref, showlegend: false, name: 'small segment',
-          hovertemplate: `<b>${src} ${seg.chrom} segment ${s.segId}</b><br>bins [${s.s}, ${s.e}) · ${s.len} bins · ${s.mbStart}–${s.mbEnd} Mb<br>${metricDef.label}: ${mv.value === null ? 'N/A' : mv.value.toFixed(3)} (${mv.flank} flank, ${seg.flank})<br>Δ median L/R ${fmt(s.left.delta_median, 2)} / ${fmt(s.right.delta_median, 2)} · Δ mean ${fmt(s.left.delta_mean, 2)} / ${fmt(s.right.delta_mean, 2)} · Δ trim ${fmt(s.left.delta_trim, 2)} / ${fmt(s.right.delta_trim, 2)}<br>SRD/√φ L/R ${fmt(s.left.srd_phi, 2)} / ${fmt(s.right.srd_phi, 2)} · SRD ${fmt(s.left.srd, 2)} / ${fmt(s.right.srd, 2)} · log2FC ${fmt(s.left.log2fc, 2)} / ${fmt(s.right.log2fc, 2)}<br>level median ${s.stats.median.toFixed(2)} mean ${s.stats.mean.toFixed(2)} trim ${s.stats.trim.toFixed(2)} · std ${s.stats.std.toFixed(2)} · CV ${s.stats.cv.toFixed(2)}<br>${cc.label}<br>reasons: ${s.reasonL} | ${s.reasonR}${s.proposal ? ` · SRD-screen proposal: ${s.proposal}` : ''}<extra></extra>` })
-      }
-      // merge-rule hatches (computed client-side from hatch-scores; independent of the archived layers above)
+      // small internal segments from live hatch-scores: colour, Rule 0 cases, user-rule hatches
       const hs = ig.hatchScores[`${src}|${seg.chrom}`]
       const evals = ruleEvals[src]
-      if (hs && evals && rulesOn) hs.rows.forEach((row, ri) => {
-        const ev = evals[ri]
+      if (hs && evals) hs.rows.forEach((row, ri) => {
+        if (row.end - row.start > seg.smallMax) return
+        const ev = evals[ri], r0 = ev.rule0
+        const key = `${src}|${seg.chrom}|${row.start}`
         const x0 = mb[row.start], x1 = row.end < chromMeta.n ? mb[row.end] : bins[2 * (chromMeta.offset + chromMeta.n - 1) + 1] / MB
-        for (const id of ev.matched) { const rule = ig.mergeRules.find((r) => r.id === id)!; shapes.push(...hatchShapes(x0, x1, yref, rule.hatch.pattern, rule.hatch.color)) }
+        const cv = colourValue(row, trackDef.id)
+        const color = seg.scale === 'binned' ? binColor(cv.value, trackDef.bins) : (cv.value === null ? '#e5e7eb' : viridisAt(Math.min(1, Math.abs(cv.value) / (trackDef.kind === 'stat' ? 8 : 2))))
+        const selected = seg.selectedSegment === key
+        if (seg.labels.small) shapes.push({ type: 'rect', xref: 'x', yref: `${yref} domain`, x0, x1, y0: 0, y1: 1, fillcolor: color, opacity: selected ? 0.75 : 0.5, line: { width: selected ? 2.5 : 0.6, color: '#111827' }, layer: 'below' })
+        const merging = !!r0 && r0.outcome === 'would_merge'
+        const held = !!r0 && r0.outcome === 'held_back'
+        if (merging) shapes.push(...hatchShapes(x0, x1, yref, 'x', rule0.hatch.color))
+        if (r0 && r0.signMismatch && (merging || held || (r0.outcome === 'signs_only' && seg.labels.signs))) shapes.push(...hatchShapes(x0, x1, yref, '|', SIGN_COLOR))
+        if (r0 && r0.flankConflict && (merging || r0.heldBack.includes('flanks'))) shapes.push(...hatchShapes(x0, x1, yref, '-', FLANK_COLOR))
+        if (merging && r0!.blocked === 'gap') shapes.push({ type: 'rect', xref: 'x', yref: `${yref} domain`, x0, x1, y0: 0.02, y1: 0.98, fillcolor: 'rgba(0,0,0,0)', line: { width: 1.5, color: rule0.hatch.color, dash: 'dot' }, layer: 'above' })
+        for (const id of ev.matched) if (id !== 'rule0') { const rule = ig.mergeRules.find((r) => r.id === id); if (rule) shapes.push(...hatchShapes(x0, x1, yref, rule.hatch.pattern, rule.hatch.color)) }
         if (row.gap_left) shapes.push({ type: 'line', xref: 'x', yref: `${yref} domain`, x0, x1: x0, y0: 0, y1: 1, line: { color: '#b91c1c', width: 2, dash: 'dot' }, opacity: 0.7 })
         if (row.gap_right) shapes.push({ type: 'line', xref: 'x', yref: `${yref} domain`, x0: x1, x1, y0: 0, y1: 1, line: { color: '#b91c1c', width: 2, dash: 'dot' }, opacity: 0.7 })
-        if (!ev.matched.length) return
+        const archived = ig.smallSegs.find((x) => x.key === key)
+        const labels: string[] = []
+        if (seg.labels.reason && archived) labels.push(`${REASON_SHORT[archived.reasonL] || archived.reasonL}|${REASON_SHORT[archived.reasonR] || archived.reasonR}`)
+        if (seg.labels.segLabels) labels.push(`${row.end - row.start}b ${fmt(cv.value, 2)}`)
+        if (labels.length) annotations.push({ xref: 'x', yref, x: (x0 + x1) / 2, y: seg.basis === 'raw' ? 0 : yr[1] - 0.15, yanchor: 'top', xanchor: 'center', textangle: -90, showarrow: false, font: { size: 9, color: '#111827' }, bgcolor: 'rgba(255,255,255,0.7)', text: labels.join(' · ') })
         const active = new Set(activeRules(ig.mergeRules).map((r) => r.id))
-        const ruleLines = ig.mergeRules.map((r, k) => ({ r, n: k + 1 })).filter(({ r }) => active.has(r.id))
-          .map(({ r, n }) => `${n}. ${r.name}${ev.matched.includes(r.id) ? ' — MATCH' : ''}<br>${r.conditions.map((c) => `&nbsp;&nbsp;${conditionDetail(c, row)}`).join('<br>')}`)
-        const claimed = ig.mergeRules.find((r) => r.id === ev.claimedBy)
-        const outcome = ev.blocked === 'gap' ? `would merge ${ev.side}, blocked by gap` : ev.blocked === 'nonfinite' ? 'not mergeable: the merge-into score is missing' : `merges ${ev.side} (|score| ${fmt(ev.score, 3)})`
-        data.push({ type: 'scatter', mode: 'markers', x: [(x0 + x1) / 2], y: [seg.basis === 'raw' ? 0 : yr[0] + 0.2], marker: { size: 7, color: claimed?.hatch.color ?? '#155e75', line: { color: '#111827', width: 1 }, symbol: 'diamond' }, xaxis: 'x', yaxis: yref, showlegend: false, name: 'merge rule',
-          hovertemplate: `<b>${src} ${seg.chrom} · merge rules</b><br>bins [${row.start}, ${row.end}) · ${row.end - row.start} bins<br>claimed by: ${claimed?.name ?? '–'} → ${outcome}<br>${ruleLines.join('<br>')}<extra></extra>` })
+        const userLines = ig.mergeRules.map((r, k) => ({ r, n: k + 1 })).filter(({ r }) => active.has(r.id) && ev.matched.includes(r.id))
+          .map(({ r, n }) => `rule ${n} “${r.name}” matches<br>${r.conditions.map((c) => `&nbsp;&nbsp;${conditionDetail(c, row)}`).join('<br>')}`)
+        const claimNote = ev.claimedBy && ev.claimedBy !== 'rule0' ? `<br>merge claimed by rule “${ig.mergeRules.find((r) => r.id === ev.claimedBy)?.name ?? ev.claimedBy}”${ev.blocked ? ` (${ev.blocked === 'gap' ? 'blocked by gap' : 'merge-into score missing'})` : ` → ${ev.side}`}` : ''
+        data.push({ type: 'scatter', mode: held ? 'markers+text' : 'markers', text: held ? ['⚠'] : undefined, textposition: 'top center', textfont: { size: 12, color: SIGN_COLOR },
+          x: [(x0 + x1) / 2], y: [seg.basis === 'raw' ? 0 : yr[1] - 0.35], marker: { size: 9, color, line: { color: merging ? rule0.hatch.color : '#111827', width: merging ? 2 : 1 }, symbol: merging || held ? 'diamond' : 'square' },
+          customdata: [key], xaxis: 'x', yaxis: yref, showlegend: false, name: 'small segment',
+          hovertemplate: `<b>${src} ${seg.chrom} · bins [${row.start}, ${row.end}) · ${row.end - row.start} bins</b><br>${trackDef.label}: ${fmt(cv.value, 3)} (${cv.side ?? '–'} flank)<br>${(r0 ? rule0Lines(r0) : [rule0Issues.length ? `Rule 0 inactive: ${rule0Issues.join('; ')}` : 'Rule 0: no score row']).join('<br>')}${userLines.length ? `<br>${userLines.join('<br>')}` : ''}${claimNote}${row.gap_left || row.gap_right ? `<br>genomic gap: ${row.gap_left ? 'left ' : ''}${row.gap_right ? 'right' : ''}` : ''}<extra></extra>` })
       })
       // candidate audit
       if (seg.labels.candidates) {
         const rows = ig.candidates[`${src}|${seg.chrom}`] || []
         const rej = rows.filter((r) => !r.accepted && r.selected_for_significance), acc = rows.filter((r) => r.accepted)
         const geo = rows.filter((r) => !r.selected_for_significance && r.candidate_rank <= 1)
-        const mk = (rows0: typeof rows, name: string, sym: string, color: string) => { const rs = rows0.filter((r) => r.candidate_absolute_bin !== null && r.candidate_absolute_bin !== undefined); return rs.length && data.push({ type: 'scatter', mode: 'markers', x: rs.map((r) => mb[Math.max(0, Math.min(r.candidate_absolute_bin, chromMeta.n - 1))]), y: rs.map(() => (seg.basis === 'raw' ? 0 : yr[0] + 0.3)), marker: { symbol: sym, size: 7, color }, customdata: rs.map((r) => `${r.rejection_reasons || ''}`), xaxis: 'x', yaxis: yref, showlegend: false, name, hovertemplate: rs.map((r) => `${name} · depth ${r.recursion_depth} · node [${r.node_start_bin},${r.node_end_bin}) · rank ${r.candidate_rank} · AD ${fmt(r.ad_score, 2)} · children (${r.left_child_bins}, ${r.right_child_bins})<br>p_local ${r.p_local ?? 'n/a'} · p_global ${r.p_global ?? 'n/a'}<br>${r.rejection_reasons || 'no rejection reason'}<extra></extra>`) }) }
+        const mk = (rows0: typeof rows, name: string, sym: string, color: string) => { const rs = rows0.filter((r) => r.candidate_absolute_bin !== null && r.candidate_absolute_bin !== undefined); return rs.length && data.push({ type: 'scatter', mode: 'markers', x: rs.map((r) => mb[Math.max(0, Math.min(r.candidate_absolute_bin, chromMeta.n - 1))]), y: rs.map(() => (seg.basis === 'raw' ? 0 : yr[0] + 0.3)), marker: { symbol: sym, size: 7, color }, customdata: rs.map((r) => `${r.rejection_reasons || ''}`), xaxis: 'x', yaxis: yref, showlegend: false, name, hovertemplate: rs.map((r) => `${name} · depth ${r.recursion_depth} · node [${r.node_start_bin},${r.node_end_bin}) · rank ${r.candidate_rank} · AD ${fmt(r.ad_score, 2)} · children (${r.left_child_bins}, ${r.right_child_bins})<br>p_local ${r.p_local ?? 'n/a'} · p_global ${r.p_global ?? 'n/a'}<br>${derivedRejectionReason(r) ?? 'no rejection reason'}<extra></extra>`) }) }
         mk(acc, 'accepted candidate', 'triangle-up', '#440154'); mk(rej, 'tested, rejected', 'x', '#c1121f'); mk(geo, 'rank-1 candidate blocked by geometry', 'diamond-open', '#f59e0b')
       }
     })
     Object.assign(layout, { height: Math.max(260, 150 * nS + 70), margin: { l: 56, r: seg.labels.allelic ? 46 : 14, t: 30, b: 40 }, paper_bgcolor: 'white', plot_bgcolor: 'white', font: { size: 11 }, hovermode: presentation ? false : 'closest', dragmode: 'zoom', shapes, annotations, showlegend: false, xaxis: { title: { text: `${seg.chrom} position (Mb)` }, range: [mb[0], bins[2 * (chromMeta.offset + chromMeta.n - 1) + 1] / MB], gridcolor: '#f1f5f9', anchor: `y${nS === 1 ? '' : nS}` } })
-    layout.title = { text: `${seg.chrom} · pseudobulk depth per WNN cluster${seg.basis === 'chrmedian' ? ' · log2(depth / chromosome median)' : seg.basis === 'genome_trimmed' ? ' · log2(depth / genome trimmed mean)' : ' · mean X'} · small segments (≤ ${seg.smallMax} bins) coloured by ${metricDef.label} (${seg.flank.replace('_', ' ')} flank)`, font: { size: 12 }, x: 0 }
+    layout.title = { text: `${seg.chrom} · pseudobulk depth per WNN cluster${seg.basis === 'chrmedian' ? ' · log2(depth / chromosome median)' : seg.basis === 'genome_trimmed' ? ' · log2(depth / genome trimmed mean)' : ' · mean X'} · small segments (≤ ${seg.smallMax} bins) coloured by ${trackDef.label} (smaller-|value| flank) · Rule 0 hatched`, font: { size: 12 }, x: 0 }
     return { data, layout }
-  }, [meta, ig.pb, seg, smallHere, chromMeta, bins, effectMetric, metricDef, clSegs, ig.candidates, presentation, nBins, ig.mergeRules, ig.hatchScores, ruleEvals, rulesOn])
+  }, [meta, ig.pb, seg, chromMeta, bins, trackDef, rule0, rule0Issues, ig.smallSegs, clSegs, ig.candidates, presentation, nBins, ig.mergeRules, ig.hatchScores, ruleEvals])
 
   const onTrackClick = (ev: any) => { const p = ev?.points?.[0]; if (p && p.customdata && typeof p.customdata === 'string' && p.customdata.includes('|')) ig.setSeg({ selectedSegment: seg.selectedSegment === p.customdata ? null : p.customdata }) }
   const selectSeg = (s: SmallSeg) => { ig.setSeg({ selectedSegment: s.key, chrom: s.chrom, sources: seg.sources.includes(s.source) ? seg.sources : [...seg.sources, s.source] }); document.getElementById('cluster-tracks')?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }
@@ -257,53 +242,86 @@ export default function IntegrationSegmentationView() {
       </div>
 
       <div className="panel" id="cluster-tracks">
-        <h3>Chromosome tracks — pseudobulk depth, accepted breakpoints and small segments (figs 9, 10)</h3>
-        <p className="lead">Grey line: per-bin pseudobulk depth, broken at genomic gaps. Vertical lines: accepted breakpoints by recursion depth. Shaded spans: internal segments ≤ {seg.smallMax} bins with their flank metrics from the merge prototype. Tick "flank-consistency hatch" to hatch × where the min-delta flank's |SRD/√φ| &lt; {seg.srdRef} (weak) and / where the min-delta flank ≠ the min-SRD flank (inconsistent); plain fill = ≥ {seg.srdRef} and consistent (strong). Tick "SRD-screen proposal" to instead colour and hatch segments by the min-SRD flank's |SRD/√φ| and the screening proposal (/ merge, × ambiguous, plain = keep focal). {pilot ? '' : `Small-segment metrics exist only for the pilot chromosomes (${meta.pilot_chromosomes.join(', ')}); this chromosome shows breakpoints and CN only.`}</p>
-        <h4 className="vis-heading">1. Visualization <span className="muted small">— display only; nothing here affects merging (merge rules are in section 2 below the tracks)</span></h4>
+        <h3>Chromosome tracks — pseudobulk depth, accepted breakpoints and small segments</h3>
+        <p className="lead">Grey line: per-bin pseudobulk depth, broken at genomic gaps. Vertical lines: accepted breakpoints by recursion depth. Shaded spans: internal segments ≤ {seg.smallMax} bins, coloured by live flank scores (any chromosome) on the colour metric's smaller-|value| flank. Rule 0 hatches × the segments whose checked flank criteria are below τ / the SRD/√φ ref; an amber | marks flank SRD/√φ signs that disagree and a violet ― marks criteria that pick different flanks.</p>
+        <h4 className="vis-heading">1. Visualization and Rule 0 <span className="muted small">— colouring is display only; Rule 0 below hatches the segments that the merge in section 2 starts from</span></h4>
         <div className="controls-row">
           <label>chromosome<select value={seg.chrom} onChange={(e) => ig.setSeg({ chrom: e.target.value, selectedSegment: null })}>{exMeta.chromosomes.map((c) => <option key={c.name} value={c.name}>{c.name}{meta.pilot_chromosomes.includes(c.name) ? ' · pilot' : ''}</option>)}</select></label>
-          <label>colour by<select value={seg.metric} onChange={(e) => ig.setSeg({ metric: e.target.value as Metric })}>{METRICS.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}</select></label>
-          {metricDef.kind === 'stat' && <label>effect metric for flank choice<select value={seg.effectMetric} onChange={(e) => ig.setSeg({ effectMetric: e.target.value as Metric })}>{METRICS.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}</select></label>}
-          <label>flank<select value={seg.flank} onChange={(e) => ig.setSeg({ flank: e.target.value as any })}><option value="min_delta">min |effect| flank (figure default)</option><option value="min_srd">min |SRD/√φ| flank</option><option value="max_delta">max |effect| flank</option><option value="left">left flank</option><option value="right">right flank</option></select></label>
+          <label>colour by<select value={seg.colorMetric} onChange={(e) => ig.setSeg({ colorMetric: e.target.value as any })}>{TRACK_METRICS.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}</select></label>
           <label>scale<select value={seg.scale} onChange={(e) => ig.setSeg({ scale: e.target.value as any })}><option value="binned">binned bands (as in the figures)</option><option value="continuous">continuous viridis</option></select></label>
           <label>track level<select value={seg.basis} onChange={(e) => ig.setSeg({ basis: e.target.value as any })}><option value="chrmedian">log2(depth / chromosome median)</option><option value="genome_trimmed">log2(depth / genome trimmed mean, pyEpi baseline)</option><option value="raw">raw pseudobulk X</option></select></label>
           <label>smoothing (visual)<select value={seg.smoothing} onChange={(e) => ig.setSeg({ smoothing: +e.target.value })}><option value={1}>none (per bin)</option><option value={5}>5 bins</option><option value={11}>11 bins</option><option value={25}>25 bins</option></select></label>
           <label>small ≤<input type="number" min={5} max={500} value={seg.smallMax} onChange={(e) => ig.setSeg({ smallMax: +e.target.value })} style={{ width: 64 }} /></label>
-          <label>SRD ref<input type="number" step={0.1} value={seg.srdRef} onChange={(e) => ig.setSeg({ srdRef: +e.target.value })} style={{ width: 64 }} /></label>
-          <label>τ<input type="number" step={0.05} value={seg.tau} onChange={(e) => ig.setSeg({ tau: +e.target.value })} style={{ width: 64 }} /></label>
+          <label>SRD/√φ ref<input type="number" aria-label="Rule 0 SRD/√φ ref" step={0.1} value={Number.isFinite(seg.srdRef) ? seg.srdRef : ''} onChange={(e) => ig.setSeg({ srdRef: e.target.value === '' ? NaN : +e.target.value })} style={{ width: 64 }} /></label>
+          <label>τ<input type="number" aria-label="Rule 0 tau" step={0.05} value={Number.isFinite(seg.tau) ? seg.tau : ''} onChange={(e) => ig.setSeg({ tau: e.target.value === '' ? NaN : +e.target.value })} style={{ width: 64 }} /></label>
+        </div>
+        <div className="controls-row rule0-controls">
+          <span className="small"><b>Rule 0</b> — hatch and merge segments where</span>
+          <select aria-label="Rule 0 combine" value={seg.combine} onChange={(e) => ig.setSeg({ combine: e.target.value as 'all' | 'any' })}><option value="all">all</option><option value="any">any</option></select>
+          <span className="small">of these hold:</span>
+          {RULE0_CRITERIA.map((c) => <label key={c} className="chk-inline"><input type="checkbox" aria-label={`Rule 0 criterion ${CRITERION_LABEL[c]}`} checked={seg.criteria.includes(c)}
+            onChange={(e) => ig.setSeg({ criteria: RULE0_CRITERIA.filter((x) => (x === c ? e.target.checked : seg.criteria.includes(x))) })} />{CRITERION_LABEL[c]} &lt; {c === 'srd_phi' ? 'SRD/√φ ref' : 'τ'}</label>)}
+          <label className="chk-inline"><input type="checkbox" aria-label="Merge sign-disagreeing segments" checked={seg.mergeSignMismatch} onChange={(e) => ig.setSeg({ mergeSignMismatch: e.target.checked })} />merge would-merge segments whose flank signs disagree</label>
+          <label className="chk-inline"><input type="checkbox" aria-label="Merge flank-conflict segments" checked={seg.mergeFlankConflict} onChange={(e) => ig.setSeg({ mergeFlankConflict: e.target.checked })} />merge segments whose criteria pick different flanks, toward the one furthest below its threshold</label>
+          {rule0Issues.length > 0 && <span className="notice small">Rule 0 inactive: {rule0Issues.join('; ')}</span>}
         </div>
         <div className="controls-row">
           <span className="small muted">rows:</span>{meta.sources.map((s) => <label key={s} className="chk-inline"><input type="checkbox" checked={seg.sources.includes(s)} onChange={(e) => ig.setSeg({ sources: e.target.checked ? meta.sources.filter((x) => x === s || seg.sources.includes(x)) : seg.sources.filter((x) => x !== s) })} /><i className="sw" style={{ background: SOURCE_COLORS[s] }} />{s}</label>)}
           <span className="small muted" style={{ marginLeft: 12 }}>layers:</span>
-          {([['breakpoints', 'accepted breakpoints'], ['depthColor', 'colour by recursion depth'], ['small', 'small segments'], ['consistency', 'flank-consistency hatch (×/‒/) + x/o/ label'], ['proposal', 'SRD-screen proposal: hatch + colour by min-SRD flank'], ['reason', 'retained reason (effect ≥ τ / terminal)'], ['segLabels', 'length + value labels'], ['cn', 'cluster CN strip'], ['candidates', 'candidate audit (rejected / blocked)'], ['allelic', 'allelic |dBAF| pseudobulk (right axis)']] as const).map(([k, l]) => <label key={k} className="chk-inline"><input type="checkbox" checked={(seg.labels as any)[k]} onChange={(e) => ig.setLabels({ [k]: e.target.checked } as any)} />{l}</label>)}
+          {([['breakpoints', 'accepted breakpoints'], ['depthColor', 'colour by recursion depth'], ['small', 'small segments'], ['signs', 'signs-disagree hatch (amber |) on segments that do not pass Rule 0'], ['reason', 'retained reason (archived prototype, where available)'], ['segLabels', 'length + value labels'], ['cn', 'cluster CN strip'], ['candidates', 'candidate audit (rejected / blocked)'], ['allelic', 'allelic |dBAF| pseudobulk (right axis)']] as const).map(([k, l]) => <label key={k} className="chk-inline"><input type="checkbox" checked={(seg.labels as any)[k]} onChange={(e) => ig.setLabels({ [k]: e.target.checked } as any)} />{l}</label>)}
         </div>
         {ig.hatchScoresError && <div className="notice small">{ig.hatchScoresError}</div>}
         <div className="seg-legend">
-          <span><b>{metricDef.label}</b> · {metricDef.source}</span>
-          {seg.scale === 'binned' ? metricDef.binLabels.map((l, i) => <span key={l}><i style={{ background: metricDef.bins.length === 3 ? [VIRIDIS[0], VIRIDIS[1], VIRIDIS[2], VIRIDIS[4]][i] : VIRIDIS[i] }} />{l}</span>) : <span>continuous 0 → {metricDef.kind === 'stat' ? 8 : 2} (viridis)</span>}
+          <span><b>{trackDef.label}</b> · live flank scores (smaller-|value| flank)</span>
+          {seg.scale === 'binned' ? trackDef.binLabels.map((l, i) => <span key={l}><i style={{ background: trackDef.bins.length === 3 ? [VIRIDIS[0], VIRIDIS[1], VIRIDIS[2], VIRIDIS[4]][i] : VIRIDIS[i] }} />{l}</span>) : <span>continuous 0 → {trackDef.kind === 'stat' ? 8 : 2} (viridis)</span>}
           <span><i style={{ background: '#e5e7eb' }} />N/A</span>
           {seg.labels.breakpoints && seg.labels.depthColor && <span>depth: {DEPTH_COLORS.map((c, i) => <span key={i} className="ln" style={{ borderColor: c }} title={`depth ${i}`} />)}</span>}
           {seg.labels.cn && <span>CN strip: {[0, 0.5, 1, 1.5, 2].map((v) => <i key={v} style={{ background: (seg.karyoPalette === 'story' ? STORY_CN : CN_COLORS)[v] }} />)}</span>}
-          {seg.labels.proposal && <span>segments with a proposal: colour = min-SRD flank |SRD/√φ| ({METRICS.find((m) => m.id === 'srd_phi')!.binLabels.join(' / ')}) · hatch / merge, × ambiguous, plain keep-focal</span>}
-          {seg.labels.consistency && !seg.labels.proposal && <span>hatch × weak SRD, / inconsistent flank, plain strong/consistent</span>}
           {activeRules(ig.mergeRules).map((r) => <span key={r.id}><b className="rule-swatch" style={{ color: r.hatch.color }}>{r.hatch.pattern}</b>rule {ig.mergeRules.indexOf(r) + 1} “{r.name}” · flags {ruleCounts[r.id] || 0}</span>)}
-          {rulesOn && <span><i className="ln" style={{ borderColor: '#b91c1c' }} />dotted red = a genomic gap sits at that flank boundary</span>}
+          {(userRulesOn || rule0Issues.length === 0) && <span><i className="ln" style={{ borderColor: '#b91c1c' }} />dotted red = a genomic gap sits at that flank boundary</span>}
+          {rule0Issues.length === 0 && <span className="rule0-legend"><b className="rule-swatch" style={{ color: rule0.hatch.color }}>×</b>Rule 0 would merge: {r0Counts.wouldMerge}{r0Counts.signs ? ` · signs disagree: ${r0Counts.signs}` : ''}{r0Counts.flanks ? ` · flanks disagree: ${r0Counts.flanks}` : ''}{r0Counts.gap ? ` · blocked by gap: ${r0Counts.gap}` : ''} · <b style={{ color: SIGN_COLOR }}>|</b>/<b style={{ color: FLANK_COLOR }}>―</b> ⚠ held back: {r0Counts.heldBack} · <b style={{ color: SIGN_COLOR }}>|</b> signs disagree only: {r0Counts.signsOnly}</span>}
         </div>
         {trackFig ? <><Plot data={trackFig.data} layout={trackFig.layout} config={trackConfig} onClick={onTrackClick} onReady={el => { plotEl.current = el }} /><button className="btn-xs" onClick={() => plotEl.current && downloadPlot(plotEl.current, `tracks_${seg.chrom}`)}>PNG</button></> : <div className="muted small">{ig.pb ? 'select at least one cluster row' : 'loading pseudobulk profiles…'}</div>}
-        {seg.selectedSegment && (() => { const s = ig.smallSegs.find((x) => x.key === seg.selectedSegment); if (!s) return null; const cc = consistencyClass(s, effectMetric, seg.srdRef); const bs = (meta.bootstrap || []).find((b: any) => b.source === s.source && b.chromosome === s.chrom && b.bin_start === s.s); return (
-          <div className="cell-card"><div className="row wrap"><b>{s.source} {s.chrom} · segment {s.segId}</b> <span className="muted">bins [{s.s}, {s.e}) · {s.len} bins · {s.mbStart}–{s.mbEnd} Mb</span><span className="spacer" /><button className="btn-xs" onClick={() => ig.setSeg({ selectedSegment: null })}>✕</button></div>
-            <div className="table-scroll"><table className="tbl"><thead><tr><th></th><th>left flank ({s.flank.n_bins_left_flank ?? '–'} bins)</th><th>right flank ({s.flank.n_bins_right_flank ?? '–'} bins)</th></tr></thead><tbody>
-              {METRICS.map((m) => <tr key={m.id} className={m.id === seg.metric ? 'sel' : ''}><td>{m.label}</td><td>{fmt(s.left[m.id])}</td><td>{fmt(s.right[m.id])}</td></tr>)}
-              <tr><td>flank level (median / mean / trim)</td><td>{fmt(s.flank.median_left, 2)} / {fmt(s.flank.mean_left_flank_perbin, 2)} / {fmt(s.flank.trimmean_left_flank_perbin, 2)}</td><td>{fmt(s.flank.median_right, 2)} / {fmt(s.flank.mean_right_flank_perbin, 2)} / {fmt(s.flank.trimmean_right_flank_perbin, 2)}</td></tr>
-              <tr><td>Original median bootstrap fraction |Δ| &lt; {meta.manifest?.params?.tau_default} ({meta.manifest?.params?.n_bootstrap} cell replicates)</td><td>{fmt(s.flank.frac_under_left, 2)}</td><td>{fmt(s.flank.frac_under_right, 2)}</td></tr>
-              <tr><td>eligible / merged / reason</td><td>{String(s.flank.eligible_left)} / {String(s.flank.merged_left)} / {s.reasonL}</td><td>{String(s.flank.eligible_right)} / {String(s.flank.merged_right)} / {s.reasonR}</td></tr>
-              {bs && <tr><td>SRD-screen bootstrap SE (log2FC / SRD)</td><td>{fmt(bs.se_log2fc_left, 3)} / {fmt(bs.se_srd_left, 3)} (sign agreement {bs.sign_agree_log2fc_left})</td><td>{fmt(bs.se_log2fc_right, 3)} / {fmt(bs.se_srd_right, 3)} (sign agreement {bs.sign_agree_log2fc_right})</td></tr>}
+        {seg.selectedSegment && (() => {
+          const [ssrc, schrom, sstart] = seg.selectedSegment.split('|')
+          const rows = ig.hatchScores[`${ssrc}|${schrom}`]?.rows
+          const ri = rows ? rows.findIndex((r) => r.start === +sstart) : -1
+          if (!rows || ri < 0) return null
+          const row = rows[ri], ev = ruleEvals[ssrc]?.[ri]
+          const archived = ig.smallSegs.find((x) => x.key === seg.selectedSegment)
+          const bs = archived ? (meta.bootstrap || []).find((b: any) => b.source === archived.source && b.chromosome === archived.chrom && b.bin_start === archived.s) : undefined
+          const live: { id: string; label: string; l: number | null; r: number | null }[] = [
+            { id: 'srd', label: 'SRD', l: row.srd_left, r: row.srd_right },
+            { id: 'srd_phi', label: 'SRD/√φ', l: row.srd_phi_left, r: row.srd_phi_right },
+            { id: 'delta_median', label: 'Δlog2FC median', l: row.delta_median_left, r: row.delta_median_right },
+            { id: 'delta_mean', label: 'Δlog2FC mean', l: row.delta_mean_left, r: row.delta_mean_right },
+            { id: 'delta_iqr_mean', label: 'Δlog2FC IQR-mean', l: row.delta_iqr_mean_left, r: row.delta_iqr_mean_right },
+          ]
+          return (
+          <div className="cell-card"><div className="row wrap"><b>{ssrc} {schrom} · bins [{row.start}, {row.end}) · {row.end - row.start} bins</b><span className="spacer" /><button className="btn-xs" onClick={() => ig.setSeg({ selectedSegment: null })}>✕</button></div>
+            <div className="table-scroll"><table className="tbl"><thead><tr><th></th><th>left flank</th><th>right flank</th></tr></thead><tbody>
+              {live.map((m) => <tr key={m.id} className={m.id === seg.colorMetric ? 'sel' : ''}><td>{m.label}</td><td>{fmt(m.l)}</td><td>{fmt(m.r)}</td></tr>)}
             </tbody></table></div>
-            <div className="small">segment level: median {s.stats.median.toFixed(3)} · mean {s.stats.mean.toFixed(3)} · IQR-trimmed mean {s.stats.trim.toFixed(3)} · per-bin std {s.stats.std.toFixed(3)} · CV {s.stats.cv.toFixed(3)} · {cc.label}{s.proposal ? ` · SRD-screen proposal: ${s.proposal}` : ''}</div>
+            <div className="small">φ = {fmt(row.phi)} · genomic gap: {row.gap_left && row.gap_right ? 'left and right' : row.gap_left ? 'left' : row.gap_right ? 'right' : 'none'}</div>
+            {ev?.rule0 && <ul className="small">{rule0Lines(ev.rule0).map((l, i) => <li key={i}>{l}</li>)}</ul>}
+            {archived && <><h5>Archived prototype (this segment)</h5>
+              <div className="table-scroll"><table className="tbl"><tbody>
+                <tr><td>Original median bootstrap fraction |Δ| &lt; {meta.manifest?.params?.tau_default} ({meta.manifest?.params?.n_bootstrap} cell replicates)</td><td>{fmt(archived.flank.frac_under_left, 2)}</td><td>{fmt(archived.flank.frac_under_right, 2)}</td></tr>
+                <tr><td>eligible / merged / reason</td><td>{String(archived.flank.eligible_left)} / {String(archived.flank.merged_left)} / {archived.reasonL}</td><td>{String(archived.flank.eligible_right)} / {String(archived.flank.merged_right)} / {archived.reasonR}</td></tr>
+                {bs && <tr><td>SRD-screen bootstrap SE (log2FC / SRD)</td><td>{fmt(bs.se_log2fc_left, 3)} / {fmt(bs.se_srd_left, 3)} (sign agreement {bs.sign_agree_log2fc_left})</td><td>{fmt(bs.se_log2fc_right, 3)} / {fmt(bs.se_srd_right, 3)} (sign agreement {bs.sign_agree_log2fc_right})</td></tr>}
+              </tbody></table></div></>}
           </div>) })()}
-        <details className="diag" open={chromTable}><summary onClick={(e) => { e.preventDefault(); setChromTable(!chromTable) }}>Segments on {seg.chrom} for the selected rows ({segTable.length} cluster segments · {smallHere.filter((s) => seg.sources.includes(s.source)).length} small segments with metrics)</summary>
-          <div className="table-scroll"><table className="tbl"><thead><tr><th>cluster</th><th>segment</th><th>bins [s, e)</th><th>n</th><th>Mb</th><th>CN call</th><th>continuous</th><th>integer</th><th>small-segment metric ({metricDef.label})</th><th>consistency</th><th>proposal</th></tr></thead><tbody>
-            {segTable.map((g) => { const sm = smallHere.find((s) => s.source === g.group && s.s === g.s); const mv = sm ? metricValue(sm, seg.metric, seg.flank, effectMetric) : null; return <tr key={`${g.group}-${g.segment}`} className={`${sm ? 'clickable' : ''} ${sm && sm.key === seg.selectedSegment ? 'sel' : ''}`} onClick={() => sm && selectSeg(sm)}><td style={{ color: SOURCE_COLORS[g.group] }}>{g.group}</td><td>{g.segment}</td><td>[{g.s}, {g.e})</td><td>{g.n_bins}</td><td>{(bins[2 * (chromMeta.offset + g.s)] / MB).toFixed(1)}–{(bins[2 * (chromMeta.offset + g.e - 1) + 1] / MB).toFixed(1)}</td><td><i className="sw" style={{ background: (seg.karyoPalette === 'story' ? STORY_CN : CN_COLORS)[g.cn_call] }} />{g.cn_call} {STORY_CN_LABELS[g.cn_call]}</td><td>{g.continuous_cn}</td><td>{g.integer_cn}</td><td>{sm ? `${fmt(mv!.value)} (${mv!.flank})` : ''}</td><td>{sm ? consistencyClass(sm, effectMetric, seg.srdRef).cls : ''}</td><td>{sm?.proposal ? PROPOSAL_LABEL[sm.proposal] || sm.proposal : ''}</td></tr> })}
+        <details className="diag" open={chromTable}><summary onClick={(e) => { e.preventDefault(); setChromTable(!chromTable) }}>Segments on {seg.chrom} for the selected rows ({segTable.length} cluster segments)</summary>
+          <div className="table-scroll"><table className="tbl"><thead><tr><th>cluster</th><th>segment</th><th>bins [s, e)</th><th>n</th><th>Mb</th><th>CN call</th><th>continuous</th><th>integer</th><th>colour value ({trackDef.label})</th><th>Rule 0</th></tr></thead><tbody>
+            {segTable.map((g) => {
+              const rows = ig.hatchScores[`${g.group}|${seg.chrom}`]?.rows
+              const ri = rows ? rows.findIndex((r) => r.start === g.s && r.end === g.e) : -1
+              const lrow = ri >= 0 ? rows![ri] : null
+              const r0 = lrow ? ruleEvals[g.group]?.[ri]?.rule0 : undefined
+              const cv = lrow ? colourValue(lrow, trackDef.id) : null
+              const outcome = !r0 ? '' : r0.outcome === 'would_merge' ? 'would merge' : r0.outcome === 'held_back' ? 'held back' : r0.outcome === 'signs_only' ? 'signs disagree' : ''
+              const skey = `${g.group}|${seg.chrom}|${g.s}`
+              return <tr key={`${g.group}-${g.segment}`} className={`${lrow ? 'clickable' : ''} ${lrow && skey === seg.selectedSegment ? 'sel' : ''}`} onClick={() => lrow && ig.setSeg({ selectedSegment: skey })}><td style={{ color: SOURCE_COLORS[g.group] }}>{g.group}</td><td>{g.segment}</td><td>[{g.s}, {g.e})</td><td>{g.n_bins}</td><td>{(bins[2 * (chromMeta.offset + g.s)] / MB).toFixed(1)}–{(bins[2 * (chromMeta.offset + g.e - 1) + 1] / MB).toFixed(1)}</td><td><i className="sw" style={{ background: (seg.karyoPalette === 'story' ? STORY_CN : CN_COLORS)[g.cn_call] }} />{g.cn_call} {STORY_CN_LABELS[g.cn_call]}</td><td>{g.continuous_cn}</td><td>{g.integer_cn}</td><td>{cv ? fmt(cv.value) : ''}</td><td>{outcome}</td></tr> })}
           </tbody></table></div></details>
       </div>
 

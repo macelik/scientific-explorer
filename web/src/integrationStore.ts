@@ -1,15 +1,16 @@
 import { create } from 'zustand'
 import { api } from './api'
-import { buildSmallSegments, type FlankRule, type Metric, type SmallSeg } from './integration'
+import { buildSmallSegments, type SmallSeg } from './integration'
+import { migrateSegSettings, type TrackMetric } from './trackMetrics'
 import type { CandidateRow, CellDetail, IntegrationMeta, IntegrationStatus } from './types'
 import { fetchHatchScores, type HatchScoresResult } from './hatchMerge'
-import { migrateHatchLayers, type MergeRule } from './mergeRules'
+import { migrateHatchLayers, type MergeRule, type Rule0Criterion } from './mergeRules'
 
 export type ColorBy = 'cluster' | 'log10_raw' | 'sumX' | 'HA_HB' | 'n_bins_snp' | 'depth_weight' | 'haplo_weight' | 'chr8_score' | 'zero_frac' | 'in_cohort' | 'selected'
 export type LevelBasis = 'chrmedian' | 'genome_trimmed' | 'raw'
-export interface LabelLayers { breakpoints: boolean; depthColor: boolean; small: boolean; proposal: boolean; consistency: boolean; reason: boolean; cn: boolean; candidates: boolean; allelic: boolean; segLabels: boolean }
+export interface LabelLayers { breakpoints: boolean; depthColor: boolean; small: boolean; signs: boolean; reason: boolean; cn: boolean; candidates: boolean; allelic: boolean; segLabels: boolean }
 export interface SegSettings {
-  chrom: string; sources: string[]; metric: Metric; effectMetric: Metric; flank: FlankRule; scale: 'binned' | 'continuous'; basis: LevelBasis; smoothing: number
+  chrom: string; sources: string[]; colorMetric: TrackMetric; criteria: Rule0Criterion[]; combine: 'all' | 'any'; mergeSignMismatch: boolean; mergeFlankConflict: boolean; scale: 'binned' | 'continuous'; basis: LevelBasis; smoothing: number
   labels: LabelLayers; smallMax: number; srdRef: number; tau: number; selectedSegment: string | null
   karyoPalette: 'story' | 'explorer'; percellOrder: 'cluster' | 'coverage' | 'chr8'; percellRowH: 'fit' | 1 | 2
 }
@@ -43,8 +44,8 @@ export interface IntegrationState {
 }
 
 const defaultSeg: SegSettings = {
-  chrom: 'chr8', sources: ['cluster0', 'cluster1', 'cluster2', 'cluster3', 'cluster4'], metric: 'delta_mean', effectMetric: 'delta_mean', flank: 'min_delta', scale: 'binned', basis: 'chrmedian', smoothing: 1,
-  labels: { breakpoints: true, depthColor: true, small: true, proposal: false, consistency: true, reason: false, cn: false, candidates: false, allelic: false, segLabels: false },
+  chrom: 'chr8', sources: ['cluster0', 'cluster1', 'cluster2', 'cluster3', 'cluster4'], colorMetric: 'delta_mean', criteria: ['delta_mean', 'srd_phi'], combine: 'all', mergeSignMismatch: false, mergeFlankConflict: false, scale: 'binned', basis: 'chrmedian', smoothing: 1,
+  labels: { breakpoints: true, depthColor: true, small: true, signs: true, reason: false, cn: false, candidates: false, allelic: false, segLabels: false },
   smallMax: 100, srdRef: 3.3, tau: 0.2, selectedSegment: null, karyoPalette: 'story', percellOrder: 'cluster', percellRowH: 'fit',
 }
 
@@ -93,5 +94,5 @@ export const useIntegration = create<IntegrationState>((set, get) => ({
     catch (e: any) { set({ hatchScoresError: `hatch-scores: ${e.message || e}` }) }
   },
   serialize: () => { const s = get(); return { clusterKey: s.clusterKey, colorBy: s.colorBy, selectedCluster: s.selectedCluster, highlight: s.highlight, focusCell: s.focusCell, dimOthers: s.dimOthers, pointSize: s.pointSize, compareKey: s.compareKey, seg: s.seg, mergeRules: s.mergeRules, allowGapCrossing: s.allowGapCrossing } },
-  restore: (p) => { if (!p) return; set({ clusterKey: p.clusterKey || 'wnn_leiden_0.3', colorBy: p.colorBy || 'cluster', selectedCluster: p.selectedCluster ?? null, highlight: p.highlight || [], focusCell: p.focusCell ?? null, dimOthers: !!p.dimOthers, pointSize: p.pointSize || 3, compareKey: p.compareKey || 'wnn_leiden_1.0', seg: { ...defaultSeg, ...(p.seg || {}), labels: { ...defaultSeg.labels, ...((p.seg || {}).labels || {}) } }, mergeRules: Array.isArray(p.mergeRules) ? p.mergeRules : migrateHatchLayers(p.hatchLayers), allowGapCrossing: !!p.allowGapCrossing }) },
+  restore: (p) => { if (!p) return; set({ clusterKey: p.clusterKey || 'wnn_leiden_0.3', colorBy: p.colorBy || 'cluster', selectedCluster: p.selectedCluster ?? null, highlight: p.highlight || [], focusCell: p.focusCell ?? null, dimOthers: !!p.dimOthers, pointSize: p.pointSize || 3, compareKey: p.compareKey || 'wnn_leiden_1.0', seg: (() => { const ms = migrateSegSettings(p.seg); return { ...defaultSeg, ...ms, labels: { ...defaultSeg.labels, ...(ms.labels || {}) } } })(), mergeRules: Array.isArray(p.mergeRules) ? p.mergeRules : migrateHatchLayers(p.hatchLayers), allowGapCrossing: !!p.allowGapCrossing }) },
 }))

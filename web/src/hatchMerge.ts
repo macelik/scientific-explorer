@@ -6,7 +6,7 @@
  * classify_ambiguous, so raw scores can be reclassified client-side as the
  * user adjusts a threshold, without a network round trip. */
 import { hatchShapes } from './integration'
-import type { MergeRule } from './mergeRules'
+import type { AnyRule } from './mergeRules'
 
 export type HatchMetric = 'srd' | 'srd_phi' | 'delta_log2fc'
 export type Estimator = 'mean' | 'median' | 'iqr_mean'
@@ -28,14 +28,14 @@ export interface MergeStep {
   segment: [number, number] | null; rule_id: string | null; rule_name: string | null
   side: 'left' | 'right' | null; score: number | null; phi: number | null
 }
-export interface MergeSettings { rules: MergeRule[]; allow_gap_crossing: boolean }
+export interface MergeSettings { rules: AnyRule[]; allow_gap_crossing: boolean }
 export interface MergeResult {
   original: { start: number; end: number }[]; final: { start: number; end: number }[]
   steps: MergeStep[]; settings: MergeSettings
   source: string; chrom: string; start_bp: number[]; end_bp: number[]; provenance: unknown
 }
 /** Rules are evaluated server-side by server/merge_rules.py; disabled rules are ignored. */
-export interface MergeRequest { chrom: string; source: string; rules: MergeRule[]; allow_gap_crossing: boolean }
+export interface MergeRequest { chrom: string; source: string; rules: AnyRule[]; allow_gap_crossing: boolean }
 
 async function postJson<T>(url: string, body: unknown): Promise<T> {
   const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })

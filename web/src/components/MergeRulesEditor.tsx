@@ -1,6 +1,6 @@
 import { useIntegration } from '../integrationStore'
 import type { Estimator, HatchMetric } from '../hatchMerge'
-import { CONDITION_KINDS, HATCH_PATTERNS, defaultMergeInto, evaluateForSources, makeRule, newCondition, ruleFlagCounts, ruleProblems, type Condition, type ConditionKind, type HatchPattern, type MergeRule, type PresetName } from '../mergeRules'
+import { describeRule0, rule0FromSeg, rule0Problems, CONDITION_KINDS, HATCH_PATTERNS, defaultMergeInto, evaluateForSources, makeRule, newCondition, ruleFlagCounts, ruleProblems, type Condition, type ConditionKind, type HatchPattern, type MergeRule, type PresetName } from '../mergeRules'
 
 const KIND_LABEL: Record<ConditionKind, string> = {
   weak_flank: 'weaker flank below threshold', sign_mismatch: 'flank signs disagree',
@@ -52,7 +52,9 @@ function ConditionRow({ label, c, onChange, onRemove }: { label: string; c: Cond
 export default function MergeRulesEditor() {
   const ig = useIntegration()
   const rules = ig.mergeRules
-  const counts = ruleFlagCounts(evaluateForSources(ig.hatchScores, ig.seg.sources, ig.seg.chrom, rules, ig.allowGapCrossing))
+  const rule0 = rule0FromSeg(ig.seg)
+  const r0Issues = rule0Problems(rule0)
+  const counts = ruleFlagCounts(evaluateForSources(ig.hatchScores, ig.seg.sources, ig.seg.chrom, [rule0, ...rules], ig.allowGapCrossing))
   const scoresLoaded = ig.seg.sources.some((s) => ig.hatchScores[`${s}|${ig.seg.chrom}`])
   const update = (id: string, patch: Partial<MergeRule>) => ig.setMergeRules(rules.map((r) => (r.id === id ? { ...r, ...patch } : r)))
   const setConditions = (r: MergeRule, conditions: Condition[]) =>
@@ -74,7 +76,16 @@ export default function MergeRulesEditor() {
       </select>
       <span className="muted small">A segment is flagged when ANY enabled rule matches; a rule matches when ALL its conditions hold. Rule order is merge priority.</span>
     </div>
-    {!rules.length && <p className="muted small">No merge rules yet. Add one to hatch segments on the Chromosome tracks and to enable a merge run.</p>}
+    {!rules.length && <p className="muted small">No additional rules. Rule 0 above already defines what merges; add a rule to merge more segments.</p>}
+    <div className="rule-card rule0-card">
+      <div className="rule-head"><b>Rule 0 — shown on the tracks</b><span className="muted small">pinned first · edit it in section 1 above</span></div>
+      <div className="small">{describeRule0(rule0)}</div>
+      <div className="small" role="status" aria-label="Rule 0 status">
+        {r0Issues.length ? <span className="notice small">{r0Issues.join('; ')}</span>
+          : ig.hatchScoresError ? 'scores unavailable' : !scoresLoaded ? 'loading scores…'
+          : `→ flags ${counts['rule0'] || 0} segment(s) on ${ig.seg.chrom} across the displayed rows`}
+      </div>
+    </div>
     {rules.map((r, i) => {
       const n = i + 1, problems = ruleProblems(r)
       return <div key={r.id} className="rule-card">

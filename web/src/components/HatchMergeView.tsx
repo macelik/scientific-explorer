@@ -4,7 +4,7 @@ import MergeRulesEditor from './MergeRulesEditor'
 import { useIntegration } from '../integrationStore'
 import { useStore } from '../store'
 import { runHatchMerge, hatchShapes, type MergeResult } from '../hatchMerge'
-import { canRunMerge, describeCondition } from '../mergeRules'
+import { canRunMerge, describeCondition, describeRule0, isRule0, rule0FromSeg } from '../mergeRules'
 
 function download(text: string, name: string, type: string) {
   const url = URL.createObjectURL(new Blob([text], { type })); const a = document.createElement('a')
@@ -21,8 +21,9 @@ export default function HatchMergeView() {
   const [error, setError] = useState('')
   const token = useRef(0)
   const chrom = ig.seg.chrom
-  const runnable = canRunMerge(ig.mergeRules)
-  const request = { chrom, source, rules: ig.mergeRules, allow_gap_crossing: ig.allowGapCrossing }
+  const rule0 = rule0FromSeg(ig.seg)
+  const runnable = canRunMerge(rule0, ig.mergeRules)
+  const request = { chrom, source, rules: [rule0, ...ig.mergeRules], allow_gap_crossing: ig.allowGapCrossing }
   const signature = JSON.stringify(request)
   const [frozen, setFrozen] = useState('')
   const stale = !!result && frozen !== signature
@@ -39,7 +40,7 @@ export default function HatchMergeView() {
   }
   const step = result?.steps[stepIdx]
   // Describe the displayed run from result.settings, never from the live editor state.
-  const ruleSummary = result ? result.settings.rules.filter((r) => r.enabled).map((r, i) => `${i + 1}. ${r.name}: ${r.conditions.map(describeCondition).join(' AND ')}`).join(' | ') : ''
+  const ruleSummary = result ? result.settings.rules.filter((r) => isRule0(r) || r.enabled).map((r) => isRule0(r) ? `Rule 0: ${describeRule0(r)}` : `${r.name}: ${r.conditions.map(describeCondition).join(' AND ')}`).join(' | ') : ''
 
   const layout = { height: 260, margin: { l: 60, r: 20, t: 30, b: 45 }, paper_bgcolor: '#fff', plot_bgcolor: '#fff', font: { family: 'system-ui', size: 12 }, hovermode: presentation ? false : 'closest' as const }
   const segmentTrace = (segs: { start: number; end: number }[], startBp: number[], endBp: number[], color: string, name: string) => ({
@@ -53,7 +54,7 @@ export default function HatchMergeView() {
 
   return <section className="panel hatch-merge">
     <h3>2. Merge rules — exploratory adjacent-segment merge</h3>
-    <p className="lead">Build an ordered list of rules. A rule is a set of conditions on a segment's left/right flank scores that must ALL hold; a segment is flagged when ANY enabled rule matches, and each rule's hatch on the Chromosome tracks above shows exactly the segments it flags at the start. A merge run starts from those flagged segments and repeatedly joins one flagged segment to its more similar neighbour (the flank with the smaller |score| under that rule's "merge into" metric): topmost rule first, then smallest score, then leftmost, recomputing every score, including the pooled dispersion φ, and re-evaluating every rule after each merge, so segments not hatched at the start can become eligible later. These are user-defined exploratory diagnostics, not validated decision rules. This is not the original bootstrap/chain-guard merge prototype, and CN calls are not recomputed on merged boundaries.</p>
+    <p className="lead">Rule 0 (pinned first, built from section 1) merges the segments it hatches on the Chromosome tracks; your own rules below add to it with lower priority. A user rule is a set of conditions on a segment's left/right flank scores that must ALL hold; a segment is flagged when ANY enabled rule matches, and each rule's hatch on the Chromosome tracks above shows exactly the segments it flags at the start. A merge run starts from those flagged segments and repeatedly joins one flagged segment to its more similar neighbour (the flank with the smaller |score| under that rule's "merge into" metric): topmost rule first, then smallest score, then leftmost, recomputing every score, including the pooled dispersion φ, and re-evaluating every rule after each merge, so segments not hatched at the start can become eligible later. These are user-defined exploratory diagnostics, not validated decision rules. This is not the original bootstrap/chain-guard merge prototype, and CN calls are not recomputed on merged boundaries.</p>
     <MergeRulesEditor />
     <div className="controls-row">
       <label>Source<select aria-label="Merge source" value={source} onChange={(e) => setSource(e.target.value)}>{meta.sources.map((s) => <option key={s}>{s}</option>)}</select></label>
@@ -62,7 +63,7 @@ export default function HatchMergeView() {
       <button className="btn primary" disabled={busy || !runnable} onClick={run}>{busy ? 'Merging…' : 'Run merge'}</button>
     </div>
     {!ig.seg.sources.includes(source) && <p className="notice small" role="status">Merge source {source} is not shown on the Chromosome tracks, so its hatches are not visible. <button className="btn-sm" onClick={() => ig.setSeg({ sources: meta.sources.filter((x) => x === source || ig.seg.sources.includes(x)) })}>Show on tracks</button></p>}
-    {!runnable && <p className="muted small">Enable at least one rule, and complete every enabled rule (each needs at least one condition with valid values), to run a merge.</p>}
+    {!runnable && <p className="muted small">Fix Rule 0's settings in section 1 (at least one criterion; τ and SRD/√φ ref positive; size limit a whole number) and complete every enabled rule (each needs at least one condition with valid values) to run a merge.</p>}
     {error && <p role="alert">{error}</p>}
     {result && step && <>
       <p className={stale ? 'notice' : 'muted'} role="status">{stale ? 'Settings changed; showing the previous run. ' : ''}{result.source} {result.chrom}: {result.original.length} original segments → {result.final.length} after {result.steps.length - 1} merge(s). Rules: {ruleSummary}{result.settings.allow_gap_crossing ? ' · gap crossing allowed' : ''}.</p>

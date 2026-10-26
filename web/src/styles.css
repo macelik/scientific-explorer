@@ -141,3 +141,7 @@ body.presentation .inspector details:not([open]) { display: none; }
 .rule-cond { margin-left: 16px; }
 .rule-swatch { display: inline-block; min-width: 16px; margin-right: 4px; text-align: center; font-weight: 700; }
 .vis-heading { margin: 6px 0 4px; font-size: 13px; }
+
+.rule0-card { border-color: #fca5a5; background: #fff7f7; }
+.rule0-controls { border-top: 1px dashed #e2e8f0; padding-top: 4px; }
+.rule0-legend { white-space: normal; }
