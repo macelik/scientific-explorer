@@ -93,3 +93,27 @@ node tests/browser_hatch_merge_walkthrough.cjs
 Result: PASS. For the weak-flank rule, `flagsHigh` = 30 (threshold 1000) and `flagsLow` = 0 (threshold 0.0001); hatch shapes on the tracks rose from 136 to 736 with the rule enabled. The merge run (rules: flank signs disagree, then weak flank at 3.3, gap crossing allowed) gave `historyRows` = 1; summary: "cluster4 chr8: 11 original segments → 10 after 1 merge(s)". Session restore and legacy `hatchLayers` migration (three preset rules, enabled states true/false/true) both passed, and `errors` was empty. Backend suite: 114 passed. The script scrolls the result table into view after a run because the result plots are lazy (DeferredPlot).
 
 This supersedes the union-of-layers model from commit `3c86329`, whose UI-level check this run also covers.
+
+## Rule 0 (2026-10-26)
+
+Command run (own server on port 8767, fresh `web/dist` build):
+
+```
+BASE_URL=http://127.0.0.1:8767 \
+PLAYWRIGHT_MODULE=/home/mami/Desktop/EGA/job_search/career-ops/node_modules/playwright \
+CHROMIUM_PATH=/home/mami/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome \
+node tests/browser_hatch_merge_walkthrough.cjs
+```
+
+Key values from `merge_rules_check_results.json`:
+- Rule 0 flags on chr8: `r0High` = 13 (tau 5, combine any), `r0Low` = 0 (tau 0.0001, SRD/√φ criterion off). `runEnabledWithRule0Only` = true.
+- Merge switches (tau 5, any): `wmOff` = 13, `hbOff` = 2, `wmOn` = 15, `hbOn` = 0.
+- `chr3SmallSegments` = 4 (non-pilot chromosome gets live small segments); `auditDerivedReason` = true.
+- `rule0HistoryRows` = 2 for a Rule 0-only run on cluster0 chr8 with gap crossing allowed; the first row's rule is "Rule 0 — shown on the tracks". Without gap crossing the same run makes 0 merges for every cluster on chr8, because every would-merge segment there sits next to a genomic gap.
+- A cleared tau gives "τ must be a positive number" and disables Run merge. `errors` was empty.
+
+Result line: `PASS merge rules: split sections, editor, live hatches, reorder, run, stale, session restore, legacy migration`
+
+Backend suite (`python3 -m pytest -q tests/test_*.py`): 147 passed.
+
+The archived-vs-live flank-score comparison is in `validation/rule0/README.md`.

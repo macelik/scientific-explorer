@@ -1,4 +1,4 @@
-// Merge-rules browser walkthrough (2026-10-02): visualization/merge split, rule editor,
+// Merge-rules + Rule 0 browser walkthrough (2026-10-02, extended 2026-10-26): visualization/merge split, rule editor,
 // live per-rule hatches, reorder, run, stale notice, session restore, legacy migration.
 // Requires a running server (python3 run.py --port 8766; override the page URL with BASE_URL) and Playwright + Chromium, e.g.:
 //   PLAYWRIGHT_MODULE=/path/to/node_modules/playwright CHROMIUM_PATH=/path/to/chrome \
@@ -28,12 +28,69 @@ function findOwner(obj,key){if(!obj||typeof obj!=='object')return null;if(Object
  const panel=page.locator('.hatch-merge');await panel.scrollIntoViewIfNeeded();
  await page.getByRole('heading',{name:/2\. Merge rules/}).waitFor();
  const runBtn=panel.getByRole('button',{name:'Run merge'});
- const runDisabledWithNoRules=await runBtn.isDisabled();
+
+ // ---- Rule 0 (pinned, built from the section-1 controls) ----
+ const r0Flags=async()=>{const m=(await panel.getByLabel('Rule 0 status').innerText()).match(/flags (\d+)/);return m?+m[1]:null};
+ const tau=page.getByLabel('Rule 0 tau'),combine=page.getByLabel('Rule 0 combine');
+ const srdCrit=page.getByLabel('Rule 0 criterion min |SRD/√φ| flank');
+ const mergeSigns=page.getByLabel('Merge sign-disagreeing segments'),mergeFlanks=page.getByLabel('Merge flank-conflict segments');
+ const waitR0Flags=()=>page.waitForFunction(()=>/flags \d+/.test(document.querySelector('[aria-label="Rule 0 status"]')?.textContent||''),{timeout:30000});
+ const restoreR0=async()=>{await tau.fill('0.2');await combine.selectOption('all')};
+ const legendCounts=async()=>{const t=await page.locator('.rule0-legend').innerText();const w=t.match(/would merge: (\d+)/),h=t.match(/held back: (\d+)/);return {wm:w?+w[1]:null,hb:h?+h[1]:null}};
+ const runEnabledWithRule0Only=!(await runBtn.isDisabled());
+
+ // Rule 0 responds to its settings
+ await combine.selectOption('any');await tau.fill('5');await waitR0Flags();await page.waitForTimeout(400);
+ const r0High=await r0Flags();
+ await tau.fill('0.0001');await srdCrit.uncheck();await page.waitForTimeout(500);
+ const r0Low=await r0Flags();
+ await restoreR0();await srdCrit.check();await page.waitForTimeout(400);
+
+ // the two merge switches change which Rule 0 cases merge
+ await tau.fill('5');await combine.selectOption('any');
+ await mergeSigns.uncheck();await mergeFlanks.uncheck();await page.waitForTimeout(600);
+ const {wm:wmOff,hb:hbOff}=await legendCounts();
+ await mergeSigns.check();await mergeFlanks.check();await page.waitForTimeout(600);
+ const {wm:wmOn,hb:hbOn}=await legendCounts();
+ await mergeSigns.uncheck();await mergeFlanks.uncheck();await restoreR0();await page.waitForTimeout(400);
+
+ // invalid Rule 0 blocks the run
+ await tau.fill('');await page.waitForTimeout(400);
+ const invalidR0Status=await panel.getByLabel('Rule 0 status').innerText();
+ const runDisabledWhenR0Invalid=await runBtn.isDisabled();
+ await tau.fill('0.2');await page.waitForTimeout(300);
+
+ // non-pilot chromosome: live scores still give small segments
+ const chromSel=tracks.locator('label').filter({hasText:/^chromosome/}).locator('select');
+ await chromSel.selectOption('chr3');
+ await page.waitForFunction(()=>String(document.querySelector('#cluster-tracks .js-plotly-plot')?.layout?.title?.text||'').includes('chr3'),{timeout:30000});
+ await page.waitForTimeout(600);
+ const chr3SmallSegments=await plot.evaluate(el=>el.data.filter(d=>d.name==='small segment').length);
+ await chromSel.selectOption('chr8');
+ await page.waitForFunction(()=>String(document.querySelector('#cluster-tracks .js-plotly-plot')?.layout?.title?.text||'').includes('chr8'),{timeout:30000});
+ await page.waitForTimeout(600);
+
+ // candidate audit shows derived p-value reasons
+ const auditBox=tracks.getByLabel('candidate audit (rejected / blocked)');
+ await auditBox.check();await page.waitForTimeout(800);
+ const auditDerivedReason=await plot.evaluate(el=>el.data.some(d=>[].concat(d.hovertemplate||[]).some(h=>String(h).includes('permutation p ='))));
+ await auditBox.uncheck();await page.waitForTimeout(300);
+
+ // a Rule 0-only run names Rule 0 in the history
+ // chr8's would-merge segments all sit next to genomic gaps, so a run without gap crossing makes 0 merges
+ await combine.selectOption('any');await tau.fill('5');await panel.getByLabel('Allow merging across a genomic gap').check();await page.waitForTimeout(400);
+ await runBtn.click();
+ await panel.locator('table.tbl, p[role="status"]').first().waitFor({timeout:60000});
+ await page.waitForTimeout(1500);
+ const rule0HistoryRows=await panel.locator('table.tbl tbody tr').count();
+ const rule0FirstRuleCell=rule0HistoryRows?await panel.locator('table.tbl tbody tr').first().locator('td').nth(6).innerText():null;
+ await restoreR0();await page.waitForTimeout(300);
 
  // rule 1: weak-flank preset; drive the threshold high, then near zero
  await panel.getByLabel('Add rule').selectOption('weak_flank');
  const status1=panel.getByLabel('Rule 1 status');
  const flags=async(label)=>{const m=(await panel.getByLabel(label).innerText()).match(/flags (\d+)/);return m?+m[1]:null};
+
  const thr1=panel.getByLabel('Rule 1 condition 1 threshold');
  await thr1.fill('1000');
  await page.waitForFunction(()=>/flags [1-9]\d*/.test(document.querySelector('[aria-label="Rule 1 status"]')?.textContent||''),{timeout:30000});
@@ -81,23 +138,37 @@ function findOwner(obj,key){if(!obj||typeof obj!=='object')return null;if(Object
  const fileInput=page.locator('input[type="file"][accept="application/json"]');
  await fileInput.setInputFiles(sessionPath);await page.waitForTimeout(600);
  const enabledAfterRestore=await panel.getByLabel('Rule 1 enabled').isChecked();
- const rulesAfterRestore=await panel.locator('.rule-card').count();
+ const rulesAfterRestore=await panel.locator('.rule-card:not(.rule0-card)').count();
 
  // legacy session: only hatchLayers present -> three migrated preset rules
  const session=JSON.parse(fs.readFileSync(sessionPath,'utf8'));
  const owner=findOwner(session,'mergeRules');delete owner.mergeRules;delete owner.allowGapCrossing;
+ owner.seg={...owner.seg,metric:'log2fc',flank:'min_srd',labels:{...owner.seg.labels,proposal:true,consistency:false}};delete owner.seg.labels.signs;delete owner.seg.colorMetric;delete owner.seg.criteria;delete owner.seg.signs;
  owner.hatchLayers={transition:{on:true,metric:'srd_phi',estimator:'mean'},proposal:{on:false,metric:'srd_phi',estimator:'mean',threshold:2.5},ambiguous:{on:true,estimator:'median'}};
  const legacyPath=path.join(dir,'legacy.json');fs.writeFileSync(legacyPath,JSON.stringify(session));
  await fileInput.setInputFiles(legacyPath);await page.waitForTimeout(600);
- const nCards=await panel.locator('.rule-card').count();const legacyNames=[],legacyEnabled=[];
+ const nCards=await panel.locator('.rule-card:not(.rule0-card)').count();const legacyNames=[],legacyEnabled=[];
  for(let i=1;i<=nCards;i++){legacyNames.push(await panel.getByLabel(`Rule ${i} name`).inputValue());legacyEnabled.push(await panel.getByLabel(`Rule ${i} enabled`).isChecked())}
+ const colourByAfterLegacy=await tracks.locator('label').filter({hasText:/^colour by/}).locator('select').inputValue();
+ const signsLayerAfterLegacy=await tracks.getByLabel('signs-disagree hatch').isChecked();
  fs.rmSync(dir,{recursive:true,force:true});
 
- const result={generated_at:new Date().toISOString(),visHeading,shapesBaseline,shapesWithRule,runDisabledWithNoRules,flagsHigh,flagsLow,emptyThresholdProblem,runDisabledWhenIncomplete,legendHasBothRules,rule1NameAfterMove,summaryText,headers,historyRows,firstRuleCell,staleText,enabledBeforeRestore,enabledAfterRestore,rulesAfterRestore,legacyNames,legacyEnabled,errors};
+ const result={generated_at:new Date().toISOString(),visHeading,shapesBaseline,shapesWithRule,runEnabledWithRule0Only,r0High,r0Low,wmOff,hbOff,wmOn,hbOn,invalidR0Status,runDisabledWhenR0Invalid,chr3SmallSegments,auditDerivedReason,rule0HistoryRows,rule0FirstRuleCell,colourByAfterLegacy,signsLayerAfterLegacy,flagsHigh,flagsLow,emptyThresholdProblem,runDisabledWhenIncomplete,legendHasBothRules,rule1NameAfterMove,summaryText,headers,historyRows,firstRuleCell,staleText,enabledBeforeRestore,enabledAfterRestore,rulesAfterRestore,legacyNames,legacyEnabled,errors};
  fs.writeFileSync(path.join(out,'merge_rules_check_results.json'),JSON.stringify(result,null,2));
  console.log(JSON.stringify(result,null,2));
  assert.ok(visHeading>0,'visualization section heading missing');
- assert.equal(runDisabledWithNoRules,true,'Run merge should be disabled with no rules');
+ assert.equal(runEnabledWithRule0Only,true,'Rule 0 alone should allow a run');
+ assert.ok(r0High>r0Low&&r0Low===0,'Rule 0 should flag more at tau 5 than at tau 0.0001 without the SRD criterion');
+ assert.equal(hbOn,0,'with both merge switches on nothing is held back');
+ assert.equal(wmOn,wmOff+hbOff,'switching both on should move every held-back segment to would-merge');
+ assert.ok(invalidR0Status.includes('τ'),'a cleared tau should be reported in the Rule 0 status');
+ assert.equal(runDisabledWhenR0Invalid,true,'invalid Rule 0 should block the run');
+ assert.ok(chr3SmallSegments>0,'chr3 should show small segments from live scores');
+ assert.equal(auditDerivedReason,true,'candidate audit hovers should include derived permutation p reasons');
+ assert.ok(rule0HistoryRows>0,'a Rule 0-only run with gap crossing should merge something');
+ assert.ok(rule0FirstRuleCell.includes('Rule 0'),'Rule 0 merges should be named in the history');
+ assert.equal(colourByAfterLegacy,'delta_mean','legacy seg metric should migrate to delta_mean');
+ assert.equal(signsLayerAfterLegacy,false,'legacy consistency=false should leave the signs layer off');
  assert.ok(flagsHigh>flagsLow,'a high threshold should flag more segments than a near-zero one');
  assert.ok(shapesWithRule>shapesBaseline,'an enabled rule should add hatch shapes to the tracks');
  assert.equal(emptyThresholdProblem,true,'a cleared threshold should show a problem on the rule card');
