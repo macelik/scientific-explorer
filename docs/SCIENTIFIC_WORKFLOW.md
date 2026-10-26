@@ -65,7 +65,7 @@ consequences before deciding whether to run another.
   location.
 - **Diagnostic:** the Chromosome tracks' Rule 0 criteria (chosen flank below
   τ / SRD/√φ ref) hatch candidate segments from live flank scores, with
-  amber/violet marks for flank-sign and flank-choice disagreement. User-defined
+  an amber mark for flank-sign disagreement and a black × for the optional last phase (segments that fail the criteria only because their flank signs disagree; exploratory). Rule 0 merges toward the flank of the criterion furthest below its threshold; a Rule 0 copy can be added as a user rule. User-defined
   rules add further conditions (e.g. "weaker SRD/√φ flank below 3 AND segment
   ≤ 20 bins", or "Δlog2FC flank signs disagree") and hatch the segments they
   flag, followed by the exploratory adjacent-segment merge, which starts from those flagged segments and re-evaluates every

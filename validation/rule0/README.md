@@ -15,6 +15,8 @@ Pilot chromosomes: chr1, chr2, chr5, chr7, chr8, chr9, chr13. Full output: `arch
 | screening.log2fc | delta_mean | 196/196 | 392 | 4.99e-05 |
 | screening.srd | srd | 196/196 | 392 | 4.94e-05 |
 
+The genomic-gap fix that changed which segments count as gap-adjacent (bins that merely touch no longer form a gap) is documented in [gap_fix.md](gap_fix.md).
+
 ## Conclusion
 
 Every archived segment was matched by a live segment (no unmatched segments), and every compared value agrees.

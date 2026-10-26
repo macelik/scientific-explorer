@@ -144,4 +144,4 @@ hatch layers, and was then replaced by user-defined merge rules. It went
 through an individual-task review process and then a whole-branch review
 that caught and fixed six real cross-cutting issues before the first
 version merged, a concrete demonstration that step 7 above ("add tests")
-is not a formality.
+is not a formality. A later revision (Rule 0 revision 2) dropped the flank-conflict switch, added Rule 0 copies as `flank_threshold` user rules and the `mergeSignsOnly` last phase (a `phase` on every step, ordering by `(phase, rule, score, start)`), and fixed the genomic-gap test; the Python engine and the TypeScript port were changed together and are kept in step by the shared parity fixture.

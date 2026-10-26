@@ -34,7 +34,7 @@ Three kinds of tests live here:
 - `browser_experiments.cjs`, `browser_workflows.cjs`,
   `browser_experiment_depth.cjs`, `browser_integration_rendering.cjs`,
   `browser_integration_review.cjs`, `browser_integration_freeze.cjs`,
-  `browser_hatch_merge_walkthrough.cjs` (set `BASE_URL` to target a server other than http://127.0.0.1:8766), `browser_restore.cjs` — Playwright
+  `browser_hatch_merge_walkthrough.cjs` (set `BASE_URL` to target a server other than http://127.0.0.1:8766, e.g. a private `python3 run.py --port 8799`; it covers the sign switch, the last-phase option and phase-2 history on chr7, Rule 0 copies, and the absence of the removed flank-conflict and breakpoint layers), `browser_restore.cjs` — Playwright
   workflow tests, one per feature area.
 
 ## Prerequisites
