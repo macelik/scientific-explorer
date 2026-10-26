@@ -62,14 +62,21 @@ function findOwner(obj,key){if(!obj||typeof obj!=='object')return null;if(Object
  // the flank-conflict switch and the breakpoint / depth-colour layers are gone
  const flankSwitchCount=await page.getByLabel('Merge flank-conflict segments').count();
  const breakpointLayerCount=await tracks.getByLabel('accepted breakpoints').count();
+ const layerLabels=(await tracks.locator('span:text-is("layers:") ~ label').allInnerTexts()).map(t=>t.trim());
+ const expectedLayerLabels=['small segments','signs-disagree hatch (amber |) on segments that do not pass Rule 0','retained reason (archived prototype, where available)','length + value labels','cluster CN strip','candidate audit (rejected / blocked)','allelic |dBAF| pseudobulk (right axis)'];
  const depthLayerCount=await tracks.getByLabel('colour by recursion depth').count();
 
  // gap fix: on chr8 only some small segments touch a genomic gap
  await page.waitForTimeout(400);
- const gapCounts=await plot.evaluate(el=>{let small=0,gap=0;for(const d of el.data){if(d.name!=='small segment')continue;const h=[].concat(d.hovertemplate||[]);small++;if(h.some(x=>String(x).includes('genomic gap on the')))gap++}return {small,gap}});
+ const countGaps=()=>plot.evaluate(el=>{let small=0,gap=0;for(const d of el.data){if(d.name!=='small segment')continue;const h=[].concat(d.hovertemplate||[]);small++;if(h.some(x=>String(x).includes('genomic gap on the')))gap++}return {small,gap}});
+ const gapCountsChr8=await countGaps();
 
  // phase 2 needs a chromosome where the merge source (cluster0) has a signs-disagree segment that fails Rule 0; chr8 has none there, chr7 has two (found by scanning)
  const setChrom=async(c)=>{await tracks.locator('label').filter({hasText:/^chromosome/}).locator('select').selectOption(c);await page.waitForFunction((x)=>String(document.querySelector('#cluster-tracks .js-plotly-plot')?.layout?.title?.text||'').includes(x),c,{timeout:30000});await page.waitForTimeout(900)};
+ // gap check: scan chr1-chr22 (default small <= ) for one where 0 < gap-flagged small segments < small segments
+ let gapChrom=null,gapCounts=null;const gapScan={};
+ for(let i=1;i<=22&&!gapChrom;i++){const c='chr'+i;await setChrom(c);await page.waitForTimeout(600);const g=await countGaps();gapScan[c]=g;if(g.gap>0&&g.gap<g.small){gapChrom=c;gapCounts=g}}
+ if(!gapChrom){gapChrom='chr8 (no chr1-chr22 chromosome has 0 < gap < small at the default small <=; chr8 tripwire kept)';gapCounts=gapCountsChr8}
  await setChrom('chr7');
  // Rule 0 at the defaults on chr7, option off: "signs disagree only" shows; tick the option: "merges last" (black x)
  const signsOnlyBefore=await legendCounts();
@@ -83,7 +90,13 @@ function findOwner(obj,key){if(!obj||typeof obj!=='object')return null;if(Object
  const phases=(mergeJson.steps||[]).map(s=>s.phase);
  const phase2Steps=(mergeJson.steps||[]).filter(s=>s.phase===2).length;
  const phase2Chrom='chr7';
+ // negative control: option unticked, same chromosome, no phase 2 step
  await mergeSignsOnly.uncheck();await page.waitForTimeout(500);
+ const [ctrlResp]=await Promise.all([page.waitForResponse(r=>r.url().includes('/api/integration/hatch-merge')&&r.request().method()==='POST',{timeout:60000}),runBtn.click()]);
+ const ctrlJson=await ctrlResp.json();const ctrlReqBody=ctrlResp.request().postData();
+ const ctrlPhases=(ctrlJson.steps||[]).map(s=>s.phase);
+ const ctrlPhase2Steps=ctrlPhases.filter(x=>x===2).length;
+ await page.waitForTimeout(500);
  await setChrom('chr8');
 
  // Rule 0 copy from the Add rule menu, then a cleared tau blocks the run
@@ -200,7 +213,7 @@ function findOwner(obj,key){if(!obj||typeof obj!=='object')return null;if(Object
  const signsLayerAfterLegacy=await tracks.getByLabel('signs-disagree hatch').isChecked();
  fs.rmSync(dir,{recursive:true,force:true});
 
- const result={generated_at:new Date().toISOString(),visHeading,shapesBaseline,shapesWithRule,runEnabledWithRule0Only,r0High,r0Low,wmOff,hbOff,wmOn,hbOn,swOffOff,swSignOnly,flankSwitchCount,breakpointLayerCount,depthLayerCount,gapCounts,signsOnlyBefore,signsOnlyAfter,r0StatusWithOption,phase2Chrom,phase2Steps,phases,mergeReqBody,mergeNote:mergeJson.note??null,mergePhase2Step:(mergeJson.steps||[]).find(s=>s.phase===2)??null,copyCombineVisible,copyName,runDisabledWhenCopyTauEmpty,runEnabledWhenCopyTauRestored,copyRemoved,combineAll,combineAny,combineTried,invalidR0Status,runDisabledWhenR0Invalid,chr3SmallSegments,auditDerivedReason,rule0HistoryRows,rule0FirstRuleCell,colourByAfterLegacy,signsLayerAfterLegacy,flagsHigh,flagsLow,emptyThresholdProblem,runDisabledWhenIncomplete,legendHasBothRules,rule1NameAfterMove,summaryText,headers,historyRows,firstRuleCell,staleText,enabledBeforeRestore,enabledAfterRestore,rulesAfterRestore,legacyNames,legacyEnabled,errors};
+ const result={generated_at:new Date().toISOString(),visHeading,shapesBaseline,shapesWithRule,runEnabledWithRule0Only,r0High,r0Low,wmOff,hbOff,wmOn,hbOn,swOffOff,swSignOnly,flankSwitchCount,breakpointLayerCount,depthLayerCount,layerLabels,gapChrom,gapCounts,gapCountsChr8,gapScan,ctrlPhase2Steps,ctrlPhases,ctrlReqBody,signsOnlyBefore,signsOnlyAfter,r0StatusWithOption,phase2Chrom,phase2Steps,phases,mergeReqBody,mergeNote:mergeJson.note??null,mergePhase2Step:(mergeJson.steps||[]).find(s=>s.phase===2)??null,copyCombineVisible,copyName,runDisabledWhenCopyTauEmpty,runEnabledWhenCopyTauRestored,copyRemoved,combineAll,combineAny,combineTried,invalidR0Status,runDisabledWhenR0Invalid,chr3SmallSegments,auditDerivedReason,rule0HistoryRows,rule0FirstRuleCell,colourByAfterLegacy,signsLayerAfterLegacy,flagsHigh,flagsLow,emptyThresholdProblem,runDisabledWhenIncomplete,legendHasBothRules,rule1NameAfterMove,summaryText,headers,historyRows,firstRuleCell,staleText,enabledBeforeRestore,enabledAfterRestore,rulesAfterRestore,legacyNames,legacyEnabled,errors};
  fs.writeFileSync(path.join(out,'merge_rules_check_results.json'),JSON.stringify(result,null,2));
  console.log(JSON.stringify(result,null,2));
  assert.ok(visHeading>0,'visualization section heading missing');
@@ -212,7 +225,12 @@ function findOwner(obj,key){if(!obj||typeof obj!=='object')return null;if(Object
  assert.equal(flankSwitchCount,0,'the flank-conflict switch must be gone');
  assert.equal(breakpointLayerCount,0,'no accepted-breakpoints layer checkbox');
  assert.equal(depthLayerCount,0,'no recursion-depth colour checkbox');
- assert.ok(gapCounts.small>0&&gapCounts.gap<gapCounts.small,'chr8: fewer gap-touching segments than evaluated small segments: '+JSON.stringify(gapCounts));
+ assert.ok(gapCounts.small>0&&gapCounts.gap>0&&gapCounts.gap<gapCounts.small||gapChrom.startsWith('chr8 ('),'gap check on '+gapChrom+': some but not all small segments touch a gap: '+JSON.stringify(gapCounts));
+ assert.ok(gapCountsChr8.small>0&&gapCountsChr8.gap<gapCountsChr8.small,'chr8 tripwire: fewer gap-touching segments than small segments: '+JSON.stringify(gapCountsChr8));
+ assert.deepEqual(layerLabels,expectedLayerLabels,'the layer checkboxes are exactly the expected list (no breakpoint / flank-conflict layers)');
+ assert.ok(String(mergeReqBody).includes('"mergeSignsOnly":true'),'the ticked run sends mergeSignsOnly true');
+ assert.ok(String(ctrlReqBody).includes('"mergeSignsOnly":false'),'the control run sends mergeSignsOnly false');
+ assert.equal(ctrlPhase2Steps,0,'with the option unticked there is no phase 2 step on '+phase2Chrom);
  assert.ok(signsOnlyBefore.signsOnly>0,'signs disagree only > 0 before ticking the option');
  assert.ok(signsOnlyAfter.mergesLast>0||signsOnlyAfter.signsMergeBlocked>0,'legend shows merges last or blocked once the option is on');
  assert.ok(phase2Steps>0,'the merge history has a phase 2 step');

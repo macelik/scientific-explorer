@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-26T15:16:33.309Z",
+  "generated_at": "2026-10-26T15:28:04.764Z",
   "visHeading": 1,
   "shapesBaseline": 65,
   "shapesWithRule": 335,
@@ -41,10 +41,43 @@
   "flankSwitchCount": 0,
   "breakpointLayerCount": 0,
   "depthLayerCount": 0,
+  "layerLabels": [
+    "small segments",
+    "signs-disagree hatch (amber |) on segments that do not pass Rule 0",
+    "retained reason (archived prototype, where available)",
+    "length + value labels",
+    "cluster CN strip",
+    "candidate audit (rejected / blocked)",
+    "allelic |dBAF| pseudobulk (right axis)"
+  ],
+  "gapChrom": "chr3",
   "gapCounts": {
+    "small": 4,
+    "gap": 1
+  },
+  "gapCountsChr8": {
     "small": 15,
     "gap": 0
   },
+  "gapScan": {
+    "chr1": {
+      "small": 22,
+      "gap": 0
+    },
+    "chr2": {
+      "small": 18,
+      "gap": 0
+    },
+    "chr3": {
+      "small": 4,
+      "gap": 1
+    }
+  },
+  "ctrlPhase2Steps": 0,
+  "ctrlPhases": [
+    null
+  ],
+  "ctrlReqBody": "{\"chrom\":\"chr7\",\"source\":\"cluster0\",\"rules\":[{\"id\":\"rule0\",\"type\":\"flank_threshold\",\"name\":\"Rule 0 — shown on the tracks\",\"criteria\":[\"delta_mean\",\"srd_phi\"],\"combine\":\"all\",\"tau\":0.2,\"srdRef\":3.3,\"maxBins\":100,\"mergeSignMismatch\":false,\"mergeSignsOnly\":false,\"hatch\":{\"pattern\":\"x\",\"color\":\"#b91c1c\"}}],\"allow_gap_crossing\":false}",
   "signsOnlyBefore": {
     "wm": 0,
     "hb": 0,
@@ -141,7 +174,7 @@
       658
     ],
     "rule_id": "rule0",
-    "rule_name": "Rule 0 — shown on the tracks · signs disagree, fails Rule 0 (last phase)",
+    "rule_name": "Rule 0 — shown on the tracks · signs disagree, fails Rule 0",
     "phase": 2,
     "side": "left",
     "score": 0.9682717597706297,
@@ -184,6 +217,7 @@
     "removed boundary",
     "segment",
     "rule",
+    "phase",
     "side",
     "score",
     "φ"
