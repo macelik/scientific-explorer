@@ -26,6 +26,7 @@
       "name": "weak_srd_phi_gap_blocked",
       "allowGapCrossing": false,
       "rules": [
+        {"id": "rule0", "type": "flank_threshold", "name": "Rule 0", "criteria": ["srd_phi"], "combine": "all", "tau": 1e-9, "srdRef": 1e-9, "maxBins": 1, "mergeSignMismatch": false, "mergeFlankConflict": false, "hatch": {"pattern": "x", "color": "#b91c1c"}},
         {"id": "a", "name": "a", "enabled": true,
          "conditions": [{"kind": "weak_flank", "metric": "srd_phi", "estimator": "mean", "threshold": 1.0}],
          "mergeInto": {"metric": "srd_phi", "estimator": "mean"}, "hatch": {"pattern": "x", "color": "#b91c1c"}}
@@ -42,6 +43,7 @@
       "name": "sign_mismatch_or_small_gap_allowed",
       "allowGapCrossing": true,
       "rules": [
+        {"id": "rule0", "type": "flank_threshold", "name": "Rule 0", "criteria": ["srd_phi"], "combine": "all", "tau": 1e-9, "srdRef": 1e-9, "maxBins": 1, "mergeSignMismatch": false, "mergeFlankConflict": false, "hatch": {"pattern": "x", "color": "#b91c1c"}},
         {"id": "b1", "name": "b1", "enabled": true,
          "conditions": [{"kind": "sign_mismatch", "metric": "delta_log2fc", "estimator": "median"}],
          "mergeInto": {"metric": "delta_log2fc", "estimator": "median"}, "hatch": {"pattern": "/", "color": "#1d4ed8"}},
@@ -61,6 +63,7 @@
       "name": "ambiguous_and_weak_srd_disabled_rule_ignored",
       "allowGapCrossing": false,
       "rules": [
+        {"id": "rule0", "type": "flank_threshold", "name": "Rule 0", "criteria": ["srd_phi"], "combine": "all", "tau": 1e-9, "srdRef": 1e-9, "maxBins": 1, "mergeSignMismatch": false, "mergeFlankConflict": false, "hatch": {"pattern": "x", "color": "#b91c1c"}},
         {"id": "c0", "name": "c0", "enabled": false,
          "conditions": [{"kind": "weak_flank", "metric": "srd", "estimator": "mean", "threshold": 100}],
          "mergeInto": {"metric": "srd", "estimator": "mean"}, "hatch": {"pattern": "|", "color": "#7c3aed"}},
@@ -75,6 +78,83 @@
         {"start": 25, "end": 30, "matched": [], "claimedBy": null, "side": null, "score": null, "blocked": null},
         {"start": 30, "end": 40, "matched": [], "claimedBy": null, "side": null, "score": null, "blocked": null},
         {"start": 40, "end": 41, "matched": ["c1"], "claimedBy": "c1", "side": "right", "score": 1.0, "blocked": null}
+      ]
+    },
+    {
+      "name": "rule0_all_mean_srd_held_back_by_signs",
+      "allowGapCrossing": false,
+      "rules": [
+        {"id": "rule0", "type": "flank_threshold", "name": "Rule 0", "criteria": ["delta_mean", "srd_phi"], "combine": "all", "tau": 0.2, "srdRef": 3.3, "maxBins": 100, "mergeSignMismatch": false, "mergeFlankConflict": false, "hatch": {"pattern": "x", "color": "#b91c1c"}}
+      ],
+      "expected": [
+        {"start": 10, "end": 20, "matched": [], "claimedBy": null, "side": null, "score": null, "blocked": null,
+         "rule0": {"evaluated": true, "passed": true, "signMismatch": true, "flankConflict": false, "heldBack": ["signs"], "outcome": "held_back", "side": "left", "score": 0.35, "blocked": null}},
+        {"start": 20, "end": 25, "matched": [], "claimedBy": null, "side": null, "score": null, "blocked": null,
+         "rule0": {"evaluated": true, "passed": true, "signMismatch": true, "flankConflict": false, "heldBack": ["signs"], "outcome": "held_back", "side": "right", "score": 0.85, "blocked": null}},
+        {"start": 25, "end": 30, "matched": [], "claimedBy": null, "side": null, "score": null, "blocked": null,
+         "rule0": {"evaluated": true, "passed": false, "signMismatch": false, "flankConflict": false, "heldBack": [], "outcome": "none", "side": null, "score": null, "blocked": null}},
+        {"start": 30, "end": 40, "matched": [], "claimedBy": null, "side": null, "score": null, "blocked": null,
+         "rule0": {"evaluated": true, "passed": false, "signMismatch": true, "flankConflict": false, "heldBack": [], "outcome": "signs_only", "side": null, "score": null, "blocked": null}},
+        {"start": 40, "end": 41, "matched": [], "claimedBy": null, "side": null, "score": null, "blocked": null,
+         "rule0": {"evaluated": true, "passed": false, "signMismatch": false, "flankConflict": false, "heldBack": [], "outcome": "none", "side": null, "score": null, "blocked": null}}
+      ]
+    },
+    {
+      "name": "rule0_any_signs_allowed_gap_blocks",
+      "allowGapCrossing": false,
+      "rules": [
+        {"id": "rule0", "type": "flank_threshold", "name": "Rule 0", "criteria": ["delta_mean", "srd_phi"], "combine": "any", "tau": 0.2, "srdRef": 3.3, "maxBins": 100, "mergeSignMismatch": true, "mergeFlankConflict": false, "hatch": {"pattern": "x", "color": "#b91c1c"}}
+      ],
+      "expected": [
+        {"start": 10, "end": 20, "matched": ["rule0"], "claimedBy": "rule0", "side": "left", "score": 0.15151515151515152, "blocked": null,
+         "rule0": {"evaluated": true, "passed": true, "signMismatch": true, "flankConflict": false, "heldBack": [], "outcome": "would_merge", "side": "left", "score": 0.15151515151515152, "blocked": null}},
+        {"start": 20, "end": 25, "matched": ["rule0"], "claimedBy": "rule0", "side": "right", "score": 0.06060606060606061, "blocked": "gap",
+         "rule0": {"evaluated": true, "passed": true, "signMismatch": true, "flankConflict": false, "heldBack": [], "outcome": "would_merge", "side": "right", "score": 0.06060606060606061, "blocked": "gap"}},
+        {"start": 25, "end": 30, "matched": [], "claimedBy": null, "side": null, "score": null, "blocked": null,
+         "rule0": {"evaluated": true, "passed": false, "signMismatch": false, "flankConflict": false, "heldBack": [], "outcome": "none", "side": null, "score": null, "blocked": null}},
+        {"start": 30, "end": 40, "matched": ["rule0"], "claimedBy": "rule0", "side": "left", "score": 0.6060606060606061, "blocked": null,
+         "rule0": {"evaluated": true, "passed": true, "signMismatch": true, "flankConflict": false, "heldBack": [], "outcome": "would_merge", "side": "left", "score": 0.6060606060606061, "blocked": null}},
+        {"start": 40, "end": 41, "matched": ["rule0"], "claimedBy": "rule0", "side": "left", "score": 0.30303030303030304, "blocked": null,
+         "rule0": {"evaluated": true, "passed": true, "signMismatch": false, "flankConflict": false, "heldBack": [], "outcome": "would_merge", "side": "left", "score": 0.30303030303030304, "blocked": null}}
+      ]
+    },
+    {
+      "name": "rule0_all_median_srd_flank_conflict_held",
+      "allowGapCrossing": false,
+      "rules": [
+        {"id": "rule0", "type": "flank_threshold", "name": "Rule 0", "criteria": ["delta_median", "srd_phi"], "combine": "all", "tau": 2.0, "srdRef": 3.3, "maxBins": 100, "mergeSignMismatch": true, "mergeFlankConflict": false, "hatch": {"pattern": "x", "color": "#b91c1c"}}
+      ],
+      "expected": [
+        {"start": 10, "end": 20, "matched": ["rule0"], "claimedBy": "rule0", "side": "left", "score": 0.15151515151515152, "blocked": null,
+         "rule0": {"evaluated": true, "passed": true, "signMismatch": true, "flankConflict": false, "heldBack": [], "outcome": "would_merge", "side": "left", "score": 0.15151515151515152, "blocked": null}},
+        {"start": 20, "end": 25, "matched": ["rule0"], "claimedBy": "rule0", "side": "right", "score": 0.1, "blocked": "gap",
+         "rule0": {"evaluated": true, "passed": true, "signMismatch": true, "flankConflict": false, "heldBack": [], "outcome": "would_merge", "side": "right", "score": 0.1, "blocked": "gap"}},
+        {"start": 25, "end": 30, "matched": [], "claimedBy": null, "side": null, "score": null, "blocked": null,
+         "rule0": {"evaluated": true, "passed": false, "signMismatch": false, "flankConflict": false, "heldBack": [], "outcome": "none", "side": null, "score": null, "blocked": null}},
+        {"start": 30, "end": 40, "matched": ["rule0"], "claimedBy": "rule0", "side": "left", "score": 0.6060606060606061, "blocked": null,
+         "rule0": {"evaluated": true, "passed": true, "signMismatch": true, "flankConflict": false, "heldBack": [], "outcome": "would_merge", "side": "left", "score": 0.6060606060606061, "blocked": null}},
+        {"start": 40, "end": 41, "matched": [], "claimedBy": null, "side": null, "score": null, "blocked": null,
+         "rule0": {"evaluated": true, "passed": true, "signMismatch": false, "flankConflict": true, "heldBack": ["flanks"], "outcome": "held_back", "side": "left", "score": 0.5, "blocked": null}}
+      ]
+    },
+    {
+      "name": "rule0_conflict_allowed_size_limit_user_rule_after",
+      "allowGapCrossing": false,
+      "rules": [
+        {"id": "rule0", "type": "flank_threshold", "name": "Rule 0", "criteria": ["delta_median", "srd_phi"], "combine": "all", "tau": 2.0, "srdRef": 3.3, "maxBins": 5, "mergeSignMismatch": true, "mergeFlankConflict": true, "hatch": {"pattern": "x", "color": "#b91c1c"}},
+        {"id": "u", "name": "u", "enabled": true, "conditions": [{"kind": "max_size", "maxBins": 5}], "mergeInto": {"metric": "srd_phi", "estimator": "mean"}, "hatch": {"pattern": ".", "color": "#047857"}}
+      ],
+      "expected": [
+        {"start": 10, "end": 20, "matched": [], "claimedBy": null, "side": null, "score": null, "blocked": null,
+         "rule0": {"evaluated": false, "passed": false, "signMismatch": false, "flankConflict": false, "heldBack": [], "outcome": "none", "side": null, "score": null, "blocked": null}},
+        {"start": 20, "end": 25, "matched": ["rule0", "u"], "claimedBy": "rule0", "side": "right", "score": 0.1, "blocked": "gap",
+         "rule0": {"evaluated": true, "passed": true, "signMismatch": true, "flankConflict": false, "heldBack": [], "outcome": "would_merge", "side": "right", "score": 0.1, "blocked": "gap"}},
+        {"start": 25, "end": 30, "matched": ["u"], "claimedBy": "u", "side": null, "score": null, "blocked": "nonfinite",
+         "rule0": {"evaluated": true, "passed": false, "signMismatch": false, "flankConflict": false, "heldBack": [], "outcome": "none", "side": null, "score": null, "blocked": null}},
+        {"start": 30, "end": 40, "matched": [], "claimedBy": null, "side": null, "score": null, "blocked": null,
+         "rule0": {"evaluated": false, "passed": false, "signMismatch": false, "flankConflict": false, "heldBack": [], "outcome": "none", "side": null, "score": null, "blocked": null}},
+        {"start": 40, "end": 41, "matched": ["rule0", "u"], "claimedBy": "rule0", "side": "left", "score": 0.5, "blocked": null,
+         "rule0": {"evaluated": true, "passed": true, "signMismatch": false, "flankConflict": true, "heldBack": [], "outcome": "would_merge", "side": "left", "score": 0.5, "blocked": null}}
       ]
     }
   ]

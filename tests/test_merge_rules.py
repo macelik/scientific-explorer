@@ -347,6 +347,9 @@ def test_hatch_merge_route_requires_rules_field():
 
 def test_python_evaluator_matches_parity_fixture():
     fixture = json.loads(FIXTURE.read_text())
+    keys = (('evaluated', 'evaluated'), ('passed', 'passed'), ('sign_mismatch', 'signMismatch'),
+            ('flank_conflict', 'flankConflict'), ('held_back', 'heldBack'), ('outcome', 'outcome'),
+            ('side', 'side'), ('blocked', 'blocked'))
     for case in fixture['cases']:
         got = mr.evaluate_rules(fixture['rows'], mr.validate_rules(case['rules']), case['allowGapCrossing'])
         assert len(got) == len(case['expected']), case['name']
@@ -356,6 +359,12 @@ def test_python_evaluator_matches_parity_fixture():
             assert (g['score'] is None) == (exp['score'] is None), case['name']
             if exp['score'] is not None:
                 assert g['score'] == pytest.approx(exp['score']), case['name']
+            if 'rule0' in exp:
+                for py_key, js_key in keys:
+                    assert g['rule0'][py_key] == exp['rule0'][js_key], (case['name'], g['start'], py_key)
+                assert (g['rule0']['score'] is None) == (exp['rule0']['score'] is None), case['name']
+                if exp['rule0']['score'] is not None:
+                    assert g['rule0']['score'] == pytest.approx(exp['rule0']['score']), case['name']
 
 
 def test_non_boolean_enabled_is_ignored():
