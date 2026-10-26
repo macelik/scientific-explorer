@@ -63,7 +63,7 @@ export default function HatchMergeView() {
       <button className="btn primary" disabled={busy || !runnable} onClick={run}>{busy ? 'Merging…' : 'Run merge'}</button>
     </div>
     {!ig.seg.sources.includes(source) && <p className="notice small" role="status">Merge source {source} is not shown on the Chromosome tracks, so its hatches are not visible. <button className="btn-sm" onClick={() => ig.setSeg({ sources: meta.sources.filter((x) => x === source || ig.seg.sources.includes(x)) })}>Show on tracks</button></p>}
-    {!runnable && <p className="muted small">Fix Rule 0's settings in section 1 (at least one criterion; τ and SRD/√φ ref positive; size limit a whole number) and complete every enabled rule (each needs at least one condition with valid values) to run a merge.</p>}
+    {!runnable && <p className="muted small">Fix Rule 0's settings in section 1 (at least one criterion; τ and SRD/√φ ref positive; size limit a whole number) and complete every enabled rule (a condition rule needs at least one condition with valid values; a Rule 0 copy needs at least one criterion and a positive τ, SRD/√φ ref and size limit) to run a merge.</p>}
     {error && <p role="alert">{error}</p>}
     {result && step && <>
       <p className={stale ? 'notice' : 'muted'} role="status">{stale ? 'Settings changed; showing the previous run. ' : ''}{result.source} {result.chrom}: {result.original.length} original segments → {result.final.length} after {result.steps.length - 1} merge(s). Rules: {ruleSummary}{result.settings.allow_gap_crossing ? ' · gap crossing allowed' : ''}.</p>
@@ -75,8 +75,8 @@ export default function HatchMergeView() {
         <button className="btn-sm" onClick={() => setStepIdx(result.steps.length - 1)} disabled={stepIdx === result.steps.length - 1}>Jump to final</button>
         <button className="btn-sm" onClick={() => download(JSON.stringify(result, null, 2), `hatch-merge-${result.chrom}-${result.source}.json`, 'application/json')}>Download JSON</button>
         <button className="btn-sm" onClick={() => {
-          const rows = [['step', 'source', 'chromosome', 'merged_start', 'merged_end', 'removed_boundary', 'segment_start', 'segment_end', 'rule_id', 'rule_name', 'side', 'score', 'phi'],
-            ...result.steps.filter((s) => s.removed_boundary !== null).map((s) => [s.step, result.source, result.chrom, s.merged_interval?.[0], s.merged_interval?.[1], s.removed_boundary, s.segment?.[0], s.segment?.[1], s.rule_id, JSON.stringify(s.rule_name ?? ''), s.side, s.score ?? '', s.phi ?? ''])]
+          const rows = [['step', 'source', 'chromosome', 'merged_start', 'merged_end', 'removed_boundary', 'segment_start', 'segment_end', 'rule_id', 'rule_name', 'phase', 'side', 'score', 'phi'],
+            ...result.steps.filter((s) => s.removed_boundary !== null).map((s) => [s.step, result.source, result.chrom, s.merged_interval?.[0], s.merged_interval?.[1], s.removed_boundary, s.segment?.[0], s.segment?.[1], s.rule_id, JSON.stringify(s.rule_name ?? ''), s.phase ?? '', s.side, s.score ?? '', s.phi ?? ''])]
           download(rows.map((r) => r.join(',')).join('\n') + '\n', `hatch-merge-history-${result.chrom}-${result.source}.csv`, 'text/csv')
         }}>Download merge-history CSV</button>
       </div>
@@ -84,10 +84,10 @@ export default function HatchMergeView() {
         layout={{ ...layout, title: { text: 'Original segmentation', font: { size: 12 } }, xaxis: { title: `${result.chrom} position (Mb)` }, yaxis: { visible: false }, shapes: shapesForSegments(result.original, result.start_bp, result.end_bp) }} />
       <DeferredPlot data={[segmentTrace(step.segments, result.start_bp, result.end_bp, '#96491d', `Step ${stepIdx}`)]}
         layout={{ ...layout, title: { text: `Segmentation at step ${stepIdx} (${step.segments.length} segments)`, font: { size: 12 } }, xaxis: { title: `${result.chrom} position (Mb)` }, yaxis: { visible: false }, shapes: [...shapesForSegments(step.segments, result.start_bp, result.end_bp), ...(step.merged_interval ? hatchShapes(result.start_bp[step.merged_interval[0]] / 1e6, result.end_bp[step.merged_interval[1] - 1] / 1e6, 'y', '/', '#111827') : [])] }} />
-      <div className="table-scroll"><table className="tbl"><thead><tr><th>step</th><th>source</th><th>chromosome</th><th>merged interval (bins)</th><th>removed boundary</th><th>segment</th><th>rule</th><th>side</th><th>score</th><th>φ</th></tr></thead><tbody>
+      <div className="table-scroll"><table className="tbl"><thead><tr><th>step</th><th>source</th><th>chromosome</th><th>merged interval (bins)</th><th>removed boundary</th><th>segment</th><th>rule</th><th>phase</th><th>side</th><th>score</th><th>φ</th></tr></thead><tbody>
         {result.steps.filter((s) => s.removed_boundary !== null).map((s) => <tr key={s.step} className={s.step === stepIdx ? 'sel' : 'clickable'} onClick={() => setStepIdx(s.step)}>
           <td>{s.step}</td><td>{result.source}</td><td>{result.chrom}</td><td>[{s.merged_interval?.[0]}, {s.merged_interval?.[1]})</td><td>{s.removed_boundary}</td>
-          <td>[{s.segment?.[0]}, {s.segment?.[1]})</td><td>{s.rule_name}</td><td>{s.side}</td><td>{s.score !== null ? s.score.toFixed(3) : '–'}</td><td>{s.phi != null ? s.phi.toFixed(3) : '–'}</td>
+          <td>[{s.segment?.[0]}, {s.segment?.[1]})</td><td>{s.rule_name}</td><td>{s.phase === 1 ? '1' : s.phase === 2 ? '2 (last)' : '–'}</td><td>{s.side}</td><td>{s.score !== null ? s.score.toFixed(3) : '–'}</td><td>{s.phi != null ? s.phi.toFixed(3) : '–'}</td>
         </tr>)}
       </tbody></table></div>
       <p className="small muted">The rule hatches on the Chromosome tracks are computed from the original accepted-breakpoint segmentation, not from this panel's selected step. This panel shows the merged segmentation's boundaries (the two plots and the history table); it does not display recomputed per-segment scores for the merged partition. CN calls are not recomputed on merged boundaries.</p>

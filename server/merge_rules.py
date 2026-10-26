@@ -325,7 +325,7 @@ def run_rule_merge(profile, boundaries, n_bins, var_start, var_end, chrom_offset
             'removed_boundary': removed, 'merged_interval': [merged[0], merged[1]],
             'segment': [ev['start'], ev['end']], 'rule_id': ev['claimed_by'],
             'rule_name': names[ev['claimed_by']] if ev['phase'] == 1
-            else f"{names[RULE0_ID]} · signs disagree, fails Rule 0 (last phase)",
+            else f"{names[RULE0_ID]} · signs disagree, fails Rule 0",
             'phase': ev['phase'], 'side': ev['side'], 'score': ev['score'], 'phi': phi,
         })
     else:

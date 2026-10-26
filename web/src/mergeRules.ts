@@ -173,7 +173,8 @@ export function criterionSideLine(row: HatchScoreRow, c: CriterionEval): string 
   return c.side === null || c.fraction === null ? `${head} → – fail` : `${head} → ${c.side} (fraction ${c.fraction.toFixed(2)}) ${c.passed ? 'pass' : 'fail'}`
 }
 
-export function rule0Lines(e: Rule0Eval, row: HatchScoreRow): string[] {
+/** `claimedElsewhere`: the row is a signs_merge row that another rule claimed in phase 1, so Rule 0 does not merge it last. */
+export function rule0Lines(e: Rule0Eval, row: HatchScoreRow, claimedElsewhere = false): string[] {
   if (!e.evaluated) return ['Rule 0: segment longer than the size limit, not evaluated']
   const lines = e.criteria.map((c) => criterionSideLine(row, c))
   lines.push(`SRD/√φ flank signs ${e.signMismatch ? 'disagree' : 'agree or N/A'}`)
@@ -181,6 +182,7 @@ export function rule0Lines(e: Rule0Eval, row: HatchScoreRow): string[] {
   const gap = e.blocked === 'gap'
   const outcome = e.outcome === 'would_merge' ? `merges into ${e.side}${gap ? ', blocked by genomic gap' : ''}`
     : e.outcome === 'held_back' ? `⚠ held back: signs disagree (would merge into ${e.side})`
+    : e.outcome === 'signs_merge' && claimedElsewhere ? 'fails the test; signs disagree (claimed in phase 1 by another rule)'
     : e.outcome === 'signs_merge' ? `fails the test; signs disagree, merges last into ${e.side}${gap ? ', blocked by genomic gap' : e.blocked === 'nonfinite' ? ', no flank value' : ''}`
     : e.outcome === 'signs_only' ? 'fails the test; signs disagree (not merged)' : 'fails the test'
   lines.push(`Rule 0 → ${outcome}`)
@@ -195,20 +197,24 @@ export function rule0FromSeg(s: SegRule0Input): Rule0 {
     hatch: { pattern: 'x', color: RULE0_COLOR } }
 }
 
+const COPY_COLORS = RULE_COLORS.filter((c) => c !== RULE0_COLOR)
+
 export function makeRule0Copy(s: SegRule0Input, existing: UserRule[]): FlankRule {
   return { id: newUserRuleId(existing), type: 'flank_threshold', name: 'Rule 0 copy', enabled: true, criteria: [...s.criteria], combine: s.combine,
     tau: s.tau, srdRef: s.srdRef, maxBins: s.smallMax, mergeSignMismatch: s.mergeSignMismatch,
-    hatch: { pattern: 'x', color: RULE_COLORS[existing.length % RULE_COLORS.length] } }
+    hatch: { pattern: 'x', color: COPY_COLORS[existing.length % COPY_COLORS.length] } }
 }
 
 export function rule0CaseCounts(evals: Record<string, SegmentEval[]>) {
-  const c = { wouldMerge: 0, signs: 0, heldBack: 0, signsOnly: 0, gap: 0, signsMerge: 0, signsMergeBlocked: 0 }
+  const c = { wouldMerge: 0, signs: 0, heldBack: 0, signsOnly: 0, gap: 0, signsMerge: 0, signsMergeBlocked: 0, signsMergeNoValue: 0 }
   for (const list of Object.values(evals)) for (const e of list) {
     const r = e.rule0; if (!r) continue
     if (r.outcome === 'would_merge') { if (r.blocked === 'gap') c.gap++; else c.wouldMerge++; if (r.signMismatch) c.signs++ }
     else if (r.outcome === 'held_back') c.heldBack++
     else if (r.outcome === 'signs_only') c.signsOnly++
-    else if (r.outcome === 'signs_merge') { if (r.blocked) c.signsMergeBlocked++; else c.signsMerge++ }
+    else if (r.outcome === 'signs_merge' && e.claimedBy === 'rule0' && e.phase === 2) {
+      if (r.blocked === 'gap') c.signsMergeBlocked++; else if (r.blocked === 'nonfinite') c.signsMergeNoValue++; else c.signsMerge++
+    }
   }
   return c
 }

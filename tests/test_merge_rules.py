@@ -613,7 +613,7 @@ def test_run_merges_phase1_before_lower_score_phase2():
     assert 1 in phases and 2 in phases
     assert phases == sorted(phases), f'phase 2 ran before phase 1 finished: {phases}'
     k = phases.index(2) + 1
-    assert steps[k]['rule_name'] == 'Rule 0 · signs disagree, fails Rule 0 (last phase)'
+    assert steps[k]['rule_name'] == 'Rule 0 · signs disagree, fails Rule 0'
     assert steps[1]['rule_name'] == 'Rule 0'
 
 
