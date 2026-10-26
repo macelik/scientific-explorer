@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-26T08:46:50.814Z",
+  "generated_at": "2026-10-26T10:21:17.234Z",
   "visHeading": 1,
   "shapesBaseline": 95,
   "shapesWithRule": 365,
@@ -10,10 +10,33 @@
   "hbOff": 2,
   "wmOn": 15,
   "hbOn": 0,
+  "defaultsOff": {
+    "m": 0,
+    "g": 13,
+    "legend": {
+      "wm": 0,
+      "hb": 2,
+      "gap": 13,
+      "tot": 13
+    },
+    "notice": true
+  },
+  "defaultsOn": {
+    "m": 13,
+    "g": 0,
+    "legend": {
+      "wm": 13,
+      "hb": 2,
+      "gap": 0,
+      "tot": 13
+    },
+    "notice": false
+  },
   "swOffOff": {
-    "wm": 13,
+    "wm": 0,
     "hb": 2,
     "gap": 13,
+    "tot": 13,
     "reasons": {
       "signs": 1,
       "flanks": 0,
@@ -21,9 +44,10 @@
     }
   },
   "swSignOnly": {
-    "wm": 14,
+    "wm": 0,
     "hb": 1,
     "gap": 14,
+    "tot": 14,
     "reasons": {
       "signs": 0,
       "flanks": 1,
@@ -31,9 +55,10 @@
     }
   },
   "swFlankOnly": {
-    "wm": 13,
+    "wm": 0,
     "hb": 2,
     "gap": 13,
+    "tot": 13,
     "reasons": {
       "signs": 2,
       "flanks": 0,
@@ -41,9 +66,10 @@
     }
   },
   "swBoth": {
-    "wm": 15,
+    "wm": 0,
     "hb": 0,
     "gap": 15,
+    "tot": 15,
     "reasons": {
       "signs": 0,
       "flanks": 0,

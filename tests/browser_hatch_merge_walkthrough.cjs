@@ -30,13 +30,15 @@ function findOwner(obj,key){if(!obj||typeof obj!=='object')return null;if(Object
  const runBtn=panel.getByRole('button',{name:'Run merge'});
 
  // ---- Rule 0 (pinned, built from the section-1 controls) ----
- const r0Flags=async()=>{const m=(await panel.getByLabel('Rule 0 status').innerText()).match(/flags (\d+)/);return m?+m[1]:null};
+ const r0Parts=async()=>{const t=await panel.getByLabel('Rule 0 status').innerText();const m=t.match(/would merge now: (\d+)/),g=t.match(/blocked by gap: (\d+)/);return m?{m:+m[1],g:g?+g[1]:0}:null};
+ // total Rule 0 would-merge segments = would merge now + blocked by gap
+ const r0Flags=async()=>{const p=await r0Parts();return p?p.m+p.g:null};
  const tau=page.getByLabel('Rule 0 tau'),combine=page.getByLabel('Rule 0 combine');
  const srdCrit=page.getByLabel('Rule 0 criterion min |SRD/√φ| flank');
  const mergeSigns=page.getByLabel('Merge sign-disagreeing segments'),mergeFlanks=page.getByLabel('Merge flank-conflict segments');
- const waitR0Flags=()=>page.waitForFunction(()=>/flags \d+/.test(document.querySelector('[aria-label="Rule 0 status"]')?.textContent||''),{timeout:30000});
+ const waitR0Flags=()=>page.waitForFunction(()=>/would merge now: \d+/.test(document.querySelector('[aria-label="Rule 0 status"]')?.textContent||''),{timeout:30000});
  const restoreR0=async()=>{await tau.fill('0.2');await combine.selectOption('all')};
- const legendCounts=async()=>{const t=await page.locator('.rule0-legend').innerText();const w=t.match(/would merge: (\d+)/),h=t.match(/held back: (\d+)/),g=t.match(/blocked by gap: (\d+)/);return {wm:w?+w[1]:null,hb:h?+h[1]:null,gap:g?+g[1]:0}};
+ const legendCounts=async()=>{const t=await page.locator('.rule0-legend').innerText();const w=t.match(/would merge now: (\d+)/),h=t.match(/held back: (\d+)/),g=t.match(/blocked by gap: (\d+)/);const wm=w?+w[1]:null,gap=g?+g[1]:0;return {wm,hb:h?+h[1]:null,gap,tot:wm===null?null:wm+gap}};
  const runEnabledWithRule0Only=!(await runBtn.isDisabled());
 
  // Rule 0 responds to its settings
@@ -53,8 +55,15 @@ function findOwner(obj,key){if(!obj||typeof obj!=='object')return null;if(Object
  const srdRef=page.getByLabel('Rule 0 SRD/√φ ref');
  await srdRef.fill('8');await tau.fill('5');await combine.selectOption('all');
  const swOffOff=await state(false,false),swSignOnly=await state(true,false),swFlankOnly=await state(false,true),swBoth=await state(true,true);
- const {wm:wmOff,hb:hbOff}=swOffOff,{wm:wmOn,hb:hbOn}=swBoth;
- await state(false,false);await srdRef.fill('3.3');await restoreR0();await page.waitForTimeout(400);
+ const {tot:wmOff,hb:hbOff}=swOffOff,{tot:wmOn,hb:hbOn}=swBoth;
+ await state(false,false);
+ // chr8 with SRD/√φ ref 8, τ 5, combine all (the 13-segment configuration; true defaults flag none on chr8), gap crossing off: every would-merge segment is gap-blocked, so a run merges 0 and nothing carries the x hatch
+ const defaultsOff={...await r0Parts(),legend:await legendCounts(),notice:await page.getByText("All Rule 0 segments here are next to a genomic gap; tick 'allow merging across a genomic gap' in section 2 to merge them.").isVisible().catch(()=>false)};
+ const allowGap=panel.getByLabel('Allow merging across a genomic gap');
+ await allowGap.check();await page.waitForTimeout(800);
+ const defaultsOn={...await r0Parts(),legend:await legendCounts(),notice:await page.getByText("All Rule 0 segments here are next to a genomic gap").isVisible().catch(()=>false)};
+ await allowGap.uncheck();await page.waitForTimeout(500);
+ await srdRef.fill('3.3');await restoreR0();await page.waitForTimeout(400);
 
  // combine alone: same tau and criteria, all vs any
  const combineTried=[];let combineAll=null,combineAny=null;
@@ -160,14 +169,20 @@ function findOwner(obj,key){if(!obj||typeof obj!=='object')return null;if(Object
  const signsLayerAfterLegacy=await tracks.getByLabel('signs-disagree hatch').isChecked();
  fs.rmSync(dir,{recursive:true,force:true});
 
- const result={generated_at:new Date().toISOString(),visHeading,shapesBaseline,shapesWithRule,runEnabledWithRule0Only,r0High,r0Low,wmOff,hbOff,wmOn,hbOn,swOffOff,swSignOnly,swFlankOnly,swBoth,combineAll,combineAny,combineTried,invalidR0Status,runDisabledWhenR0Invalid,chr3SmallSegments,auditDerivedReason,rule0HistoryRows,rule0FirstRuleCell,colourByAfterLegacy,signsLayerAfterLegacy,flagsHigh,flagsLow,emptyThresholdProblem,runDisabledWhenIncomplete,legendHasBothRules,rule1NameAfterMove,summaryText,headers,historyRows,firstRuleCell,staleText,enabledBeforeRestore,enabledAfterRestore,rulesAfterRestore,legacyNames,legacyEnabled,errors};
+ const result={generated_at:new Date().toISOString(),visHeading,shapesBaseline,shapesWithRule,runEnabledWithRule0Only,r0High,r0Low,wmOff,hbOff,wmOn,hbOn,defaultsOff,defaultsOn,swOffOff,swSignOnly,swFlankOnly,swBoth,combineAll,combineAny,combineTried,invalidR0Status,runDisabledWhenR0Invalid,chr3SmallSegments,auditDerivedReason,rule0HistoryRows,rule0FirstRuleCell,colourByAfterLegacy,signsLayerAfterLegacy,flagsHigh,flagsLow,emptyThresholdProblem,runDisabledWhenIncomplete,legendHasBothRules,rule1NameAfterMove,summaryText,headers,historyRows,firstRuleCell,staleText,enabledBeforeRestore,enabledAfterRestore,rulesAfterRestore,legacyNames,legacyEnabled,errors};
  fs.writeFileSync(path.join(out,'merge_rules_check_results.json'),JSON.stringify(result,null,2));
  console.log(JSON.stringify(result,null,2));
  assert.ok(visHeading>0,'visualization section heading missing');
  assert.equal(runEnabledWithRule0Only,true,'Rule 0 alone should allow a run');
  assert.ok(r0High>r0Low&&r0Low===0,'Rule 0 should flag more at tau 5 than at tau 0.0001 without the SRD criterion');
  assert.ok(swOffOff.reasons.both>0&&swOffOff.reasons.signs>0,'test data should hold segments for signs only and for signs+flanks');
- assert.ok(swOffOff.wm>0&&swOffOff.gap>0,'default (gap crossing off) legend should show blocked-by-gap');
+ assert.ok(swOffOff.tot>0&&swOffOff.gap>0,'default (gap crossing off) legend should show blocked-by-gap');
+ assert.ok(defaultsOff.m===0&&defaultsOff.g>0,'chr8 at defaults with gap crossing off: would merge now 0, blocked by gap > 0');
+ assert.equal(defaultsOff.legend.wm,0,'legend agrees: would merge now 0');assert.equal(defaultsOff.legend.gap,defaultsOff.g,'legend and Rule 0 card agree on blocked by gap');
+ assert.equal(defaultsOff.notice,true,'the all-gap-blocked notice should be visible');
+ assert.ok(defaultsOn.m>0&&defaultsOn.g===0,'allowing gap crossing: would merge now > 0, blocked by gap 0');
+ assert.equal(defaultsOn.m,defaultsOff.g,'allowing gap crossing releases exactly the gap-blocked segments');
+ assert.equal(defaultsOn.notice,false,'the notice disappears once gap crossing is allowed');
  assert.ok(swSignOnly.hb<=swOffOff.hb&&swFlankOnly.hb<=swOffOff.hb,'a single switch must not increase held-back');
  assert.equal(swSignOnly.reasons.signs+swSignOnly.reasons.flanks+swSignOnly.reasons.both,swSignOnly.hb,'hover held-back reasons should match the legend');
  assert.equal(swSignOnly.hb,swOffOff.reasons.flanks+swOffOff.reasons.both,'sign switch on: only flank-conflict holds remain');
