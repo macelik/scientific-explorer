@@ -4,6 +4,8 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { downloadPlot } from './Plot'
 import Plot from './DeferredPlot'
 import ClusterKaryogram, { type KaryoRow } from './ClusterKaryogram'
+import RecallImpact from './RecallImpact'
+import { clusterStateRow, stateLabel } from '../cnRecall'
 import { CellCard } from './IntegrationClustersView'
 import { useIntegration } from '../integrationStore'
 import { useStore } from '../store'
@@ -48,15 +50,23 @@ export default function IntegrationSegmentationView() {
   const effectMetric: Metric = diagnosticsEffectMetric(trackDef.id)
 
   // ---------------- cluster-level karyogram rows (fig 3c)
+  const beforeHover = (ri: number, bin: number, chrom: string): string[] => { const src = meta!.sources[ri]; const c = exMeta.chromosomes.find((x) => x.name === chrom)!; const local = bin - c.offset; const g = clSegs.find((x) => x.group === src && x.chromosome === chrom && local >= x.s && local < x.e); return g ? [`segment ${g.segment}: bins [${g.s}, ${g.e}) · ${g.n_bins} bins · continuous ${g.continuous_cn} · integer ${g.integer_cn} · watson ${g.watson}`] : [] }
+  const mode = ig.karyoMode !== 'before' && ig.recall?.cluster_segments ? ig.karyoMode : 'before'
+  const clSegsAfter = useMemo(() => clusterSegmentsLocal(ig.recall?.cluster_segments ?? null, exMeta.chromosomes), [ig.recall, exMeta.chromosomes])
   const clusterRows: KaryoRow[] = useMemo(() => {
     if (!meta || !meta.cluster_segments) return []
+    const after = mode !== 'before' ? ig.recall!.cluster_segments! : null
     return meta.sources.map((src) => {
-      const a = new Uint8Array(nBins).fill(255)
-      for (const g of meta.cluster_segments!) if (g.group === src) a.fill(Math.round(g.cn_call * 2), g.bin_start, g.bin_end + 1)
-      const bs = meta.cluster_segments!.find((g) => g.group === src)?.best_s
-      return { label: `${src} (n=${meta.source_sizes[src]})`, sub: `best_s ${bs?.toFixed(4)} · ${meta.cluster_segments!.filter((g) => g.group === src).length} segments`, data: a, band: SOURCE_COLORS[src] }
+      const before = clusterStateRow(meta.cluster_segments!, src, nBins)
+      const label = `${src} (n=${meta.source_sizes[src]})`, band = SOURCE_COLORS[src]
+      if (!after) {
+        const own = meta.cluster_segments!.filter((g) => g.group === src)
+        return { label, sub: `best_s ${own[0]?.best_s.toFixed(4)} · ${own.length} segments`, data: before, band }
+      }
+      const own = after.filter((g) => g.group === src)
+      return { label, sub: `after re-call: best_s ${own[0]?.best_s.toFixed(4)} · ${own.length} segments`, data: clusterStateRow(after, src, nBins), before: mode === 'changed' ? before : undefined, band }
     })
-  }, [meta, nBins])
+  }, [meta, nBins, mode, ig.recall])
   // ---------------- per-cell karyogram rows (fig 3d)
   const cellOrder = useMemo(() => {
     const idx = cells.map((_, i) => i)
@@ -64,10 +74,17 @@ export default function IntegrationSegmentationView() {
     if (seg.percellOrder === 'chr8') return idx.sort((a, b) => ((cells[b].chr8_score ?? -9) - (cells[a].chr8_score ?? -9)))
     return idx.sort((a, b) => (+clusterOf(cells[a], 'wnn_leiden_0.3') - +clusterOf(cells[b], 'wnn_leiden_0.3')) || a - b)
   }, [cells, seg.percellOrder])
+  const percellAfter = mode !== 'before' ? ig.recallKaryo : null
   const cellRows: KaryoRow[] = useMemo(() => {
-    if (!ig.karyo) return []
-    return cellOrder.map((i) => ({ label: cells[i].cell, sub: `cluster ${clusterOf(cells[i], 'wnn_leiden_0.3')} · best_s ${fmt(cells[i].percell_best_s, 3)}`, data: ig.karyo!.subarray(i * nBins, (i + 1) * nBins), band: clusterColor(clusterOf(cells[i], 'wnn_leiden_0.3'), levels) }))
-  }, [ig.karyo, cellOrder, cells, levels, nBins])
+    if (!ig.karyo || (mode !== 'before' && !percellAfter)) return []
+    return cellOrder.map((i) => {
+      const before = ig.karyo!.subarray(i * nBins, (i + 1) * nBins)
+      const pc = ig.recall?.diff?.cells?.per_cell[i]
+      const base = { label: cells[i].cell, band: clusterColor(clusterOf(cells[i], 'wnn_leiden_0.3'), levels) }
+      if (!percellAfter) return { ...base, sub: `cluster ${clusterOf(cells[i], 'wnn_leiden_0.3')} · best_s ${fmt(cells[i].percell_best_s, 3)}`, data: before }
+      return { ...base, sub: `cluster ${clusterOf(cells[i], 'wnn_leiden_0.3')} · best_s ${fmt(pc?.best_s_before ?? null, 3)} → ${fmt(pc?.best_s_after ?? null, 3)} · ${pc?.bins_changed ?? 0} bins changed`, data: percellAfter.subarray(i * nBins, (i + 1) * nBins), before: mode === 'changed' ? before : undefined }
+    })
+  }, [ig.karyo, percellAfter, mode, ig.recall, cellOrder, cells, levels, nBins])
   const hlSet = useMemo(() => new Set(ig.highlight), [ig.highlight])
   const selectedCellRow = useMemo(() => (ig.focusCell ? cellOrder.findIndex((i) => cells[i].cell === ig.focusCell) : -1), [ig.focusCell, cellOrder, cells])
 
@@ -230,9 +247,17 @@ export default function IntegrationSegmentationView() {
           <label>palette<select value={seg.karyoPalette} onChange={(e) => ig.setSeg({ karyoPalette: e.target.value as any })}><option value="story">story figures (purple / green / red)</option><option value="explorer">explorer (blue / white / red)</option></select></label>
           <div className="seg-legend">{[0, 0.5, 1, 1.5, 2].map((v) => <span key={v}><i style={{ background: (seg.karyoPalette === 'story' ? STORY_CN : CN_COLORS)[v] }} />{v} = {STORY_CN_LABELS[v]}</span>)}<span><i style={{ background: '#e6e6e6' }} />not called</span></div>
         </div>
+        <RecallImpact />
         <ClusterKaryogram rows={clusterRows} palette={seg.karyoPalette} rowHeight={26} labelWidth={150} selectedRow={ig.selectedCluster !== null ? meta.sources.indexOf(`cluster${ig.selectedCluster}`) : null}
           onClick={(ri, _bin, chrom) => { const src = meta.sources[ri]; ig.setSeg({ chrom, sources: src === 'all' ? seg.sources : (seg.sources.includes(src) ? seg.sources : [...seg.sources, src]) }); if (src !== 'all') { const lv = src.replace('cluster', ''); ig.set({ selectedCluster: lv, highlight: cells.filter((c) => clusterOf(c, 'wnn_leiden_0.3') === lv).map((c) => c.cell) }) } document.getElementById('cluster-tracks')?.scrollIntoView({ behavior: 'smooth' }) }}
-          hoverText={(ri, bin, chrom) => { const src = meta.sources[ri]; const c = exMeta.chromosomes.find((x) => x.name === chrom)!; const local = bin - c.offset; const g = clSegs.find((x) => x.group === src && x.chromosome === chrom && local >= x.s && local < x.e); return g ? [`segment ${g.segment}: bins [${g.s}, ${g.e}) · ${g.n_bins} bins · continuous ${g.continuous_cn} · integer ${g.integer_cn} · watson ${g.watson}`] : [] }} />
+          hoverText={(ri, bin, chrom) => {
+            if (mode === 'before') return beforeHover(ri, bin, chrom)
+            const src = meta.sources[ri]; const c = exMeta.chromosomes.find((x) => x.name === chrom)!; const local = bin - c.offset
+            const b = clusterStateRow(meta.cluster_segments!, src, nBins)[bin], a = clusterRows[ri].data[bin]
+            const g = clSegsAfter.find((x) => x.group === src && x.chromosome === chrom && local >= x.s && local < x.e)
+            const bsB = meta.cluster_segments!.find((x) => x.group === src)?.best_s, bsA = g?.best_s
+            return [`before ${stateLabel(b)} → after ${stateLabel(a)}`, ...(g ? [`after segment ${g.segment}: bins [${g.s}, ${g.e}) · ${g.n_bins} bins · integer ${g.integer_cn} · watson ${g.watson}`] : []), `best_s ${bsB?.toFixed(4)} → ${bsA?.toFixed(4)}`]
+          }} />
       </div>
 
       <div className="panel">
@@ -245,7 +270,7 @@ export default function IntegrationSegmentationView() {
           {ig.karyoLoading && <span className="muted small">loading per-cell matrix…</span>}
         </div>
         {cellRows.length ? <ClusterKaryogram rows={cellRows} palette={seg.karyoPalette} rowHeight={seg.percellRowH} maxHeight={760} labelWidth={0} selectedRow={selectedCellRow}
-          onClick={(ri) => { const c = cells[cellOrder[ri]]; ig.focus(c.cell) }} hoverText={(ri) => { const c = cells[cellOrder[ri]]; return [`raw ${c.total_raw_depth.toLocaleString()} · chr8 score ${fmt(c.chr8_score, 2)}${hlSet.has(c.cell) ? ' · highlighted' : ''}${c.in_explorer_cohort ? ' · in explorer cohort' : ''}`] }} /> : <div className="muted small">per-cell CN matrix not loaded</div>}
+          onClick={(ri) => { const c = cells[cellOrder[ri]]; ig.focus(c.cell) }} hoverText={(ri, bin) => { const c = cells[cellOrder[ri]]; return [...(percellAfter ? [`before ${stateLabel(ig.karyo![cellOrder[ri] * nBins + bin])} → after ${stateLabel(percellAfter[cellOrder[ri] * nBins + bin])}`] : []), `raw ${c.total_raw_depth.toLocaleString()} · chr8 score ${fmt(c.chr8_score, 2)}${hlSet.has(c.cell) ? ' · highlighted' : ''}${c.in_explorer_cohort ? ' · in explorer cohort' : ''}`] }} /> : <div className="muted small">{mode !== 'before' ? `re-calling per-cell CN… ${ig.recall?.stage === 'percell' && ig.recall.progress ? `${ig.recall.progress.done.toLocaleString('en-US')} / ${ig.recall.progress.total.toLocaleString('en-US')}` : ''}` : 'per-cell CN matrix not loaded'}</div>}
         <CellCard />
       </div>
 

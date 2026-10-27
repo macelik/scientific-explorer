@@ -4,6 +4,7 @@ import { buildSmallSegments, type SmallSeg } from './integration'
 import { migrateSegSettings, type TrackMetric } from './trackMetrics'
 import type { CandidateRow, CellDetail, IntegrationMeta, IntegrationStatus } from './types'
 import { fetchHatchScores, type HatchScoresResult } from './hatchMerge'
+import { fetchRecall, fetchRecallPercell, startRecallApi, type KaryoMode, type RecallBody, type RecallStatus } from './cnRecall'
 import { migrateHatchLayers, type UserRule, type Rule0Criterion } from './mergeRules'
 
 export type ColorBy = 'cluster' | 'log10_raw' | 'sumX' | 'HA_HB' | 'n_bins_snp' | 'depth_weight' | 'haplo_weight' | 'chr8_score' | 'zero_frac' | 'in_cohort' | 'selected'
@@ -41,6 +42,8 @@ export interface IntegrationState {
   ensureCandidates: (source: string, chrom: string) => Promise<void>
   serialize: () => any
   restore: (p: any) => void
+  recall: RecallStatus | null; recallKaryo: Uint8Array | null; recallSignature: string | null; recallError: string | null; karyoMode: KaryoMode
+  startRecall: (body: RecallBody) => Promise<void>
 }
 
 const defaultSeg: SegSettings = {
@@ -54,6 +57,7 @@ export const useIntegration = create<IntegrationState>((set, get) => ({
   clusterKey: 'wnn_leiden_0.3', colorBy: 'cluster', selectedCluster: null, highlight: [], hoverCell: null, focusCell: null, cellDetail: null, dimOthers: false, pointSize: 3, compareKey: 'wnn_leiden_1.0',
   seg: defaultSeg, candidates: {},
   mergeRules: [], allowGapCrossing: false, hatchScores: {}, hatchScoresError: null,
+  recall: null, recallKaryo: null, recallSignature: null, recallError: null, karyoMode: 'before',
 
   load: async () => {
     if (get().meta || get().loading) return
@@ -72,6 +76,27 @@ export const useIntegration = create<IntegrationState>((set, get) => ({
   ensurePseudobulk: async () => { if (get().pb) return; try { const pb = await api.integrationPseudobulk(); set({ pb }) } catch (e: any) { set({ error: `pseudobulk: ${e.message || e}` }) } },
   ensureKaryo: async () => { if (get().karyo || get().karyoLoading) return; set({ karyoLoading: true }); try { const k = await api.integrationKaryogram(); set({ karyo: k, karyoLoading: false }) } catch (e: any) { set({ karyoLoading: false, error: `per-cell karyogram: ${e.message || e}` }) } },
   set: (p) => set(p),
+  startRecall: async (body) => {
+    const signature = JSON.stringify(body)
+    set({ recallError: null })
+    let id: string
+    try { id = (await startRecallApi(body)).id } catch (e: any) { set({ recallError: String(e.message || e) }); return }
+    if (get().recall?.id !== id) set({ recall: null, recallKaryo: null, karyoMode: 'before' })
+    set({ recallSignature: signature })
+    const poll = async () => {
+      if (get().recallSignature !== signature) return
+      let st: RecallStatus
+      try { st = await fetchRecall(id) } catch (e: any) { if (get().recallSignature === signature) set({ recallError: `re-call ${id}: ${e.message || e}` }); return }
+      if (get().recallSignature !== signature) return
+      set({ recall: st })
+      if (st.percell_ready && !get().recallKaryo) {
+        try { const k = await fetchRecallPercell(id); if (get().recallSignature === signature) set({ recallKaryo: k }) }
+        catch (e: any) { set({ recallError: `per-cell re-call: ${e.message || e}` }) }
+      }
+      if (st.status === 'running') setTimeout(poll, 1000)
+    }
+    await poll()
+  },
   setSeg: (p) => set({ seg: { ...get().seg, ...p } }),
   setLabels: (p) => set({ seg: { ...get().seg, labels: { ...get().seg.labels, ...p } } }),
   selectCluster: (c) => set({ selectedCluster: c }),

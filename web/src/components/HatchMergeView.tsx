@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import DeferredPlot from './DeferredPlot'
 import MergeRulesEditor from './MergeRulesEditor'
 import { useIntegration } from '../integrationStore'
+import { recallProgressText } from '../cnRecall'
 import { useStore } from '../store'
 import { runHatchMerge, hatchShapes, type MergeResult } from '../hatchMerge'
 import { canRunMerge, describeCondition, describeRule0, isFlankRule, isRule0, rule0FromSeg } from '../mergeRules'
@@ -27,6 +28,9 @@ export default function HatchMergeView() {
   const signature = JSON.stringify(request)
   const [frozen, setFrozen] = useState('')
   const stale = !!result && frozen !== signature
+  const recallBody = { rules: [rule0, ...ig.mergeRules], allow_gap_crossing: ig.allowGapCrossing }
+  const recallSig = JSON.stringify(recallBody)
+  const recallRunning = ig.recall?.status === 'running' && ig.recallSignature === recallSig
 
   const run = async () => {
     if (!runnable) return
@@ -54,14 +58,20 @@ export default function HatchMergeView() {
 
   return <section className="panel hatch-merge">
     <h3>2. Merge rules — exploratory adjacent-segment merge</h3>
-    <p className="lead">Rule 0 (pinned first, built from section 1) merges the segments it hatches on the Chromosome tracks; your own rules below add to it with lower priority. A user rule is a set of conditions on a segment's left/right flank scores that must ALL hold; a segment is flagged when ANY enabled rule matches, and each rule's hatch on the Chromosome tracks above shows exactly the segments it flags at the start. A merge run starts from those flagged segments and repeatedly joins one flagged segment to its more similar neighbour (the flank with the smaller |score| under that rule's "merge into" metric): topmost rule first, then smallest score, then leftmost, recomputing every score, including the pooled dispersion φ, and re-evaluating every rule after each merge, so segments not hatched at the start can become eligible later. These are user-defined exploratory diagnostics, not validated decision rules. This is not the original bootstrap/chain-guard merge prototype, and CN calls are not recomputed on merged boundaries.</p>
+    <p className="lead">Rule 0 (pinned first, built from section 1) merges the segments it hatches on the Chromosome tracks; your own rules below add to it with lower priority. A user rule is a set of conditions on a segment's left/right flank scores that must ALL hold; a segment is flagged when ANY enabled rule matches, and each rule's hatch on the Chromosome tracks above shows exactly the segments it flags at the start. A merge run starts from those flagged segments and repeatedly joins one flagged segment to its more similar neighbour (the flank with the smaller |score| under that rule's "merge into" metric): topmost rule first, then smallest score, then leftmost, recomputing every score, including the pooled dispersion φ, and re-evaluating every rule after each merge, so segments not hatched at the start can become eligible later. These are user-defined exploratory diagnostics, not validated decision rules. This is not the original bootstrap/chain-guard merge prototype, and "Run merge" does not recompute CN; "Merge genome & re-call CN" applies these rules to every chromosome of every cluster and re-calls CN with pyEpi on the merged segmentation (compare on the karyograms above).</p>
     <MergeRulesEditor />
     <div className="controls-row">
       <label>Source<select aria-label="Merge source" value={source} onChange={(e) => setSource(e.target.value)}>{meta.sources.map((s) => <option key={s}>{s}</option>)}</select></label>
       <label>Chromosome<select aria-label="Merge chromosome" value={chrom} onChange={(e) => ig.setSeg({ chrom: e.target.value })}>{ex.chromosomes.map((c) => <option key={c.name}>{c.name}</option>)}</select></label>
       <label className="chk-inline"><input type="checkbox" aria-label="Allow merging across a genomic gap" checked={ig.allowGapCrossing} onChange={(e) => ig.setAllowGapCrossing(e.target.checked)} />allow merging across a genomic gap (off by default)</label>
       <button className="btn primary" disabled={busy || !runnable} onClick={run}>{busy ? 'Merging…' : 'Run merge'}</button>
+      <button className="btn" aria-label="Merge genome and re-call CN" disabled={!runnable || recallRunning} onClick={() => ig.startRecall(recallBody)}>Merge genome &amp; re-call CN</button>
     </div>
+    {(ig.recall || ig.recallError) && <p className={ig.recallError || ig.recall?.status === 'error' ? 'notice small' : 'muted small'} role="status" aria-label="Genome re-call status">
+      {ig.recallError ? `error: ${ig.recallError}` : recallProgressText(ig.recall)}
+      {ig.recall && ig.recallSignature !== recallSig ? ' · Rules changed since this re-call; showing the previous one.' : ''}
+      {ig.recall?.cluster_segments ? ' · compare on the karyograms above (Before · After · Changed)' : ''}
+    </p>}
     {!ig.seg.sources.includes(source) && <p className="notice small" role="status">Merge source {source} is not shown on the Chromosome tracks, so its hatches are not visible. <button className="btn-sm" onClick={() => ig.setSeg({ sources: meta.sources.filter((x) => x === source || ig.seg.sources.includes(x)) })}>Show on tracks</button></p>}
     {!runnable && <p className="muted small">Fix Rule 0's settings in section 1 (at least one criterion; τ and SRD/√φ ref positive; size limit a whole number) and complete every enabled rule (a condition rule needs at least one condition with valid values; a Rule 0 copy needs at least one criterion and a positive τ, SRD/√φ ref and size limit) to run a merge.</p>}
     {error && <p role="alert">{error}</p>}
