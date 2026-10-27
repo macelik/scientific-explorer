@@ -1,7 +1,7 @@
 import { useIntegration } from '../integrationStore'
 import { changeSummaryTsv, downloadText, mergedBreakpointsTsv, recallProgressText, recalledClusterSegmentsTsv, recalledPercellTsv, transitionText, type KaryoMode } from '../cnRecall'
 
-const LABELS: Record<KaryoMode, string> = { before: 'Before', after: 'After', changed: 'Changed' }
+const LABELS: Record<KaryoMode, string> = { original: 'Original', before: 'Before', after: 'After', changed: 'Changed' }
 const f4 = (v: number | null | undefined) => (v === null || v === undefined ? '—' : v.toFixed(4))
 
 /** Before · After · Changed switch for both karyograms, plus the re-call impact summary and exports. */

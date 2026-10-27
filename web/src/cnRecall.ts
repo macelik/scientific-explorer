@@ -1,11 +1,12 @@
 // Genome-wide merge + CN re-call: types, fetchers, karyogram pixel rule and TSV exports.
 // Spec: docs/superpowers/specs/2026-10-27-genome-merge-cn-recall-design.md
 import type { ClusterSegment } from './types'
+import type { Noise } from './mergeRounds'
 import { STORY_CN_LABELS } from './integration'
 
 export const UNCHANGED = 252
-export type KaryoMode = 'before' | 'after' | 'changed'
-export interface RecallBody { rules: unknown[]; allow_gap_crossing: boolean }
+export type KaryoMode = 'original' | 'before' | 'after' | 'changed'
+export interface RecallBody { rules: unknown[]; allow_gap_crossing: boolean; rounds?: { rules: unknown[]; allow_gap_crossing: boolean }[] }
 export interface RecallPair { source: string; chrom: string; original: number; merged: number; merges: number; phase2: number }
 export interface RecallSourceDiff { source: string; segments_before: number; segments_after: number; merges: number; phase2: number; best_s_before: number | null; best_s_after: number | null; bins_changed: number; bins_called: number; pct_changed: number }
 export interface RecallTransition { before: number | null; after: number | null; bins: number }
@@ -14,10 +15,10 @@ export interface RecallCells { n_cells: number; n_changed_cells: number; median_
 export interface RecallStatus {
   id: string; hash: string; status: 'running' | 'done' | 'error'; stage: 'merge' | 'cluster' | 'percell' | 'done'
   progress: { done: number; total: number } | null; error: string | null
-  settings: { rules: unknown[]; allow_gap_crossing: boolean }; provenance: Record<string, unknown>
+  settings: { rules: unknown[]; allow_gap_crossing: boolean; rounds?: { rules: unknown[]; allow_gap_crossing: boolean }[] }; provenance: Record<string, unknown>
   merge: { pairs: RecallPair[]; merged_breakpoints: Record<string, unknown>[] } | null
   cluster_segments: ClusterSegment[] | null
-  diff: { sources: RecallSourceDiff[]; cells: RecallCells | null; transitions: { clusters: RecallTransition[]; cells: RecallTransition[] | null } } | null
+  diff: { sources: RecallSourceDiff[]; cells: RecallCells | null; transitions: { clusters: RecallTransition[]; cells: RecallTransition[] | null }; noise?: Noise } | null
   percell_ready: boolean
 }
 
@@ -62,7 +63,9 @@ export function tsv(header: string[], columns: string[], rows: Record<string, un
   const cell = (v: unknown) => (v === null || v === undefined ? '' : String(v))
   return [...header.map((h) => `# ${h}`), columns.join('\t'), ...rows.map((r) => columns.map((c) => cell(r[c])).join('\t'))].join('\n') + '\n'
 }
-export const recallHeader = (st: RecallStatus) => [`rules: ${JSON.stringify(st.settings.rules)}`, `allow_gap_crossing: ${st.settings.allow_gap_crossing}`, `provenance: ${JSON.stringify(st.provenance)}`]
+export const recallHeader = (st: RecallStatus) => [
+  ...(st.settings.rounds?.length ? [`base rounds: ${JSON.stringify(st.settings.rounds)}`] : []),
+  `rules: ${JSON.stringify(st.settings.rules)}`, `allow_gap_crossing: ${st.settings.allow_gap_crossing}`, `provenance: ${JSON.stringify(st.provenance)}`]
 const BREAKPOINT_COLUMNS = ['source', 'chromosome', 'absolute_bin', 'bp_genomic_start', 'bp_genomic_end', 'recursion_depth', 'ad_score', 'p_local', 'p_global', 'n_cells']
 export const CLUSTER_SEGMENT_COLUMNS = ['group', 'n_cells', 'best_s', 'segment', 'chromosome', 'bin_start', 'bin_end', 'n_bins', 'continuous_cn', 'integer_cn', 'watson', 'cn_call']
 export function mergedBreakpointsTsv(st: RecallStatus): string {

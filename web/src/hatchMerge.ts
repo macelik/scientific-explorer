@@ -28,7 +28,7 @@ export interface MergeStep {
   segment: [number, number] | null; rule_id: string | null; rule_name: string | null; phase: 1 | 2 | null
   side: 'left' | 'right' | null; score: number | null; phi: number | null
 }
-export interface MergeSettings { rules: AnyRule[]; allow_gap_crossing: boolean }
+export interface MergeSettings { rules: AnyRule[]; allow_gap_crossing: boolean; rounds?: { rules: unknown[]; allow_gap_crossing: boolean }[] }
 export interface MergeResult {
   original: { start: number; end: number }[]; final: { start: number; end: number }[]
   steps: MergeStep[]; settings: MergeSettings
@@ -45,8 +45,8 @@ async function postJson<T>(url: string, body: unknown): Promise<T> {
   }
   return res.json()
 }
-export const fetchHatchScores = (chrom: string, source: string) =>
-  postJson<HatchScoresResult>('/api/integration/hatch-scores', { chrom, source })
+export const fetchHatchScores = (chrom: string, source: string, rounds: { rules: unknown[]; allow_gap_crossing: boolean }[] = []) =>
+  postJson<HatchScoresResult>('/api/integration/hatch-scores', { chrom, source, rounds })
 export const runHatchMerge = (req: MergeRequest) => postJson<MergeResult>('/api/integration/hatch-merge', req)
 
 const finite = (v: number | null | undefined): v is number => v !== null && v !== undefined && Number.isFinite(v)

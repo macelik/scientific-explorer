@@ -5,6 +5,7 @@ import { migrateSegSettings, type TrackMetric } from './trackMetrics'
 import type { CandidateRow, CellDetail, IntegrationMeta, IntegrationStatus } from './types'
 import { fetchHatchScores, type HatchScoresResult } from './hatchMerge'
 import { fetchRecall, fetchRecallPercell, startRecallApi, type KaryoMode, type RecallBody, type RecallStatus } from './cnRecall'
+import { fetchBase, pinRecallApi, roundLabel, roundsFromSession, sameRounds, wireRounds, type BaseResponse, type Round } from './mergeRounds'
 import { migrateHatchLayers, type UserRule, type Rule0Criterion } from './mergeRules'
 
 export type ColorBy = 'cluster' | 'log10_raw' | 'sumX' | 'HA_HB' | 'n_bins_snp' | 'depth_weight' | 'haplo_weight' | 'chr8_score' | 'zero_frac' | 'in_cohort' | 'selected'
@@ -44,6 +45,13 @@ export interface IntegrationState {
   restore: (p: any) => void
   recall: RecallStatus | null; recallKaryo: Uint8Array | null; recallSignature: string | null; recallError: string | null; karyoMode: KaryoMode
   startRecall: (body: RecallBody) => Promise<void>
+  rounds: Round[]; base: BaseResponse | null; baseSig: string | null; baseError: string | null; roundsNotice: string | null
+  baseKaryo: Uint8Array | null; baseCalls: RecallStatus | null
+  setRounds: (rounds: Round[]) => void
+  refreshBase: () => Promise<void>
+  adoptRecall: () => Promise<void>
+  undoRound: () => void
+  resetRounds: () => void
 }
 
 const defaultSeg: SegSettings = {
@@ -58,6 +66,7 @@ export const useIntegration = create<IntegrationState>((set, get) => ({
   seg: defaultSeg, candidates: {},
   mergeRules: [], allowGapCrossing: false, hatchScores: {}, hatchScoresError: null,
   recall: null, recallKaryo: null, recallSignature: null, recallError: null, karyoMode: 'before',
+  rounds: [], base: null, baseSig: null, baseError: null, roundsNotice: null, baseKaryo: null, baseCalls: null,
 
   load: async () => {
     if (get().meta || get().loading) return
@@ -97,6 +106,51 @@ export const useIntegration = create<IntegrationState>((set, get) => ({
     }
     await poll()
   },
+  setRounds: (rounds) => set({ rounds, base: null, baseSig: null, baseError: null, baseKaryo: null, baseCalls: null, hatchScores: {}, hatchScoresError: null,
+    recall: null, recallKaryo: null, recallSignature: null, recallError: null, karyoMode: 'before' }),
+  undoRound: () => { set({ roundsNotice: null }); get().setRounds(get().rounds.slice(0, -1)) },
+  resetRounds: () => { set({ roundsNotice: null }); get().setRounds([]) },
+  refreshBase: async () => {
+    const wire = wireRounds(get().rounds), sig = JSON.stringify(wire)
+    set({ baseSig: sig, baseError: null })
+    let b: BaseResponse
+    try { b = await fetchBase(wire) } catch (e: any) {
+      if (get().baseSig !== sig) return
+      const msg = String(e.message || e)
+      if (wire.length && /^round \d+: /.test(msg)) { get().setRounds([]); set({ roundsNotice: `Saved merge rounds could not be applied: ${msg}` }); return }
+      set({ baseError: `segmentation base: ${msg}` }); return
+    }
+    if (get().baseSig !== sig) return
+    set({ base: b })
+    const job = b.percell.job
+    if (b.percell.status === 'ready' && job && !get().baseKaryo) {
+      try { const k = await fetchRecallPercell(job); if (get().baseSig === sig) set({ baseKaryo: k }) }
+      catch (e: any) { if (get().baseSig === sig) set({ baseError: `base per-cell: ${e.message || e}` }) }
+    } else if (b.percell.status === 'running' && job) {
+      const poll = async () => {
+        if (get().baseSig !== sig) return
+        let st: RecallStatus
+        try { st = await fetchRecall(job) } catch (e: any) { if (get().baseSig === sig) set({ baseError: `base per-cell ${job}: ${e.message || e}` }); return }
+        if (get().baseSig !== sig) return
+        set({ baseCalls: st })
+        if (st.status === 'running') { setTimeout(poll, 1000); return }
+        if (st.status === 'done') await get().refreshBase()   // now 'ready': loads the matrix and the cells noise
+      }
+      await poll()
+    }
+  },
+  adoptRecall: async () => {
+    const st = get().recall, cur = get().rounds
+    if (!st || st.status !== 'done' || !sameRounds(st.settings.rounds ?? [], cur)) return
+    const round: Round = { rules: st.settings.rules, allow_gap_crossing: st.settings.allow_gap_crossing, label: roundLabel(st.settings.rules as any[]),
+      merges: (st.merge?.pairs ?? []).reduce((a, p) => a + p.merges, 0), noise: st.diff?.noise ?? null }
+    const next = [...cur, round]
+    try { await pinRecallApi(st.id, wireRounds(next)) } catch (e: any) { set({ recallError: `adopt: ${e.message || e}` }); return }
+    const k = get().recallKaryo
+    set({ roundsNotice: null })
+    get().setRounds(next)
+    if (k) set({ baseKaryo: k })   // the adopted re-call's per-cell calls are the new base's
+  },
   setSeg: (p) => set({ seg: { ...get().seg, ...p } }),
   setLabels: (p) => set({ seg: { ...get().seg, labels: { ...get().seg.labels, ...p } } }),
   selectCluster: (c) => set({ selectedCluster: c }),
@@ -115,9 +169,10 @@ export const useIntegration = create<IntegrationState>((set, get) => ({
   ensureHatchScores: async (source, chrom) => {
     const k = `${source}|${chrom}`
     if (get().hatchScores[k]) return
-    try { const r = await fetchHatchScores(chrom, source); set({ hatchScores: { ...get().hatchScores, [k]: r }, hatchScoresError: null }) }
-    catch (e: any) { set({ hatchScoresError: `hatch-scores: ${e.message || e}` }) }
+    const wire = wireRounds(get().rounds), sig = JSON.stringify(wire)
+    try { const r = await fetchHatchScores(chrom, source, wire); if (JSON.stringify(wireRounds(get().rounds)) === sig) set({ hatchScores: { ...get().hatchScores, [k]: r }, hatchScoresError: null }) }
+    catch (e: any) { if (JSON.stringify(wireRounds(get().rounds)) === sig) set({ hatchScoresError: `hatch-scores: ${e.message || e}` }) }
   },
-  serialize: () => { const s = get(); return { clusterKey: s.clusterKey, colorBy: s.colorBy, selectedCluster: s.selectedCluster, highlight: s.highlight, focusCell: s.focusCell, dimOthers: s.dimOthers, pointSize: s.pointSize, compareKey: s.compareKey, seg: s.seg, mergeRules: s.mergeRules, allowGapCrossing: s.allowGapCrossing } },
-  restore: (p) => { if (!p) return; set({ clusterKey: p.clusterKey || 'wnn_leiden_0.3', colorBy: p.colorBy || 'cluster', selectedCluster: p.selectedCluster ?? null, highlight: p.highlight || [], focusCell: p.focusCell ?? null, dimOthers: !!p.dimOthers, pointSize: p.pointSize || 3, compareKey: p.compareKey || 'wnn_leiden_1.0', seg: (() => { const ms = migrateSegSettings(p.seg); return { ...defaultSeg, ...ms, labels: { ...defaultSeg.labels, ...(ms.labels || {}) } } })(), mergeRules: Array.isArray(p.mergeRules) ? p.mergeRules : migrateHatchLayers(p.hatchLayers), allowGapCrossing: !!p.allowGapCrossing }) },
+  serialize: () => { const s = get(); return { clusterKey: s.clusterKey, colorBy: s.colorBy, selectedCluster: s.selectedCluster, highlight: s.highlight, focusCell: s.focusCell, dimOthers: s.dimOthers, pointSize: s.pointSize, compareKey: s.compareKey, seg: s.seg, mergeRules: s.mergeRules, allowGapCrossing: s.allowGapCrossing, rounds: s.rounds } },
+  restore: (p) => { if (!p) return; set({ clusterKey: p.clusterKey || 'wnn_leiden_0.3', colorBy: p.colorBy || 'cluster', selectedCluster: p.selectedCluster ?? null, highlight: p.highlight || [], focusCell: p.focusCell ?? null, dimOthers: !!p.dimOthers, pointSize: p.pointSize || 3, compareKey: p.compareKey || 'wnn_leiden_1.0', seg: (() => { const ms = migrateSegSettings(p.seg); return { ...defaultSeg, ...ms, labels: { ...defaultSeg.labels, ...(ms.labels || {}) } } })(), mergeRules: Array.isArray(p.mergeRules) ? p.mergeRules : migrateHatchLayers(p.hatchLayers), allowGapCrossing: !!p.allowGapCrossing, rounds: roundsFromSession(p), base: null, baseSig: null, baseKaryo: null, baseCalls: null, hatchScores: {} }) },
 }))
