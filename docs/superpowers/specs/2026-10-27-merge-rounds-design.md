@@ -90,7 +90,7 @@ Body: `{rounds}`. Returns:
 
 - **For `[]`:** the on-disk `percell_cn_u8`, as now.
 - **For a later base:** the per-cell result of the re-call job that produced it.
-  - Adopting **pins** that job: `POST /api/integration/recall/{id}/pin`, body `{rounds_hash}`.
+  - Adopting **pins** that job: `POST /api/integration/recall/{id}/pin`, body `{rounds}` (the new recipe, including the adopted round). The server checks that the job produces exactly that recipe (409 otherwise) and that it is done (409 otherwise).
   - A pinned job is never evicted by the 3-job limit.
   - Only one base is pinned at a time; pinning a new one unpins the previous one.
 - **After a restart, or when no pinned job matches:**
@@ -109,7 +109,8 @@ Body: `{rounds}`. Returns:
   - Cluster calls are the base's `cluster_segments`.
   - Per-cell calls are the base's per-cell matrix. For `[]` this is the on-disk matrix; otherwise it is the pinned job's.
   - If the base's per-cell matrix is not available, stages 1–2 run, the job waits for the base recompute, and stage 3's diff then compares against it.
-- **Noise:** the job records statistics for its own result (§4). Cluster level is filled after stage 2 and cells after stage 3.
+- **Noise:** the job records statistics for its own result (§4) as `diff.noise`. Cluster level is filled after stage 2 and cells after stage 3.
+- **Unchanged without rounds:** with `rounds` left out or `[]`, the job hash, `settings`, the scope sentence and every existing field are exactly as today. `settings.rounds` is present only when `rounds` is non-empty.
 - **Every export header** lists each base round's rules in order, then the job's own rules.
 
 ### Provenance
@@ -194,7 +195,7 @@ These are **visible text directly under the table**, not hover-only, in this wor
 - Calls are read per chromosome as the sequence of segment states. Segments with no call are skipped. Gain = state > 1 (weak gain included), loss = state < 1.
 - **Zig-zag:** an internal segment whose state differs from both neighbours, while the two neighbours have the same state as each other.
 - **Gain next to loss:** a boundary with a gain on one side and a loss on the other. This can be real (for example an unbalanced rearrangement), so it is counted but never merged automatically.
-- **Cell values:** the mean per cell over all cells of the cluster. The zig-zag median length is taken over all of those cells' zig-zags.
+- **Cell values:** the mean per cell over all cells of the cluster. The zig-zag median length is taken over all of those cells' zig-zags. For `all`, the cells are every cell, each read under its own cluster's segmentation.
 
 ### Computation
 
@@ -205,7 +206,7 @@ These are **visible text directly under the table**, not hover-only, in this wor
 - **`cells_noise(u8_rows, seg, var_seq)`** works from per-cell u8 rows:
   - Each cell's state per segment is read at the segment's first bin, since states are constant within a segment.
   - It returns, per chromosome and genome-wide, the sums needed for the mean per cell, plus the pooled zig-zag lengths.
-  - Re-call workers return it next to `u8`, so the full matrix is not scanned again.
+  - It is computed in the job thread from the finished u8 matrix, by reading only the segment-start columns, so the bins are not scanned again.
 
 **Statistics format:**
 
@@ -223,7 +224,7 @@ noise = {source: {chrom | 'genome': {cluster: {segments, zigzags, zigzag_median_
 
 ### Export
 
-A fifth export button writes `noise_by_round.tsv`.
+An export button under the noise table (next to the definitions, so it works with or without a pending re-call) writes `noise_by_round.tsv`.
 
 - **Columns:** `source, chromosome, level, measure`, then one column per round (`original`, `round1`, …) and `after` when a re-call is pending.
 - **Rows:** `chromosome` is a chromosome name or `genome`, and `level` is `cluster` or `cells`.
