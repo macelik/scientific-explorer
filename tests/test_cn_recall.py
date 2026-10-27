@@ -326,3 +326,52 @@ def test_recall_unwrapped_exception_names_stage():
     c = _api(lambda: inp)
     v = _wait(c, c.post('/api/integration/recall', json={'rules': NOOP}).json()['id'])
     assert v['status'] == 'error' and v['error'].startswith('percell: ')
+
+
+# ---- merge rounds (2026-10-27 merge-rounds spec)
+from server import call_noise as cn
+
+
+def test_run_recall_publishes_noise():
+    inp = synthetic_inputs()
+    out, st, _ = _run(inp, NOOP)
+    noise = st['diff']['noise']
+    assert noise['cluster0']['genome']['cluster'] == cn.cluster_noise(inp.before_cluster_segments)['cluster0']['genome']
+    segs = {s: cr.seg_labels(inp.var_seq, cr.boundaries_from_bp(inp.breakpoints, inp.sources, inp.chromosomes())[s]) for s in inp.sources}
+    want = cn.cells_noise(inp.before_percell_u8, inp.cell_cluster, segs, inp.var_seq, inp.sources)
+    assert noise['cluster0']['genome']['cells'] == want['cluster0']['genome']
+    assert out['noise_cells'] == want and np.allclose(out['percell_best_s'], inp.before_percell_best_s)
+
+
+def test_run_calls_reproduces_percell_on_the_given_breakpoints():
+    inp = synthetic_inputs()
+    log = []
+    with ThreadPoolExecutor(2) as ex:
+        out = cr.run_calls(inp, ex, lambda **kw: log.append(kw), chunk=5, max_inflight=2)
+    assert np.array_equal(out['percell_u8'], inp.before_percell_u8)
+    assert np.allclose(out['percell_best_s'], inp.before_percell_best_s)
+    assert [kw['stage'] for kw in log if 'stage' in kw] == ['percell']
+    last = {}
+    for kw in log:
+        last.update(kw)
+    assert last['percell_ready'] is True and last['diff']['noise']['cluster0']['genome']['cells']['n_cells'] == 6
+
+
+def test_run_recall_waits_for_base_percell():
+    inp = synthetic_inputs()
+    u8, bs = inp.before_percell_u8, inp.before_percell_best_s
+    calls = []
+    inp.before_percell_u8 = None
+    inp.before_percell_wait = lambda: (calls.append(1), (u8, bs))[1]
+    out, st, _ = _run(inp, NOOP)
+    assert calls == [1] and st['diff']['cells']['n_changed_cells'] == 0
+
+
+def test_run_recall_wait_failure_names_stage():
+    inp = synthetic_inputs()
+    inp.before_percell_u8 = None
+    def boom():
+        raise ValueError('nope')
+    inp.before_percell_wait = boom
+    with pytest.raises(cr.RecallError, match=r'^percell base: ValueError: nope'):
+        _run(inp, NOOP)

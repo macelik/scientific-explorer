@@ -17,6 +17,7 @@ from typing import Callable, Dict, List, Optional
 import numpy as np
 import pandas as pd
 
+from . import call_noise as cn
 from . import merge_rules as mr
 from . import pyepi_adapter as sci
 from .config import Config
@@ -45,6 +46,7 @@ class RecallInputs:
     before_percell_best_s: np.ndarray
     package_dir: str
     sources: List[str] = field(default_factory=lambda: list(SOURCES))
+    before_percell_wait: Optional[Callable[[], tuple]] = None   # base per-cell (u8, best_s) still being computed
 
     def chromosomes(self) -> List[str]:
         return list(dict.fromkeys(self.var_seq.tolist()))
@@ -204,6 +206,59 @@ def _source_diff(source, pairs, before_df, best_after, before, after) -> dict:
             'bins_changed': changed, 'bins_called': called, 'pct_changed': round(100 * changed / called, 3) if called else 0.0}
 
 
+def call_all_cells(inp: RecallInputs, segs, executor, update, chunk=100, max_inflight=8):
+    """Stage 3: per-cell assign_gainloss_new, each cell under its cluster's segmentation."""
+    n_bins, n = len(inp.var_seq), len(inp.cell_ids)
+    out_u8 = np.full((n, n_bins), MISSING, dtype=np.uint8)
+    best = np.full(n, np.nan)
+    pending: deque = deque()
+    done = 0
+
+    def collect(item):
+        nonlocal done
+        idx, fut = item
+        try:
+            u8, bs = fut.result()
+        except Exception as e:  # noqa: BLE001
+            raise RecallError(f'percell {inp.cell_ids[int(idx[0])]}: {type(e).__name__}: {e}') from e
+        out_u8[idx] = u8
+        best[idx] = bs
+        done += len(idx)
+        update(progress={'done': done, 'total': n})
+
+    for lo in range(0, n, chunk):
+        hi = min(n, lo + chunk)
+        cl = np.asarray(inp.cell_cluster[lo:hi])
+        for k in np.unique(cl):
+            if f'cluster{int(k)}' not in segs:
+                raise RecallError(f'percell: cluster {int(k)} has no source')
+        x = inp.read_rows(lo, hi)
+        for k in np.unique(cl):
+            sel = np.flatnonzero(cl == k)
+            while len(pending) >= max_inflight:
+                collect(pending.popleft())
+            pending.append((lo + sel, executor.submit(call_cells, x[sel], segs[f'cluster{int(k)}'], inp.package_dir)))
+    while pending:
+        collect(pending.popleft())
+    return out_u8, best
+
+
+def _segs_from_bp(inp: RecallInputs):
+    b = boundaries_from_bp(inp.breakpoints, inp.sources, inp.chromosomes())
+    return {s: seg_labels(inp.var_seq, b[s]) for s in inp.sources}
+
+
+def run_calls(inp: RecallInputs, executor, update, chunk=100, max_inflight=8) -> dict:
+    """Calls-only job: per-cell calls on inp.breakpoints as given (a base), no merge, no diff."""
+    segs = _segs_from_bp(inp)
+    update(stage='percell', progress={'done': 0, 'total': len(inp.cell_ids)})
+    u8, best = call_all_cells(inp, segs, executor, update, chunk, max_inflight)
+    cells = cn.cells_noise(u8, inp.cell_cluster, segs, inp.var_seq, inp.sources)
+    update(diff={'sources': [], 'cells': None, 'transitions': {'clusters': [], 'cells': None}, 'noise': cn.combine({}, cells)},
+           percell_ready=True)
+    return {'percell_u8': u8, 'percell_best_s': best, 'noise_cells': cells}
+
+
 def run_recall(inp: RecallInputs, rules, allow_gap_crossing, executor, update, chunk=100, max_inflight=8) -> dict:
     """Stages 1-3 plus the diff. Publishes through update(**fields); returns
     {'percell_u8': ...}. Raises RecallError naming the failing stage."""
@@ -230,54 +285,34 @@ def run_recall(inp: RecallInputs, rules, allow_gap_crossing, executor, update, c
         if source != 'all':
             add_transitions(acc, before, after)
         src_diffs.append(_source_diff(source, merge['pairs'], inp.before_cluster_segments, r[0]['best_s'] if r else None, before, after))
-    diff = {'sources': src_diffs, 'cells': None, 'transitions': {'clusters': transitions_list(acc), 'cells': None}}
+    cluster_nz = cn.cluster_noise(pd.DataFrame(rows))
+    diff = {'sources': src_diffs, 'cells': None, 'transitions': {'clusters': transitions_list(acc), 'cells': None},
+            'noise': cn.combine(cluster_nz, None)}
     bp_records = merge['merged_breakpoints'].astype(object).where(pd.notna(merge['merged_breakpoints']), None).to_dict(orient='records')
     update(merge={'pairs': merge['pairs'], 'merged_breakpoints': bp_records}, cluster_segments=rows, diff=diff)
 
-    if inp.before_percell_u8 is None:
+    before_u8, before_best = inp.before_percell_u8, inp.before_percell_best_s
+    if before_u8 is None and inp.before_percell_wait is not None:
+        update(stage='percell', progress=None)
+        try:
+            before_u8, before_best = inp.before_percell_wait()
+        except RecallError:
+            raise
+        except Exception as e:  # noqa: BLE001
+            raise RecallError(f'percell base: {type(e).__name__}: {e}') from e
+    if before_u8 is None:
         raise RecallError('percell: the original per-cell CN matrix is missing')
     update(stage='percell', progress={'done': 0, 'total': n})
-    out_u8 = np.full((n, n_bins), MISSING, dtype=np.uint8)
-    best = np.full(n, np.nan)
-    pending: deque = deque()
-    done = 0
-
-    def collect(item):
-        nonlocal done
-        idx, fut = item
-        try:
-            u8, bs = fut.result()
-        except Exception as e:  # noqa: BLE001
-            raise RecallError(f'percell {inp.cell_ids[int(idx[0])]}: {type(e).__name__}: {e}') from e
-        out_u8[idx] = u8
-        best[idx] = bs
-        done += len(idx)
-        update(progress={'done': done, 'total': n})
-
-    for lo in range(0, n, chunk):
-        hi = min(n, lo + chunk)
-        cl = np.asarray(inp.cell_cluster[lo:hi])
-        for k in np.unique(cl):
-            source = f'cluster{int(k)}'
-            if source not in segs:
-                raise RecallError(f'percell: cluster {int(k)} has no source')
-        x = inp.read_rows(lo, hi)
-        for k in np.unique(cl):
-            sel = np.flatnonzero(cl == k)
-            while len(pending) >= max_inflight:
-                collect(pending.popleft())
-            pending.append((lo + sel, executor.submit(call_cells, x[sel], segs[f'cluster{int(k)}'], inp.package_dir)))
-    while pending:
-        collect(pending.popleft())
+    out_u8, best = call_all_cells(inp, segs, executor, update, chunk, max_inflight)
 
     cacc = np.zeros(65536, np.int64)
     per_cell, pcts, dbs = [], [], []
     for i in range(n):
-        b, a = np.asarray(inp.before_percell_u8[i]), out_u8[i]
+        b, a = np.asarray(before_u8[i]), out_u8[i]
         add_transitions(cacc, b, a)
         changed, called = int((b != a).sum()), int((b != MISSING).sum())
         pcts.append(100 * changed / called if called else 0.0)
-        bb, ba = _f(inp.before_percell_best_s[i]), _f(best[i])
+        bb, ba = _f(before_best[i]), _f(best[i])
         if bb is not None and ba is not None:
             dbs.append(ba - bb)
         per_cell.append({'cell': inp.cell_ids[i], 'wnn_cluster': int(inp.cell_cluster[i]), 'best_s_before': bb,
@@ -287,6 +322,8 @@ def run_recall(inp: RecallInputs, rules, allow_gap_crossing, executor, update, c
                      'best_s_change': {'median': _f(np.median(dbs)) if dbs else None, 'min': _f(min(dbs)) if dbs else None,
                                        'max': _f(max(dbs)) if dbs else None},
                      'per_cell': per_cell}
-    diff = {**diff, 'cells': cells_diff, 'transitions': {**diff['transitions'], 'cells': transitions_list(cacc)}}
+    cells_nz = cn.cells_noise(out_u8, inp.cell_cluster, segs, inp.var_seq, inp.sources)
+    diff = {**diff, 'cells': cells_diff, 'transitions': {**diff['transitions'], 'cells': transitions_list(cacc)},
+            'noise': cn.combine(cluster_nz, cells_nz)}
     update(diff=diff, percell_ready=True)
-    return {'percell_u8': out_u8}
+    return {'percell_u8': out_u8, 'percell_best_s': best, 'noise_cells': cells_nz}
