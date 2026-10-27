@@ -98,6 +98,15 @@ def seg_labels(var_seq: np.ndarray, boundaries_by_chrom: Dict[str, List[int]]) -
     return seg
 
 
+def boundaries_from_bp(bp: pd.DataFrame, sources, chroms) -> Dict[str, Dict[str, List[int]]]:
+    """Chromosome-local boundaries per source/chromosome from a breakpoints table."""
+    out = {s: {c: [] for c in chroms} for s in sources}
+    for r in bp.itertuples(index=False):
+        if r.source in out and r.chromosome in out[r.source]:
+            out[r.source][r.chromosome].append(int(r.absolute_bin))
+    return {s: {c: sorted(v) for c, v in d.items()} for s, d in out.items()}
+
+
 def pseudobulk(inp: RecallInputs, chunk=250, progress=None) -> np.ndarray:
     """Float64 mean of member rows per source, one pass over the count rows."""
     n = len(inp.cell_ids)
