@@ -137,3 +137,20 @@ def test_pinned_job_survives_eviction_and_repin_releases_it():
     _recall(c, [{**NOOP[0], 'tau': 4e-9}])
     assert c.get(f"/api/integration/recall/{a['id']}").status_code == 404
     assert c.get(f"/api/integration/recall/{b['id']}").status_code == 200
+
+
+def test_wait_percell_survives_eviction_from_jobs():
+    import threading
+    from server.cn_recall_api import RecallManager
+    m = RecallManager(keep=1)
+    jid = m._new('h', {}, 's', {}, 'k', 'percell')
+    job = m.jobs[jid]
+    del m.jobs[jid]                      # evicted while a re-call still holds the job object
+    u8 = np.zeros((1, 1), dtype=np.uint8)
+
+    def finish():
+        job.update(_u8=u8, _best=None, status='done')
+        job['_event'].set()
+    threading.Timer(0.05, finish).start()
+    got, best = m.wait_percell(job)
+    assert got is u8 and best is None

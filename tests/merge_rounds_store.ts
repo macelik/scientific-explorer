@@ -20,4 +20,19 @@ release()
 await p
 eq(useIntegration.getState().rounds, [], 'undo during pin is not resurrected')
 eq(useIntegration.getState().baseKaryo, null, 'no stale karyo adopted')
+// stale re-call: POST resolves only after the rounds were undone
+let releasePost: () => void = () => {}
+;(globalThis as any).fetch = () => new Promise((res) => { releasePost = () => res({ ok: true, status: 200, json: async () => ({ id: 'stale', hash: 'h', status: 'running' }) }) })
+useIntegration.setState({ rounds: [round], recall: null, recallKaryo: null, recallSignature: null, recallError: null })
+const sp = useIntegration.getState().startRecall({ rules: [r0], allow_gap_crossing: false, rounds: [{ rules: [r0], allow_gap_crossing: false }] } as any)
+useIntegration.getState().undoRound()
+releasePost()
+await sp
+eq(useIntegration.getState().recall, null, 'stale re-call does not set recall')
+eq(useIntegration.getState().recallSignature, null, 'stale re-call does not set recallSignature')
+// restore clears the re-call state
+useIntegration.setState({ recall: st, recallKaryo: new Uint8Array(1), recallSignature: 'x', karyoMode: 'after' })
+useIntegration.getState().restore({ rounds: [] })
+eq(useIntegration.getState().recall, null, 'restore clears recall')
+eq(useIntegration.getState().karyoMode, 'before', 'restore resets karyoMode')
 if (failures) { console.error(`${failures} failure(s)`); process.exit(1) } else console.log('all merge_rounds_store checks passed')

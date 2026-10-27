@@ -121,3 +121,12 @@ def test_hatch_routes_reject_invalid_round():
     assert r.status_code == 422 and r.json()['detail'].startswith('round 1: ')
     r = c.post('/api/integration/hatch-merge', json={'chrom': 'chr1', 'source': 'cluster0', 'rules': LOOSE, 'rounds': [R([])]})
     assert r.status_code == 422 and r.json()['detail'].startswith('round 1: ')
+
+
+def test_hatch_merge_records_rounds_in_settings_only_when_present():
+    c = _client()
+    body = {'chrom': 'chr1', 'source': 'cluster0', 'rules': LOOSE}
+    assert 'rounds' not in c.post('/api/integration/hatch-merge', json=body).json()['settings']
+    assert 'rounds' not in c.post('/api/integration/hatch-merge', json={**body, 'rounds': []}).json()['settings']
+    m = c.post('/api/integration/hatch-merge', json={**body, 'rounds': [R(LOOSE)]}).json()
+    assert m['settings']['rounds'] == [R(LOOSE)]

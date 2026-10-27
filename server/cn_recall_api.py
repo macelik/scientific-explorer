@@ -163,20 +163,19 @@ class RecallManager:
                 self._enqueue(old)
 
     def base_percell(self, key):
-        """('ready' | 'running' | 'missing', job id) for the per-cell calls of the base with rounds_hash `key`."""
+        """('ready' | 'running' | 'missing', job id, job) for the per-cell calls of the base with rounds_hash `key`.
+        The job object is captured under the lock so later eviction from `jobs` cannot make it vanish."""
         with self.lock:
             p = self.jobs.get(self.pinned) if self.pinned else None
             if p and p['_result_key'] == key and p['status'] != 'error':
-                return ('ready' if p['status'] == 'done' else 'running'), p['id']
+                return ('ready' if p['status'] == 'done' else 'running'), p['id'], p
             for j in self.jobs.values():
                 if j['_result_key'] == key and j['status'] == 'done' and j['_u8'] is not None:
-                    return 'ready', j['id']
-            return 'missing', None
+                    return 'ready', j['id'], j
+            return 'missing', None, None
 
-    def wait_percell(self, jid):
-        job = self.jobs.get(jid)
-        if job is None:
-            raise cr.RecallError(f'percell base: job {jid} is gone')
+    def wait_percell(self, job):
+        """Wait on the calls job object itself (not a `jobs` lookup), so eviction cannot make it 'gone'."""
         job['_event'].wait()
         if job['status'] != 'done' or job['_u8'] is None:
             raise cr.RecallError(f"percell base: {job['error']}")
@@ -267,13 +266,15 @@ def register_cn_recall(app, get_context, keep: int = 3):
                 e['extra']['cluster_noise'] = cn.cluster_noise(pd.DataFrame(rows))
         except Exception as ex:  # noqa: BLE001
             raise HTTPException(500, f'base: {type(ex).__name__}: {ex}') from ex
-        status, jid = manager.base_percell(e['hash'])
+        status, jid, job = manager.base_percell(e['hash'])
         if status == 'missing':
             jid = manager.start_calls(replace(inp, breakpoints=e['breakpoints']), rounds, identity, executor)['id']
+            with manager.lock:
+                job = manager.jobs[jid]
             status = 'running'
         elif status == 'ready':
             manager.pin(jid)
-        return e, status, jid
+        return e, status, jid, job
 
     def _rounds_or_422(raw):
         try:
@@ -290,17 +291,16 @@ def register_cn_recall(app, get_context, keep: int = 3):
         rounds = _rounds_or_422(req.rounds)
         inp, identity, executor = get_context()
         if rounds:
-            e, status, jid = base_state(inp, rounds, identity, executor)
+            e, status, jid, job = base_state(inp, rounds, identity, executor)
             u8 = best = None
             if status == 'ready':
                 with manager.lock:
-                    job = manager.jobs[jid]
                     u8, best = job['_u8'], job['_best']
             inp = replace(inp, breakpoints=e['breakpoints'],
                           before_cluster_segments=pd.DataFrame(e['extra']['cluster_segments']),
                           before_percell_u8=u8,
                           before_percell_best_s=best if best is not None else np.full(len(inp.cell_ids), np.nan),
-                          before_percell_wait=(lambda j=jid: manager.wait_percell(j)) if status == 'running' else None)
+                          before_percell_wait=(lambda j=job: manager.wait_percell(j)) if status == 'running' else None)
         v = manager.start(inp, req.rules, req.allow_gap_crossing, identity, executor, rounds)
         return {'id': v['id'], 'hash': v['hash'], 'status': v['status']}
 
@@ -327,8 +327,8 @@ def register_cn_recall(app, get_context, keep: int = 3):
             return {'hash': mrd.rounds_hash([]), 'n_rounds': 0, 'breakpoints': _records(inp.breakpoints), 'rounds': [],
                     'cluster_segments': _records(inp.before_cluster_segments), 'noise': orig, 'noise_original': orig,
                     'percell': {'status': 'original' if inp.before_percell_u8 is not None else 'missing', 'job': None}}
-        e, status, jid = base_state(inp, rounds, identity, executor)
-        cells = manager.jobs[jid]['_noise_cells'] if status == 'ready' else None
+        e, status, jid, job = base_state(inp, rounds, identity, executor)
+        cells = job['_noise_cells'] if status == 'ready' else None
         return {'hash': e['hash'], 'n_rounds': len(rounds), 'breakpoints': _records(e['breakpoints']), 'rounds': e['rounds'],
                 'cluster_segments': e['extra']['cluster_segments'],
                 'noise': cn.combine(e['extra']['cluster_noise'], cells), 'noise_original': orig,

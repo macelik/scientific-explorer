@@ -90,6 +90,8 @@ export const useIntegration = create<IntegrationState>((set, get) => ({
     set({ recallError: null })
     let id: string
     try { id = (await startRecallApi(body)).id } catch (e: any) { set({ recallError: String(e.message || e) }); return }
+    // the rounds changed (undo/adopt/restore) while the POST was in flight: this re-call sits on a stale base
+    if (JSON.stringify(wireRounds(get().rounds)) !== JSON.stringify(body.rounds ?? [])) return
     if (get().recall?.id !== id) set({ recall: null, recallKaryo: null, karyoMode: 'before' })
     set({ recallSignature: signature })
     const poll = async () => {
@@ -175,5 +177,5 @@ export const useIntegration = create<IntegrationState>((set, get) => ({
     catch (e: any) { if (JSON.stringify(wireRounds(get().rounds)) === sig) set({ hatchScoresError: `hatch-scores: ${e.message || e}` }) }
   },
   serialize: () => { const s = get(); return { clusterKey: s.clusterKey, colorBy: s.colorBy, selectedCluster: s.selectedCluster, highlight: s.highlight, focusCell: s.focusCell, dimOthers: s.dimOthers, pointSize: s.pointSize, compareKey: s.compareKey, seg: s.seg, mergeRules: s.mergeRules, allowGapCrossing: s.allowGapCrossing, rounds: s.rounds } },
-  restore: (p) => { if (!p) return; set({ clusterKey: p.clusterKey || 'wnn_leiden_0.3', colorBy: p.colorBy || 'cluster', selectedCluster: p.selectedCluster ?? null, highlight: p.highlight || [], focusCell: p.focusCell ?? null, dimOthers: !!p.dimOthers, pointSize: p.pointSize || 3, compareKey: p.compareKey || 'wnn_leiden_1.0', seg: (() => { const ms = migrateSegSettings(p.seg); return { ...defaultSeg, ...ms, labels: { ...defaultSeg.labels, ...(ms.labels || {}) } } })(), mergeRules: Array.isArray(p.mergeRules) ? p.mergeRules : migrateHatchLayers(p.hatchLayers), allowGapCrossing: !!p.allowGapCrossing, rounds: roundsFromSession(p), base: null, baseSig: null, baseKaryo: null, baseCalls: null, hatchScores: {} }) },
+  restore: (p) => { if (!p) return; set({ clusterKey: p.clusterKey || 'wnn_leiden_0.3', colorBy: p.colorBy || 'cluster', selectedCluster: p.selectedCluster ?? null, highlight: p.highlight || [], focusCell: p.focusCell ?? null, dimOthers: !!p.dimOthers, pointSize: p.pointSize || 3, compareKey: p.compareKey || 'wnn_leiden_1.0', seg: (() => { const ms = migrateSegSettings(p.seg); return { ...defaultSeg, ...ms, labels: { ...defaultSeg.labels, ...(ms.labels || {}) } } })(), mergeRules: Array.isArray(p.mergeRules) ? p.mergeRules : migrateHatchLayers(p.hatchLayers), allowGapCrossing: !!p.allowGapCrossing, rounds: roundsFromSession(p), base: null, baseSig: null, baseError: null, baseKaryo: null, baseCalls: null, hatchScores: {}, recall: null, recallKaryo: null, recallSignature: null, recallError: null, roundsNotice: null, karyoMode: 'before' }) },
 }))

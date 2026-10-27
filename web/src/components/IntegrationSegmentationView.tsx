@@ -6,7 +6,7 @@ import Plot from './DeferredPlot'
 import ClusterKaryogram, { type KaryoRow } from './ClusterKaryogram'
 import RecallImpact from './RecallImpact'
 import NoiseTable from './NoiseTable'
-import { wireRounds } from '../mergeRounds'
+import { sameRounds, wireRounds } from '../mergeRounds'
 import { clusterStateRow, stateLabel } from '../cnRecall'
 import { CellCard } from './IntegrationClustersView'
 import { useIntegration } from '../integrationStore'
@@ -61,7 +61,7 @@ export default function IntegrationSegmentationView() {
   // ---------------- cluster-level karyogram rows (fig 3c)
   const clSegsOrig = useMemo(() => (nRounds ? clusterSegmentsLocal(meta?.cluster_segments ?? null, exMeta.chromosomes) : null), [nRounds, meta, exMeta.chromosomes])
   const beforeHover = (ri: number, bin: number, chrom: string): string[] => { const src = meta!.sources[ri]; const c = exMeta.chromosomes.find((x) => x.name === chrom)!; const local = bin - c.offset; const g = (mode === 'original' && clSegsOrig ? clSegsOrig : clSegs).find((x) => x.group === src && x.chromosome === chrom && local >= x.s && local < x.e); return g ? [`segment ${g.segment}: bins [${g.s}, ${g.e}) · ${g.n_bins} bins · continuous ${g.continuous_cn} · integer ${g.integer_cn} · watson ${g.watson}`] : [] }
-  const hasAfter = !!ig.recall?.cluster_segments
+  const hasAfter = !!ig.recall?.cluster_segments && sameRounds(ig.recall.settings.rounds ?? [], ig.rounds)
   const mode = (ig.karyoMode === 'after' || ig.karyoMode === 'changed') && !hasAfter ? 'before' : ig.karyoMode === 'original' && !nRounds ? 'before' : ig.karyoMode
   const clSegsAfter = useMemo(() => clusterSegmentsLocal(ig.recall?.cluster_segments ?? null, exMeta.chromosomes), [ig.recall?.cluster_segments, exMeta.chromosomes])
   const recallClusterSegs = ig.recall?.cluster_segments ?? null

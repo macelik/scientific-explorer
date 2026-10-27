@@ -17,7 +17,8 @@ from . import merge_rules as mr
 from . import merge_rounds as mrd
 from .integration import IntegrationStore
 
-_IMPLEMENTATION_FILES = (Path(__file__).with_name('merge_rules.py'), Path(__file__).with_name('hatch_merge.py'))
+_IMPLEMENTATION_FILES = (Path(__file__).with_name('merge_rules.py'), Path(__file__).with_name('hatch_merge.py'),
+                        Path(__file__).with_name('merge_rounds.py'))
 
 
 class HatchScoresRequest(BaseModel):
@@ -89,6 +90,8 @@ def register_hatch_merge(app, get_integration):
                                        allow_gap_crossing=req.allow_gap_crossing)
         except ValueError as e:
             raise HTTPException(422, str(e)) from e
+        if req.rounds:
+            result = {**result, 'settings': {**result.get('settings', {}), 'rounds': mrd.normalize_rounds(req.rounds)}}
         return {**result, 'source': req.source, 'chrom': req.chrom,
                 'start_bp': ig.var_start[idx].tolist(), 'end_bp': ig.var_end[idx].tolist(),
                 'provenance': {'dataset': ig.identity,
