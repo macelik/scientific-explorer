@@ -108,6 +108,29 @@ Both karyograms get a **Karyogram mode** switch: **Before** (the original calls,
 
 Results are kept in memory only: the latest 3 re-calls are kept and all are lost on restart. Identical rules on the same data reuse the finished result.
 
+### Merge rounds
+
+A re-call can be adopted as a **merge round**, so that section 2 (tracks, scores, hatching, the merge panel) works on the merged segmentation instead of the original one.
+
+1. Run **Merge genome & re-call CN** with the rules you want. When it is done, click **Adopt as round N** in **CN re-call impact**.
+2. The strip *Segmentation base: Original → Round 1 (…, M merges)* shows the current base. The tracks lose the breakpoints that round merged away, and the scores and hatches are computed on the new base.
+3. Change the rules, then re-call again (**Merge genome & re-call CN**). The re-call now starts from the base, and can be adopted as the next round.
+4. **Undo last round** removes the newest round; **Back to original** removes all of them.
+
+**Original / Before / After / Changed.** *Original* always shows the unmerged data. *Before* shows the current base (the same as Original when there are no rounds). *After* shows the latest re-call on that base, and *Changed* draws in colour only the bins where After differs from Before.
+
+**Call noise by round.** The table lists, per source and per level (cluster and cells), the segments, the zig-zags, the zig-zag median length (bins) and gain next to loss, with one column per round (Original, Round 1, …, After). Use the scope switch for this chromosome or genome-wide. Definitions, shown under the table:
+
+- Calls are read per chromosome as the sequence of segment states. Segments with no call are skipped. Gain = state > 1 (weak gain included), loss = state < 1.
+- Zig-zag: an internal segment whose state differs from both neighbours, while the two neighbours have the same state as each other.
+- Gain next to loss: a boundary with a gain on one side and a loss on the other. This can be real (for example an unbalanced rearrangement), so it is counted but never merged automatically.
+- Cell values: the mean per cell over all cells of the cluster. The zig-zag median length is taken over all of those cells' zig-zags. For all, the cells are every cell, each read under its own cluster's segmentation.
+
+The table downloads as `noise_by_round.tsv`.
+
+Rounds are saved with the session. After a server restart the base's per-cell calls are recomputed on first use (about 60 s); the rounds themselves are not lost.
+
+
 ## Recompute integration flank comparisons
 
 In **Integration · segmentation & CN**, use **Generate alternative flank view**. Choose chromosome/source and maximum internal-segment size, then compare arithmetic, median and two-sided IQR effects against both adjacent segments. Click a point or choose a segment to see its unsmoothed bin values and summaries.

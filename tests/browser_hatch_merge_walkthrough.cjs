@@ -18,7 +18,7 @@ function findOwner(obj,key){if(!obj||typeof obj!=='object')return null;if(Object
  await page.getByRole('button',{name:'Integration · segmentation & CN',exact:true}).click();
  await page.getByText(/Showing 760 of 3460 rows/).waitFor({timeout:60000});
 
- const tracks=page.locator('#cluster-tracks');await tracks.scrollIntoViewIfNeeded();
+ const tracks=page.locator('#cluster-tracks');await tracks.scrollIntoViewIfNeeded();await tracks.locator('.deferred-plot').first().scrollIntoViewIfNeeded();
  const plot=tracks.locator('.js-plotly-plot');await plot.waitFor();
  await page.waitForFunction(()=>document.querySelector('#cluster-tracks .js-plotly-plot')?._fullLayout);
  const shapeCount=()=>plot.evaluate(el=>el.layout.shapes.length);

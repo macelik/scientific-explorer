@@ -84,6 +84,9 @@ consequences before deciding whether to run another.
 
 **Re-calling CN on the merged segmentation.** The genome-wide re-call (Merge genome & re-call CN) merges every chromosome with the same rules, then re-calls copy number with pyEpiAneufinder's `assign_gainloss_new`, unmodified and in the same way as `make_karyograms.py`. A no-op identity test (re-calling an unmerged segmentation) reproduces `karyogram_cluster_segments.tsv` exactly and 20 sampled cells of `percell_cn_states.npy` (with their `best_s`). `best_s` is fitted genome-wide, so a merge on one chromosome can change calls on others; the impact summary counts changes everywhere, not only where segments merged. These results are exploratory diagnostics, not validated replacement calls.
 
+**Merge rounds.** An adopted re-call becomes the base for the next one. Every round merges on the original pseudobulk; only the boundaries carry over from round to round, so a round never works on a smoothed signal. For the same reason, running the same rules twice gives 0 merges the second time: the boundaries those rules would remove are already gone. Zig-zags whose two steps point the same way are kept by Rule 0 by design, and the separate spike/dip rule for them is parked. A gain next to a loss can be real (for example an unbalanced rearrangement), so the noise table counts it but nothing merges it automatically. The call-noise table (segments, zig-zags, zig-zag median length, gain next to loss) is a descriptive comparison between rounds, not a validation of the calls.
+
+
 ## What this repository's diagnostic capabilities support, by loop stage
 
 - **Forming a hypothesis:** Cohort karyogram, Explore output, Integration ·
