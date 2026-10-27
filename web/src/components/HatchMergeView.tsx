@@ -1,9 +1,11 @@
 import { useRef, useState } from 'react'
 import DeferredPlot from './DeferredPlot'
 import MergeRulesEditor from './MergeRulesEditor'
+import RoundStrip from './RoundStrip'
 import { useIntegration } from '../integrationStore'
 import { recallProgressText } from '../cnRecall'
 import { useStore } from '../store'
+import { baseHeading, wireRounds } from '../mergeRounds'
 import { runHatchMerge, hatchShapes, type MergeResult } from '../hatchMerge'
 import { canRunMerge, describeCondition, describeRule0, isFlankRule, isRule0, rule0FromSeg } from '../mergeRules'
 
@@ -23,12 +25,13 @@ export default function HatchMergeView() {
   const token = useRef(0)
   const chrom = ig.seg.chrom
   const rule0 = rule0FromSeg(ig.seg)
+  const wire = wireRounds(ig.rounds)
   const runnable = canRunMerge(rule0, ig.mergeRules)
-  const request = { chrom, source, rules: [rule0, ...ig.mergeRules], allow_gap_crossing: ig.allowGapCrossing }
+  const request = { chrom, source, rules: [rule0, ...ig.mergeRules], allow_gap_crossing: ig.allowGapCrossing, rounds: wire }
   const signature = JSON.stringify(request)
   const [frozen, setFrozen] = useState('')
   const stale = !!result && frozen !== signature
-  const recallBody = { rules: [rule0, ...ig.mergeRules], allow_gap_crossing: ig.allowGapCrossing }
+  const recallBody = { rules: [rule0, ...ig.mergeRules], allow_gap_crossing: ig.allowGapCrossing, rounds: wire }
   const recallSig = JSON.stringify(recallBody)
   const recallRunning = !ig.recallError && ig.recall?.status === 'running' && ig.recallSignature === recallSig
 
@@ -57,8 +60,9 @@ export default function HatchMergeView() {
       fillcolor: i % 2 === 0 ? 'rgba(150,73,29,0.18)' : 'rgba(40,120,160,0.18)', line: { width: 1, color: '#334155' } }))
 
   return <section className="panel hatch-merge">
-    <h3>2. Merge rules — exploratory adjacent-segment merge</h3>
+    <h3>2. Merge rules — exploratory adjacent-segment merge <span className="muted small">· {baseHeading(ig.rounds.length)}</span></h3>
     <p className="lead">Rule 0 (pinned first, built from section 1) merges the segments it hatches on the Chromosome tracks; your own rules below add to it with lower priority. A user rule is a set of conditions on a segment's left/right flank scores that must ALL hold; a segment is flagged when ANY enabled rule matches, and each rule's hatch on the Chromosome tracks above shows exactly the segments it flags at the start. A merge run starts from those flagged segments and repeatedly joins one flagged segment to its more similar neighbour (the flank with the smaller |score| under that rule's "merge into" metric): topmost rule first, then smallest score, then leftmost, recomputing every score, including the pooled dispersion φ, and re-evaluating every rule after each merge, so segments not hatched at the start can become eligible later. These are user-defined exploratory diagnostics, not validated decision rules. This is not the original bootstrap/chain-guard merge prototype, and "Run merge" does not recompute CN; "Merge genome & re-call CN" applies these rules to every chromosome of every cluster and re-calls CN with pyEpi on the merged segmentation (compare on the karyograms above).</p>
+    <RoundStrip />
     <MergeRulesEditor />
     <div className="controls-row">
       <label>Source<select aria-label="Merge source" value={source} onChange={(e) => setSource(e.target.value)}>{meta.sources.map((s) => <option key={s}>{s}</option>)}</select></label>
@@ -100,7 +104,7 @@ export default function HatchMergeView() {
           <td>[{s.segment?.[0]}, {s.segment?.[1]})</td><td>{s.rule_name}</td><td>{s.phase === 1 ? '1' : s.phase === 2 ? '2 (last)' : '–'}</td><td>{s.side}</td><td>{s.score !== null ? s.score.toFixed(3) : '–'}</td><td>{s.phi != null ? s.phi.toFixed(3) : '–'}</td>
         </tr>)}
       </tbody></table></div>
-      <p className="small muted">The rule hatches on the Chromosome tracks are computed from the original accepted-breakpoint segmentation, not from this panel's selected step. This panel shows the merged segmentation's boundaries (the two plots and the history table); it does not display recomputed per-segment scores for the merged partition. CN calls are not recomputed on merged boundaries.</p>
+      <p className="small muted">The rule hatches on the Chromosome tracks are computed from the current segmentation base, not from this panel's selected step. This panel shows the merged segmentation's boundaries (the two plots and the history table); it does not display recomputed per-segment scores for the merged partition. CN calls are not recomputed on merged boundaries.</p>
       <details><summary>Merge run provenance and settings</summary><pre style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>{JSON.stringify({ settings: result.settings, provenance: result.provenance }, null, 2)}</pre></details>
     </>}
   </section>

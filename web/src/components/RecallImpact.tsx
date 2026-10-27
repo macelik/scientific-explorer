@@ -1,7 +1,7 @@
 import { useIntegration } from '../integrationStore'
-import { changeSummaryTsv, downloadText, mergedBreakpointsTsv, recallProgressText, recalledClusterSegmentsTsv, recalledPercellTsv, transitionText, type KaryoMode } from '../cnRecall'
+import { changeSummaryTsv, downloadText, mergedBreakpointsTsv, recallProgressText, recalledClusterSegmentsTsv, recalledPercellTsv, transitionText } from '../cnRecall'
+import { karyoModes, sameRounds } from '../mergeRounds'
 
-const LABELS: Record<KaryoMode, string> = { original: 'Original', before: 'Before', after: 'After', changed: 'Changed' }
 const f4 = (v: number | null | undefined) => (v === null || v === undefined ? '—' : v.toFixed(4))
 
 /** Before · After · Changed switch for both karyograms, plus the re-call impact summary and exports. */
@@ -9,12 +9,15 @@ export default function RecallImpact() {
   const ig = useIntegration(); const st = ig.recall
   const hasAfter = !!st?.cluster_segments
   const d = st?.diff
+  const modes = karyoModes(ig.rounds.length, hasAfter)
+  const onBase = !!st && sameRounds(st.settings.rounds ?? [], ig.rounds)
   return <div className="recall-impact" role="region" aria-label="CN re-call impact">
     <div className="controls-row">
       <span className="muted small">CN calls</span>
       <div className="segmented" role="group" aria-label="Karyogram mode">
-        {(['before', 'after', 'changed'] as const).map((m) => <button key={m} className={`btn-sm${ig.karyoMode === m ? ' on' : ''}`} aria-pressed={ig.karyoMode === m} disabled={m !== 'before' && !hasAfter} onClick={() => ig.set({ karyoMode: m })}>{LABELS[m]}</button>)}
+        {modes.map((m) => <button key={m.mode} className={`btn-sm${ig.karyoMode === m.mode ? ' on' : ''}`} aria-pressed={ig.karyoMode === m.mode} disabled={!m.enabled} onClick={() => ig.set({ karyoMode: m.mode })}>{m.label}</button>)}
       </div>
+      {ig.rounds.length > 0 && <span className="muted small">{`Before = round ${ig.rounds.length}; Original = the on-disk calls.`}</span>}
       {st ? <span className="muted small">{recallProgressText(st)}</span> : <span className="muted small">Run "Merge genome &amp; re-call CN" in section 2 (Merge rules) to compare.</span>}
       {ig.karyoMode === 'changed' && <span className="seg-legend"><span><i style={{ background: '#f1f1f1' }} />unchanged</span><span>other colours: the after state of changed bins</span></span>}
     </div>
@@ -31,6 +34,9 @@ export default function RecallImpact() {
         <button className="btn-sm" onClick={() => downloadText(recalledClusterSegmentsTsv(st!), 'recalled_cluster_segments.tsv')}>recalled_cluster_segments.tsv</button>
         <button className="btn-sm" disabled={!d.cells} onClick={() => downloadText(recalledPercellTsv(st!), 'recalled_percell_best_s.tsv')}>recalled_percell_best_s.tsv</button>
         <button className="btn-sm" onClick={() => downloadText(changeSummaryTsv(st!), 'cn_change_summary.tsv')}>cn_change_summary.tsv</button>
+        {st?.status === 'done' && (onBase
+          ? <button className="btn-sm primary" onClick={() => ig.adoptRecall()}>{`Adopt as round ${ig.rounds.length + 1}`}</button>
+          : <span className="muted small">computed on a different base</span>)}
       </div>
     </>}
   </div>

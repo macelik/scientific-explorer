@@ -37,3 +37,8 @@ body.presentation .integ .lead { font-size: 13px; }
 .recall-impact .segmented { display: inline-flex; gap: 0; }
 .recall-impact .segmented .btn-sm.on { background: #1f2937; color: #fff; }
 .recall-impact .table-scroll { overflow-x: auto; }
+
+.round-strip { display:flex; flex-wrap:wrap; gap:.5rem; align-items:center }
+.round-current { font-weight:600 }
+.noise-table { margin-top: .75rem }
+.sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap }
