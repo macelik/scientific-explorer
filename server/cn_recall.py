@@ -273,11 +273,11 @@ def run_recall(inp: RecallInputs, rules, allow_gap_crossing, executor, update, c
             dbs.append(ba - bb)
         per_cell.append({'cell': inp.cell_ids[i], 'wnn_cluster': int(inp.cell_cluster[i]), 'best_s_before': bb,
                          'best_s_after': ba, 'bins_changed': changed})
-    diff['cells'] = {'n_cells': n, 'n_changed_cells': sum(1 for r in per_cell if r['bins_changed']),
+    cells_diff = {'n_cells': n, 'n_changed_cells': sum(1 for r in per_cell if r['bins_changed']),
                      'median_pct_changed': round(float(np.median(pcts)), 3) if pcts else 0.0,
                      'best_s_change': {'median': _f(np.median(dbs)) if dbs else None, 'min': _f(min(dbs)) if dbs else None,
                                        'max': _f(max(dbs)) if dbs else None},
                      'per_cell': per_cell}
-    diff['transitions']['cells'] = transitions_list(cacc)
+    diff = {**diff, 'cells': cells_diff, 'transitions': {**diff['transitions'], 'cells': transitions_list(cacc)}}
     update(diff=diff, percell_ready=True)
     return {'percell_u8': out_u8}

@@ -42,7 +42,8 @@ class RecallManager:
         self.keep = keep
         self.jobs: Dict[str, dict] = {}
         self.by_hash: Dict[str, str] = {}
-        self.finished: deque = deque()
+        self.finished: deque = deque()      # done jobs
+        self.failed: deque = deque()        # error jobs, budgeted separately so failures never evict a good result
         self.lock = threading.RLock()
 
     def start(self, inp, rules, allow_gap_crossing, identity, executor) -> dict:
@@ -80,9 +81,10 @@ class RecallManager:
             update(status='error', error=msg)
         finally:
             with self.lock:
-                self.finished.append(jid)
-                while len(self.finished) > self.keep:
-                    old = self.jobs.pop(self.finished.popleft(), None)
+                q = self.finished if self.jobs[jid]['status'] == 'done' else self.failed
+                q.append(jid)
+                while len(q) > self.keep:
+                    old = self.jobs.pop(q.popleft(), None)
                     if old and self.by_hash.get(old['hash']) == old['id']:
                         del self.by_hash[old['hash']]
 

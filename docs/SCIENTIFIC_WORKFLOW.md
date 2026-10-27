@@ -79,10 +79,10 @@ consequences before deciding whether to run another.
   original-vs-current segmentation plots side by side.
 - **Revise:** the tool is explicitly labelled, in its own UI copy, as "an
   independent exploratory rule, not the original bootstrap/chain-guard merge
-  prototype," and it "does not recompute CN calls on the merged boundaries" —
-  a deliberate scope limit, not an oversight.
+  prototype," and "Run merge" "does not recompute CN"; the separate "Merge genome
+  & re-call CN" action does (see below) — a deliberate scope limit, not an oversight.
 
-**Re-calling CN on the merged segmentation.** The genome-wide re-call (Merge genome & re-call CN) merges every chromosome with the same rules, then re-calls copy number with pyEpiAneufinder's `assign_gainloss_new`, unmodified and in the same way as `make_karyograms.py`. A no-op identity test (re-calling an unmerged segmentation) reproduces the original files. `best_s` is fitted genome-wide, so a merge on one chromosome can change calls on others; the impact summary counts changes everywhere, not only where segments merged. These results are exploratory diagnostics, not validated replacement calls.
+**Re-calling CN on the merged segmentation.** The genome-wide re-call (Merge genome & re-call CN) merges every chromosome with the same rules, then re-calls copy number with pyEpiAneufinder's `assign_gainloss_new`, unmodified and in the same way as `make_karyograms.py`. A no-op identity test (re-calling an unmerged segmentation) reproduces `karyogram_cluster_segments.tsv` exactly and 20 sampled cells of `percell_cn_states.npy` (with their `best_s`). `best_s` is fitted genome-wide, so a merge on one chromosome can change calls on others; the impact summary counts changes everywhere, not only where segments merged. These results are exploratory diagnostics, not validated replacement calls.
 
 ## What this repository's diagnostic capabilities support, by loop stage
 

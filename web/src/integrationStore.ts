@@ -91,7 +91,7 @@ export const useIntegration = create<IntegrationState>((set, get) => ({
       set({ recall: st })
       if (st.percell_ready && !get().recallKaryo) {
         try { const k = await fetchRecallPercell(id); if (get().recallSignature === signature) set({ recallKaryo: k }) }
-        catch (e: any) { set({ recallError: `per-cell re-call: ${e.message || e}` }) }
+        catch (e: any) { if (get().recallSignature === signature) set({ recallError: `per-cell re-call: ${e.message || e}` }) }
       }
       if (st.status === 'running') setTimeout(poll, 1000)
     }

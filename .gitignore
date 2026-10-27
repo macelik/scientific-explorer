@@ -8,6 +8,9 @@ sessions/
 *.pid
 .venv-scientific-explorer/
 .superpowers/
+tests/_bundle/cn_recall_helpers.mjs
+tests/_bundle/experiment_overlays.mjs
 tests/_bundle/hatch_merge_helpers.mjs
+tests/_bundle/integration_helpers.mjs
 tests/_bundle/merge_rules_helpers.mjs
 tests/_bundle/track_helpers.mjs

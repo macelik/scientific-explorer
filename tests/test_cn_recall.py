@@ -306,6 +306,20 @@ def test_recall_retention_evicts_oldest():
     assert c.get(f'/api/integration/recall/{ids[2]}').status_code == 200
 
 
+def test_recall_failures_do_not_evict_done_job():
+    good = synthetic_inputs()
+    bad = synthetic_inputs(percell=False)
+    state = {'inp': good}
+    c = _api(lambda: state['inp'], keep=2)
+    gid = c.post('/api/integration/recall', json={'rules': NOOP}).json()['id']
+    assert _wait(c, gid)['status'] == 'done'
+    state['inp'] = bad
+    for tau in (2e-9, 3e-9, 4e-9, 5e-9):
+        jid = c.post('/api/integration/recall', json={'rules': [{**NOOP[0], 'tau': tau}]}).json()['id']
+        assert _wait(c, jid)['status'] == 'error'
+    assert c.get(f'/api/integration/recall/{gid}').status_code == 200
+
+
 def test_recall_unwrapped_exception_names_stage():
     inp = synthetic_inputs()
     inp.before_percell_u8 = np.zeros((12, 3), np.uint8)   # wrong width: raises a plain error in the unwrapped per-cell diff
