@@ -104,7 +104,7 @@ A segment is flagged when Rule 0 or any enabled rule matches. **Run merge** then
 
 **Merge genome & re-call CN** (beside Run merge in the merge panel) applies the current Rule 0 and user rules to every chromosome, then re-calls copy number on the merged segmentation. It is an exploratory diagnostic: the original data and files are not changed. A status line shows the stages `merging → cluster CN → per-cell`, with per-cell progress as `done / total` cells, and ends with `done`; if a stage fails it shows `error:` with the stage name and the button is available again. The cluster-level result is ready first, so the per-cell karyogram fills in a little later (about a minute on the full dataset).
 
-Both karyograms get a **Karyogram mode** switch: **Before** (the original calls, always identical to the normal view), **After** (the re-called calls) and **Changed** (only bins whose call changed are drawn in colour). Above the cluster karyogram, under the switch, **CN re-call impact** lists, per source (cluster0..4 and all), the merges, the bins changed and the call transitions, then the number of cells with any change and the median share of bins changed. Four exports are named by file: `merged_breakpoints.tsv`, `recalled_cluster_segments.tsv`, `recalled_percell_best_s.tsv` and `cn_change_summary.tsv`; each begins with `#` header lines holding the rules and provenance. The segmentation tracks keep showing the original accepted breakpoints; only the two karyograms switch. Editing a rule afterwards shows "Rules changed since this re-call; showing the previous one." until you re-run it.
+Both karyograms get a **Karyogram mode** switch: **Before** (the original calls, always identical to the normal view), **After** (the re-called calls) and **Changed** (only bins whose call changed are drawn in colour). Above the cluster karyogram, under the switch, **CN re-call impact** lists, per source (cluster0..4 and all), the merges, the bins changed and the call transitions, then the number of cells with any change and the median share of bins changed. Four exports are named by file: `merged_breakpoints.tsv`, `recalled_cluster_segments.tsv`, `recalled_percell_best_s.tsv` and `cn_change_summary.tsv`; each begins with `#` header lines holding the rules and provenance. Without merge rounds the segmentation tracks keep showing the original accepted breakpoints and only the two karyograms switch; with rounds adopted the tracks show the base's breakpoints (see Merge rounds). Editing a rule afterwards shows "Rules changed since this re-call; showing the previous one." until you re-run it.
 
 Results are kept in memory only: the latest 3 re-calls are kept and all are lost on restart. Identical rules on the same data reuse the finished result.
 
@@ -128,8 +128,9 @@ A re-call can be adopted as a **merge round**, so that section 2 (tracks, scores
 
 The table downloads as `noise_by_round.tsv`.
 
-Rounds are saved with the session. After a server restart the base's per-cell calls are recomputed on first use (about 60 s); the rounds themselves are not lost.
+The alternative flank view and the archived merge-prototype tables stay on the original accepted breakpoints.
 
+Rounds are saved with the session. After a server restart the base's per-cell calls are recomputed on first use (about 60 s); the rounds themselves are not lost.
 
 ## Recompute integration flank comparisons
 

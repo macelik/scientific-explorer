@@ -145,7 +145,7 @@ export default function IntegrationSegmentationView() {
       // accepted breakpoints, coloured by recursion depth
       for (const bp of baseBps.filter((b) => b.source === src && b.chromosome === seg.chrom)) {
         const x = mb[Math.min(bp.absolute_bin, chromMeta.n - 1)]
-        shapes.push({ type: 'line', xref: 'x', yref: `${yref} domain`, x0: x, x1: x, y0: 0, y1: 1, line: { color: DEPTH_COLORS[Math.min(bp.recursion_depth, DEPTH_COLORS.length - 1)], width: 1.2 }, opacity: 0.9 })
+        shapes.push({ type: 'line', xref: 'x', yref: `${yref} domain`, x0: x, x1: x, y0: 0, y1: 1, line: { color: DEPTH_COLORS[Math.min(bp.recursion_depth, DEPTH_COLORS.length - 1)], width: 1.2 }, opacity: 0.9, name: 'breakpoint' })
       }
       // small internal segments from live hatch-scores: colour, Rule 0 cases, user-rule hatches
       const hs = ig.hatchScores[`${src}|${seg.chrom}`]

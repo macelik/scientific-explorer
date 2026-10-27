@@ -57,7 +57,8 @@ const PALETTE=[[123,31,162],[206,147,216],[76,175,80],[255,138,101],[171,0,0]];
  const staleAfterEdit=(await status.innerText()).includes('Rules changed since this re-call; showing the previous one.');
  // ---- merge rounds: adopt -> tracks lose breakpoints -> noise table gains Round 1 -> same rules give 0 merges -> undo ----
  const bpCount=async()=>{await page.locator('#cluster-tracks .deferred-plot').first().scrollIntoViewIfNeeded();await page.locator('#cluster-tracks .js-plotly-plot').waitFor({timeout:60000});await page.waitForTimeout(500);return bpCountNow()};
- const bpCountNow=()=>page.evaluate(()=>{const el=document.querySelector('#cluster-tracks .js-plotly-plot');return ((el&&el.layout&&el.layout.shapes)||[]).filter(sh=>sh.type==='line'&&String(sh.yref||'').endsWith(' domain')).length});
+ const bpCountNow=()=>page.evaluate(()=>{const el=document.querySelector('#cluster-tracks .js-plotly-plot');return ((el&&el.layout&&el.layout.shapes)||[]).filter(sh=>sh.type==='line'&&sh.name==='breakpoint').length});
+ let lastBase=null;page.on('response',async r=>{if(r.url().endsWith('/api/integration/base')&&r.request().method()==='POST'){try{lastBase=await r.json()}catch{}}});
  const baseStrip=page.getByLabel('Segmentation base');
  const noise=page.getByLabel('Call noise by round');
  // value of a measure row in the first source block's cluster level, column named colName (counted from the right: first rows carry extra rowSpan cells)
@@ -78,6 +79,9 @@ const PALETTE=[[123,31,162],[206,147,216],[76,175,80],[255,138,101],[171,0,0]];
  await page.waitForFunction(()=>[...document.querySelectorAll('[aria-label="Call noise by round"] thead th')].some(h=>h.textContent.trim()==='Round 1'),undefined,{timeout:120000});
  await page.waitForTimeout(1500);
  const bpAfter=await bpCount();
+ const tracksChrom=await page.locator('#cluster-tracks label').filter({hasText:/^chromosome/}).locator('select').inputValue();
+ const shownSources=await page.locator('#cluster-tracks .controls-row').filter({hasText:'rows:'}).locator('label:has(input:checked)').allInnerTexts().then(a=>a.map(x=>x.trim()));
+ const bpExpectedAfter=(lastBase&&lastBase.breakpoints||[]).filter(b=>b.chromosome===tracksChrom&&shownSources.includes(b.source)).length;
  const zzRound1=await noiseValue('Round 1');
  const defs=page.getByLabel('Noise definitions');
  const definitionsVisible=await defs.isVisible()&&(await defs.innerText()).includes('Zig-zag: an internal segment');
@@ -92,7 +96,7 @@ const PALETTE=[[123,31,162],[206,147,216],[76,175,80],[255,138,101],[171,0,0]];
  await page.waitForFunction(()=>(document.querySelector('[aria-label="Segmentation base"]')?.textContent||'').trim()==='Segmentation base: Original',undefined,{timeout:120000});
  await page.waitForTimeout(1500);
  const bpUndo=await bpCount();
- const rounds={bpBefore,bpAfter,bpUndo,zzOriginal,zzRound1,round2Merges,definitionsVisible};
+ const rounds={bpBefore,bpAfter,bpExpectedAfter,tracksChrom,shownSources,bpUndo,zzOriginal,zzRound1,round2Merges,definitionsVisible};
  await page.getByLabel('Rule 0 tau').fill('0.2');await page.getByLabel('Rule 0 SRD/√φ ref').fill('3.3');await page.getByLabel('Rule 0 combine').selectOption('all');
 
  const result={date:new Date().toISOString(),settings:{tau:0.5,srdRef:8,combine:'any'},elapsedS,midText,doneText,merges,binsChanged,cellLine,
@@ -114,6 +118,7 @@ const PALETTE=[[123,31,162],[206,147,216],[76,175,80],[255,138,101],[171,0,0]];
  assert.ok(!status2.includes('error:'),status2);
  assert.ok(bpBefore>0&&bpAfter<bpBefore,'adopting removes breakpoints from the tracks: '+bpBefore+' -> '+bpAfter);
  assert.ok(zzOriginal!=null&&zzRound1!=null&&zzRound1<zzOriginal,'Round 1 has fewer genome-wide zig-zags: '+zzOriginal+' -> '+zzRound1);
+ assert.ok(bpExpectedAfter>0&&bpAfter===bpExpectedAfter,'track breakpoints match /api/integration/base rows: '+bpAfter+' vs '+bpExpectedAfter);
  assert.equal(definitionsVisible,true,'noise definitions visible');
  assert.equal(round2Merges,0,'same rules on the base merge nothing');
  assert.equal(bpUndo,bpBefore,'undo restores the original breakpoints');

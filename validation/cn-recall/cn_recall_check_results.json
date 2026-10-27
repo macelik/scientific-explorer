@@ -1,12 +1,12 @@
 {
-  "date": "2026-10-27T17:53:56.664Z",
+  "date": "2026-10-27T18:01:23.691Z",
   "settings": {
     "tau": 0.5,
     "srdRef": 8,
     "combine": "any"
   },
-  "elapsedS": 1,
-  "midText": "merging ✓ → cluster CN ✓ → per-cell ✓ · done · compare on the karyograms above (Before · After · Changed)",
+  "elapsedS": 58,
+  "midText": "merging ✓ → cluster CN ✓ → per-cell 0 / 3,460 · compare on the karyograms above (Before · After · Changed)",
   "doneText": "merging ✓ → cluster CN ✓ → per-cell ✓ · done · compare on the karyograms above (Before · After · Changed)",
   "merges": 358,
   "binsChanged": 12949,
@@ -27,9 +27,20 @@
   ],
   "staleAfterEdit": true,
   "rounds": {
-    "bpBefore": 279,
+    "bpBefore": 35,
     "bpAfter": 21,
-    "bpUndo": 279,
+    "bpExpectedAfter": 21,
+    "tracksChrom": "chr8",
+    "shownSources": [
+      "cluster0",
+      "cluster1",
+      "cluster2",
+      "cluster3",
+      "cluster4",
+      "small segments",
+      "signs-disagree hatch (black |) on segments that do not pass Rule 0"
+    ],
+    "bpUndo": 35,
     "zzOriginal": 33,
     "zzRound1": 7,
     "round2Merges": 0,
