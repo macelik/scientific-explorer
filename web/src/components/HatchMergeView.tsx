@@ -30,7 +30,7 @@ export default function HatchMergeView() {
   const stale = !!result && frozen !== signature
   const recallBody = { rules: [rule0, ...ig.mergeRules], allow_gap_crossing: ig.allowGapCrossing }
   const recallSig = JSON.stringify(recallBody)
-  const recallRunning = ig.recall?.status === 'running' && ig.recallSignature === recallSig
+  const recallRunning = !ig.recallError && ig.recall?.status === 'running' && ig.recallSignature === recallSig
 
   const run = async () => {
     if (!runnable) return

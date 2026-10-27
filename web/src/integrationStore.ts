@@ -86,7 +86,7 @@ export const useIntegration = create<IntegrationState>((set, get) => ({
     const poll = async () => {
       if (get().recallSignature !== signature) return
       let st: RecallStatus
-      try { st = await fetchRecall(id) } catch (e: any) { if (get().recallSignature === signature) set({ recallError: `re-call ${id}: ${e.message || e}` }); return }
+      try { st = await fetchRecall(id) } catch (e: any) { if (get().recallSignature === signature) { const msg = `re-call ${id}: ${e.message || e}`; const cur = get().recall; set({ recallError: msg, recall: cur ? { ...cur, status: 'error', error: msg } : null }) } return }
       if (get().recallSignature !== signature) return
       set({ recall: st })
       if (st.percell_ready && !get().recallKaryo) {
