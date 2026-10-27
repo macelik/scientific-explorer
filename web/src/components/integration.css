@@ -34,8 +34,8 @@
 body.presentation .integ .lead { font-size: 13px; }
 
 .recall-impact { margin: 6px 0 10px; }
-.recall-impact .segmented { display: inline-flex; gap: 0; }
-.recall-impact .segmented .btn-sm.on { background: #1f2937; color: #fff; }
+.recall-impact .segmented, .noise-table .segmented { display: inline-flex; gap: 0; }
+.recall-impact .segmented .btn-sm.on, .noise-table .segmented .btn-sm.on { background: #1f2937; color: #fff; }
 .recall-impact .table-scroll { overflow-x: auto; }
 
 .round-strip { display:flex; flex-wrap:wrap; gap:.5rem; align-items:center }
