@@ -434,6 +434,8 @@ register_integration(app, lambda: integration)
 
 from .hatch_merge_api import register_hatch_merge
 register_hatch_merge(app, lambda: integration)
+from .cn_recall_api import integration_context, register_cn_recall
+register_cn_recall(app, integration_context(lambda: integration, lambda: jobs, cfg.package_dir))
 
 DIST = os.path.join(APP_DIR, "web", "dist")
 if os.path.isdir(DIST):

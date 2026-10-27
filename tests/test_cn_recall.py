@@ -221,3 +221,86 @@ def test_real_noop_percell_identity_sample():
         u8, bs = cr.call_cells(inp.read_rows(int(i), int(i) + 1), seg, PKG)
         assert np.array_equal(u8[0], cr.encode_states(np.asarray(cn[i]))), int(i)
         assert np.isclose(bs[0], inp.before_percell_best_s[i], rtol=0, atol=1e-9), int(i)
+
+
+import gzip
+import time
+from fastapi import FastAPI
+from fastapi.testclient import TestClient
+
+
+def _api(inp_factory, keep=3):
+    from server.cn_recall_api import register_cn_recall
+    app = FastAPI()
+    ex = ThreadPoolExecutor(2)
+    register_cn_recall(app, lambda: (inp_factory(), {'hash': 'fake'}, ex), keep=keep)
+    return TestClient(app)
+
+
+def _wait(client, jid, timeout=120):
+    t0 = time.time()
+    while time.time() - t0 < timeout:
+        v = client.get(f'/api/integration/recall/{jid}').json()
+        if v['status'] != 'running':
+            return v
+        time.sleep(0.05)
+    raise AssertionError('recall did not finish')
+
+
+def test_recall_route_rejects_bad_rules():
+    c = _api(lambda: synthetic_inputs(percell=False))
+    assert c.post('/api/integration/recall', json={'rules': []}).status_code == 422
+    assert c.post('/api/integration/recall', json={}).status_code == 422
+
+
+def test_recall_lifecycle_view_and_percell_bin():
+    inp = synthetic_inputs()
+    c = _api(lambda: inp)
+    r = c.post('/api/integration/recall', json={'rules': LOOSE, 'allow_gap_crossing': False})
+    assert r.status_code == 200 and set(r.json()) == {'id', 'hash', 'status'}
+    v = _wait(c, r.json()['id'])
+    assert set(v) == {'id', 'hash', 'status', 'stage', 'progress', 'error', 'settings', 'provenance', 'merge',
+                      'cluster_segments', 'diff', 'percell_ready'}
+    assert v['status'] == 'done' and v['stage'] == 'done' and v['percell_ready'] is True
+    assert v['settings'] == {'rules': LOOSE, 'allow_gap_crossing': False}
+    assert v['provenance']['scope'] == ('Exploratory: CN re-called with pyEpi assign_gainloss_new (unmodified) on the '
+                                        'rule-merged segmentation; originals unchanged.')
+    assert v['provenance']['dataset'] == {'hash': 'fake'} and len(v['provenance']['implementation_sha256']) == 64
+    b = c.get(f"/api/integration/recall/{v['id']}/percell.bin")
+    assert b.status_code == 200 and len(b.content) == 12 * 70
+
+
+def test_recall_reuses_job_by_hash():
+    inp = synthetic_inputs()
+    c = _api(lambda: inp)
+    a = c.post('/api/integration/recall', json={'rules': LOOSE}).json()
+    b = c.post('/api/integration/recall', json={'rules': LOOSE}).json()
+    d = c.post('/api/integration/recall', json={'rules': LOOSE, 'allow_gap_crossing': True}).json()
+    assert a['id'] == b['id'] and a['hash'] == b['hash'] and d['id'] != a['id']
+    _wait(c, a['id']); _wait(c, d['id'])
+
+
+def test_recall_unknown_id_404():
+    c = _api(lambda: synthetic_inputs(percell=False))
+    assert c.get('/api/integration/recall/nope').status_code == 404
+    assert c.get('/api/integration/recall/nope/percell.bin').status_code == 404
+
+
+def test_recall_missing_percell_publishes_cluster_then_errors():
+    c = _api(lambda: synthetic_inputs(percell=False))
+    jid = c.post('/api/integration/recall', json={'rules': NOOP}).json()['id']
+    v = _wait(c, jid)
+    assert v['status'] == 'error' and v['error'].startswith('percell')
+    assert v['cluster_segments'] and v['diff']['sources'] and v['percell_ready'] is False
+    assert c.get(f'/api/integration/recall/{jid}/percell.bin').status_code == 409
+
+
+def test_recall_retention_evicts_oldest():
+    inp = synthetic_inputs(percell=False)
+    c = _api(lambda: inp, keep=2)
+    ids = []
+    for tau in (1e-9, 2e-9, 3e-9):
+        ids.append(c.post('/api/integration/recall', json={'rules': [{**NOOP[0], 'tau': tau}]}).json()['id'])
+        _wait(c, ids[-1])
+    assert c.get(f'/api/integration/recall/{ids[0]}').status_code == 404
+    assert c.get(f'/api/integration/recall/{ids[2]}').status_code == 200
