@@ -54,7 +54,7 @@ worked examples of this loop in this repository.
 - **Manual segmentation** — user-selected boundaries, exact tests, undo/redo, full-genome CN fitting, and alternative (arithmetic/IQR) segment estimators.
 - **X experiments** — original-vs-edited data, empirical state simulations, region extension/duplication, width series, event-edge tests, four CN comparisons.
 - **Integration · clusters** — multimodal WNN/depth/allelic UMAPs with linked selection and per-cell inspection.
-- **Integration · segmentation & CN** — cluster-level and per-cell karyograms, configurable chromosome tracks, an on-demand alternative flank view and paired-cell bootstrap, and live-score tracks (any chromosome) hatched by Rule 0, user-defined merge rules with per-rule hatching, and an exploratory adjacent-segment merge.
+- **Integration · segmentation & CN** — cluster-level and per-cell karyograms, configurable chromosome tracks, an on-demand alternative flank view and paired-cell bootstrap, and live-score tracks (any chromosome) hatched by Rule 0, user-defined merge rules with per-rule hatching, and an exploratory adjacent-segment merge. A genome-wide **Merge genome & re-call CN** button re-calls copy number on the merged segmentation and compares it on the karyograms (Before · After · Changed) with an impact summary and TSV exports; results are held in memory only.
 
 See [docs/USAGE.md](docs/USAGE.md) for the full operational detail.
 
@@ -72,8 +72,8 @@ production call — it is a call-conditioned exploratory model, not an
 independently validated biological CN simulator. SRD/√φ is a
 dispersion-scaled deviance statistic, not a p-value. The exploratory
 hatch-merge tool is an independent rule, not the original bootstrap/
-chain-guard merge prototype, and does not recompute CN calls on merged
-boundaries. See [docs/VALIDATION.md](docs/VALIDATION.md) and
+chain-guard merge prototype, and Run merge does not recompute CN calls on merged
+boundaries (the separate re-call button does, as an exploratory diagnostic). See [docs/VALIDATION.md](docs/VALIDATION.md) and
 [docs/USAGE.md](docs/USAGE.md) for the full statement of scope.
 
 ## Architecture

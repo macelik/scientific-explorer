@@ -19,10 +19,12 @@ Three kinds of tests live here:
 - `parity_reference.py` / `parity_browser.mjs` — Python-vs-TypeScript
   numerical parity.
 - `experiment_overlays.ts`, `hatch_merge_helpers.ts`,
-  `merge_rules_helpers.ts`, `track_helpers.ts` (live track metrics, session migration, audit reasons), `integration_helpers.ts` — TypeScript logic
+  `merge_rules_helpers.ts`, `cn_recall_helpers.ts` (Changed-mode rows and export TSV writers), `track_helpers.ts` (live track metrics, session migration, audit reasons), `integration_helpers.ts` — TypeScript logic
   ported from Python, bundled with esbuild and run under Node so it can be
   tested without a browser. For example:
   `web/node_modules/.bin/esbuild tests/merge_rules_helpers.ts --bundle --format=esm --platform=node --outfile=tests/_bundle/merge_rules_helpers.mjs && node tests/_bundle/merge_rules_helpers.mjs`
+  Same pattern for the re-call helpers:
+  `web/node_modules/.bin/esbuild tests/cn_recall_helpers.ts --bundle --format=esm --platform=node --outfile=tests/_bundle/cn_recall_helpers.mjs && node tests/_bundle/cn_recall_helpers.mjs`
 - `compare_archived_live.py` — compares the archived flank/screening tables
   with live `hatch-scores` on the pilot chromosomes (needs a running server;
   set `BASE_URL`, e.g. `BASE_URL=http://127.0.0.1:8766 python3 tests/compare_archived_live.py`).
@@ -34,7 +36,7 @@ Three kinds of tests live here:
 - `browser_experiments.cjs`, `browser_workflows.cjs`,
   `browser_experiment_depth.cjs`, `browser_integration_rendering.cjs`,
   `browser_integration_review.cjs`, `browser_integration_freeze.cjs`,
-  `browser_hatch_merge_walkthrough.cjs` (set `BASE_URL` to target a server other than http://127.0.0.1:8766, e.g. a private `python3 run.py --port 8799`; it covers the sign switch, the last-phase option and phase-2 history on chr7, Rule 0 copies, and the absence of the removed flank-conflict and breakpoint layers), `browser_restore.cjs` — Playwright
+  `browser_hatch_merge_walkthrough.cjs` (set `BASE_URL` to target a server other than http://127.0.0.1:8766, e.g. a private `python3 run.py --port 8799`; it covers the sign switch, the last-phase option and phase-2 history on chr7, Rule 0 copies, and the absence of the removed flank-conflict and breakpoint layers), `browser_cn_recall_walkthrough.cjs` (genome merge + CN re-call: button and status stages, Before/After/Changed on both karyograms, impact summary, `merged_breakpoints.tsv` export and the stale notice at τ 0.5 / ref 8 / any; needs a free port such as a private `python3 run.py --port 8799`, takes about a minute on a cold server, and writes `validation/cn-recall/`), `browser_restore.cjs` — Playwright
   workflow tests, one per feature area.
 
 ## Prerequisites

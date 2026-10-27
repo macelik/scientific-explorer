@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-27T12:11:41.119Z",
+  "settings": {
+    "tau": 0.5,
+    "srdRef": 8,
+    "combine": "any"
+  },
+  "elapsedS": 57,
+  "midText": "merging ✓ → cluster CN ✓ → per-cell 0 / 3,460 · compare on the karyograms above (Before · After · Changed)",
+  "doneText": "merging ✓ → cluster CN ✓ → per-cell ✓ · done · compare on the karyograms above (Before · After · Changed)",
+  "merges": 358,
+  "binsChanged": 12949,
+  "cellLine": "cells with any change: 3,460 of 3,460 · median 8.76% bins changed · best_s change median -0.0022 [-0.0632, 0.0507]",
+  "afterDisabledInitially": true,
+  "changedDisabledInitially": true,
+  "afterEnabledMid": true,
+  "perCellPendingShown": true,
+  "perCellCanvasAfter": 1,
+  "beforePalette": 180648,
+  "changedPalette": 15834,
+  "backToBeforeIdentical": true,
+  "exportHeader": [
+    "# rules: [{\"id\":\"rule0\",\"type\":\"flank_threshold\",\"name\":\"Rule 0 — shown on the tracks\",\"criteria\":[\"delta_mean\",\"srd_phi\"],\"combine\":\"any\",\"tau\":0.5,\"srdRef\":8,\"maxBins\":100,\"mergeSignMismatch\":false,\"mergeSignsOnly\":false,\"hatch\":{\"pattern\":\"x\",\"color\":\"#b91c1c\"}}]",
+    "# allow_gap_crossing: false",
+    "# provenance: {\"dataset\":{\"hash\":\"5f640fdb737b8ab5\",\"files\":[{\"path\":\"/home/mami/Desktop/EGA/pyEpiAneufinder/analysis/2026-09-16-interactive-app-planning/integration-story/data/integrated.h5mu\",\"size\":310813168,\"mtime_ns\":1789763355188110000},{\"path\":\"/home/mami/Desktop/EGA/pyEpiAneufinder/analysis/2026-09-16-interactive-app-planning/pyepi_results/count_matrix.h5ad\",\"size\":272099683,\"mtime_ns\":1769464650000000000},{\"path\":\"/home/mami/Desktop/EGA/pyEpiAneufinder/analysis/2026-09-16-interactive-app-planning/integration-story/data/raw_accepted_breakpoints.tsv\",\"size\":83800,\"mtime_ns\":1789758231881939000},{\"path\":\"/home/mami/Desktop/EGA/pyEpiAneufinder/analysis/2026-09-16-interactive-app-planning/integration-story/data/derived/karyogram_cluster_segments.tsv\",\"size\":52143,\"mtime_ns\":1789758298508522000},{\"path\":\"/home/mami/Desktop/EGA/pyEpiAneufinder/analysis/2026-09-16-interactive-app-planning/integration-story/data/derived/percell_best_s.tsv\",\"size\":138001,\"mtime_ns\":1789758526334946000},{\"path\":\"/home/mami/Desktop/EGA/pyEpiAneufinder/analysis/2026-09-16-interactive-app-planning/integration-story/data/derived/percell_cn_states.npy\",\"size\":350664208,\"mtime_ns\":1789758526326945000},{\"path\":\"/home/mami/Desktop/EGA/pyEpiAneufinder/analysis/2026-09-16-interactive-app-planning/scientific-explorer/reference/integration-prototype/regenerated/initial_boundary_scores.tsv\",\"size\":41987,\"mtime_ns\":1789805563166976800},{\"path\":\"/home/mami/Desktop/EGA/pyEpiAneufinder/analysis/2026-09-16-interactive-app-planning/scientific-explorer/reference/integration-prototype/regenerated/merge_history.tsv\",\"size\":124,\"mtime_ns\":1789805563169976800},{\"path\":\"/home/mami/Desktop/EGA/pyEpiAneufinder/analysis/2026-09-16-interactive-app-planning/scientific-explorer/reference/integration-prototype/regenerated/retained_boundaries.tsv\",\"size\":19202,\"mtime_ns\":1789805563172977000},{\"path\":\"/home/mami/Desktop/EGA/pyEpiAneufinder/analysis/2026-09-16-interactive-app-planning/scientific-explorer/reference/integration-prototype/regenerated/review_summary.tsv\",\"size\":1626,\"mtime_ns\":1789805565040022300},{\"path\":\"/home/mami/Desktop/EGA/pyEpiAneufinder/analysis/2026-09-16-interactive-app-planning/scientific-explorer/reference/integration-prototype/regenerated/run_manifest.json\",\"size\":6204,\"mtime_ns\":1789805565042022400},{\"path\":\"/home/mami/Desktop/EGA/pyEpiAneufinder/analysis/2026-09-16-interactive-app-planning/scientific-explorer/reference/integration-prototype/regenerated/segmentation_candidate_audit.tsv\",\"size\":2148121,\"mtime_ns\":1788766075109095200},{\"path\":\"/home/mami/Desktop/EGA/pyEpiAneufinder/analysis/2026-09-16-interactive-app-planning/scientific-explorer/reference/integration-prototype/regenerated/simplified_segments.tsv\",\"size\":20375,\"mtime_ns\":1789805563174977000},{\"path\":\"/home/mami/Desktop/EGA/pyEpiAneufinder/analysis/2026-09-16-interactive-app-planning/scientific-explorer/reference/integration-prototype/regenerated/small_segment_bootstrap.tsv\",\"size\":54583,\"mtime_ns\":1789805577672330200},{\"path\":\"/home/mami/Desktop/EGA/pyEpiAneufinder/analysis/2026-09-16-interactive-app-planning/scientific-explorer/reference/integration-prototype/regenerated/small_segment_flank_scores.tsv\",\"size\":52446,\"mtime_ns\":1789805563182977000},{\"path\":\"/home/mami/Desktop/EGA/pyEpiAneufinder/analysis/2026-09-16-interactive-app-planning/scientific-explorer/reference/integration-prototype/regenerated/small_segment_scores.tsv\",\"size\":32210,\"mtime_ns\":1789805577665330200},{\"path\":\"/home/mami/Desktop/EGA/pyEpiAneufinder/analysis/2026-09-16-interactive-app-planning/scientific-explorer/reference/integration-prototype/regenerated/srd_descriptive.tsv\",\"size\":16976,\"mtime_ns\":1789805563177977000},{\"path\":\"/home/mami/Desktop/EGA/pyEpiAneufinder/analysis/2026-09-16-interactive-app-planning/scientific-explorer/reference/integration-prototype/regenerated/threshold_sensitivity.tsv\",\"size\":10302,\"mtime_ns\":1789805563183977200},{\"path\":\"/home/mami/Desktop/EGA/pyEpiAneufinder/analysis/2026-09-16-interactive-app-planning/scientific-explorer/reference/integration-prototype/regenerated/unresolved_segments.tsv\",\"size\":13337,\"mtime_ns\":1789805563175977000},{\"path\":\"/home/mami/Desktop/EGA/pyEpiAneufinder/analysis/2026-09-16-interactive-app-planning/scientific-explorer/reference/integration-prototype/regenerated/verification.json\",\"size\":5603,\"mtime_ns\":1789805619544351000}]},\"implementation_sha256\":\"34c197b7de67df5537c6df2ece739eb325e66e43f87e8006e755af11c8655a71\",\"scope\":\"Exploratory: CN re-called with pyEpi assign_gainloss_new (unmodified) on the rule-merged segmentation; originals unchanged.\"}",
+    "source\tchromosome\tabsolute_bin\tbp_genomic_start\tbp_genomic_end\trecursion_depth\tad_score\tp_local\tp_global\tn_cells"
+  ],
+  "staleAfterEdit": true,
+  "errors": []
+}

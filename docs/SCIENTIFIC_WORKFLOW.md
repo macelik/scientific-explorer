@@ -82,6 +82,8 @@ consequences before deciding whether to run another.
   prototype," and it "does not recompute CN calls on the merged boundaries" —
   a deliberate scope limit, not an oversight.
 
+**Re-calling CN on the merged segmentation.** The genome-wide re-call (Merge genome & re-call CN) merges every chromosome with the same rules, then re-calls copy number with pyEpiAneufinder's `assign_gainloss_new`, unmodified and in the same way as `make_karyograms.py`. A no-op identity test (re-calling an unmerged segmentation) reproduces the original files. `best_s` is fitted genome-wide, so a merge on one chromosome can change calls on others; the impact summary counts changes everywhere, not only where segments merged. These results are exploratory diagnostics, not validated replacement calls.
+
 ## What this repository's diagnostic capabilities support, by loop stage
 
 - **Forming a hypothesis:** Cohort karyogram, Explore output, Integration ·

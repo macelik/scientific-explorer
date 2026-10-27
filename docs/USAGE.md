@@ -100,6 +100,14 @@ A segment is flagged when Rule 0 or any enabled rule matches. **Run merge** then
 
 **Candidate audit.** For a candidate that was selected for significance but not accepted and has no recorded rejection reason, hovering shows a reason derived from the archived p-values: "local permutation p = … ≥ 0.001", otherwise "global permutation p = … ≥ 0.001", otherwise "not accepted (no recorded reason)". Each derived reason ends with "(cutoff inferred: all accepted candidates have p < 0.001)"; the cutoff is inferred, not recorded.
 
+### Merge genome & re-call CN
+
+**Merge genome & re-call CN** (beside Run merge in the merge panel) applies the current Rule 0 and user rules to every chromosome, then re-calls copy number on the merged segmentation. It is an exploratory diagnostic: the original data and files are not changed. A status line shows the stages `merging → cluster CN → per-cell`, with per-cell progress as `done / total` cells, and ends with `done`; if a stage fails it shows `error:` with the stage name and the button is available again. The cluster-level result is ready first, so the per-cell karyogram fills in a little later (about a minute on the full dataset).
+
+Both karyograms get a **Karyogram mode** switch: **Before** (the original calls, always identical to the normal view), **After** (the re-called calls) and **Changed** (only bins whose call changed are drawn in colour). Below the panel, **CN re-call impact** lists, per chromosome, the merges, the bins changed and the call transitions, then the number of cells with any change and the median share of bins changed. Four exports are named by file: `merged_breakpoints.tsv`, `recalled_cluster_segments.tsv`, `recalled_percell_best_s.tsv` and `cn_change_summary.tsv`; each begins with `#` header lines holding the rules and provenance. Editing a rule afterwards shows "Rules changed since this re-call; showing the previous one." until you re-run it.
+
+Results are kept in memory only: the latest 3 re-calls are kept and all are lost on restart. Identical rules on the same data reuse the finished result.
+
 ## Recompute integration flank comparisons
 
 In **Integration · segmentation & CN**, use **Generate alternative flank view**. Choose chromosome/source and maximum internal-segment size, then compare arithmetic, median and two-sided IQR effects against both adjacent segments. Click a point or choose a segment to see its unsmoothed bin values and summaries.

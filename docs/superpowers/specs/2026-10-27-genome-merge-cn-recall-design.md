@@ -182,7 +182,7 @@ followed by the cluster hover's existing segment text from the after segmentatio
 
 **TypeScript helper suite:** the Changed-mode row builder (mask and colours) and the export TSV writers (header lines, columns).
 
-**Browser walkthrough:** extend `tests/browser_hatch_merge_walkthrough.cjs`. At τ 0.5 / ref 8 / `any`:
+**Browser walkthrough:** a separate `tests/browser_cn_recall_walkthrough.cjs` with the same harness as `tests/browser_hatch_merge_walkthrough.cjs`. At τ 0.5 / ref 8 / `any`:
 - start a genome re-call and wait for done;
 - check that After and Changed become enabled;
 - check that Changed draws at least one changed cluster bin;
