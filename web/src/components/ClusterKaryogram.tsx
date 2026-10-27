@@ -2,9 +2,10 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { CN_COLORS, CN_LABELS } from '../colors'
 import { MB } from '../coords'
 import { STORY_CN, STORY_CN_LABELS } from '../integration'
+import { UNCHANGED, karyoCode } from '../cnRecall'
 import { useStore } from '../store'
 
-export interface KaryoRow { label: string; band?: string; data: Uint8Array; sub?: string }
+export interface KaryoRow { label: string; band?: string; data: Uint8Array; sub?: string; before?: Uint8Array }
 interface Props {
   rows: KaryoRow[]; palette: 'story' | 'explorer'; rowHeight: 'fit' | number; maxHeight?: number; labelWidth?: number
   onClick?: (rowIndex: number, bin: number, chrom: string) => void
@@ -47,8 +48,8 @@ export default function ClusterKaryogram({ rows, palette, rowHeight, maxHeight =
       for (let py = 0; py < rowH; py++) {
         const off = ((pr * rowH + py) * plotW) * 4
         for (let px = 0; px < plotW; px++) {
-          const v = r.data[colBin[px]]; const o = off + px * 4
-          if (v === 255 || v === undefined) { d[o] = 230; d[o + 1] = 230; d[o + 2] = 230 } else { const c = pal[v]; d[o] = c[0]; d[o + 1] = c[1]; d[o + 2] = c[2] }
+          const b = colBin[px]; const v = karyoCode(r.data[b], r.before ? r.before[b] : undefined); const o = off + px * 4
+          if (v === 255 || v === undefined) { d[o] = 230; d[o + 1] = 230; d[o + 2] = 230 } else if (v === UNCHANGED) { d[o] = 241; d[o + 1] = 241; d[o + 2] = 241 } else { const c = pal[v]; d[o] = c[0]; d[o + 1] = c[1]; d[o + 2] = c[2] }
           d[o + 3] = 255
         }
       }
