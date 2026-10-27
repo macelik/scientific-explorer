@@ -117,7 +117,7 @@ export const useIntegration = create<IntegrationState>((set, get) => ({
     try { b = await fetchBase(wire) } catch (e: any) {
       if (get().baseSig !== sig) return
       const msg = String(e.message || e)
-      if (wire.length && /^round \d+: /.test(msg)) { get().setRounds([]); set({ roundsNotice: `Saved merge rounds could not be applied: ${msg}` }); return }
+      if (wire.length && (/^round \d+: /.test(msg) || e?.status === 422)) { get().setRounds([]); set({ roundsNotice: `Saved merge rounds could not be applied: ${msg}` }); return }
       set({ baseError: `segmentation base: ${msg}` }); return
     }
     if (get().baseSig !== sig) return
@@ -145,8 +145,9 @@ export const useIntegration = create<IntegrationState>((set, get) => ({
     const round: Round = { rules: st.settings.rules, allow_gap_crossing: st.settings.allow_gap_crossing, label: roundLabel(st.settings.rules as any[]),
       merges: (st.merge?.pairs ?? []).reduce((a, p) => a + p.merges, 0), noise: st.diff?.noise ?? null }
     const next = [...cur, round]
-    try { await pinRecallApi(st.id, wireRounds(next)) } catch (e: any) { set({ recallError: `adopt: ${e.message || e}` }); return }
-    const k = get().recallKaryo
+    const k = get().recall === st ? get().recallKaryo : null
+    try { await pinRecallApi(st.id, wireRounds(next)) } catch (e: any) { if (get().recall === st && sameRounds(get().rounds, cur)) set({ recallError: `adopt: ${e.message || e}` }); return }
+    if (get().recall !== st || !sameRounds(get().rounds, cur)) return
     set({ roundsNotice: null })
     get().setRounds(next)
     if (k) set({ baseKaryo: k })   // the adopted re-call's per-cell calls are the new base's

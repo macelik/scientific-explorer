@@ -51,6 +51,10 @@ eq(t.find((l) => l.startsWith('cluster2\tchr1\tcells\tsegments')), 'cluster2\tch
 eq(roundsFromSession({}), [], 'session without rounds')
 eq(roundsFromSession({ rounds: [round] }), [round], 'session with rounds')
 eq(roundsFromSession({ rounds: 'x' }), [], 'session with garbage rounds')
+const rs = roundsFromSession({ rounds: [null, { allow_gap_crossing: false }, { rules: [r0], allow_gap_crossing: 'no' }, { rules: [r0], allow_gap_crossing: true }, round] })
+eq(rs.length, 2, 'session rounds: invalid elements dropped')
+eq([rs[0].label, rs[0].merges, rs[0].noise], ['τ 0.5 · ref 8 · any', 0, null], 'session rounds: missing display fields filled')
+eq(rs[1], round, 'session rounds: complete round kept')
 eq(NOISE_DEFINITIONS.length, 4, 'four definitions')
 eq(NOISE_DEFINITIONS[1].startsWith('Zig-zag: an internal segment whose state differs from both neighbours'), true, 'zig-zag definition text')
 

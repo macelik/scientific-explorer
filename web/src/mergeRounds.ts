@@ -75,7 +75,10 @@ export function noiseTsv(cols: NoiseColumn[], sources: string[], header: string[
   }
   return tsv(header, ['source', 'chromosome', 'level', 'measure', ...cols.map((c) => c.name)], rows)
 }
-export const roundsFromSession = (p: any): Round[] => (Array.isArray(p?.rounds) ? p.rounds : [])
+export const roundsFromSession = (p: any): Round[] =>
+  (Array.isArray(p?.rounds) ? p.rounds : [])
+    .filter((r: any) => r && typeof r === 'object' && Array.isArray(r.rules) && typeof r.allow_gap_crossing === 'boolean')
+    .map((r: any) => ({ ...r, label: typeof r.label === 'string' ? r.label : roundLabel(r.rules), merges: typeof r.merges === 'number' ? r.merges : 0, noise: r.noise ?? null }))
 
 export const NOISE_DEFINITIONS = [
   'Calls are read per chromosome as the sequence of segment states. Segments with no call are skipped. Gain = state > 1 (weak gain included), loss = state < 1.',
@@ -86,7 +89,7 @@ export const NOISE_DEFINITIONS = [
 
 async function postJson<T>(url: string, body: unknown): Promise<T> {
   const r = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) })
-  if (!r.ok) { let msg = `${r.status}`; try { const b = await r.json(); msg = typeof b.detail === 'string' ? b.detail : JSON.stringify(b.detail ?? b) } catch { /* keep status */ } throw new Error(msg) }
+  if (!r.ok) { let msg = `${r.status}`; const status = r.status; try { const b = await r.json(); msg = typeof b.detail === 'string' ? b.detail : JSON.stringify(b.detail ?? b) } catch { /* keep status */ } throw Object.assign(new Error(msg), { status }) }
   return r.json() as Promise<T>
 }
 export const fetchBase = (rounds: WireRound[]) => postJson<BaseResponse>('/api/integration/base', { rounds })
