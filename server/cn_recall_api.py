@@ -71,7 +71,13 @@ class RecallManager:
             out = cr.run_recall(inp, rules, allow_gap_crossing, executor, update)
             update(_u8=out['percell_u8'], status='done', stage='done')
         except Exception as e:  # noqa: BLE001
-            update(status='error', error=str(e) if isinstance(e, cr.RecallError) else f'{type(e).__name__}: {e}')
+            if isinstance(e, cr.RecallError):
+                msg = str(e)
+            else:
+                with self.lock:
+                    stage = job['stage']
+                msg = f'{stage}: {type(e).__name__}: {e}'
+            update(status='error', error=msg)
         finally:
             with self.lock:
                 self.finished.append(jid)

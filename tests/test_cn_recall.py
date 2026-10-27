@@ -304,3 +304,11 @@ def test_recall_retention_evicts_oldest():
         _wait(c, ids[-1])
     assert c.get(f'/api/integration/recall/{ids[0]}').status_code == 404
     assert c.get(f'/api/integration/recall/{ids[2]}').status_code == 200
+
+
+def test_recall_unwrapped_exception_names_stage():
+    inp = synthetic_inputs()
+    inp.before_percell_u8 = np.zeros((12, 3), np.uint8)   # wrong width: raises a plain error in the unwrapped per-cell diff
+    c = _api(lambda: inp)
+    v = _wait(c, c.post('/api/integration/recall', json={'rules': NOOP}).json()['id'])
+    assert v['status'] == 'error' and v['error'].startswith('percell: ')
