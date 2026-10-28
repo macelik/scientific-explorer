@@ -77,15 +77,16 @@ HA, HB and AT are a source's pseudobulk sums for one bin.
 
 ### Scan
 
-- **A port of `recursive_scan` from `SNP_project/beta_revised/src/segmentation/wnn_bp_exp.py`,** behaving the same:
-  - At each node: compute `seq_dist_ad`.
-  - If the max-AD candidate breaks a size rule, record it as `rejected_constraint` and test the best valid candidate instead. If no valid candidate exists, stop the branch.
-  - Accept a candidate when p_local < alpha and p_global < alpha. Recurse into both children until depth k.
-- **Size rules:**
+- **A copy of the constrained `recursive_getbp`** from `SNP_project/beta_revised/src/pyEpiAneufinder/get_breakpoints.py` (with its `validate_candidate_geometry`). That is the function `run_bootstrap_diagnostics.py` used to write `raw_accepted_breakpoints.tsv` and `segmentation_candidate_audit.tsv`. It behaves the same:
+  - At each node, compute `seq_dist_ad` and rank the cuts by descending AD (ties: smaller bin first).
+  - Test the first geometry-valid candidate. If it fails p_local or p_global, the node stops: lower-ranked candidates are never retried.
+  - Recurse into both children until depth k. If no candidate is valid, record `no_valid_candidate`.
+  - Every examined candidate goes into the audit.
+- **Size rules, in kept bins:**
   - Both children must have at least `min_child_bins` kept bins.
-  - The breakpoint must be at least `min_terminal_bins` kept bins from the chromosome's first and last kept bins.
-- **The local permutation test** shuffles within the node. The global test draws from all of the source's kept bins genome-wide, matching the depth scan's use of the whole-genome pseudobulk.
-- **Statistics:** pyEpi's `seq_dist_ad`, `dist_ad`, `permutation_test_ad` and `global_permutation_test_ad`, called through `server/pyepi_adapter.py` with the default fixed `random_state`. Nothing statistical is re-implemented.
+  - A child touching the chromosome's first or last kept bin must reach at least `min_terminal_bins` kept bins from that end. Internal node edges are not constrained.
+- **Permutation tests:** the local test shuffles within the node. The global test draws from the same chromosome's kept bins, as the depth run did: it called `recursive_getbp(seq, seq, …)` per chromosome.
+- **Statistics:** pyEpi's `seq_dist_ad`, `permutation_test_ad` and `global_permutation_test_ad`, called through `server/pyepi_adapter.py` with their default `random_state` 42. Only the recursion and the geometry check are copied; nothing statistical is re-implemented.
 
 ### Settings and defaults
 
@@ -99,11 +100,12 @@ HA, HB and AT are a source's pseudobulk sums for one bin.
 | min_child_bins | 20 | 1–500 |
 | min_terminal_bins | 50 | 0–500 |
 
-The defaults are the depth run's settings, inferred from `segmentation_candidate_audit.tsv`. Section 7 checks them by reproducing the depth breakpoints.
+The defaults are the depth run's settings, from the arguments of `run_bootstrap_diagnostics.py`. Section 7 checks them by reproducing the depth breakpoints.
 
 ### Mapping back to the genome
 
-- A breakpoint between kept bins i and i+1 of a chromosome sits at the absolute bin of kept bin i+1. That is the first bin of the right child.
+- Bin positions are chromosome-local, matching the depth tables: `absolute_bin` in `raw_accepted_breakpoints.tsv` counts from the chromosome's first bin, despite its name.
+- A breakpoint between kept bins i and i+1 of a chromosome sits at the bin of kept bin i+1. That is the first bin of the right child.
 - If skipped bins lie between the two kept bins, the breakpoint also carries `gap_start` (the first skipped bin) and `gap_end` (kept bin i+1). It is drawn as a band.
 
 ### Job
@@ -121,7 +123,7 @@ The defaults are the depth run's settings, inferred from `segmentation_candidate
 - `settings` and `signal`;
 - when done, `result`:
   - `breakpoints`, one row per accepted breakpoint: source, chromosome, absolute_bin, bp_genomic_start, bp_genomic_end, gap_start, gap_end, recursion_depth, ad_score, p_local, p_global;
-  - `audit`, every candidate in the columns of `segmentation_candidate_audit.tsv`, with bin fields in absolute bins plus kept-bin indices;
+  - `audit`, every examined candidate in the columns of `segmentation_candidate_audit.tsv`. Its bin fields count kept bins; `bin` adds the chromosome-local bin of the cut;
   - `segments`, per source and chromosome: bin_start, bin_end, n_bins, kept_bins, mean, median, at_sum, ha_sum, hb_sum.
 
 **Other routes:**
@@ -205,7 +207,7 @@ Before any run, the allelic panel shows the dots only, with the hint "Run segmen
 ## 7. Testing
 
 - **Reproduction of the depth breakpoints, a validation script:**
-  - Run the ported scan on the depth pseudobulk (mean of `X` over each source's cells, as `wnn_bp_exp.py` does), with every bin kept, k = 6, 1000 permutations, alpha 0.001, min child 20 and min terminal 50.
+  - Run the copied scan on the depth pseudobulk (the mean of `X` over each source's cells, as `run_bootstrap_diagnostics.py` builds it), with every bin kept, k = 6, 1000 permutations, alpha 0.001, min child 20 and min terminal 50.
   - It must match `integration-story/data/raw_accepted_breakpoints.tsv` on the same (source, chromosome, absolute_bin) set, and on recursion_depth, p_local and p_global for each.
   - **If it does not match,** the defaults are wrong. Stop and report the differences before building the UI.
 - **Unit tests, synthetic, no real data:**
