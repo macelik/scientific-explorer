@@ -228,7 +228,15 @@ Before any run, the allelic panel shows the dots only, with the hint "Run segmen
 - **Browser walkthrough on the private 8799 server:** open the tab, see the tracks before a run, run |dBAF|, see the breakpoints and tables, switch to signed dBAF and run again, then switch the depth segments to original.
 - **Real-data record:** for each signal at the defaults, the allelic breakpoints per source and the table 1 counts genome-wide.
 
-## 8. Out of scope
+## 8. Depth segmentation with pyEpi's original global test (added 2026-10-28)
+
+The user asked to fix the depth module's global test to match original pyEpi: the pool is the whole genome, here each cluster pseudobulk's whole genome. They chose to replace the current depth breakpoints.
+- **Recompute:** the depth cluster breakpoints, with the same scan and settings, but with the global pool = the source's whole-genome pseudobulk.
+- **Write:** the new breakpoints, audit and derived CN tables to `integration-story/data/genome_pool/`. The originals stay untouched.
+- **Switch:** the app's defaults point at the new folder. Env vars switch back.
+- **Report:** old vs new breakpoints, recorded in `validation/depth-genome-pool/`.
+
+## 9. Out of scope
 
 - per-cell allelic scores, per-cell orientation, and CN labels with allelic support;
 - any combined depth + allelic segmentation or score;

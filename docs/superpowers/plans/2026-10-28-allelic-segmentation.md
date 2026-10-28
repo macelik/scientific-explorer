@@ -2261,3 +2261,106 @@ git commit -m "docs, test: allelic segmentation walkthrough, real-data record an
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 ```
+
+---
+
+### Task 7: Depth cluster segmentation with pyEpi's original global test (replaces the current depth breakpoints)
+
+**Decision (user, 2026-10-28):** "Replace the current one."
+
+The depth cluster breakpoints the app loads (`integration-story/data/raw_accepted_breakpoints.tsv`) were made by `run_bootstrap_diagnostics.py` with a per-chromosome global pool: `recursive_getbp(seq, seq, …)`. Original pyEpi passes the whole cell, `counts.X[i, :]` (`/home/mami/Desktop/EGA/pyEpiAneufinder/pyEpiAneufinder/pyEpiAneufinder.py`, `_process_recursive_bp_worker`). Its `global_permutation_test_ad` then draws `len_left + len_right` bins at random, without replacement, from that whole genome, splits them into two groups, computes AD, and repeats `n_permutations` times. No region is masked.
+
+This task recomputes the depth cluster segmentation the same way, with each cluster pseudobulk's whole genome as the pool, and makes the app use it. The original files are never modified or deleted. The new ones go into a new folder, and the config defaults switch to it.
+
+**Files:**
+- Create: `tools/segment_depth_genome_pool.py`
+- Create (by running): `../integration-story/data/genome_pool/raw_accepted_breakpoints.tsv` and `../integration-story/data/genome_pool/segmentation_candidate_audit.tsv`
+- Create (by running `make_karyograms.py`): `../integration-story/data/genome_pool/derived/{karyogram_cluster_segments.tsv, percell_best_s.tsv, percell_cn_states.npy}` and figures under `../integration-story/figures/genome_pool/`
+- Create: `validation/depth-genome-pool/README.md` and `validation/depth-genome-pool/comparison.json`
+- Modify: `server/config.py`:
+  - `cluster_breakpoints` and `derived_dir` defaults now point into `genome_pool/`;
+  - a new field `segmentation_audit` (default `genome_pool/segmentation_candidate_audit.tsv`, env `PYEPI_SCIENTIFIC_SEGMENTATION_AUDIT`).
+- Modify: `server/integration.py`. The candidate audit is read from `cfg.segmentation_audit` when that file exists, otherwise from `prototype_dir` as before.
+- Modify: `tests/validate_allelic_depth_reproduction.py`. Pin the reference to the original chromosome-pool file `<integration_dir>/data/raw_accepted_breakpoints.tsv` instead of `cfg.cluster_breakpoints`, which now points at the genome-pool file.
+- Modify the walkthrough expectations that change: `tests/browser_cn_recall_walkthrough.cjs`, `tests/browser_hatch_merge_walkthrough.cjs` and `tests/browser_allelic_walkthrough.cjs`. Only the numbers that depend on the depth breakpoints may change, and each change is recorded in the README.
+- Modify: `README.md`, `docs/USAGE.md`, `docs/SCIENTIFIC_WORKFLOW.md`, `docs/ARCHITECTURE.md`. State which depth segmentation the app uses, how it was made, and how to switch back.
+
+**Interfaces:**
+- Consumes:
+  - Task 1's `allelic_scan.scan_task(task)` with the 9-tuple `(source, chrom, values, kept, ha, hb, settings, package_dir, pool)`.
+  - `allelic_scan.DEFAULTS` (k 6, 1000 permutations, alpha 0.001, min child 20, min terminal 50).
+- Produces:
+  - The genome-pool breakpoints file, with the same columns as the original: `source, chromosome, absolute_bin (chromosome-local), bp_genomic_start, bp_genomic_end, recursion_depth, ad_score, p_local, p_global, n_cells`.
+  - The audit, with the original audit's columns.
+  - The derived tables in the layout `make_karyograms.py` writes.
+
+- [ ] **Step 1: Write the tool**
+
+`tools/segment_depth_genome_pool.py` builds the pseudobulks exactly as `tests/validate_allelic_depth_reproduction.py` does, by reusing that script's loading code. Factor the shared part into a function in the gate script, or import it, rather than copying it. Then:
+- **Tasks:** one per (source, chromosome): `(source, chrom, x_pb[chrom bins], all-kept mask, None, None, DEFAULTS, package_dir, pool=x_pb)`, where `pool` is the source's whole-genome pseudobulk (all 25,337 bins).
+- **Execution:** a spawn `ProcessPoolExecutor`, as in the gate script.
+- **Breakpoints:** the original columns in the original row order (sources in `cluster0..cluster4, all` order, chromosomes in genome order, bins ascending). `bp_genomic_start`/`bp_genomic_end` come from `var.start`/`var.end` at the breakpoint bin, and `n_cells` is the source size.
+- **Audit:** the scan's audit rows with `source`, `chromosome`, `bp_genomic_start` and `bp_genomic_end` filled in, in the original audit's columns.
+- **Run record:** settings, pool `"genome (original pyEpi)"`, runtime and counts, as `genome_pool/run.json`.
+- **Arguments:** `--out-dir`, default `<integration_dir>/data/genome_pool`. Refuse to write into `<integration_dir>/data` itself, so the originals can never be overwritten.
+
+- [ ] **Step 2: Run it on real data, then regenerate the derived tables**
+
+```bash
+python3 tools/segment_depth_genome_pool.py
+cd ../integration-story && python3 scripts/make_karyograms.py --breakpoints data/genome_pool/raw_accepted_breakpoints.tsv --derived-dir data/genome_pool/derived --output-dir figures/genome_pool && cd -
+```
+
+Expected:
+- the new TSV is written;
+- `make_karyograms.py` writes the three derived files;
+- `ls -la ../integration-story/data/raw_accepted_breakpoints.tsv ../integration-story/data/derived/` shows the originals with their old modification times.
+
+- [ ] **Step 3: Write the comparison record**
+
+Write `validation/depth-genome-pool/comparison.json` and `README.md`:
+- breakpoints per source, old (chromosome pool) vs new (genome pool);
+- shared breakpoints (same source, chromosome and bin), old-only and new-only, per source and in total;
+- the 10 chromosomes with the largest change;
+- the median p_global of shared breakpoints, old vs new.
+
+State plainly what changed; this is a finding, not a pass/fail.
+
+- [ ] **Step 4: Switch the app's defaults**
+
+In `server/config.py`:
+- `cluster_breakpoints` default: `os.path.join(integration_dir, "data", "genome_pool", "raw_accepted_breakpoints.tsv")`;
+- `derived_dir` default: `os.path.join(integration_dir, "data", "genome_pool", "derived")`;
+- add `segmentation_audit` with default `os.path.join(integration_dir, "data", "genome_pool", "segmentation_candidate_audit.tsv")`;
+- keep the existing env overrides (`PYEPI_SCIENTIFIC_CLUSTER_BREAKPOINTS`, `PYEPI_SCIENTIFIC_DERIVED`) working, so setting them to the original paths switches back.
+
+In `server/integration.py`, read the audit from `cfg.segmentation_audit` when that file exists, falling back to `prototype_dir`. Pin the gate script's reference path as listed under Files. Run `python3 -m pytest -q`. Fix only what the switch itself breaks, and say in the report which tests read real data and why they changed.
+
+- [ ] **Step 5: Re-run the walkthroughs on a private server and update the depth-dependent numbers**
+
+On `python3 run.py --port 8799` (never 8766), run in this order:
+1. `tests/browser_hatch_merge_walkthrough.cjs`;
+2. `tests/browser_cn_recall_walkthrough.cjs`;
+3. `tests/browser_allelic_walkthrough.cjs`;
+4. the Task 6 per-signal record command, rewriting `validation/allelic/signals.json`.
+
+Where an assertion fails only because a depth-derived number changed, update that number and list the old and new value in `validation/depth-genome-pool/README.md`. Any other failure is a real problem: report it, don't paper over it. Commit the regenerated validation records. Stop only the 8799 process.
+
+- [ ] **Step 6: Docs**
+
+Say in the docs which depth segmentation the app uses, how it was made (genome-wide global pool, as original pyEpi), and where the originals are. Give the env vars that switch back:
+- `PYEPI_SCIENTIFIC_CLUSTER_BREAKPOINTS=<integration_dir>/data/raw_accepted_breakpoints.tsv`
+- `PYEPI_SCIENTIFIC_DERIVED=<integration_dir>/data/derived`
+- `PYEPI_SCIENTIFIC_SEGMENTATION_AUDIT=<prototype_dir>/segmentation_candidate_audit.tsv`
+
+Also say that the alternative flank view and the archived merge-prototype tables still describe the original segmentation.
+
+- [ ] **Step 7: Commit**
+
+Stage by name: the tool, the config and integration changes, the gate pin, the walkthrough number updates, `validation/depth-genome-pool/*`, the regenerated `validation/*` records and the docs. The data files under `../integration-story` are outside this repository and are not committed.
+
+```bash
+git commit -m "feat: depth cluster segmentation with pyEpi's genome-wide global test; app defaults switch to it
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+```
