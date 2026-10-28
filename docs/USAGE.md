@@ -132,6 +132,48 @@ The alternative flank view and the archived merge-prototype tables stay on the o
 
 Rounds are saved with the session. After a server restart the base's per-cell calls are recomputed on first use (about 60 s); the rounds themselves are not lost.
 
+## Allelic segmentation
+
+**Integration · allelic segmentation** runs the same recursive Anderson-Darling scan that produced the depth breakpoints on a per-cluster allelic pseudobulk signal, then compares the result with the depth segmentation. It is exploratory: plain counts and per-segment summaries, with no combined score.
+
+**Data.** The tab reads `HA.parquet`, `HB.parquet` and `AT.parquet` from `<EGA>/haplotype_aware_cnv/hapcnv_outs_from_updated_phasing/aligned_matrices/`. Set `PYEPI_SCIENTIFIC_ALLELIC` to use another folder. If the folder is missing, or its bins, barcodes or AT = HA + HB check do not match the app's data, the tab is disabled and its status lists the problem; nothing else in the app changes. The older `hapcnv_outs` sets (18,738 bins) are not supported.
+
+**Signals.** HA, HB and AT are a source's pseudobulk sums (over the source's cells) for one bin.
+
+| Signal | Formula |
+|---|---|
+| signed dBAF (`dbaf`) | (HB − HA) / (2·AT) |
+| \|dBAF\| (`abs_dbaf`, default) | \|HB − HA\| / (2·AT) |
+| shrunk \|dBAF\| (`shrunk_abs_dbaf`) | \|HB − HA\| / (2·(AT + 2)) |
+| oriented to all cells (`oriented_all`) | sign(ΣHB_all − ΣHA_all) · (HB − HA) / (2·AT) |
+
+**min AT and kept bins.** A bin is kept when AT ≥ min AT (default 10). For `oriented_all` the all-cells HA and HB must also differ. Skipped bins never enter the scan and are never imputed; they show as small grey ticks on the x axis. A breakpoint between two kept bins with skipped bins between them is drawn as a shaded band (a gap breakpoint).
+
+**AD settings** (collapsed group; defaults are the depth run's): k 6, permutations 1000, alpha 0.001, min child 20 kept bins, min from chromosome end 50 kept bins, global pool genome.
+
+**Global test pool.** The global permutation test draws random segment pairs from a pool. `genome` (default) uses all of the source's kept bins genome-wide, which is how original pyEpi applies it. `chromosome` uses the chromosome's own kept bins, which is how the depth breakpoints in `raw_accepted_breakpoints.tsv` were made. The two pools give different p-values, so the pool alone can make depth and allelic breakpoints disagree; keep this in mind when reading the comparison. The tab shows a note under the settings.
+
+**Run segmentation.** One background job runs per signal and settings over every source and chromosome (one at a time; a new request waits, a later one replaces the waiting one) and shows `running · cluster2 · chr8 · 74/132`. Repeats of a finished job return at once from `cache/allelic/`. Before a run the tracks show the allelic dots only, with the hint "Run segmentation to see allelic segments." If you change the signal or settings after a run, the segments stay and the note "Segments shown are from an earlier run (signal …, settings …). Run again to update." appears.
+
+**Tracks.** For each checked source, a depth panel (pseudobulk with depth segments coloured by CN call) sits above an allelic panel (one dot per kept bin, opacity scaled by AT; allelic segment means as horizontal lines; allelic breakpoints as solid vertical lines; depth breakpoints as faint dashed lines). The y range is −0.5 to 0.5 for the signed signals and 0 to 0.5 otherwise.
+
+**Depth segments: current round / original.** *Current round* (default) uses the merge-rounds base; *original* uses the on-disk breakpoints and cluster segments.
+
+**Depth vs allelic segments.** Three tables under the tracks, which need a finished run. The matching distance N (default 3 bins) is a number field. A scope switch (this chromosome / genome-wide) applies to table 1 only; tables 2 and 3 cover the chosen chromosome.
+1. *Breakpoint agreement*: per source, depth bps, allelic bps, matched, depth only, allelic only, median offset.
+2. *Depth segments seen by the allelic signal*: per depth segment, kept bins, mean and sd of the allelic signal, allelic bps inside.
+3. *Allelic segments seen by depth*: per allelic segment, kept bins, mean signal, depth calls spanned (for example "1.0: 80% · 1.5: 20%").
+
+Definitions, as shown under the tables:
+
+- Matching is one-to-one, nearest first: all depth–allelic pairs within N bins are sorted by distance and accepted greedily, skipping any breakpoint already matched; ties go to the lower depth bin.
+- An allelic breakpoint inside a gap of skipped bins is at distance 0 from any bin of that gap; outside it, the distance is to the nearer gap edge.
+- Distances count genomic bins, not kept bins. Median offset is taken over matched pairs.
+- Depth segments: kept bins have AT ≥ min AT; mean and sd (population) of the allelic signal over kept bins; "allelic bps inside" counts allelic breakpoints more than N bins from both segment edges.
+- Allelic segments: each depth CN call with its share of the segment's bins, largest first.
+
+**Export.** `allelic_vs_depth.tsv` holds a header (signal, settings, N, depth segments source, table 1 scope) and the three tables.
+
 ## Recompute integration flank comparisons
 
 In **Integration · segmentation & CN**, use **Generate alternative flank view**. Choose chromosome/source and maximum internal-segment size, then compare arithmetic, median and two-sided IQR effects against both adjacent segments. Click a point or choose a segment to see its unsmoothed bin values and summaries.

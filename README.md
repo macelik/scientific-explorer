@@ -55,6 +55,7 @@ worked examples of this loop in this repository.
 - **X experiments** — original-vs-edited data, empirical state simulations, region extension/duplication, width series, event-edge tests, four CN comparisons.
 - **Integration · clusters** — multimodal WNN/depth/allelic UMAPs with linked selection and per-cell inspection.
 - **Integration · segmentation & CN** — cluster-level and per-cell karyograms, configurable chromosome tracks, an on-demand alternative flank view and paired-cell bootstrap, and live-score tracks (any chromosome) hatched by Rule 0, user-defined merge rules with per-rule hatching, and an exploratory adjacent-segment merge. A genome-wide **Merge genome & re-call CN** button re-calls copy number on the merged segmentation and compares it on the karyograms (Before · After · Changed) with an impact summary and TSV exports; results are held in memory only.
+- **Integration · allelic segmentation** — runs the depth Anderson-Darling scan on a per-cluster allelic pseudobulk signal (|dBAF|, signed dBAF, shrunk |dBAF| or dBAF oriented to all cells), draws the allelic tracks and segments under the depth tracks, and compares breakpoints and segments with the depth ones in three tables (`allelic_vs_depth.tsv` export).
 - **Merge rounds** — adopt a re-call as a merge round; section 2 then works on the merged segmentation; undo or go back to the original; call-noise table by round.
 
 See [docs/USAGE.md](docs/USAGE.md) for the full operational detail.

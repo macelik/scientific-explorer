@@ -1,0 +1,121 @@
+{
+ "panels": 10,
+ "runSeconds": 0,
+ "chr8": [
+  [
+   "cluster0",
+   "6",
+   "1",
+   "0",
+   "6",
+   "1",
+   "N/A"
+  ],
+  [
+   "cluster1",
+   "6",
+   "1",
+   "0",
+   "6",
+   "1",
+   "N/A"
+  ],
+  [
+   "cluster2",
+   "7",
+   "1",
+   "0",
+   "7",
+   "1",
+   "N/A"
+  ],
+  [
+   "cluster3",
+   "6",
+   "1",
+   "0",
+   "6",
+   "1",
+   "N/A"
+  ],
+  [
+   "cluster4",
+   "10",
+   "1",
+   "1",
+   "9",
+   "0",
+   "0.0"
+  ]
+ ],
+ "genome": [
+  [
+   "cluster0",
+   "133",
+   "7",
+   "1",
+   "132",
+   "6",
+   "0.0"
+  ],
+  [
+   "cluster1",
+   "143",
+   "8",
+   "1",
+   "142",
+   "7",
+   "1.0"
+  ],
+  [
+   "cluster2",
+   "122",
+   "8",
+   "2",
+   "120",
+   "6",
+   "1.0"
+  ],
+  [
+   "cluster3",
+   "164",
+   "11",
+   "1",
+   "163",
+   "10",
+   "1.0"
+  ],
+  [
+   "cluster4",
+   "116",
+   "4",
+   "2",
+   "114",
+   "2",
+   "0.5"
+  ]
+ ],
+ "shapesAbs": {
+  "other": 40,
+  "depth breakpoint": 35,
+  "depth breakpoint (echo)": 35,
+  "allelic segment mean": 10,
+  "allelic breakpoint": 4,
+  "allelic gap breakpoint": 1
+ },
+ "tsvHead": [
+  "# signal: abs_dbaf (|dBAF|)",
+  "# settings: {\"min_at\":10,\"k\":6,\"n_permutations\":1000,\"alpha\":0.001,\"min_child_bins\":20,\"min_terminal_bins\":50,\"global_pool\":\"genome\"}",
+  "# match N: 3 bins",
+  "# depth segments: current round (0 merge rounds)",
+  "# table 1 scope: genome-wide",
+  "# table 1: breakpoint agreement",
+  "source\tdepth_bps\tallelic_bps\tmatched\tdepth_only\tallelic_only\tmedian_offset",
+  "cluster0\t133\t7\t1\t132\t6\t0"
+ ],
+ "yRangeSigned": [
+  -0.5,
+  0.5
+ ],
+ "errors": []
+}

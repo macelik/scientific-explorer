@@ -12,7 +12,7 @@ Three kinds of tests live here:
 ## Files
 
 - `test_experiments.py`, `test_segment_estimators.py`, `test_jobs.py`,
-  `test_hatch_merge.py`, `test_merge_rules.py`, `test_merge_rounds.py`, `test_call_noise.py`, `test_merge_rounds_api.py`, `test_integration_review.py` — pytest unit/route
+  `test_hatch_merge.py`, `test_merge_rules.py`, `test_merge_rounds.py`, `test_call_noise.py`, `test_merge_rounds_api.py`, `test_integration_review.py`, `test_allelic_scan.py`, `test_allelic_data.py`, `test_allelic_api.py` — pytest unit/route
   tests.
 - `validate.py`, `validate_integration_review.py` — standalone API
   validation scripts (run against a live server).
@@ -27,6 +27,11 @@ Three kinds of tests live here:
   `web/node_modules/.bin/esbuild tests/merge_rounds_helpers.ts --bundle --format=esm --platform=node --outfile=tests/_bundle/merge_rounds_helpers.mjs && node tests/_bundle/merge_rounds_helpers.mjs`
   and for the re-call helpers:
   `web/node_modules/.bin/esbuild tests/cn_recall_helpers.ts --bundle --format=esm --platform=node --outfile=tests/_bundle/cn_recall_helpers.mjs && node tests/_bundle/cn_recall_helpers.mjs`
+- `allelic_helpers.ts` (signals, matching, comparison tables, TSV, session restore) and `allelic_store.ts` (store actions and job handling) are bundled the same way:
+  `web/node_modules/.bin/esbuild tests/allelic_helpers.ts --bundle --format=esm --platform=node --outfile=tests/_bundle/allelic_helpers.mjs && node tests/_bundle/allelic_helpers.mjs`
+  `web/node_modules/.bin/esbuild tests/allelic_store.ts --bundle --format=esm --platform=node --outfile=tests/_bundle/allelic_store.mjs && node tests/_bundle/allelic_store.mjs`
+- `validate_allelic_depth_reproduction.py` — reproduces `raw_accepted_breakpoints.tsv` with the copied recursion and the chromosome global pool (standalone; writes `validation/allelic/depth_reproduction.json`, 814/814 reproduced).
+- `browser_allelic_walkthrough.cjs` — allelic tab walkthrough (tracks before a run, |dBAF| run, tables, signal switch, depth "original"); needs a free port such as a private `python3 run.py --port 8799` with `BASE_URL=http://127.0.0.1:8799`, and writes `validation/allelic/`.
 - `compare_archived_live.py` — compares the archived flank/screening tables
   with live `hatch-scores` on the pilot chromosomes (needs a running server;
   set `BASE_URL`, e.g. `BASE_URL=http://127.0.0.1:8766 python3 tests/compare_archived_live.py`).
