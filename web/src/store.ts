@@ -10,7 +10,7 @@ import type {
   NodeData, Selection, Snapshot, SnapshotWindow, TestState, SegmentEstimator,
 } from './types'
 
-export type Tab = 'cohort' | 'explore' | 'manual' | 'experiment' | 'clusters' | 'clusterseg'
+export type Tab = 'cohort' | 'explore' | 'manual' | 'experiment' | 'clusters' | 'clusterseg' | 'allelicseg'
 export type Mode = 'navigate' | 'select' | 'place'
 export type OrderMode = 'clustered' | 'cov_asc' | 'cov_desc' | 'original'
 

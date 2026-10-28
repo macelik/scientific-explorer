@@ -42,3 +42,9 @@ body.presentation .integ .lead { font-size: 13px; }
 .round-current { font-weight:600 }
 .noise-table { margin-top: .75rem }
 .sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap }
+
+/* allelic segmentation tab */
+.allelic-view .allelic-ad-settings { margin: 6px 0; }
+.allelic-view .allelic-ad-settings summary { cursor: pointer; font-size: 12px; color: #374151; }
+.allelic-view .chk { display: inline-flex; align-items: center; gap: 4px; }
+.allelic-compare h4 { margin: 12px 0 4px; font-size: 12px; }
