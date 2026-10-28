@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { api } from './api'
 import { useExperimentStore } from './experimentStore'
 import { useIntegration } from './integrationStore'
+import { useAllelic } from './allelicStore'
 import { clampWindow } from './coords'
 import { windowColor } from './colors'
 import type {
@@ -424,6 +425,7 @@ export const useStore = create<State>((set, get) => ({
     return {
       experiments: useExperimentStore.getState().entries,
       integration: useIntegration.getState().serialize(),
+      allelic: useAllelic.getState().serialize(),
       tab: s.tab, cell: s.cell, chrom: s.chrom, filters: s.filters, rules: s.rules, display: s.display, karyoView: s.karyoView,
       selections: s.selections, snapshots: s.snapshots, savedWindows: s.savedWindows, focus: s.focus, compareView: s.compareView, compareCoords: s.compareCoords,
       manual, scientific: s.meta ? { n_permutations: s.meta.defaults.n_permutations, seed: s.meta.defaults.seed, alpha: s.meta.defaults.alpha, k_production: s.meta.defaults.production_k } : null,
@@ -441,6 +443,7 @@ export const useStore = create<State>((set, get) => ({
     }
     useExperimentStore.getState().restore(p.experiments || {})
     useIntegration.getState().restore(p.integration)
+    useAllelic.getState().restore(p.allelic)
     set({
       filters: { ...defaultFilters, ...(p.filters || {}) }, rules: p.rules || s.rules, display: { ...defaultDisplay, ...(p.display || {}) }, karyoView: p.karyoView ?? null,
       selections: p.selections || [], snapshots: p.snapshots || [], savedWindows: p.savedWindows || [], focus: p.focus ?? null,
