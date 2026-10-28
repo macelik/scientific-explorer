@@ -28,7 +28,7 @@ This is a finding, not a pass/fail: the genome pool moves a small share of break
 
 - `python3 -m pytest -q`: 245 passed. One test stub (`test_cache_identity_changes_with_depth_and_manifest`) needed the new `segmentation_audit` config field; nothing else changed.
 - Depth reproduction gate (pinned to the original file): 814 reference, 814 reproduced, 0 missing, 0 extra, 0 mismatched.
-- `browser_hatch_merge_walkthrough.cjs`, `browser_cn_recall_walkthrough.cjs` and `browser_allelic_walkthrough.cjs` all PASS on a private server (port 8799) with **no assertion edited**: their assertions compare against values computed in the page, not fixed depth counts. The recorded numbers in the output JSONs did change with the segmentation:
+- `browser_hatch_merge_walkthrough.cjs`, `browser_cn_recall_walkthrough.cjs` and `browser_allelic_walkthrough.cjs` all PASS on a private server (port 8799) with **no assertion edited**: their assertions compare against values computed in the page, not fixed depth counts. The recorded numbers did change with the segmentation. The genome-pool runs of the hatch-merge and cn-recall walkthroughs are kept in [`walkthroughs/`](walkthroughs/) (JSON and screenshot). The archived records in `validation/hatch-merge/` and `validation/cn-recall/` were restored to their chromosome-pool versions, because archived validation records are not rewritten (see AGENTS.md). Old (archived) → new (`walkthroughs/`):
 
 | Record | Value | Old | New |
 |---|---|---|---|
