@@ -124,7 +124,7 @@ class IntegrationStore:
 
     def _identity(self) -> dict:
         files = []
-        paths = [self.h5mu_path, self.h5ad_path, self.cfg.cluster_breakpoints]
+        paths = [self.h5mu_path, self.h5ad_path, self.cfg.cluster_breakpoints, self.cfg.segmentation_audit]
         for folder in [self.cfg.derived_dir, self.cfg.prototype_dir]:
             paths.extend(str(p) for p in sorted(Path(folder).glob('*')) if p.suffix in ('.tsv', '.json', '.npy'))
         for p in dict.fromkeys(paths):
@@ -206,7 +206,9 @@ class IntegrationStore:
                 self.tables[name] = pd.read_csv(p, sep="\t")
             else:
                 self.notes.append(f"prototype table not available: {name}")
-        audit = os.path.join(self.cfg.prototype_dir, "segmentation_candidate_audit.tsv")
+        audit = self.cfg.segmentation_audit
+        if not (audit and os.path.exists(audit)):
+            audit = os.path.join(self.cfg.prototype_dir, "segmentation_candidate_audit.tsv")
         self._audit_path = audit if os.path.exists(audit) else None
         self._audit: Optional[pd.DataFrame] = None
         if "percell_best_s" in self.tables:

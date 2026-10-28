@@ -1,38 +1,38 @@
 {
-  "generated_at": "2026-10-27T18:01:58.825Z",
+  "generated_at": "2026-10-28T20:05:13.019Z",
   "visHeading": 1,
-  "shapesBaseline": 65,
-  "shapesWithRule": 335,
+  "shapesBaseline": 90,
+  "shapesWithRule": 432,
   "runEnabledWithRule0Only": true,
-  "r0High": 13,
+  "r0High": 14,
   "r0Low": 0,
-  "wmOff": 13,
-  "hbOff": 2,
-  "wmOn": 15,
+  "wmOff": 14,
+  "hbOff": 5,
+  "wmOn": 19,
   "hbOn": 0,
   "swOffOff": {
-    "wm": 13,
-    "hb": 2,
+    "wm": 14,
+    "hb": 5,
     "gap": 0,
-    "tot": 13,
+    "tot": 14,
     "mergesLast": null,
     "signsOnly": 0,
     "signsMergeBlocked": 0,
-    "text": "×Rule 0 would merge now: 13 · | ⚠ held back: 2 · | signs disagree only: 0",
+    "text": "×Rule 0 would merge now: 14 · | ⚠ held back: 5 · | signs disagree only: 0",
     "reasons": {
-      "signs": 2,
+      "signs": 5,
       "other": 0
     }
   },
   "swSignOnly": {
-    "wm": 15,
+    "wm": 19,
     "hb": 0,
     "gap": 0,
-    "tot": 15,
+    "tot": 19,
     "mergesLast": null,
     "signsOnly": 0,
     "signsMergeBlocked": 0,
-    "text": "×Rule 0 would merge now: 15 · signs disagree: 2 · | ⚠ held back: 0 · | signs disagree only: 0",
+    "text": "×Rule 0 would merge now: 19 · signs disagree: 5 · | ⚠ held back: 0 · | signs disagree only: 0",
     "reasons": {
       "signs": 0,
       "other": 0
@@ -52,11 +52,11 @@
   ],
   "gapChrom": "chr3",
   "gapCounts": {
-    "small": 4,
+    "small": 3,
     "gap": 1
   },
   "gapCountsChr8": {
-    "small": 15,
+    "small": 19,
     "gap": 0
   },
   "gapScan": {
@@ -69,7 +69,7 @@
       "gap": 0
     },
     "chr3": {
-      "small": 4,
+      "small": 3,
       "gap": 1
     }
   },
@@ -84,21 +84,21 @@
     "gap": 0,
     "tot": 0,
     "mergesLast": null,
-    "signsOnly": 12,
+    "signsOnly": 13,
     "signsMergeBlocked": 0,
-    "text": "×Rule 0 would merge now: 0 · | ⚠ held back: 0 · | signs disagree only: 12"
+    "text": "×Rule 0 would merge now: 0 · | ⚠ held back: 0 · | signs disagree only: 13"
   },
   "signsOnlyAfter": {
     "wm": 0,
     "hb": 0,
     "gap": 0,
     "tot": 0,
-    "mergesLast": 12,
+    "mergesLast": 13,
     "signsOnly": null,
     "signsMergeBlocked": 0,
-    "text": "×Rule 0 would merge now: 0 · | ⚠ held back: 0 · × signs disagree, fails Rule 0, merges last: 12"
+    "text": "×Rule 0 would merge now: 0 · | ⚠ held back: 0 · × signs disagree, fails Rule 0, merges last: 13"
   },
-  "r0StatusWithOption": "→ would merge now: 0 segment(s) on chr7 across the displayed rows · merges last: 12",
+  "r0StatusWithOption": "→ would merge now: 0 segment(s) on chr7 across the displayed rows · merges last: 13",
   "phase2Chrom": "chr7",
   "phase2Steps": 2,
   "phases": [
@@ -157,10 +157,6 @@
       },
       {
         "start": 1369,
-        "end": 1392
-      },
-      {
-        "start": 1392,
         "end": 1495
       }
     ],
@@ -177,8 +173,8 @@
     "rule_name": "Rule 0 — shown on the tracks · signs disagree, fails Rule 0",
     "phase": 2,
     "side": "left",
-    "score": 0.9682717597706297,
-    "phi": 1.2538944657419901
+    "score": 0.9608929325125234,
+    "phi": 1.2732260584085529
   },
   "copyCombineVisible": true,
   "copyName": "Rule 0 copy",
@@ -196,19 +192,19 @@
   ],
   "invalidR0Status": "τ must be a positive number",
   "runDisabledWhenR0Invalid": true,
-  "chr3SmallSegments": 4,
+  "chr3SmallSegments": 3,
   "auditDerivedReason": true,
-  "rule0HistoryRows": 2,
+  "rule0HistoryRows": 3,
   "rule0FirstRuleCell": "Rule 0 — shown on the tracks",
   "colourByAfterLegacy": "delta_mean",
   "signsLayerAfterLegacy": false,
-  "flagsHigh": 30,
+  "flagsHigh": 36,
   "flagsLow": 0,
   "emptyThresholdProblem": true,
   "runDisabledWhenIncomplete": true,
   "legendHasBothRules": true,
   "rule1NameAfterMove": "flank signs disagree",
-  "summaryText": "cluster0 chr8: 7 original segments → 4 after 3 merge(s). Rules: Rule 0: all of: min |Δlog2FC mean| flank < 0.2, min |SRD/√φ| flank < 3.3 · segments ≤ 100 bins · signs disagree: held back · fails Rule 0 with signs disagreeing: not merged | flank signs disagree: SRD/√φ flank signs disagree | weak SRD/√φ flank: weaker flank |SRD/√φ| < 3.3.",
+  "summaryText": "cluster0 chr8: 8 original segments → 4 after 4 merge(s). Rules: Rule 0: all of: min |Δlog2FC mean| flank < 0.2, min |SRD/√φ| flank < 3.3 · segments ≤ 100 bins · signs disagree: held back · fails Rule 0 with signs disagreeing: not merged | flank signs disagree: SRD/√φ flank signs disagree | weak SRD/√φ flank: weaker flank |SRD/√φ| < 3.3.",
   "headers": [
     "step",
     "source",
@@ -222,9 +218,9 @@
     "score",
     "φ"
   ],
-  "historyRows": 3,
+  "historyRows": 4,
   "firstRuleCell": "flank signs disagree",
-  "staleText": "Settings changed; showing the previous run. cluster0 chr8: 7 original segments → 4 after 3 merge(s). Rules: Rule 0: all of: min |Δlog2FC mean| flank < 0.2, min |SRD/√φ| flank < 3.3 · segments ≤ 100 bins · signs disagree: held back · fails Rule 0 with signs disagreeing: not merged | flank signs disagree: SRD/√φ flank signs disagree | weak SRD/√φ flank: weaker flank |SRD/√φ| < 3.3.",
+  "staleText": "Settings changed; showing the previous run. cluster0 chr8: 8 original segments → 4 after 4 merge(s). Rules: Rule 0: all of: min |Δlog2FC mean| flank < 0.2, min |SRD/√φ| flank < 3.3 · segments ≤ 100 bins · signs disagree: held back · fails Rule 0 with signs disagreeing: not merged | flank signs disagree: SRD/√φ flank signs disagree | weak SRD/√φ flank: weaker flank |SRD/√φ| < 3.3.",
   "enabledBeforeRestore": false,
   "enabledAfterRestore": true,
   "rulesAfterRestore": 2,

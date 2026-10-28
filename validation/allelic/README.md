@@ -1,10 +1,12 @@
 # Allelic segmentation: validation record (2026-10-28)
 
+Updated after the app's depth breakpoints switched to the genome-pool segmentation (see `../depth-genome-pool/README.md`). Sections 2 and 4 now show the genome-pool depth counts; the allelic counts and section 3 are unchanged. Section 1 still checks the copied recursion against the original chromosome-pool file.
+
 What was measured on the real data for the "Integration · allelic segmentation" tab. Nothing here is interpreted beyond the numbers.
 
 ## 1. Depth reproduction gate
 
-`tests/validate_allelic_depth_reproduction.py` runs the copied constrained `recursive_getbp` on the depth tracks with the **chromosome** global pool (how `raw_accepted_breakpoints.tsv` was made) and compares with that file. Result in `depth_reproduction.json`:
+`tests/validate_allelic_depth_reproduction.py` runs the copied constrained `recursive_getbp` on the depth tracks with the **chromosome** global pool (how `raw_accepted_breakpoints.tsv` was made) and compares with that original file (`integration-story/data/raw_accepted_breakpoints.tsv`, pinned in the script; the app now loads the genome-pool file instead). Result in `depth_reproduction.json`:
 
 | Reference breakpoints | Reproduced | Missing | Extra | Mismatched | Seconds |
 |---|---|---|---|---|---|
@@ -35,7 +37,7 @@ Each signal run at default settings (min AT 10, k 6, 1000 permutations, alpha 0.
 | `shrunk_abs_dbaf` | 6 | 8 | 7 | 9 | 4 | 12 | 46 | 9 | 14 |
 | `oriented_all` | 6 | 5 | 6 | 5 | 6 | 18 | 46 | 12 | 14 |
 
-Every signal finds only a handful of breakpoints per source across the whole genome (4 to 18). For comparison, the depth tracks carry 114 to 164 breakpoints per cluster. The `abs_dbaf` job was served from the cache (see section 2), so its seconds are not a compute time.
+Every signal finds only a handful of breakpoints per source across the whole genome (4 to 18). For comparison, the depth tracks carry 117 to 156 breakpoints per cluster (genome-pool segmentation). The `abs_dbaf` job was served from the cache (see section 2), so its seconds are not a compute time.
 
 ## 4. Table 1 for |dBAF|, genome-wide
 
@@ -43,17 +45,17 @@ From `allelic_check_results.json` (`genome`), depth segments "current round" wit
 
 | Source | Depth bps | Allelic bps | Matched | Depth only | Allelic only | Median offset |
 |---|---|---|---|---|---|---|
-| cluster0 | 133 | 7 | 1 | 132 | 6 | 0.0 |
+| cluster0 | 137 | 7 | 1 | 136 | 6 | 0.0 |
 | cluster1 | 143 | 8 | 1 | 142 | 7 | 1.0 |
-| cluster2 | 122 | 8 | 2 | 120 | 6 | 1.0 |
-| cluster3 | 164 | 11 | 1 | 163 | 10 | 1.0 |
-| cluster4 | 116 | 4 | 2 | 114 | 2 | 0.5 |
+| cluster2 | 128 | 8 | 2 | 126 | 6 | 1.0 |
+| cluster3 | 156 | 11 | 1 | 155 | 10 | 1.0 |
+| cluster4 | 117 | 4 | 2 | 115 | 2 | 0.5 |
 
-The same table for chr8 only (`chr8` in the JSON) had 6 to 10 depth breakpoints and 1 allelic breakpoint per source, with a match in cluster4 only.
+The same table for chr8 only (`chr8` in the JSON) had 7 to 10 depth breakpoints and 1 allelic breakpoint per source, with a match in cluster4 only.
 
 ## 5. Settings used
 
 - Signal `abs_dbaf` for the walkthrough; all four in section 3.
 - min AT 10; k 6; permutations 1000; alpha 0.001; min child bins 20; min terminal bins 50.
 - Global pool: **genome** (the tab default, as in original pyEpi) for sections 2 to 4. The depth reproduction gate (section 1) used the **chromosome** pool.
-- Depth breakpoints compared against are the app's current ones, made with the chromosome pool. The pool difference alone can make depth and allelic breakpoints disagree, so the matched counts above are not a clean measure of agreement.
+- Depth breakpoints compared against are the app's current ones, now made with the same genome-wide global pool as the allelic scan (original pyEpi's test). The matched counts still depend on the matching distance and on how few allelic breakpoints there are; they are not a measure of correctness.

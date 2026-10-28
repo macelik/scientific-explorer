@@ -159,14 +159,16 @@ external runtime dependency, not vendored into this repository — see
 
 Integration tabs (multimodal clustering and pseudobulk segmentation): two
 read-only tabs load the exported artifacts of the depth + haplotype
-integration story (`../integration-story/`); nothing is re-clustered,
-re-integrated or re-segmented.
+integration story (`../integration-story/`); nothing is re-clustered or re-integrated.
+
+Depth segmentation: the depth cluster breakpoints the app loads come from `tools/segment_depth_genome_pool.py`, which runs the segmentation with original pyEpi's genome-wide global permutation test (the pool is the cluster pseudobulk's whole genome). The earlier chromosome-pool files remain unchanged in `integration-story/data/` and `data/derived/`; see `validation/depth-genome-pool/README.md` for the comparison and `docs/USAGE.md` for how to switch back.
 
 | Input | Default location | Override |
 |---|---|---|
 | `integrated.h5mu` (cells, labels at four Leiden resolutions, WNN weights, UMAPs, PCA, graphs, allelic abs-dBAF) | `integration-story/data/integrated.h5mu`, else the path recorded in `data/prototype/run_manifest.json` | `PYEPI_SCIENTIFIC_H5MU` |
-| pseudobulk breakpoints (`raw_accepted_breakpoints.tsv`) | `integration-story/data/` | `PYEPI_SCIENTIFIC_CLUSTER_BREAKPOINTS` |
-| derived cluster segments / per-cell CN (`data/derived/`) | `integration-story/data/derived` | `PYEPI_SCIENTIFIC_DERIVED` |
+| pseudobulk breakpoints (`raw_accepted_breakpoints.tsv`) | `integration-story/data/genome_pool/` | `PYEPI_SCIENTIFIC_CLUSTER_BREAKPOINTS` |
+| derived cluster segments / per-cell CN | `integration-story/data/genome_pool/derived` | `PYEPI_SCIENTIFIC_DERIVED` |
+| candidate audit | `integration-story/data/genome_pool/segmentation_candidate_audit.tsv`, else the prototype directory's | `PYEPI_SCIENTIFIC_SEGMENTATION_AUDIT` |
 | merge-prototype and SRD-screen tables (`data/prototype/`) | `integration-story/data/prototype`, else the verified `scientific-explorer/reference/integration-prototype/regenerated` | `PYEPI_SCIENTIFIC_PROTOTYPE` |
 | whole story directory | `<root>/integration-story` | `PYEPI_SCIENTIFIC_INTEGRATION` |
 

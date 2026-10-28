@@ -151,7 +151,7 @@ Rounds are saved with the session. After a server restart the base's per-cell ca
 
 **AD settings** (collapsed group; defaults are the depth run's): k 6, permutations 1000, alpha 0.001, min child 20 kept bins, min from chromosome end 50 kept bins, global pool genome.
 
-**Global test pool.** The global permutation test draws random segment pairs from a pool. `genome` (default) uses all of the source's kept bins genome-wide, which is how original pyEpi applies it. `chromosome` uses the chromosome's own kept bins, which is how the depth breakpoints in `raw_accepted_breakpoints.tsv` were made. The two pools give different p-values, so the pool alone can make depth and allelic breakpoints disagree; keep this in mind when reading the comparison. The tab shows a note under the settings.
+**Global test pool.** The global permutation test draws random segment pairs from a pool. `genome` (default) uses all of the source's kept bins genome-wide, which is how original pyEpi applies it. `chromosome` uses the chromosome's own kept bins, which is how the original depth breakpoints (`integration-story/data/raw_accepted_breakpoints.tsv`) were made. The depth breakpoints the app now loads use the genome pool too (see "Depth segmentation"), so the default allelic run and the depth tracks share one test. The two pools give different p-values, so a chromosome-pool allelic run is not directly comparable with them. The tab shows a note under the settings.
 
 **Run segmentation.** One background job runs per signal and settings over every source and chromosome (one at a time; a new request waits, a later one replaces the waiting one) and shows `running · cluster2 · chr8 · 74/132`. Repeats of a finished job return at once from `cache/allelic/`. Before a run the tracks show the allelic dots only, with the hint "Run segmentation to see allelic segments." If you change the signal or settings after a run, the segments stay and the note "Segments shown are from an earlier run (signal …, settings …). Run again to update." appears.
 
@@ -185,3 +185,17 @@ The original generators and configuration were found upstream and successfully r
 ## Integration chart loading
 
 The segmentation tab renders its chromosome and diagnostic charts as you scroll them into view. This avoids initializing all eight plots during the initial CN-panel load. Once displayed, plots retain their zoom while scrolling. See [responsiveness checks](../validation/integration-freeze/REPORT.md) for the reported freeze investigation and its current limits.
+
+## Depth segmentation
+
+The depth cluster breakpoints used by the Integration tabs, the merge rules, the re-call and the allelic comparison are made by `tools/segment_depth_genome_pool.py` (about one minute): original pyEpi's genome-wide global permutation test, where each cluster pseudobulk's whole genome (all bins, nothing masked) is the pool, at k 6, 1000 permutations, alpha 0.001, min child 20, min terminal 50. Its output (`raw_accepted_breakpoints.tsv`, `segmentation_candidate_audit.tsv`, `run.json`) goes to `integration-story/data/genome_pool/`; `make_karyograms.py --breakpoints ... --derived-dir ...` writes the derived tables there. The tool refuses to write into `integration-story/data/` itself. Compared with the original chromosome-pool file it keeps 767 of 814 breakpoints, drops 47 and adds 56 (`validation/depth-genome-pool/README.md`).
+
+The original chromosome-pool files are unchanged. To switch the app back, set before starting it:
+
+```
+PYEPI_SCIENTIFIC_CLUSTER_BREAKPOINTS=<integration_dir>/data/raw_accepted_breakpoints.tsv
+PYEPI_SCIENTIFIC_DERIVED=<integration_dir>/data/derived
+PYEPI_SCIENTIFIC_SEGMENTATION_AUDIT=<prototype_dir>/segmentation_candidate_audit.tsv
+```
+
+The alternative flank view and the archived merge-prototype tables (`data/prototype/`) still describe the original segmentation.

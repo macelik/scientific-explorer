@@ -4,19 +4,19 @@
  "chr8": [
   [
    "cluster0",
-   "6",
+   "7",
    "1",
    "0",
-   "6",
+   "7",
    "1",
    "N/A"
   ],
   [
    "cluster1",
-   "6",
+   "10",
    "1",
    "0",
-   "6",
+   "10",
    "1",
    "N/A"
   ],
@@ -31,10 +31,10 @@
   ],
   [
    "cluster3",
-   "6",
+   "7",
    "1",
    "0",
-   "6",
+   "7",
    "1",
    "N/A"
   ],
@@ -51,10 +51,10 @@
  "genome": [
   [
    "cluster0",
-   "133",
+   "137",
    "7",
    "1",
-   "132",
+   "136",
    "6",
    "0.0"
   ],
@@ -69,36 +69,36 @@
   ],
   [
    "cluster2",
-   "122",
+   "128",
    "8",
    "2",
-   "120",
+   "126",
    "6",
    "1.0"
   ],
   [
    "cluster3",
-   "164",
+   "156",
    "11",
    "1",
-   "163",
+   "155",
    "10",
    "1.0"
   ],
   [
    "cluster4",
-   "116",
+   "117",
    "4",
    "2",
-   "114",
+   "115",
    "2",
    "0.5"
   ]
  ],
  "shapesAbs": {
-  "other": 40,
-  "depth breakpoint": 35,
-  "depth breakpoint (echo)": 35,
+  "other": 46,
+  "depth breakpoint": 41,
+  "depth breakpoint (echo)": 41,
   "allelic segment mean": 10,
   "allelic breakpoint": 4,
   "allelic gap breakpoint": 1
@@ -111,7 +111,7 @@
   "# table 1 scope: genome-wide",
   "# table 1: breakpoint agreement",
   "source\tdepth_bps\tallelic_bps\tmatched\tdepth_only\tallelic_only\tmedian_offset",
-  "cluster0\t133\t7\t1\t132\t6\t0"
+  "cluster0\t137\t7\t1\t136\t6\t0"
  ],
  "yRangeSigned": [
   -0.5,

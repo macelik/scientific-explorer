@@ -40,7 +40,7 @@ def test_cache_identity_changes_with_depth_and_manifest(tmp_path):
     from types import SimpleNamespace
     from server.integration import IntegrationStore
     s=IntegrationStore.__new__(IntegrationStore)
-    s.cfg=SimpleNamespace(derived_dir=str(tmp_path),prototype_dir=str(tmp_path),cluster_breakpoints=str(tmp_path/'bp.tsv'))
+    s.cfg=SimpleNamespace(derived_dir=str(tmp_path),prototype_dir=str(tmp_path),cluster_breakpoints=str(tmp_path/'bp.tsv'),segmentation_audit=str(tmp_path/'audit.tsv'))
     s.h5mu_path=str(tmp_path/'m.h5mu');s.h5ad_path=str(tmp_path/'x.h5ad')
     for p in [s.h5mu_path,s.h5ad_path,s.cfg.cluster_breakpoints]:Path(p).write_text('first')
     before=s._identity()['hash']

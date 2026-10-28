@@ -125,3 +125,7 @@ dispersion-scaled deviance statistic, not a p-value"; the merge rules
 are "an independent exploratory rule"; the simulation transformation "is not
 a validated biological CN simulator." None of these are hedges — they are
 precise statements of scope.
+
+## Which depth segmentation the app uses
+
+The depth cluster segmentation the Integration tabs load is recomputed with original pyEpi's genome-wide global permutation test (the pool is each cluster pseudobulk's whole genome), by `tools/segment_depth_genome_pool.py`. The earlier run sampled the global test from each chromosome's own bins; those files are unchanged in `integration-story/data/` and `data/derived/`. The two segmentations share 767 breakpoints; 47 are old-only and 56 new-only (`validation/depth-genome-pool/README.md`). Switch back with `PYEPI_SCIENTIFIC_CLUSTER_BREAKPOINTS`, `PYEPI_SCIENTIFIC_DERIVED` and `PYEPI_SCIENTIFIC_SEGMENTATION_AUDIT` (values in `docs/USAGE.md`). The alternative flank view and the archived merge-prototype tables still describe the original segmentation.

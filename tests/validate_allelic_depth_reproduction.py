@@ -26,10 +26,13 @@ from server.config import Config  # noqa: E402
 from server.integration import _read_cat  # noqa: E402
 
 
-def main() -> int:
+def load_depth_pseudobulks(cfg):
+    """Depth pseudobulks exactly as run_bootstrap_diagnostics.py built them.
+
+    Returns (depth AnnData, {source: mean count vector over all bins}, per-bin chromosome array,
+    chromosomes in genome order). Sources are cluster0.., then all.
+    """
     import anndata as ad
-    t0 = time.time()
-    cfg = Config.from_env()
     h5mu = cfg.h5mu or os.path.join(cfg.integration_dir, 'data', 'integrated.h5mu')
     depth = ad.read_h5ad(cfg.h5ad)
     cells = depth.obs['cellID'].astype(str).to_numpy()
@@ -42,9 +45,17 @@ def main() -> int:
     groups['all'] = np.ones(len(cells), bool)
     chrom_of = depth.var['seq'].astype(str).to_numpy()
     chroms = list(dict.fromkeys(chrom_of))
+    pseudo = {g: np.asarray(depth.X[mask].mean(axis=0)).ravel() for g, mask in groups.items()}
+    sizes = {g: int(m.sum()) for g, m in groups.items()}
+    return depth, pseudo, chrom_of, chroms, sizes
+
+
+def main() -> int:
+    t0 = time.time()
+    cfg = Config.from_env()
+    depth, pseudo, chrom_of, chroms, _sizes = load_depth_pseudobulks(cfg)
     tasks = []
-    for g, mask in groups.items():
-        x_pb = np.asarray(depth.X[mask].mean(axis=0)).ravel()
+    for g, x_pb in pseudo.items():
         for ch in chroms:
             seq = x_pb[chrom_of == ch]
             tasks.append((g, ch, seq, np.ones(len(seq), bool), None, None, sc.DEFAULTS, cfg.package_dir, None))
@@ -55,7 +66,8 @@ def main() -> int:
     for g, ch, out in results:
         for b in out['breakpoints']:
             got[(g, ch, b['bin'])] = b
-    ref = pd.read_csv(cfg.cluster_breakpoints, sep='\t')
+    reference = os.path.join(cfg.integration_dir, 'data', 'raw_accepted_breakpoints.tsv')  # original chromosome-pool file, not the app default
+    ref = pd.read_csv(reference, sep='\t')
     want = {(r.source, r.chromosome, int(r.absolute_bin)): r for r in ref.itertuples(index=False)}
     missing = sorted(set(want) - set(got))
     extra = sorted(set(got) - set(want))
@@ -71,7 +83,7 @@ def main() -> int:
               'extra': [list(k) for k in extra[:50]], 'n_extra': len(extra),
               'mismatched': mismatched[:50], 'n_mismatched': len(mismatched),
               'seconds': round(time.time() - t0, 1), 'workers': workers,
-              'reference': cfg.cluster_breakpoints, 'h5ad': cfg.h5ad, 'package_dir': cfg.package_dir}
+              'reference': reference, 'h5ad': cfg.h5ad, 'package_dir': cfg.package_dir}
     out_dir = os.path.join(ROOT, 'validation', 'allelic')
     os.makedirs(out_dir, exist_ok=True)
     with open(os.path.join(out_dir, 'depth_reproduction.json'), 'w') as f:

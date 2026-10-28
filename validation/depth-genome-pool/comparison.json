@@ -1,0 +1,133 @@
+{
+ "per_source": {
+  "cluster0": {
+   "old": 133,
+   "new": 137,
+   "shared": 125,
+   "old_only": 8,
+   "new_only": 12
+  },
+  "cluster1": {
+   "old": 143,
+   "new": 143,
+   "shared": 134,
+   "old_only": 9,
+   "new_only": 9
+  },
+  "cluster2": {
+   "old": 122,
+   "new": 128,
+   "shared": 119,
+   "old_only": 3,
+   "new_only": 9
+  },
+  "cluster3": {
+   "old": 164,
+   "new": 156,
+   "shared": 148,
+   "old_only": 16,
+   "new_only": 8
+  },
+  "cluster4": {
+   "old": 116,
+   "new": 117,
+   "shared": 111,
+   "old_only": 5,
+   "new_only": 6
+  },
+  "all": {
+   "old": 136,
+   "new": 142,
+   "shared": 130,
+   "old_only": 6,
+   "new_only": 12
+  },
+  "TOTAL": {
+   "old": 814,
+   "new": 823,
+   "shared": 767,
+   "old_only": 47,
+   "new_only": 56
+  }
+ },
+ "top10_changed_chromosomes": [
+  {
+   "chromosome": "chr17",
+   "changed_breakpoints": 13,
+   "old": 33,
+   "new": 46,
+   "changed": 13
+  },
+  {
+   "chromosome": "chr18",
+   "changed_breakpoints": 12,
+   "old": 34,
+   "new": 22,
+   "changed": 12
+  },
+  {
+   "chromosome": "chr12",
+   "changed_breakpoints": 12,
+   "old": 43,
+   "new": 45,
+   "changed": 12
+  },
+  {
+   "chromosome": "chr7",
+   "changed_breakpoints": 12,
+   "old": 82,
+   "new": 86,
+   "changed": 12
+  },
+  {
+   "chromosome": "chr5",
+   "changed_breakpoints": 11,
+   "old": 66,
+   "new": 65,
+   "changed": 11
+  },
+  {
+   "chromosome": "chr8",
+   "changed_breakpoints": 7,
+   "old": 41,
+   "new": 48,
+   "changed": 7
+  },
+  {
+   "chromosome": "chr10",
+   "changed_breakpoints": 6,
+   "old": 50,
+   "new": 56,
+   "changed": 6
+  },
+  {
+   "chromosome": "chr2",
+   "changed_breakpoints": 5,
+   "old": 54,
+   "new": 55,
+   "changed": 5
+  },
+  {
+   "chromosome": "chr4",
+   "changed_breakpoints": 5,
+   "old": 35,
+   "new": 30,
+   "changed": 5
+  },
+  {
+   "chromosome": "chr6",
+   "changed_breakpoints": 4,
+   "old": 56,
+   "new": 56,
+   "changed": 4
+  }
+ ],
+ "p_global_shared": {
+  "n_shared": 767,
+  "old": 0.0009990009990009,
+  "new": 0.0009990009990009,
+  "mean_old": 0.0009990009990008997,
+  "mean_new": 0.0009990009990008997,
+  "n_shared_different_depth": 0
+ }
+}
