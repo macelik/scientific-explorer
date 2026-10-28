@@ -22,9 +22,9 @@ Settings: k 6, 1000 permutations, alpha 0.001, min child bins 20, min terminal b
 - Export `allelic_vs_depth.tsv` starts with `# signal: abs_dbaf`.
 - After switching the signal to signed dBAF the allelic y range is [-0.5, 0.5], and the "earlier run" note appears.
 - No page errors or console errors.
-- Recorded in `allelic_check_results.json`; screenshot in `allelic.png` (depth segments switched to "original").
+- Recorded in `allelic_check_results.json`; screenshot in `allelic.png` (depth segments switched to "unmerged").
 
-`runSeconds` in the JSON is 0 because the |dBAF| job was already cached on disk from earlier attempts of the same script that session, so the Run click returned at once. It is not a compute time.
+`runSeconds` in the JSON is 15 (the |dBAF| Run click, computed in this recording).
 
 ## 3. Per-signal runs (`signals.json`)
 

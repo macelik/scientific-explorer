@@ -2,6 +2,7 @@
 One job runs at a time; one request waits; finished results are cached in memory and on disk."""
 from __future__ import annotations
 
+import math
 import gzip
 import hashlib
 import json
@@ -41,6 +42,8 @@ def normalize(signal, settings) -> dict:
     for key, (lo, hi, integer) in LIMITS.items():
         v = settings.get(key, DEFAULT_SETTINGS[key])
         if isinstance(v, bool) or not isinstance(v, (int, float)):
+            raise ValueError(f'{key}: not a number')
+        if not math.isfinite(v):
             raise ValueError(f'{key}: not a number')
         if integer and float(v) != int(v):
             raise ValueError(f'{key}: must be a whole number')

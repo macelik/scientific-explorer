@@ -69,6 +69,10 @@ def _csr_rows(g: h5py.Group, lo: int, hi: int, n_cols: int) -> np.ndarray:
     return out
 
 
+SEGMENTATION_FIX = ("Fix: run tools/segment_depth_genome_pool.py and ../integration-story/scripts/make_karyograms.py (see docs/USAGE.md), "
+                    "or set PYEPI_SCIENTIFIC_CLUSTER_BREAKPOINTS, PYEPI_SCIENTIFIC_DERIVED and PYEPI_SCIENTIFIC_SEGMENTATION_AUDIT to the original files")
+
+
 class IntegrationStore:
     def __init__(self, cfg: Config, var_seq: np.ndarray, var_start: np.ndarray, var_end: np.ndarray,
                  h5ad_path: str, cohort_cells: List[str]):
@@ -122,9 +126,19 @@ class IntegrationStore:
         self.problems.append("integrated.h5mu not found (checked: " + "; ".join(x for x in cands if x) + "). Set PYEPI_SCIENTIFIC_H5MU.")
         return None
 
+    def _resolve_audit(self) -> str:
+        """Explicit setting, else the audit next to the breakpoints in use, else the prototype audit."""
+        explicit = getattr(self.cfg, "segmentation_audit", "") or ""
+        if explicit and os.path.exists(explicit):
+            return explicit
+        beside = os.path.join(os.path.dirname(self.cfg.cluster_breakpoints), "segmentation_candidate_audit.tsv")
+        if os.path.exists(beside):
+            return beside
+        return os.path.join(self.cfg.prototype_dir, "segmentation_candidate_audit.tsv")
+
     def _identity(self) -> dict:
         files = []
-        paths = [self.h5mu_path, self.h5ad_path, self.cfg.cluster_breakpoints, self.cfg.segmentation_audit]
+        paths = [self.h5mu_path, self.h5ad_path, self.cfg.cluster_breakpoints, self._resolve_audit()]
         for folder in [self.cfg.derived_dir, self.cfg.prototype_dir]:
             paths.extend(str(p) for p in sorted(Path(folder).glob('*')) if p.suffix in ('.tsv', '.json', '.npy'))
         for p in dict.fromkeys(paths):
@@ -190,30 +204,7 @@ class IntegrationStore:
             self.uns["neighbors"] = {k: (f[f"uns/neighbors/params/{k}"][()].decode() if isinstance(f[f"uns/neighbors/params/{k}"][()], bytes) else (f[f"uns/neighbors/params/{k}"][()].item() if isinstance(f[f"uns/neighbors/params/{k}"], h5py.Dataset) else "group")) for k in f["uns/neighbors/params"]}
         except Exception:  # noqa: BLE001
             pass
-        # tables
-        bp = pd.read_csv(self.cfg.cluster_breakpoints, sep="\t")
-        self.tables["breakpoints"] = bp
-        for name in ["karyogram_cluster_segments", "percell_best_s"]:
-            p = os.path.join(self.cfg.derived_dir, name + ".tsv")
-            if os.path.exists(p):
-                self.tables[name] = pd.read_csv(p, sep="\t")
-            else:
-                self.problems.append(f"derived table missing: {p}")
-        for name in ["small_segment_flank_scores", "small_segment_scores", "small_segment_bootstrap", "srd_descriptive", "retained_boundaries",
-                     "simplified_segments", "initial_boundary_scores", "unresolved_segments", "threshold_sensitivity", "review_summary"]:
-            p = os.path.join(self.cfg.prototype_dir, name + ".tsv")
-            if os.path.exists(p):
-                self.tables[name] = pd.read_csv(p, sep="\t")
-            else:
-                self.notes.append(f"prototype table not available: {name}")
-        audit = self.cfg.segmentation_audit
-        if not (audit and os.path.exists(audit)):
-            audit = os.path.join(self.cfg.prototype_dir, "segmentation_candidate_audit.tsv")
-        self._audit_path = audit if os.path.exists(audit) else None
-        self._audit: Optional[pd.DataFrame] = None
-        if "percell_best_s" in self.tables:
-            t = self.tables["percell_best_s"].set_index("cell")
-            self.cells["percell_best_s"] = self.cells["cell"].map(t["best_s"]).astype(float)
+        bp = self._load_tables()
         # cluster membership per source, validated against manifest sizes
         self.members = {}
         lab = self.cells["wnn_leiden_0.3"].to_numpy()
@@ -227,6 +218,33 @@ class IntegrationStore:
         for s, v in nb.items():
             if s in self.members and len(self.members[s]) != v:
                 self.problems.append(f"{s}: breakpoints n_cells {v} != h5mu membership {len(self.members[s])}")
+
+    def _load_tables(self) -> "pd.DataFrame":
+        if not os.path.exists(self.cfg.cluster_breakpoints):
+            raise FileNotFoundError(f"depth breakpoints missing: {self.cfg.cluster_breakpoints}. {SEGMENTATION_FIX}")
+        bp = pd.read_csv(self.cfg.cluster_breakpoints, sep="\t")
+        self.tables["breakpoints"] = bp
+        for name in ["karyogram_cluster_segments", "percell_best_s"]:
+            p = os.path.join(self.cfg.derived_dir, name + ".tsv")
+            if os.path.exists(p):
+                self.tables[name] = pd.read_csv(p, sep="\t")
+            else:
+                self.problems.append(f"derived table missing: {p}. {SEGMENTATION_FIX}")
+        for name in ["small_segment_flank_scores", "small_segment_scores", "small_segment_bootstrap", "srd_descriptive", "retained_boundaries",
+                     "simplified_segments", "initial_boundary_scores", "unresolved_segments", "threshold_sensitivity", "review_summary"]:
+            p = os.path.join(self.cfg.prototype_dir, name + ".tsv")
+            if os.path.exists(p):
+                self.tables[name] = pd.read_csv(p, sep="\t")
+            else:
+                self.notes.append(f"prototype table not available: {name}")
+        audit = self._resolve_audit()
+        self._audit_path = audit if os.path.exists(audit) else None
+        self.notes.append(f"segmentation audit: {audit}" if self._audit_path else f"segmentation audit not found (looked for {audit})")
+        self._audit: Optional[pd.DataFrame] = None
+        if "percell_best_s" in self.tables:
+            t = self.tables["percell_best_s"].set_index("cell")
+            self.cells["percell_best_s"] = self.cells["cell"].map(t["best_s"]).astype(float)
+        return bp
 
     # ------------------------------------------------------------ heavy
     def cache_path(self) -> str:

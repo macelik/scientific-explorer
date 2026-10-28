@@ -142,7 +142,7 @@ k, permutations, alpha, min child and min terminal default to the depth run's se
 
 - **Signal:** a select with the four labels.
 - **min AT:** a number field.
-- **AD settings:** a collapsed group with k, permutations, alpha, min child, min terminal and the global pool (genome / chromosome). Under it, a note: "The depth breakpoints were made with the chromosome pool; original pyEpi uses the genome pool."
+- **AD settings:** a collapsed group with k, permutations, alpha, min child, min terminal and the global pool (genome / chromosome). Under it, a note: "The app's depth breakpoints now use the genome pool, as original pyEpi does. The chromosome pool is how the earlier depth run (raw_accepted_breakpoints.tsv in integration-story/data) sampled the global test."
 - **Run segmentation:**
   - Shows the progress line: "running · cluster2 · chr8 · 74/132".
   - If the shown result's signal and settings differ from the current controls, a note reads "Segments shown are from an earlier run (signal …, settings …). Run again to update."

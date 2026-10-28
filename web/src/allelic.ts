@@ -14,7 +14,7 @@ export const signalLabel = (id: string) => SIGNALS.find((s) => s.id === id)?.lab
 export type GlobalPool = 'genome' | 'chromosome'
 export interface AdSettings { min_at: number; k: number; n_permutations: number; alpha: number; min_child_bins: number; min_terminal_bins: number; global_pool: GlobalPool }
 export const DEFAULT_SETTINGS: AdSettings = { min_at: 10, k: 6, n_permutations: 1000, alpha: 0.001, min_child_bins: 20, min_terminal_bins: 50, global_pool: 'genome' }
-export const POOL_NOTE = 'The depth breakpoints were made with the chromosome pool; original pyEpi uses the genome pool.'
+export const POOL_NOTE = "The app's depth breakpoints now use the genome pool, as original pyEpi does. The chromosome pool is how the earlier depth run (raw_accepted_breakpoints.tsv in integration-story/data) sampled the global test."
 export const SETTING_FIELDS: { key: Exclude<keyof AdSettings, 'global_pool'>; label: string; min: number; max: number; integer: boolean; minExclusive?: boolean }[] = [
   { key: 'min_at', label: 'min AT', min: 1, max: 1000, integer: true },
   { key: 'k', label: 'k (max depth)', min: 1, max: 8, integer: true },
@@ -132,9 +132,9 @@ export const COMPARISON_DEFINITIONS = [
   'Allelic segments: each depth CN call with its share of the segment\'s bins, largest first.',
 ]
 const num = (v: number | null, d = 4) => (v === null || !Number.isFinite(v) ? 'NA' : Number.isInteger(v) ? String(v) : v.toFixed(d))
-export function runHeader(job: AllelicJob, N: number, depthSource: 'current' | 'original', nRounds: number, scope: string): string[] {
+export function runHeader(job: AllelicJob, N: number, depthSource: 'current' | 'original', nRounds: number, scope: string, identity: string | null | undefined): string[] {
   return [`signal: ${job.signal} (${signalLabel(job.signal)})`, `settings: ${JSON.stringify(job.settings)}`, `match N: ${N} bins`,
-    `depth segments: ${depthSource === 'current' ? `current round (${nRounds} merge rounds)` : 'original'}`, `table 1 scope: ${scope}`]
+    `depth segments: ${depthSource === 'current' ? `current round (${nRounds} merge rounds)` : 'unmerged (no merge rounds)'}`, `depth identity: ${identity ?? 'unknown'}`, `table 1 scope: ${scope}`]
 }
 export function comparisonTsv(header: string[], t1: AgreementRow[], t2: DepthSegRow[], t3: AllelicSegRow[]): string {
   const lines = header.map((h) => `# ${h}`)

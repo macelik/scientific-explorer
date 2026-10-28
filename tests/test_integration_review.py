@@ -70,3 +70,45 @@ def test_bootstrap_zero_flank_is_undefined_not_regularized():
     assert r['left']['observed'] is None
     assert r['left']['valid']==0
     assert r['left']['ci95'] is None
+
+
+def _stub(tmp_path, **cfg):
+    from types import SimpleNamespace
+    from server.integration import IntegrationStore
+    s=IntegrationStore.__new__(IntegrationStore)
+    s.cfg=SimpleNamespace(derived_dir=str(tmp_path/'derived'),prototype_dir=str(tmp_path/'proto'),cluster_breakpoints=str(tmp_path/'gp'/'raw_accepted_breakpoints.tsv'),segmentation_audit='',**cfg)
+    s.problems=[];s.notes=[];s.tables={}
+    return s
+
+
+def test_missing_breakpoints_say_which_file_and_how_to_fix(tmp_path):
+    s=_stub(tmp_path)
+    with pytest.raises(FileNotFoundError) as e:s._load_tables()
+    m=str(e.value)
+    assert str(tmp_path/'gp'/'raw_accepted_breakpoints.tsv') in m
+    assert 'run tools/segment_depth_genome_pool.py and ../integration-story/scripts/make_karyograms.py (see docs/USAGE.md), or set PYEPI_SCIENTIFIC_CLUSTER_BREAKPOINTS, PYEPI_SCIENTIFIC_DERIVED and PYEPI_SCIENTIFIC_SEGMENTATION_AUDIT to the original files' in m
+
+
+def test_missing_derived_table_problem_names_file_and_fix(tmp_path):
+    s=_stub(tmp_path)
+    (tmp_path/'gp').mkdir()
+    (tmp_path/'gp'/'raw_accepted_breakpoints.tsv').write_text('source\tn_cells\nall\t1\n')
+    s._load_tables()
+    assert any(str(tmp_path/'derived'/'karyogram_cluster_segments.tsv') in p and 'segment_depth_genome_pool.py' in p for p in s.problems)
+
+
+def test_audit_follows_breakpoints_unless_set(tmp_path):
+    s=_stub(tmp_path)
+    (tmp_path/'proto').mkdir();(tmp_path/'gp').mkdir()
+    proto=tmp_path/'proto'/'segmentation_candidate_audit.tsv';proto.write_text('x')
+    assert s._resolve_audit()==str(proto)
+    beside=tmp_path/'gp'/'segmentation_candidate_audit.tsv';beside.write_text('y')
+    assert s._resolve_audit()==str(beside)
+    explicit=tmp_path/'mine.tsv';explicit.write_text('z')
+    s.cfg.segmentation_audit=str(explicit)
+    assert s._resolve_audit()==str(explicit)
+    s.cfg.segmentation_audit=str(tmp_path/'absent.tsv')
+    assert s._resolve_audit()==str(beside)
+    (tmp_path/'gp'/'raw_accepted_breakpoints.tsv').write_text('source\tn_cells\nall\t1\n')
+    s.cfg.segmentation_audit='';s._load_tables()
+    assert f'segmentation audit: {beside}' in s.notes

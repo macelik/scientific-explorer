@@ -45,7 +45,7 @@ export interface IntegrationState {
   restore: (p: any) => void
   recall: RecallStatus | null; recallKaryo: Uint8Array | null; recallSignature: string | null; recallError: string | null; karyoMode: KaryoMode
   startRecall: (body: RecallBody) => Promise<void>
-  rounds: Round[]; base: BaseResponse | null; baseSig: string | null; baseError: string | null; roundsNotice: string | null
+  rounds: Round[]; base: BaseResponse | null; baseSig: string | null; baseError: string | null; roundsNotice: string | null; savedDepthIdentity: string | null
   baseKaryo: Uint8Array | null; baseCalls: RecallStatus | null
   setRounds: (rounds: Round[]) => void
   refreshBase: () => Promise<void>
@@ -60,13 +60,22 @@ const defaultSeg: SegSettings = {
   smallMax: 100, srdRef: 3.3, tau: 0.2, selectedSegment: null, karyoPalette: 'story', percellOrder: 'cluster', percellRowH: 'fit',
 }
 
+export const DEPTH_CHANGED_NOTICE = 'These merge rounds were saved against a different depth segmentation; they were re-applied to the current one.'
+// compares the identity stored in a saved session with the loaded one; runs once meta is available
+export function checkSavedIdentity(get: () => IntegrationState, set: (p: Partial<IntegrationState>) => void) {
+  const s = get()
+  if (!s.meta || s.savedDepthIdentity === null) return
+  if (s.rounds.length && s.savedDepthIdentity !== s.meta.identity.hash) set({ roundsNotice: DEPTH_CHANGED_NOTICE })
+  set({ savedDepthIdentity: null })
+}
+
 export const useIntegration = create<IntegrationState>((set, get) => ({
   status: null, meta: null, loading: false, error: null, pb: null, karyo: null, karyoLoading: false, smallSegs: [],
   clusterKey: 'wnn_leiden_0.3', colorBy: 'cluster', selectedCluster: null, highlight: [], hoverCell: null, focusCell: null, cellDetail: null, dimOthers: false, pointSize: 3, compareKey: 'wnn_leiden_1.0',
   seg: defaultSeg, candidates: {},
   mergeRules: [], allowGapCrossing: false, hatchScores: {}, hatchScoresError: null,
   recall: null, recallKaryo: null, recallSignature: null, recallError: null, karyoMode: 'before',
-  rounds: [], base: null, baseSig: null, baseError: null, roundsNotice: null, baseKaryo: null, baseCalls: null,
+  rounds: [], base: null, baseSig: null, baseError: null, roundsNotice: null, savedDepthIdentity: null, baseKaryo: null, baseCalls: null,
 
   load: async () => {
     if (get().meta || get().loading) return
@@ -80,6 +89,7 @@ export const useIntegration = create<IntegrationState>((set, get) => ({
       while (st.index.status !== 'done' && st.index.status !== 'error' && tries < 400) { await new Promise((r) => setTimeout(r, 1500)); st = await api.integrationStatus(); set({ status: st }); tries++ }
       const meta = await api.integrationMeta()
       set({ meta, smallSegs: buildSmallSegments(meta.flank_scores, meta.screening), loading: false, clusterKey: meta.default_cluster_key })
+      checkSavedIdentity(get, set)
     } catch (e: any) { set({ loading: false, error: String(e.message || e) }) }
   },
   ensurePseudobulk: async () => { if (get().pb) return; try { const pb = await api.integrationPseudobulk(); set({ pb }) } catch (e: any) { set({ error: `pseudobulk: ${e.message || e}` }) } },
@@ -176,6 +186,6 @@ export const useIntegration = create<IntegrationState>((set, get) => ({
     try { const r = await fetchHatchScores(chrom, source, wire); if (JSON.stringify(wireRounds(get().rounds)) === sig) set({ hatchScores: { ...get().hatchScores, [k]: r }, hatchScoresError: null }) }
     catch (e: any) { if (JSON.stringify(wireRounds(get().rounds)) === sig) set({ hatchScoresError: `hatch-scores: ${e.message || e}` }) }
   },
-  serialize: () => { const s = get(); return { clusterKey: s.clusterKey, colorBy: s.colorBy, selectedCluster: s.selectedCluster, highlight: s.highlight, focusCell: s.focusCell, dimOthers: s.dimOthers, pointSize: s.pointSize, compareKey: s.compareKey, seg: s.seg, mergeRules: s.mergeRules, allowGapCrossing: s.allowGapCrossing, rounds: s.rounds } },
-  restore: (p) => { if (!p) return; set({ clusterKey: p.clusterKey || 'wnn_leiden_0.3', colorBy: p.colorBy || 'cluster', selectedCluster: p.selectedCluster ?? null, highlight: p.highlight || [], focusCell: p.focusCell ?? null, dimOthers: !!p.dimOthers, pointSize: p.pointSize || 3, compareKey: p.compareKey || 'wnn_leiden_1.0', seg: (() => { const ms = migrateSegSettings(p.seg); return { ...defaultSeg, ...ms, labels: { ...defaultSeg.labels, ...(ms.labels || {}) } } })(), mergeRules: Array.isArray(p.mergeRules) ? p.mergeRules : migrateHatchLayers(p.hatchLayers), allowGapCrossing: !!p.allowGapCrossing, rounds: roundsFromSession(p), base: null, baseSig: null, baseError: null, baseKaryo: null, baseCalls: null, hatchScores: {}, recall: null, recallKaryo: null, recallSignature: null, recallError: null, roundsNotice: null, karyoMode: 'before' }) },
+  serialize: () => { const s = get(); return { clusterKey: s.clusterKey, colorBy: s.colorBy, selectedCluster: s.selectedCluster, highlight: s.highlight, focusCell: s.focusCell, dimOthers: s.dimOthers, pointSize: s.pointSize, compareKey: s.compareKey, seg: s.seg, mergeRules: s.mergeRules, allowGapCrossing: s.allowGapCrossing, rounds: s.rounds, depthIdentity: s.meta?.identity.hash ?? s.savedDepthIdentity ?? undefined } },
+  restore: (p) => { if (!p) return; set({ clusterKey: p.clusterKey || 'wnn_leiden_0.3', colorBy: p.colorBy || 'cluster', selectedCluster: p.selectedCluster ?? null, highlight: p.highlight || [], focusCell: p.focusCell ?? null, dimOthers: !!p.dimOthers, pointSize: p.pointSize || 3, compareKey: p.compareKey || 'wnn_leiden_1.0', seg: (() => { const ms = migrateSegSettings(p.seg); return { ...defaultSeg, ...ms, labels: { ...defaultSeg.labels, ...(ms.labels || {}) } } })(), mergeRules: Array.isArray(p.mergeRules) ? p.mergeRules : migrateHatchLayers(p.hatchLayers), allowGapCrossing: !!p.allowGapCrossing, rounds: roundsFromSession(p), base: null, baseSig: null, baseError: null, baseKaryo: null, baseCalls: null, hatchScores: {}, recall: null, recallKaryo: null, recallSignature: null, recallError: null, roundsNotice: null, savedDepthIdentity: typeof p.depthIdentity === 'string' ? p.depthIdentity : null, karyoMode: 'before' }); checkSavedIdentity(get, set) },
 }))

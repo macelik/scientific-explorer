@@ -161,6 +161,8 @@ Integration tabs (multimodal clustering and pseudobulk segmentation): two
 read-only tabs load the exported artifacts of the depth + haplotype
 integration story (`../integration-story/`); nothing is re-clustered or re-integrated.
 
+Note: the archived merge-prototype tables (retained reasons, prototype summary) describe the earlier chromosome-pool depth segmentation, not the current breakpoints.
+
 Depth segmentation: the depth cluster breakpoints the app loads come from `tools/segment_depth_genome_pool.py`, which runs the segmentation with original pyEpi's genome-wide global permutation test (the pool is the cluster pseudobulk's whole genome). The earlier chromosome-pool files remain unchanged in `integration-story/data/` and `data/derived/`; see `validation/depth-genome-pool/README.md` for the comparison and `docs/USAGE.md` for how to switch back.
 
 | Input | Default location | Override |

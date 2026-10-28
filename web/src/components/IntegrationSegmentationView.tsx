@@ -400,6 +400,7 @@ export default function IntegrationSegmentationView() {
 
       {!!meta.review_summary?.length && <details className="diag">
         <summary>Merge prototype summary (τ = {meta.manifest?.params?.tau_default}, stability ≥ {meta.manifest?.params?.stab_default})</summary>
+        <p className="notice small">These archived prototype tables describe the earlier depth segmentation (chromosome-pool global test), not the current breakpoints.</p>
         <p className="lead">Original prototype: median segment levels, {meta.manifest?.params?.n_bootstrap} whole-cell bootstrap replicates, seed {meta.manifest?.params?.seed}. A boundary is nominated if it touches an internal segment ≤ {meta.manifest?.params?.max_small_bins} bins. Merging requires observed |log2(m_A/m_B)| &lt; τ, the required bootstrap fraction, all replicates valid, and a chain guard on the original constituent levels. Terminal and gap cases remain protected. Bootstrap fractions are stability scores, not probabilities. The alternative view above computes a separate arithmetic-mean bootstrap.</p>
         <div className="two-col">
           <div className="table-scroll"><table className="tbl"><thead><tr><th>cluster</th><th>chrom</th><th>segments</th><th>boundaries</th><th>nominated</th><th>eligible</th><th>merged</th><th>min |Δ| nominated</th><th>median |Δ|</th><th>max stability</th></tr></thead><tbody>

@@ -124,7 +124,7 @@ export default function AllelicSegmentationView() {
         </div>
         <details className="allelic-ad-settings"><summary>AD settings</summary>
           <div className="controls-row">{SETTING_FIELDS.filter((f) => f.key !== 'min_at').map((f) => <label key={f.key}>{f.label}<input aria-label={f.label} type="number" step={f.integer ? 1 : 0.0001} value={Number.isFinite(al.settings[f.key]) ? al.settings[f.key] : ''} onChange={(e) => setSetting(f.key, e.target.value)} style={{ width: 80 }} /></label>)}
-            <label>global test pool<select aria-label="Global test pool" value={al.settings.global_pool} onChange={(e) => al.setView({ settings: { ...al.settings, global_pool: e.target.value as any } })}><option value="genome">genome (original pyEpi)</option><option value="chromosome">chromosome (depth run)</option></select></label></div>
+            <label>global test pool<select aria-label="Global test pool" value={al.settings.global_pool} onChange={(e) => al.setView({ settings: { ...al.settings, global_pool: e.target.value as any } })}><option value="genome">genome (original pyEpi)</option><option value="chromosome">chromosome (earlier depth run)</option></select></label></div>
           <p className="muted small">{POOL_NOTE}</p>
         </details>
         {stale && <p className="notice small">Segments shown are from an earlier run (signal {signalLabel(shown!.signal)}, settings {JSON.stringify(shown!.settings)}). Run again to update.</p>}
@@ -133,9 +133,11 @@ export default function AllelicSegmentationView() {
           {(meta?.sources ?? []).map((s) => <label key={s} className="chk"><input type="checkbox" checked={al.sources.includes(s)} onChange={(e) => al.setView({ sources: e.target.checked ? [...al.sources, s] : al.sources.filter((x) => x !== s) })} /><span style={{ color: SOURCE_COLORS[s] }}>{s}</span></label>)}
           <div className="segmented" role="group" aria-label="Depth segments">
             <button className={`btn-sm${al.depthSource === 'current' ? ' on' : ''}`} aria-pressed={al.depthSource === 'current'} onClick={() => al.setView({ depthSource: 'current' })}>current round{nRounds ? ` (${nRounds})` : ''}</button>
-            <button className={`btn-sm${al.depthSource === 'original' ? ' on' : ''}`} aria-pressed={al.depthSource === 'original'} onClick={() => al.setView({ depthSource: 'original' })}>original</button>
+            <button className={`btn-sm${al.depthSource === 'original' ? ' on' : ''}`} aria-pressed={al.depthSource === 'original'} onClick={() => al.setView({ depthSource: 'original' })}>unmerged</button>
           </div>
         </div>
+        {nRounds > 0 && !useOriginal && !ig.base && !ig.baseError && <p className="muted small">loading merged depth segments…</p>}
+        {nRounds > 0 && !useOriginal && ig.baseError && <div className="notice small" role="alert">{ig.baseError}</div>}
         {!shown && !disabled && <p className="muted small">Run segmentation to see allelic segments.</p>}
         {al.tracksError && <div className="notice small" role="alert">{al.tracksError}</div>}
         {fig ? <><Plot data={fig.data} layout={fig.layout} config={{ displayModeBar: presentation ? false : 'hover' }} onReady={(el) => { plotEl.current = el }} /><button className="btn-xs" onClick={() => plotEl.current && downloadPlot(plotEl.current, `allelic_${chromMeta.name}`)}>PNG</button></>
@@ -151,7 +153,7 @@ export default function AllelicSegmentationView() {
               <button className={`btn-sm${al.scope === 'genome' ? ' on' : ''}`} aria-pressed={al.scope === 'genome'} onClick={() => al.setView({ scope: 'genome' })}>genome-wide</button>
             </div>
             <label>match N (bins)<input aria-label="Match N" type="number" min={0} max={50} value={al.matchN} onChange={(e) => al.setView({ matchN: Math.max(0, Math.min(50, Math.round(+e.target.value || 0))) })} style={{ width: 60 }} /></label>
-            <button className="btn-sm" disabled={!tracksMatch} onClick={() => downloadText(comparisonTsv(runHeader(shown, al.matchN, al.depthSource, nRounds, al.scope === 'genome' ? 'genome-wide' : chromMeta.name), t1, t2, t3), 'allelic_vs_depth.tsv')}>allelic_vs_depth.tsv</button>
+            <button className="btn-sm" disabled={!tracksMatch} onClick={() => downloadText(comparisonTsv(runHeader(shown, al.matchN, al.depthSource, nRounds, al.scope === 'genome' ? 'genome-wide' : chromMeta.name, meta?.identity.hash), t1, t2, t3), 'allelic_vs_depth.tsv')}>allelic_vs_depth.tsv</button>
           </div>
           <h4>Breakpoint agreement · {al.scope === 'genome' ? 'genome-wide' : chromMeta.name}</h4>
           <div className="table-scroll"><table className="tbl small" aria-label="Breakpoint agreement"><thead><tr><th>source</th><th>depth bps</th><th>allelic bps</th><th>matched</th><th>depth only</th><th>allelic only</th><th>median offset</th></tr></thead>

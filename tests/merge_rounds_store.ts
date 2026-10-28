@@ -1,6 +1,6 @@
 // Run with: web/node_modules/.bin/esbuild tests/merge_rounds_store.ts --bundle --format=esm --platform=node --outfile=tests/_bundle/merge_rounds_store.mjs
 //           node tests/_bundle/merge_rounds_store.mjs
-import { useIntegration } from '../web/src/integrationStore'
+import { DEPTH_CHANGED_NOTICE, checkSavedIdentity, useIntegration } from '../web/src/integrationStore'
 
 let failures = 0
 function eq(actual: unknown, expected: unknown, label: string) {
@@ -35,4 +35,20 @@ useIntegration.setState({ recall: st, recallKaryo: new Uint8Array(1), recallSign
 useIntegration.getState().restore({ rounds: [] })
 eq(useIntegration.getState().recall, null, 'restore clears recall')
 eq(useIntegration.getState().karyoMode, 'before', 'restore resets karyoMode')
+// saved depth identity: notice only when rounds exist and the identity differs
+const metaStub: any = { identity: { hash: 'h-new' } }
+useIntegration.setState({ meta: null })
+useIntegration.getState().restore({ rounds: [round], depthIdentity: 'h-old' })
+eq(useIntegration.getState().roundsNotice, null, 'identity compare waits for meta')
+useIntegration.setState({ meta: metaStub })
+;checkSavedIdentity(useIntegration.getState, useIntegration.setState as any)
+eq(useIntegration.getState().roundsNotice, DEPTH_CHANGED_NOTICE, 'different identity: notice once meta arrives')
+useIntegration.getState().restore({ rounds: [round], depthIdentity: 'h-new' })
+eq(useIntegration.getState().roundsNotice, null, 'equal identity: no notice')
+useIntegration.getState().restore({ rounds: [round] })
+eq(useIntegration.getState().roundsNotice, null, 'no saved identity: no notice')
+useIntegration.getState().restore({ rounds: [], depthIdentity: 'h-old' })
+eq(useIntegration.getState().roundsNotice, null, 'no rounds: no notice')
+eq(useIntegration.getState().serialize().depthIdentity, 'h-new', 'serialize stores the loaded identity')
+
 if (failures) { console.error(`${failures} failure(s)`); process.exit(1) } else console.log('all merge_rounds_store checks passed')

@@ -39,7 +39,7 @@ def test_normalize_defaults_and_errors():
     s = aa.normalize('abs_dbaf', {})
     assert s == {'min_at': 10, 'k': 6, 'n_permutations': 1000, 'alpha': 0.001, 'min_child_bins': 20, 'min_terminal_bins': 50, 'global_pool': 'genome'}
     for bad, field in [({'alpha': 0}, 'alpha'), ({'alpha': 0.2}, 'alpha'), ({'k': 2.5}, 'k'), ({'min_at': 0}, 'min_at'),
-                       ({'n_permutations': 'x'}, 'n_permutations'), ({'zzz': 1}, 'zzz'), ({'global_pool': 'cell'}, 'global_pool')]:
+                       ({'n_permutations': 'x'}, 'n_permutations'), ({'zzz': 1}, 'zzz'), ({'global_pool': 'cell'}, 'global_pool'), ({'k': float('inf')}, 'k')]:
         try:
             aa.normalize('abs_dbaf', bad)
         except ValueError as e:

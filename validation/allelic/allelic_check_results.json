@@ -1,6 +1,6 @@
 {
  "panels": 10,
- "runSeconds": 0,
+ "runSeconds": 15,
  "chr8": [
   [
    "cluster0",
@@ -108,10 +108,10 @@
   "# settings: {\"min_at\":10,\"k\":6,\"n_permutations\":1000,\"alpha\":0.001,\"min_child_bins\":20,\"min_terminal_bins\":50,\"global_pool\":\"genome\"}",
   "# match N: 3 bins",
   "# depth segments: current round (0 merge rounds)",
+  "# depth identity: 522163c7e8c70afe",
   "# table 1 scope: genome-wide",
   "# table 1: breakpoint agreement",
-  "source\tdepth_bps\tallelic_bps\tmatched\tdepth_only\tallelic_only\tmedian_offset",
-  "cluster0\t137\t7\t1\t136\t6\t0"
+  "source\tdepth_bps\tallelic_bps\tmatched\tdepth_only\tallelic_only\tmedian_offset"
  ],
  "yRangeSigned": [
   -0.5,

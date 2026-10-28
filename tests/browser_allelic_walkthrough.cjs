@@ -1,4 +1,4 @@
-// Allelic segmentation walkthrough (2026-10-28): tab, tracks before a run, |dBAF| run, tables, signal switch, depth original.
+// Allelic segmentation walkthrough (2026-10-28): tab, tracks before a run, |dBAF| run, tables, signal switch, depth unmerged.
 // Requires a private server (python3 run.py --port 8799; BASE_URL=http://127.0.0.1:8799) and Playwright + Chromium:
 //   PLAYWRIGHT_MODULE=/path/to/node_modules/playwright CHROMIUM_PATH=/path/to/chrome BASE_URL=http://127.0.0.1:8799 \
 //   node tests/browser_allelic_walkthrough.cjs
@@ -33,7 +33,7 @@ const fs=require('fs'),path=require('path'),assert=require('assert/strict');
   await page.getByText(/Segments shown are from an earlier run/).waitFor();
   await page.waitForFunction(()=>{const e=document.querySelector('.allelic-view .js-plotly-plot');return !!(e&&e.layout&&e.layout.yaxis2&&e.layout.yaxis2.range&&e.layout.yaxis2.range[0]===-0.5)},null,{timeout:120000});
   const yRange=await page.evaluate(()=>document.querySelector('.allelic-view .js-plotly-plot').layout.yaxis2.range);
-  await page.getByRole('group',{name:'Depth segments'}).getByRole('button',{name:'original'}).click();
+  await page.getByRole('group',{name:'Depth segments'}).getByRole('button',{name:'unmerged'}).click();
   const out=path.join(__dirname,'..','validation','allelic');fs.mkdirSync(out,{recursive:true});
   await page.screenshot({path:path.join(out,'allelic.png'),fullPage:true});
   const result={panels,runSeconds,chr8,genome,shapesAbs,tsvHead:tsv.split('\n').slice(0,8),yRangeSigned:yRange,errors};

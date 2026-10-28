@@ -55,71 +55,61 @@
    "chromosome": "chr17",
    "changed_breakpoints": 13,
    "old": 33,
-   "new": 46,
-   "changed": 13
+   "new": 46
   },
   {
    "chromosome": "chr18",
    "changed_breakpoints": 12,
    "old": 34,
-   "new": 22,
-   "changed": 12
+   "new": 22
   },
   {
    "chromosome": "chr12",
    "changed_breakpoints": 12,
    "old": 43,
-   "new": 45,
-   "changed": 12
+   "new": 45
   },
   {
    "chromosome": "chr7",
    "changed_breakpoints": 12,
    "old": 82,
-   "new": 86,
-   "changed": 12
+   "new": 86
   },
   {
    "chromosome": "chr5",
    "changed_breakpoints": 11,
    "old": 66,
-   "new": 65,
-   "changed": 11
+   "new": 65
   },
   {
    "chromosome": "chr8",
    "changed_breakpoints": 7,
    "old": 41,
-   "new": 48,
-   "changed": 7
+   "new": 48
   },
   {
    "chromosome": "chr10",
    "changed_breakpoints": 6,
    "old": 50,
-   "new": 56,
-   "changed": 6
+   "new": 56
   },
   {
    "chromosome": "chr2",
    "changed_breakpoints": 5,
    "old": 54,
-   "new": 55,
-   "changed": 5
+   "new": 55
   },
   {
    "chromosome": "chr4",
    "changed_breakpoints": 5,
    "old": 35,
-   "new": 30,
-   "changed": 5
+   "new": 30
   },
   {
    "chromosome": "chr6",
    "changed_breakpoints": 4,
    "old": 56,
-   "new": 56,
-   "changed": 4
+   "new": 56
   }
  ],
  "p_global_shared": {

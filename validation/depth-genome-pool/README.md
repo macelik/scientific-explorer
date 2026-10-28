@@ -2,7 +2,7 @@
 
 The app's depth cluster breakpoints were made by `run_bootstrap_diagnostics.py`, whose global permutation test sampled from each chromosome's own bins (`recursive_getbp(seq, seq, ...)`). Original pyEpi passes the whole cell (`counts.X[i, :]`). `tools/segment_depth_genome_pool.py` recomputes the six segmentations (cluster0..cluster4 and all) with each pseudobulk's whole genome (25,337 bins) as the pool, at the same settings (k 6, 1000 permutations, alpha 0.001, min child 20, min terminal 50), using the copied recursion that reproduces the original file 814/814 with the chromosome pool. The app defaults now point at the new files. The originals in `integration-story/data/` were not touched.
 
-Run: 58 s on 18 workers; 823 breakpoints; 17,222 audit rows. Record in `integration-story/data/genome_pool/run.json`. The run is deterministic (a second run gave a byte-identical breakpoints file). Derived tables and figures were regenerated with `make_karyograms.py` (per-cell CN calling took about 200 s).
+Run: 60.7 s on 18 workers (`run.json`; the first run took 58 s); 823 breakpoints; 17,222 audit rows. Record in `integration-story/data/genome_pool/run.json`. The run is deterministic (a second run gave a byte-identical breakpoints file). Derived tables and figures were regenerated with `make_karyograms.py` (per-cell CN calling took about 200 s).
 
 ## What changed
 
@@ -18,7 +18,7 @@ Run: 58 s on 18 workers; 823 breakpoints; 17,222 audit rows. Record in `integrat
 
 Shared means the same source, chromosome and chromosome-local bin. 767 of 814 old breakpoints (94%) reappear; 47 disappear and 56 are new. Shared breakpoints keep their recursion depth in every case.
 
-Chromosomes with the most changed breakpoints (old-only plus new-only; old to new total): chr17 13 (33 to 46), chr18 12 (34 to 22), chr12 12 (43 to 45), chr7 12 (82 to 86), chr5 11 (66 to 65), chr8 7 (41 to 48), chr10 6 (50 to 56), chr2 5 (54 to 55), chr4 5 (35 to 30), chr6 4 (56 to 56).
+Chromosomes with the most changed breakpoints (old-only plus new-only; old to new total): chr17 13 (33 to 46), chr18 12 (34 to 22), chr12 12 (43 to 45), chr7 12 (82 to 86), chr5 11 (66 to 65), chr8 7 (41 to 48), chr10 6 (50 to 56), chr2 5 (54 to 55), chr4 5 (35 to 30), chr6 4 (56 to 56). Chromosomes chr9 and chr3 also have 4 changed breakpoints, tied with the 10th, and are not listed.
 
 Median p_global of the shared breakpoints is 0.000999 (1/1001, the floor for 1000 permutations) both before and after; the mean is the same, so p_global does not separate the two segmentations at this alpha. Full numbers are in `comparison.json`.
 

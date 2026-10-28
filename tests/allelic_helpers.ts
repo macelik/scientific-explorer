@@ -1,7 +1,7 @@
 // tests/allelic_helpers.ts
 // Run with: web/node_modules/.bin/esbuild tests/allelic_helpers.ts --bundle --format=esm --platform=node --outfile=tests/_bundle/allelic_helpers.mjs
 //           node tests/_bundle/allelic_helpers.mjs
-import { DEFAULT_SETTINGS, DEFAULT_VIEW, agreementRows, allelicFromSession, allelicSegmentRows, bpDistance, callShares, comparisonTsv, depthSegmentRows, matchBreakpoints, sameRun, settingsProblems, sharesText, type AllelicBreakpoint, type AllelicSegment } from '../web/src/allelic'
+import { DEFAULT_SETTINGS, DEFAULT_VIEW, agreementRows, allelicFromSession, allelicSegmentRows, bpDistance, callShares, comparisonTsv, depthSegmentRows, runHeader, matchBreakpoints, sameRun, settingsProblems, sharesText, type AllelicBreakpoint, type AllelicSegment } from '../web/src/allelic'
 
 let failures = 0
 function eq(actual: unknown, expected: unknown, label: string) {
@@ -59,5 +59,10 @@ eq(allelicFromSession(JSON.parse(JSON.stringify(saved))), { view: saved, notice:
 const junk = allelicFromSession({ signal: 'baf', settings: { alpha: 7 }, chrom: 3, matchN: -1 })
 eq(junk.view, DEFAULT_VIEW, 'junk: defaults')
 eq(junk.notice?.startsWith('Saved allelic settings could not be applied: '), true, 'junk: notice')
+const job: any = { signal: 'abs_dbaf', settings: DEFAULT_SETTINGS }
+const hdr = runHeader(job, 5, 'original', 2, 'chr8', 'abc123')
+eq(hdr.includes('depth segments: unmerged (no merge rounds)'), true, 'header: unmerged wording')
+eq(hdr.includes('depth identity: abc123'), true, 'header: identity line')
+eq(runHeader(job, 5, 'current', 2, 'chr8', undefined).includes('depth identity: unknown'), true, 'header: identity unknown')
 
 if (failures) { console.error(`${failures} failure(s)`); process.exit(1) } else console.log('all allelic helper checks passed')
