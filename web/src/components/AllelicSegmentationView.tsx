@@ -37,11 +37,12 @@ export default function AllelicSegmentationView() {
   const stale = !!shown && !sameRun(shown, al.signal, al.settings)
   const signed = SIGNALS.find((s) => s.id === al.signal)!.signed
   const sources = (meta?.sources ?? []).filter((s) => al.sources.includes(s))
-  const trackValues = useMemo(() => Object.fromEntries((al.tracks?.tracks ?? []).map((t) => [t.source, t.values])), [al.tracks])
+  const tracksMatch = !!al.tracks && al.tracks.chrom === chromMeta.name && al.tracks.signal === al.signal && al.tracks.min_at === al.settings.min_at
+  const trackValues = useMemo(() => (tracksMatch ? Object.fromEntries(al.tracks!.tracks.map((t) => [t.source, t.values])) : {}), [al.tracks, tracksMatch])
 
   // ---------------- tracks
   const fig = useMemo(() => {
-    if (!meta || !ig.pb || !al.tracks || al.tracks.chrom !== chromMeta.name || !sources.length) return null
+    if (!meta || !ig.pb || !al.tracks || !tracksMatch || !sources.length) return null
     const nBins = exMeta.dataset.identity.n_bins
     const mb: number[] = []; for (let i = 0; i < chromMeta.n; i++) mb.push(bins[2 * (chromMeta.offset + i)] / MB)
     const endsMb = Array.from({ length: chromMeta.n }, (_, i) => bins[2 * (chromMeta.offset + i) + 1] / MB)
@@ -91,12 +92,12 @@ export default function AllelicSegmentationView() {
     })
     Object.assign(layout, { height: Math.max(300, 120 * nP + 60), margin: { l: 70, r: 14, t: 20, b: 40 }, paper_bgcolor: 'white', plot_bgcolor: 'white', font: { size: 11 }, hovermode: presentation ? false : 'closest', shapes, showlegend: false, uirevision: chromMeta.name, xaxis: { title: { text: `${chromMeta.name} position (Mb)` }, range: [mb[0], xEnd], anchor: `y${nP}`, gridcolor: '#f1f5f9' } })
     return { data, layout }
-  }, [meta, ig.pb, al.tracks, chromMeta, sources.join(','), localSegs, depthBps, shown, stale, signed, al.signal, al.settings.min_at, presentation, bins])
+  }, [meta, ig.pb, al.tracks, tracksMatch, chromMeta, sources.join(','), localSegs, depthBps, shown, stale, signed, al.signal, al.settings.min_at, presentation, bins])
 
   // ---------------- tables
   const chroms = al.scope === 'genome' ? exMeta.chromosomes.map((c) => c.name) : [chromMeta.name]
   const t1 = useMemo(() => (shown && depthBps ? agreementRows(sources, chroms, depthBps, shown.result!.breakpoints, al.matchN) : []), [shown, depthBps, sources.join(','), chroms.join(','), al.matchN])
-  const t2 = useMemo(() => (shown ? depthSegmentRows(localSegs.filter((g) => sources.includes(g.group)), trackValues, shown.result!.breakpoints, chromMeta.name, al.matchN) : []), [shown, localSegs, trackValues, sources.join(','), chromMeta, al.matchN])
+  const t2 = useMemo(() => (shown && tracksMatch ? depthSegmentRows(localSegs.filter((g) => sources.includes(g.group)), trackValues, shown.result!.breakpoints, chromMeta.name, al.matchN) : []), [shown, tracksMatch, localSegs, trackValues, sources.join(','), chromMeta, al.matchN])
   const t3 = useMemo(() => (shown ? allelicSegmentRows(shown.result!.segments, localSegs, sources, chromMeta.name) : []), [shown, localSegs, sources.join(','), chromMeta])
 
   const setSetting = (k: Exclude<keyof AdSettings, 'global_pool'>, v: string) => al.setView({ settings: { ...al.settings, [k]: v === '' ? NaN : +v } })
@@ -150,14 +151,14 @@ export default function AllelicSegmentationView() {
               <button className={`btn-sm${al.scope === 'genome' ? ' on' : ''}`} aria-pressed={al.scope === 'genome'} onClick={() => al.setView({ scope: 'genome' })}>genome-wide</button>
             </div>
             <label>match N (bins)<input aria-label="Match N" type="number" min={0} max={50} value={al.matchN} onChange={(e) => al.setView({ matchN: Math.max(0, Math.min(50, Math.round(+e.target.value || 0))) })} style={{ width: 60 }} /></label>
-            <button className="btn-sm" onClick={() => downloadText(comparisonTsv(runHeader(shown, al.matchN, al.depthSource, nRounds, al.scope === 'genome' ? 'genome-wide' : chromMeta.name), t1, t2, t3), 'allelic_vs_depth.tsv')}>allelic_vs_depth.tsv</button>
+            <button className="btn-sm" disabled={!tracksMatch} onClick={() => downloadText(comparisonTsv(runHeader(shown, al.matchN, al.depthSource, nRounds, al.scope === 'genome' ? 'genome-wide' : chromMeta.name), t1, t2, t3), 'allelic_vs_depth.tsv')}>allelic_vs_depth.tsv</button>
           </div>
           <h4>Breakpoint agreement · {al.scope === 'genome' ? 'genome-wide' : chromMeta.name}</h4>
           <div className="table-scroll"><table className="tbl small" aria-label="Breakpoint agreement"><thead><tr><th>source</th><th>depth bps</th><th>allelic bps</th><th>matched</th><th>depth only</th><th>allelic only</th><th>median offset</th></tr></thead>
             <tbody>{t1.map((r) => <tr key={r.source}><td style={{ color: SOURCE_COLORS[r.source] }}>{r.source}</td><td>{r.depth}</td><td>{r.allelic}</td><td>{r.matched}</td><td>{r.depthOnly}</td><td>{r.allelicOnly}</td><td>{fmt(r.medianOffset, 1)}</td></tr>)}</tbody></table></div>
           <h4>Depth segments seen by the allelic signal · {chromMeta.name}</h4>
           <div className="table-scroll"><table className="tbl small" aria-label="Depth segments seen by the allelic signal"><thead><tr><th>source</th><th>bins</th><th>CN call</th><th>kept bins</th><th>mean</th><th>sd</th><th>allelic bps inside</th></tr></thead>
-            <tbody>{t2.map((r) => <tr key={`${r.source}${r.bin_start}`}><td style={{ color: SOURCE_COLORS[r.source] }}>{r.source}</td><td>{r.bin_start}–{r.bin_end}</td><td>{r.cn_call.toFixed(1)}</td><td>{r.kept}</td><td>{fmt(r.mean)}</td><td>{fmt(r.sd)}</td><td>{r.allelicInside || ''}</td></tr>)}</tbody></table></div>
+            <tbody>{!tracksMatch && <tr><td colSpan={7}>loading tracks…</td></tr>}{t2.map((r) => <tr key={`${r.source}${r.bin_start}`}><td style={{ color: SOURCE_COLORS[r.source] }}>{r.source}</td><td>{r.bin_start}–{r.bin_end}</td><td>{r.cn_call.toFixed(1)}</td><td>{r.kept}</td><td>{fmt(r.mean)}</td><td>{fmt(r.sd)}</td><td>{r.allelicInside || ''}</td></tr>)}</tbody></table></div>
           <h4>Allelic segments seen by depth · {chromMeta.name}</h4>
           <div className="table-scroll"><table className="tbl small" aria-label="Allelic segments seen by depth"><thead><tr><th>source</th><th>bins</th><th>kept bins</th><th>mean</th><th>depth calls spanned</th></tr></thead>
             <tbody>{t3.map((r) => <tr key={`${r.source}${r.bin_start}`}><td style={{ color: SOURCE_COLORS[r.source] }}>{r.source}</td><td>{r.bin_start}–{r.bin_end}</td><td>{r.kept}</td><td>{fmt(r.mean)}</td><td>{r.spanned}</td></tr>)}</tbody></table></div>
