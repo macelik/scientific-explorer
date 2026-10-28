@@ -1,0 +1,23 @@
+{
+ "settings": {
+  "k": 6,
+  "n_permutations": 1000,
+  "alpha": 0.001,
+  "min_child_bins": 20,
+  "min_terminal_bins": 50
+ },
+ "global_pool": "chromosome",
+ "n_reference": 814,
+ "n_reproduced": 814,
+ "missing": [],
+ "n_missing": 0,
+ "extra": [],
+ "n_extra": 0,
+ "mismatched": [],
+ "n_mismatched": 0,
+ "seconds": 63.4,
+ "workers": 18,
+ "reference": "/home/mami/Desktop/EGA/pyEpiAneufinder/analysis/2026-09-16-interactive-app-planning/integration-story/data/raw_accepted_breakpoints.tsv",
+ "h5ad": "/home/mami/Desktop/EGA/pyEpiAneufinder/analysis/2026-09-16-interactive-app-planning/pyepi_results/count_matrix.h5ad",
+ "package_dir": "/home/mami/Desktop/EGA/pyEpiAneufinder/analysis/2026-09-16-interactive-app-planning/pyEpiAneufinder"
+}
