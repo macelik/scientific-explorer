@@ -16,3 +16,5 @@ tests/_bundle/merge_rounds_helpers.mjs
 tests/_bundle/merge_rules_helpers.mjs
 tests/_bundle/track_helpers.mjs
 tests/_bundle/merge_rounds_store.mjs
+tests/_bundle/allelic_helpers.mjs
+tests/_bundle/allelic_store.mjs
