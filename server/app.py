@@ -437,6 +437,23 @@ register_hatch_merge(app, lambda: integration)
 from .cn_recall_api import integration_context, register_cn_recall
 register_cn_recall(app, integration_context(lambda: integration, lambda: jobs, cfg.package_dir))
 
+from .allelic_api import register_allelic
+from .allelic_data import AllelicData
+from .integration import SOURCES as _INTEGRATION_SOURCES
+
+allelic_data: Optional[AllelicData] = None
+
+
+def _allelic() -> Optional[AllelicData]:
+    global allelic_data
+    if allelic_data is None and integration is not None and integration.available and store is not None:
+        allelic_data = AllelicData(cfg.allelic_dir, cfg.cache_dir, store.var_seq, store.var_start, store.var_end,
+                                   list(integration.cell_ids), integration.members, _INTEGRATION_SOURCES)
+    return allelic_data
+
+
+register_allelic(app, _allelic, lambda: jobs.background if jobs else None, cfg.package_dir, cfg.cache_dir)
+
 DIST = os.path.join(APP_DIR, "web", "dist")
 if os.path.isdir(DIST):
     app.mount("/assets", StaticFiles(directory=os.path.join(DIST, "assets")), name="assets")
