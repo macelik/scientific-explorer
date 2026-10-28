@@ -85,7 +85,9 @@ HA, HB and AT are a source's pseudobulk sums for one bin.
 - **Size rules, in kept bins:**
   - Both children must have at least `min_child_bins` kept bins.
   - A child touching the chromosome's first or last kept bin must reach at least `min_terminal_bins` kept bins from that end. Internal node edges are not constrained.
-- **Permutation tests:** the local test shuffles within the node. The global test draws from the same chromosome's kept bins, as the depth run did: it called `recursive_getbp(seq, seq, …)` per chromosome.
+- **Permutation tests:** the local test shuffles within the node. The global test samples random segment pairs from the **global pool**, a setting:
+  - `genome` (default): all of the source's kept bins genome-wide, in genome order. This is how original pyEpi applies it: `pyEpiAneufinder.py` passes the cell's whole genome (`counts.X[i, :]`) as `seq_data_cell` for every chromosome.
+  - `chromosome`: the chromosome's own kept bins. This is how the depth breakpoints in `raw_accepted_breakpoints.tsv` were made: `run_bootstrap_diagnostics.py` called `recursive_getbp(seq, seq, …)`. The tab notes this difference, since it alone can make depth and allelic breakpoints disagree.
 - **Statistics:** pyEpi's `seq_dist_ad`, `permutation_test_ad` and `global_permutation_test_ad`, called through `server/pyepi_adapter.py` with their default `random_state` 42. Only the recursion and the geometry check are copied; nothing statistical is re-implemented.
 
 ### Settings and defaults
@@ -99,8 +101,9 @@ HA, HB and AT are a source's pseudobulk sums for one bin.
 | alpha | 0.001 | 0 < alpha ≤ 0.1 |
 | min_child_bins | 20 | 1–500 |
 | min_terminal_bins | 50 | 0–500 |
+| global_pool | genome | genome / chromosome |
 
-The defaults are the depth run's settings, from the arguments of `run_bootstrap_diagnostics.py`. Section 7 checks them by reproducing the depth breakpoints.
+k, permutations, alpha, min child and min terminal default to the depth run's settings, from the arguments of `run_bootstrap_diagnostics.py`. The global pool defaults to original pyEpi's genome-wide pool. Section 7 checks the copied recursion by reproducing the depth breakpoints with the chromosome pool.
 
 ### Mapping back to the genome
 
@@ -133,13 +136,13 @@ The defaults are the depth run's settings, from the arguments of `run_bootstrap_
 ## 4. UI: tab "Integration · allelic segmentation"
 
 - **Placement:** after "Integration · segmentation & CN" in `App.tsx`.
-- **Component:** `AllelicSegmentationView.tsx`. State lives in the integration store and is saved with the session.
+- **Component:** `AllelicSegmentationView.tsx`. State lives in its own store, `web/src/allelicStore.ts`, saved with the session under the key `allelic`.
 
 ### Controls
 
 - **Signal:** a select with the four labels.
 - **min AT:** a number field.
-- **AD settings:** a collapsed group with k, permutations, alpha, min child and min terminal.
+- **AD settings:** a collapsed group with k, permutations, alpha, min child, min terminal and the global pool (genome / chromosome). Under it, a note: "The depth breakpoints were made with the chromosome pool; original pyEpi uses the genome pool."
 - **Run segmentation:**
   - Shows the progress line: "running · cluster2 · chr8 · 74/132".
   - If the shown result's signal and settings differ from the current controls, a note reads "Segments shown are from an earlier run (signal …, settings …). Run again to update."
@@ -207,7 +210,7 @@ Before any run, the allelic panel shows the dots only, with the hint "Run segmen
 ## 7. Testing
 
 - **Reproduction of the depth breakpoints, a validation script:**
-  - Run the copied scan on the depth pseudobulk (the mean of `X` over each source's cells, as `run_bootstrap_diagnostics.py` builds it), with every bin kept, k = 6, 1000 permutations, alpha 0.001, min child 20 and min terminal 50.
+  - Run the copied scan on the depth pseudobulk (the mean of `X` over each source's cells, as `run_bootstrap_diagnostics.py` builds it), with every bin kept, k = 6, 1000 permutations, alpha 0.001, min child 20, min terminal 50 and the chromosome global pool (the depth run's).
   - It must match `integration-story/data/raw_accepted_breakpoints.tsv` on the same (source, chromosome, absolute_bin) set, and on recursion_depth, p_local and p_global for each.
   - **If it does not match,** the defaults are wrong. Stop and report the differences before building the UI.
 - **Unit tests, synthetic, no real data:**
