@@ -1,0 +1,187 @@
+{
+  "date": "2026-11-04",
+  "repository": "macelik/scientific-explorer",
+  "branch": "allelic-segmentation",
+  "repo_commit_at_preparation": "994fb3afcf4caa93f6b52af7267d3668d469eec2",
+  "sample": "MCF10-A development dataset; not a region-level CN truth set",
+  "dimensions": {
+    "cells": 3460,
+    "retained_bins": 25337,
+    "nominal_bin_size_bp": 100000
+  },
+  "coordinate_convention": "1-based inclusive",
+  "upstream": {
+    "repository": "https://github.com/colomemaria/pyEpiAneufinder.git",
+    "commit": "e8305ea2162634d07e92a3bb401df672e48f217b",
+    "local_checkout_head_at_audit": "c77d82c356642ed1b3ace978c74353763a67a28d",
+    "public_commit_verified": true,
+    "package_files_sha256": {
+      "__init__.py": "f160b037ceb33b3bad7addedd0431308e6a6470c885b08b27efb0a6754f22ab7",
+      "assign_somy.py": "c0fa97799c06f5d3d966ecc21b550474a6b8d571e474df2e6b7f4c6ed10d6e02",
+      "distance_statistics.py": "ef62dca7f4e5964a7604160eb86348d96ea76fd2f8bb2d9cfbb52b81640141c7",
+      "evaluate_cnv_results.py": "de37b3caf695d489db274c470b1cb9d45d5e16cb6514584d5ab3e6473ae66400",
+      "get_breakpoints.py": "ed00326b1cd3669d88d72de2c41b61e8a07a0d32403cb11eecda68526cdedb20",
+      "karyotype_metrics.py": "67178fbb60ffa703386f94239d02d715469eb1a2d937a9acf78c2df6e3f2691b",
+      "makeWindows.py": "16f83fe7e24856c0b9fbf03f4d30cca6c3de9b476889cd31915d66be48573e33",
+      "plotting.py": "142a53543e5cc76910198978aaf33e4f221b3ae16825feecf131e21628f209d7",
+      "postprocessing.py": "dd8edcf7fd528fca7f6ce4b80020d163df87e05ac28789cb5e847235d79899e5",
+      "pyEpiAneufinder.py": "5864863775d70f8fe8d561b771f4cdce8926b69f52ee2094816d0feff737ad60",
+      "pyEpiAneufinder_v1.py": "868ed30dd2798849adac18a0c363d78fb4733e079f4bf2da3ca9196469110b51",
+      "render_fragments.py": "2e67d4879ef5af55b54dd57427508d48b92ecba0a209056f47ff854da7e80906"
+    },
+    "note": "Local HEAD is nine documentation/analysis commits ahead of this public source commit; all 12 package Python files are identical. Fetch the public commit and verify hashes. Source identity does not prove historical execution."
+  },
+  "missing_for_complete_upstream_reanalysis": [
+    "pre-QC matrix retaining excluded cells and bins",
+    "original fragments/BAM and definitive alignment/reference/filtering invocation",
+    "historical preprocessing parameters and intermediate GC predictions",
+    "SNP-level selection/phase-set and pileup provenance",
+    "independent region-level DNA truth"
+  ],
+  "files": [
+    {
+      "path": "pyepi_results/count_matrix.h5ad",
+      "size_bytes": 272099683,
+      "sha256": "b98a4f86cb80b86dc49382ffa90ab44cc6b3f1028f8481c80535cbf39683d5f8",
+      "role": "depth inputs or existing per-cell baseline"
+    },
+    {
+      "path": "pyepi_results/binned_genome.csv",
+      "size_bytes": 1304293,
+      "sha256": "e5176b0950287b53e75eab7d3d87a880e35bb67bd5acce64b10d69715647ad30",
+      "role": "depth inputs or existing per-cell baseline"
+    },
+    {
+      "path": "pyepi_results/hg38-blacklist.v2.bed",
+      "size_bytes": 26898,
+      "sha256": "31c69342df43bbc19dd8ef2886611a8150cb53e90f341de14d30e742c9251737",
+      "role": "depth inputs or existing per-cell baseline"
+    },
+    {
+      "path": "pyepi_results/breakpoints.csv",
+      "size_bytes": 11889992,
+      "sha256": "fd212c206c72e22b5788732fb8baa68d8e475e0682078ab5f04f2e652999d5c1",
+      "role": "depth inputs or existing per-cell baseline"
+    },
+    {
+      "path": "pyepi_results/clusters.json",
+      "size_bytes": 330121178,
+      "sha256": "604297c707ad9aa2883999cc851f1ab2b0577ffcef4a2a0433703da044a9ee62",
+      "role": "depth inputs or existing per-cell baseline"
+    },
+    {
+      "path": "integration-story/data/integrated.h5mu",
+      "size_bytes": 310813168,
+      "sha256": "b6c9c5bce06b47a3d85d0c26e6b42f2a70dfcb6c72bd009aaab695ae78658bec",
+      "role": "cluster labels and integration metadata"
+    },
+    {
+      "path": "integration-story/data/genome_pool/derived/karyogram_cluster_segments.tsv",
+      "size_bytes": 52475,
+      "sha256": "10ae63af37e002e458d2d89e1dd0d7e08b12176866d0cfd78d50ca123ccdbc0f",
+      "role": "current genome-pool segmentation and derived baseline"
+    },
+    {
+      "path": "integration-story/data/genome_pool/derived/percell_best_s.tsv",
+      "size_bytes": 138003,
+      "sha256": "c98cd3be95b93b190ab48e0b7368330cf58205d839637dc9404752900670e356",
+      "role": "current genome-pool segmentation and derived baseline"
+    },
+    {
+      "path": "integration-story/data/genome_pool/derived/percell_cn_states.npy",
+      "size_bytes": 350664208,
+      "sha256": "7c78f083e85282d1bc22bcf7856a8da5cfe96f636002797769c747c7c13b0d36",
+      "role": "current genome-pool segmentation and derived baseline"
+    },
+    {
+      "path": "integration-story/data/genome_pool/raw_accepted_breakpoints.tsv",
+      "size_bytes": 84734,
+      "sha256": "b6679fd979ffed12d8d4c72ccabb53f8ee9b68af8d7551e02138e7c577a88405",
+      "role": "current genome-pool segmentation and derived baseline"
+    },
+    {
+      "path": "integration-story/data/genome_pool/run.json",
+      "size_bytes": 648,
+      "sha256": "e17873a572a62acdfa57a9865d162ba7441becd746ca7aa538b2e31863f20012",
+      "role": "current genome-pool segmentation and derived baseline"
+    },
+    {
+      "path": "integration-story/data/genome_pool/segmentation_candidate_audit.tsv",
+      "size_bytes": 2183973,
+      "sha256": "a8c58ac125900283f88a693d501097aaf6dadbd96d25b93eb4f63e9c1c6dd99d",
+      "role": "current genome-pool segmentation and derived baseline"
+    },
+    {
+      "path": "integration-story/data/raw_accepted_breakpoints.tsv",
+      "size_bytes": 83800,
+      "sha256": "d024eab3c62db6dc7d5489e2573ffa08a0fc8a482137b64163db27ab96f61525",
+      "role": "older chromosome-pool reproduction reference"
+    },
+    {
+      "path": "default_300cells/README.md",
+      "size_bytes": 4438,
+      "sha256": "51ed5a14f74722ce78f13d9a83d6d0ee11983750587a07e50ff7d4831793da69",
+      "role": "existing cohort membership and baseline"
+    },
+    {
+      "path": "default_300cells/bins.csv",
+      "size_bytes": 853458,
+      "sha256": "6e7cc1ebf4d67d09fe6e782f608604cbfd4d93c16173da1211925038e1cca100",
+      "role": "existing cohort membership and baseline"
+    },
+    {
+      "path": "default_300cells/breakpoints.csv",
+      "size_bytes": 920320,
+      "sha256": "42acf225fd2496d8156efad381167226774ed7f243692201f4364d466d95fe31",
+      "role": "existing cohort membership and baseline"
+    },
+    {
+      "path": "default_300cells/cells.csv",
+      "size_bytes": 33142,
+      "sha256": "8db0e633fe5cb0fd67fbdd391d6a176ef42b356f33b6143fd18a0a90bfad50f8",
+      "role": "existing cohort membership and baseline"
+    },
+    {
+      "path": "default_300cells/cn_matrix.npy",
+      "size_bytes": 30404528,
+      "sha256": "c8830dbe3b7db1f3839e6eba79270ec9d0e3d759fc3125c481ae3ed89abbc41b",
+      "role": "existing cohort membership and baseline"
+    },
+    {
+      "path": "default_300cells/cn_matrix_bins_x_cells.csv.gz",
+      "size_bytes": 302104,
+      "sha256": "96ce3d21264e167c079c8794531ece3dce0d49ca295efac25a175c305ff1281e",
+      "role": "existing cohort membership and baseline"
+    },
+    {
+      "path": "default_300cells/region_rates.csv",
+      "size_bytes": 325,
+      "sha256": "dee05b7a158d5ffd092280e1eb7ce0f7cfcbfdf1c96d1c03e3f7f524c9fb5290",
+      "role": "existing cohort membership and baseline"
+    },
+    {
+      "path": "default_300cells/segments.csv.gz",
+      "size_bytes": 192964,
+      "sha256": "ef9cbbc841dad0284b11012cff5af073092d43cd67ec241ce5186c25e6c9c4a5",
+      "role": "existing cohort membership and baseline"
+    },
+    {
+      "path": "aligned_matrices/HA.parquet",
+      "size_bytes": 13417266,
+      "sha256": "ae513b4020193646c16fe0447c4239b2906b6c57e69b445bea61633c0799d9c5",
+      "role": "selected SNP-site haplotype observations"
+    },
+    {
+      "path": "aligned_matrices/HB.parquet",
+      "size_bytes": 13379753,
+      "sha256": "2466b0f353faa3217eb4331184f5dd79ddce52f38ea1b9b527743c16edf4e751",
+      "role": "selected SNP-site haplotype observations"
+    },
+    {
+      "path": "aligned_matrices/AT.parquet",
+      "size_bytes": 19089938,
+      "sha256": "20a64c089fdbf1ac80971e1e3754df1a93a5d9b7ff82cc181d76347760bd45c7",
+      "role": "selected SNP-site haplotype observations"
+    }
+  ]
+}

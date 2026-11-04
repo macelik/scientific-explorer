@@ -104,6 +104,9 @@ locally. It explains each research entry with steps, examples, workflow
 adaptations and citations, and includes interactive teaching models and the
 saved 300-cell summaries. See its [usage and provenance notes](interactive-guide/README.md).
 
+For an independent review that also audits QC, GC correction, zero clipping and
+normalization, use the [cloud-agent prompt and data handoff](../2026-11-04-cloud-review-handoff/README.md).
+
 The development sample is **MCF10-A, a non-malignant cell line**. The objective is a general scATAC CNV tool; sample identity is not region-level CN truth. No normal population should be assumed to exist.
 
 ## Directory ownership

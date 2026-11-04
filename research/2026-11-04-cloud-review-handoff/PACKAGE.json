@@ -1,0 +1,14 @@
+{
+  "status": "prepared_locally_not_uploaded",
+  "release_tag_proposal": "cloud-review-data-2026-11-04",
+  "filename": "cloud-review-data-2026-11-04.tar.gz",
+  "size_bytes": 419016233,
+  "sha256": "bc8d7519e5a0b636f7d0f22e2ac3f1beb89aba412881bdc74a4f221289e4d26e",
+  "sha256sums_filename": "SHA256SUMS",
+  "payload_files": 24,
+  "uncompressed_payload_bytes": 1358061289,
+  "local_output_directory": "/tmp/cnv-cloud-handoff-2026-11-04/publishable",
+  "repository_visibility_checked": "public",
+  "public_distribution_confirmation": "User explicitly authorized public GitHub publication of this 24-file package on 2026-11-04.",
+  "download_url": null
+}
