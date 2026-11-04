@@ -1,0 +1,12 @@
+family	direction	label	regions
+called	gain	consistent with imbalance	5
+called	gain	no excess imbalance at observed sites	16
+called	loss	consistent with imbalance	5
+called	loss	no excess imbalance at observed sites	41
+literature	gain	consistent with imbalance	2
+literature	gain	no excess imbalance at observed sites	1
+literature	loss	consistent with imbalance	1
+random	random	consistent with imbalance	38
+random	random	no excess imbalance at observed sites	262
+saved	comparison	consistent with imbalance	1
+saved	loss	no excess imbalance at observed sites	6

@@ -1,0 +1,11 @@
+region	edge	source	bp_start	nearest_A	nearest_B	in_both_halves_pm2
+chr7_8.3_10.7	left	all	8300001	0	0	True
+chr7_8.3_10.7	right	cluster0	10800001	1	0	True
+chr7_51.4_53.5	left	all	51400001	0	0	True
+chr7_51.4_53.5	right	all	53600001	0	0	True
+chr7_67.4_70.0	left	cluster0	67400001	0	0	True
+chr7_67.4_70.0	right	all	70000001	0	0	True
+chr7_70.0_73.3	left	all	70000001	0	0	True
+chr7_70.0_73.3	right	all	73400001	0	0	True
+chr9_22.5_26.6	left	cluster0	22500001	0	2	True
+chr9_22.5_26.6	right	all	26700001	0	0	True

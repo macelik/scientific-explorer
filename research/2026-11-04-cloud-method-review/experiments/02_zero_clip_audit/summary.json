@@ -1,0 +1,209 @@
+{
+ "experiment": "02_zero_clip_audit",
+ "deterministic": true,
+ "autosomal_grid_bins_after_blacklist": 26440,
+ "retained": 25337,
+ "removed_by_bin_filter": 1103,
+ "removed_runs": 193,
+ "removed_runs_assembly_gap_like": 7,
+ "removed_bins_non_gap": 818,
+ "longest_non_gap_runs": [
+  {
+   "chrom": "chr21",
+   "start": 18900001,
+   "end": 25300000,
+   "n_bins": 64,
+   "mean_N": 0.0,
+   "mean_GC": 0.350638125,
+   "assembly_gap_like": false
+  },
+  {
+   "chrom": "chr13",
+   "start": 53300001,
+   "end": 56200000,
+   "n_bins": 29,
+   "mean_N": 0.0,
+   "mean_GC": 0.3532017241379311,
+   "assembly_gap_like": false
+  },
+  {
+   "chrom": "chr16",
+   "start": 60900001,
+   "end": 63800000,
+   "n_bins": 29,
+   "mean_N": 0.0,
+   "mean_GC": 0.36413310344827593,
+   "assembly_gap_like": false
+  },
+  {
+   "chrom": "chr8",
+   "start": 82400001,
+   "end": 84600000,
+   "n_bins": 22,
+   "mean_N": 0.0,
+   "mean_GC": 0.3483195454545455,
+   "assembly_gap_like": false
+  },
+  {
+   "chrom": "chr11",
+   "start": 54400001,
+   "end": 56600000,
+   "n_bins": 22,
+   "mean_N": 0.045454545454545456,
+   "mean_GC": 0.34973227272727275,
+   "assembly_gap_like": false
+  },
+  {
+   "chrom": "chr13",
+   "start": 57000001,
+   "end": 59300000,
+   "n_bins": 22,
+   "mean_N": 0.0,
+   "mean_GC": 0.35002909090909085,
+   "assembly_gap_like": false
+  },
+  {
+   "chrom": "chr2",
+   "start": 77100001,
+   "end": 79200000,
+   "n_bins": 21,
+   "mean_N": 0.0,
+   "mean_GC": 0.3568119047619048,
+   "assembly_gap_like": false
+  },
+  {
+   "chrom": "chr16",
+   "start": 32000001,
+   "end": 34000000,
+   "n_bins": 20,
+   "mean_N": 0.05,
+   "mean_GC": 0.4001215,
+   "assembly_gap_like": false
+  },
+  {
+   "chrom": "chr6",
+   "start": 60500001,
+   "end": 62800000,
+   "n_bins": 19,
+   "mean_N": 0.0,
+   "mean_GC": 0.3601315789473684,
+   "assembly_gap_like": false
+  },
+  {
+   "chrom": "chr14",
+   "start": 42300001,
+   "end": 44300000,
+   "n_bins": 19,
+   "mean_N": 0.0,
+   "mean_GC": 0.34516526315789475,
+   "assembly_gap_like": false
+  }
+ ],
+ "prespecified_loci": [
+  {
+   "locus": "CDKN2A/CDKN2B (published MCF10A homozygous deletion)",
+   "chrom": "chr9",
+   "start": 21802636,
+   "end": 22009313,
+   "grid_bins": 3,
+   "retained": 1,
+   "removed_by_bin_filter": 2,
+   "N_content": 0.0
+  }
+ ],
+ "windows": [
+  {
+   "window": "chr7_8.3_10.7",
+   "grid_bins": 24,
+   "retained": 24,
+   "removed_non_gap": 0,
+   "removed_gap_like": 0
+  },
+  {
+   "window": "chr7_51.4_53.5",
+   "grid_bins": 21,
+   "retained": 19,
+   "removed_non_gap": 2,
+   "removed_gap_like": 0
+  },
+  {
+   "window": "chr7_67.4_70.0",
+   "grid_bins": 26,
+   "retained": 26,
+   "removed_non_gap": 0,
+   "removed_gap_like": 0
+  },
+  {
+   "window": "chr7_70.0_73.3",
+   "grid_bins": 33,
+   "retained": 33,
+   "removed_non_gap": 0,
+   "removed_gap_like": 0
+  },
+  {
+   "window": "chr9_20_27",
+   "grid_bins": 70,
+   "retained": 52,
+   "removed_non_gap": 18,
+   "removed_gap_like": 0
+  },
+  {
+   "window": "chr9_22.5_26.6",
+   "grid_bins": 41,
+   "retained": 25,
+   "removed_non_gap": 16,
+   "removed_gap_like": 0
+  },
+  {
+   "window": "chr9_70_100",
+   "grid_bins": 295,
+   "retained": 295,
+   "removed_non_gap": 0,
+   "removed_gap_like": 0
+  }
+ ],
+ "zeros_by_coverage_tercile_all_cells": [
+  {
+   "tercile": "low",
+   "cells": 1153,
+   "median_raw_total": 38588.0,
+   "median_frac_rawpos_to_zero": 0.014106082849301078,
+   "max_frac": 0.04541096487405212,
+   "total_negclip": 251
+  },
+  {
+   "tercile": "mid",
+   "cells": 1153,
+   "median_raw_total": 54550.0,
+   "median_frac_rawpos_to_zero": 0.00759098012949319,
+   "max_frac": 0.02258373205741627,
+   "total_negclip": 305
+  },
+  {
+   "tercile": "high",
+   "cells": 1154,
+   "median_raw_total": 78762.5,
+   "median_frac_rawpos_to_zero": 0.0048344550760062565,
+   "max_frac": 0.013999768598866135,
+   "total_negclip": 794
+  }
+ ],
+ "environment": {
+  "python": "3.10.20",
+  "platform": "Linux-6.18.44-fc-v236-x86_64-with-glibc2.39",
+  "packages": {
+   "numpy": "1.24.4",
+   "pandas": "2.2.0",
+   "scipy": "1.8.0",
+   "h5py": "3.6.0",
+   "anndata": "0.8.0",
+   "pyarrow": "23.0.0",
+   "skmisc": "0.5.2",
+   "matplotlib": "3.8.4",
+   "statsmodels": null
+  },
+  "workbench_commit_at_run": "6d4f48d79e0545fd3fb7ad84b86dbf659b57f107",
+  "pyepi_upstream_commit": "e8305ea2162634d07e92a3bb401df672e48f217b",
+  "cpu_count": 4
+ }
+}

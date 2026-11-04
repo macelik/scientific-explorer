@@ -1,0 +1,82 @@
+{
+ "experiment": "01_reconstruct_x",
+ "deterministic": true,
+ "cells": 3460,
+ "bins": 25337,
+ "seconds": 14.7,
+ "pinned_source": {
+  "render_fragments.get_loess_smoothed": "L155-L164",
+  "pyEpiAneufinder.py": "L252-L271",
+  "commit": "e8305ea2162634d07e92a3bb401df672e48f217b",
+  "loess_settings": "skmisc.loess(gc, counts, span=0.75), all other skmisc defaults"
+ },
+ "explicit_zeros_stored": {
+  "X": 0,
+  "layers/raw": 0
+ },
+ "nnz": {
+  "layers/raw": 61621243,
+  "X": 61076659,
+  "raw_minus_X": 544584
+ },
+ "reconstruction": {
+  "cells_exact_equal": 3449,
+  "cells_with_any_bin_absdiff_gt_1e-9": 11,
+  "max_abs_diff_overall": 64369.56665405019,
+  "median_max_abs_diff": 0.0,
+  "total_bins_absdiff_gt_1e-9": 201159,
+  "x_obs_rowsum_min_max": [
+   99999.99999999996,
+   100000.00000000004
+  ]
+ },
+ "fit": {
+  "fallback_cells": 0,
+  "cells_with_fit_le0": 327,
+  "cell_bins_fit_le0": 2969,
+  "cells_with_nonfinite_float": 0,
+  "cell_bins_nonfinite_float": 0,
+  "cell_bins_negative_float": 1350
+ },
+ "raw_positive_to_zero": {
+  "rounding_0_to_0.5": 543217,
+  "negative_clip": 1350,
+  "total_recon": 544567,
+  "total_observed_in_saved_X": 544584,
+  "raw_zero_but_X_positive_observed": 0,
+  "fraction_of_raw_positive": 0.008837601669281485
+ },
+ "normalization_factor": {
+  "min": 0.23104,
+  "q05": 0.306225,
+  "median": 0.547105,
+  "q95": 0.9421014999999998,
+  "max": 3.32898
+ },
+ "environment": {
+  "python": "3.10.20",
+  "platform": "Linux-6.18.44-fc-v236-x86_64-with-glibc2.39",
+  "packages": {
+   "numpy": "1.24.4",
+   "pandas": "2.2.0",
+   "scipy": "1.8.0",
+   "h5py": "3.6.0",
+   "anndata": "0.8.0",
+   "pyarrow": "23.0.0",
+   "skmisc": "0.5.2",
+   "matplotlib": "3.8.4",
+   "statsmodels": null
+  },
+  "workbench_commit_at_run": "6d4f48d79e0545fd3fb7ad84b86dbf659b57f107",
+  "pyepi_upstream_commit": "e8305ea2162634d07e92a3bb401df672e48f217b",
+  "cpu_count": 4
+ },
+ "inputs": {
+  "h5ad": "/home/user/cloud-review-data-2026-11-04/pyepi_results/count_matrix.h5ad",
+  "h5ad_sha256": "b98a4f86cb80b86dc49382ffa90ab44cc6b3f1028f8481c80535cbf39683d5f8"
+ },
+ "scratch_outputs": [
+  "/tmp/claude-0/-home-user-scientific-explorer/b1079aa7-80fd-5756-88cc-d9253976037e/scratchpad/work/gc_fitted_float32.npy",
+  "/tmp/claude-0/-home-user-scientific-explorer/b1079aa7-80fd-5756-88cc-d9253976037e/scratchpad/work/gc_corrected_prerint_float32.npy"
+ ]
+}

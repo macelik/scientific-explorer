@@ -1,0 +1,6 @@
+family	direction	n	rr_flank_raw q05/med/q95	phi q05/med/q95	phi_cluster q05/med/q95	coverage_log_slope q05/med/q95	n_below_one_copy_floor	n_phi_cluster_above_null_95pct	n_|logrr|_above_null_95pct
+called	gain	21	0.739 / 1.84 / 2.59	1.6 / 2.05 / 3.43	1.53 / 1.85 / 2.5	-0.0472 / -0.0198 / 0.0151	0	8	4
+called	loss	46	0.136 / 0.359 / 0.964	1.5 / 2.15 / 3.44	1.46 / 1.97 / 2.98	-0.0098 / 0.0246 / 0.061	30	25	28
+random	random	300	0.416 / 1.01 / 1.76	1.33 / 1.51 / 2.19	1.31 / 1.47 / 1.91	-0.0296 / 0.00195 / 0.048	26	15	15
+saved	comparison	1	1.33 / 1.33 / 1.33	1.82 / 1.82 / 1.82	1.82 / 1.82 / 1.82	-0.000459 / -0.000459 / -0.000459	0	0	0
+saved	loss	6	0.137 / 0.268 / 0.676	1.45 / 2.47 / 2.85	1.44 / 2.24 / 2.72	-0.0208 / 0.00715 / 0.0273	5	3	4

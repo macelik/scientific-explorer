@@ -1,0 +1,230 @@
+{
+ "experiment": "06_allelic_information",
+ "seed": "default_rng((20261104, 6, region_index))",
+ "n_sim": 2000,
+ "min_AT": 5,
+ "alignment_checks": {
+  "HA": {
+   "coords_match_anndata": true,
+   "n_barcodes": 3460,
+   "barcode_set_equal": true,
+   "column_order_equal_anndata": false
+  },
+  "HB": {
+   "coords_match_anndata": true,
+   "n_barcodes": 3460,
+   "barcode_set_equal": true,
+   "column_order_equal_anndata": false
+  },
+  "AT": {
+   "coords_match_anndata": true,
+   "n_barcodes": 3460,
+   "barcode_set_equal": true,
+   "column_order_equal_anndata": false
+  },
+  "AT_equals_HA_plus_HB_all_cells": true,
+  "nonnegative": true,
+  "integer_valued": true
+ },
+ "rho_used": 0.0038438180263300373,
+ "scenarios_delta": {
+  "loss_f1": 0.5,
+  "loss_f0.5": 0.16666666666666666,
+  "loss_f0.25": 0.07142857142857142,
+  "gain_f1": 0.16666666666666666,
+  "gain_f0.5": 0.1,
+  "anchored_MYC_delta_eff": 0.1060155604516495,
+  "anchored_half_MYC": 0.05300778022582475
+ },
+ "empirical_uncalled_random_S_q95": 13.415660355678453,
+ "model_null_calibration": {
+  "random_uncalled": 226,
+  "frac_uncalled_random_S_above_model_q95": 0.3141592920353982,
+  "frac_all_random_S_above_model_q95": 0.38,
+  "control_delta_eff": {
+   "lit_9p21_hemizygous_zone_approx": 0.18566856740480583,
+   "lit_MYC_8q24": 0.1060155604516495,
+   "lit_19q13_qter": 0.04913637851816493,
+   "lit_5q13_qter": 0.10860408672279002
+  }
+ },
+ "label_counts": [
+  {
+   "family": "called",
+   "direction": "gain",
+   "label": "consistent with imbalance",
+   "regions": 5
+  },
+  {
+   "family": "called",
+   "direction": "gain",
+   "label": "no excess imbalance at observed sites",
+   "regions": 16
+  },
+  {
+   "family": "called",
+   "direction": "loss",
+   "label": "consistent with imbalance",
+   "regions": 5
+  },
+  {
+   "family": "called",
+   "direction": "loss",
+   "label": "no excess imbalance at observed sites",
+   "regions": 41
+  },
+  {
+   "family": "literature",
+   "direction": "gain",
+   "label": "consistent with imbalance",
+   "regions": 2
+  },
+  {
+   "family": "literature",
+   "direction": "gain",
+   "label": "no excess imbalance at observed sites",
+   "regions": 1
+  },
+  {
+   "family": "literature",
+   "direction": "loss",
+   "label": "consistent with imbalance",
+   "regions": 1
+  },
+  {
+   "family": "random",
+   "direction": "random",
+   "label": "consistent with imbalance",
+   "regions": 38
+  },
+  {
+   "family": "random",
+   "direction": "random",
+   "label": "no excess imbalance at observed sites",
+   "regions": 262
+  },
+  {
+   "family": "saved",
+   "direction": "comparison",
+   "label": "consistent with imbalance",
+   "regions": 1
+  },
+  {
+   "family": "saved",
+   "direction": "loss",
+   "label": "no excess imbalance at observed sites",
+   "regions": 6
+  }
+ ],
+ "family_medians": [
+  {
+   "family": "called",
+   "direction": "gain",
+   "n": 21,
+   "median_at_per_raw_vs_genome": 1.0321095439901051,
+   "median_at_per_raw_vs_flank": 1.0189215609406403,
+   "median_power_loss_f1": 1.0,
+   "median_power_loss_f0_5": 1.0,
+   "median_power_gain_f1": 1.0,
+   "median_delta_eff": 0.05056428173330893,
+   "median_power_anchored_MYC": 1.0,
+   "median_power_anchored_half_MYC": 0.999
+  },
+  {
+   "family": "called",
+   "direction": "loss",
+   "n": 46,
+   "median_at_per_raw_vs_genome": 0.8409849111921734,
+   "median_at_per_raw_vs_flank": 0.7646568868925944,
+   "median_power_loss_f1": 1.0,
+   "median_power_loss_f0_5": 1.0,
+   "median_power_gain_f1": 1.0,
+   "median_delta_eff": 0.0,
+   "median_power_anchored_MYC": 1.0,
+   "median_power_anchored_half_MYC": 0.87425
+  },
+  {
+   "family": "literature",
+   "direction": "gain",
+   "n": 3,
+   "median_at_per_raw_vs_genome": 1.043499186739316,
+   "median_at_per_raw_vs_flank": NaN,
+   "median_power_loss_f1": 1.0,
+   "median_power_loss_f0_5": 1.0,
+   "median_power_gain_f1": 1.0,
+   "median_delta_eff": 0.1060155604516495,
+   "median_power_anchored_MYC": 1.0,
+   "median_power_anchored_half_MYC": 1.0
+  },
+  {
+   "family": "literature",
+   "direction": "loss",
+   "n": 1,
+   "median_at_per_raw_vs_genome": 0.2038322684884041,
+   "median_at_per_raw_vs_flank": NaN,
+   "median_power_loss_f1": 1.0,
+   "median_power_loss_f0_5": 1.0,
+   "median_power_gain_f1": 1.0,
+   "median_delta_eff": 0.18566856740480583,
+   "median_power_anchored_MYC": 0.9955,
+   "median_power_anchored_half_MYC": 0.5305
+  },
+  {
+   "family": "random",
+   "direction": "random",
+   "n": 300,
+   "median_at_per_raw_vs_genome": 0.9765432684230995,
+   "median_at_per_raw_vs_flank": 0.9754576602284685,
+   "median_power_loss_f1": 1.0,
+   "median_power_loss_f0_5": 1.0,
+   "median_power_gain_f1": 1.0,
+   "median_delta_eff": 0.03198040232219924,
+   "median_power_anchored_MYC": 1.0,
+   "median_power_anchored_half_MYC": 0.933
+  },
+  {
+   "family": "saved",
+   "direction": "comparison",
+   "n": 1,
+   "median_at_per_raw_vs_genome": 1.0265624901538954,
+   "median_at_per_raw_vs_flank": 1.0290189057281163,
+   "median_power_loss_f1": 1.0,
+   "median_power_loss_f0_5": 1.0,
+   "median_power_gain_f1": 1.0,
+   "median_delta_eff": 0.045832751369572704,
+   "median_power_anchored_MYC": 1.0,
+   "median_power_anchored_half_MYC": 1.0
+  },
+  {
+   "family": "saved",
+   "direction": "loss",
+   "n": 6,
+   "median_at_per_raw_vs_genome": 0.5864414133587892,
+   "median_at_per_raw_vs_flank": 0.4687208325893802,
+   "median_power_loss_f1": 1.0,
+   "median_power_loss_f0_5": 1.0,
+   "median_power_gain_f1": 1.0,
+   "median_delta_eff": 0.0,
+   "median_power_anchored_MYC": 0.99125,
+   "median_power_anchored_half_MYC": 0.46799999999999997
+  }
+ ],
+ "environment": {
+  "python": "3.10.20",
+  "platform": "Linux-6.18.44-fc-v236-x86_64-with-glibc2.39",
+  "packages": {
+   "numpy": "1.24.4",
+   "pandas": "2.2.0",
+   "scipy": "1.8.0",
+   "h5py": "3.6.0",
+   "anndata": "0.8.0",
+   "pyarrow": "23.0.0",
+   "skmisc": "0.5.2",
+   "matplotlib": "3.8.4",
+   "statsmodels": null
+  },
+  "workbench_commit_at_run": "6d4f48d79e0545fd3fb7ad84b86dbf659b57f107",
+  "pyepi_upstream_commit": "e8305ea2162634d07e92a3bb401df672e48f217b",
+  "cpu_count": 4
+ }
+}

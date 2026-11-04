@@ -1,0 +1,153 @@
+{
+ "experiment": "05_segmentation_calibration",
+ "seed": 20261104,
+ "generator": "numpy.random.default_rng (PCG64)",
+ "seed_streams": {
+  "halves": [
+   20261104,
+   2
+  ],
+  "null_trials": [
+   20261104,
+   1,
+   "L",
+   "trial"
+  ]
+ },
+ "settings": {
+  "k": 6,
+  "n_permutations": 1000,
+  "alpha": 0.001,
+  "min_child_bins": 20,
+  "min_terminal_bins": 50
+ },
+ "alpha": 0.001,
+ "n_permutations": 1000,
+ "null_calibration": [
+  {
+   "L": 120,
+   "trials": 150,
+   "accepted": 0,
+   "p_local_lt_alpha": 0,
+   "median_p_local": 0.2202797202797203
+  },
+  {
+   "L": 400,
+   "trials": 150,
+   "accepted": 1,
+   "p_local_lt_alpha": 1,
+   "median_p_local": 0.05844155844155845
+  }
+ ],
+ "null_max_over_cuts": [
+  {
+   "L": 120,
+   "n": 20,
+   "median_p_max": 0.4477611940298507,
+   "frac_p_max_lt_0_05": 0.05,
+   "frac_fixed_split_p_lt_alpha": 0.0
+  },
+  {
+   "L": 400,
+   "n": 20,
+   "median_p_max": 0.7437810945273632,
+   "frac_p_max_lt_0_05": 0.0,
+   "frac_fixed_split_p_lt_alpha": 0.0
+  }
+ ],
+ "harness_check_vs_saved_genome_pool": {
+  "all/chr7": {
+   "saved": 15,
+   "rerun": 15,
+   "identical": true
+  },
+  "all/chr9": {
+   "saved": 10,
+   "rerun": 10,
+   "identical": true
+  },
+  "cluster0/chr7": {
+   "saved": 12,
+   "rerun": 12,
+   "identical": true
+  },
+  "cluster0/chr9": {
+   "saved": 8,
+   "rerun": 8,
+   "identical": true
+  }
+ },
+ "half_difference_breakpoints": {
+  "all/chr7": 3,
+  "all/chr9": 2,
+  "cluster0/chr7": 0,
+  "cluster0/chr9": 0
+ },
+ "breakpoints_per_scan": {
+  "all/chr7": 15,
+  "all/chr9": 10,
+  "all_A/chr7": 15,
+  "all_A/chr9": 10,
+  "all_B/chr7": 12,
+  "all_B/chr9": 5,
+  "all_halfdiff/chr7": 3,
+  "all_halfdiff/chr9": 2,
+  "cluster0/chr7": 12,
+  "cluster0/chr9": 8,
+  "cluster0_A/chr7": 12,
+  "cluster0_A/chr9": 8,
+  "cluster0_B/chr7": 12,
+  "cluster0_B/chr9": 10,
+  "cluster0_halfdiff/chr7": 0,
+  "cluster0_halfdiff/chr9": 0
+ },
+ "boundary_stability": [
+  {
+   "source": "all",
+   "chrom": "chr7",
+   "n": 15,
+   "both_pm2": 11,
+   "both_pm5": 12
+  },
+  {
+   "source": "all",
+   "chrom": "chr9",
+   "n": 10,
+   "both_pm2": 5,
+   "both_pm5": 5
+  },
+  {
+   "source": "cluster0",
+   "chrom": "chr7",
+   "n": 12,
+   "both_pm2": 12,
+   "both_pm5": 12
+  },
+  {
+   "source": "cluster0",
+   "chrom": "chr9",
+   "n": 8,
+   "both_pm2": 8,
+   "both_pm5": 8
+  }
+ ],
+ "seconds": 77.3,
+ "environment": {
+  "python": "3.10.20",
+  "platform": "Linux-6.18.44-fc-v236-x86_64-with-glibc2.39",
+  "packages": {
+   "numpy": "1.24.4",
+   "pandas": "2.2.0",
+   "scipy": "1.8.0",
+   "h5py": "3.6.0",
+   "anndata": "0.8.0",
+   "pyarrow": "23.0.0",
+   "skmisc": "0.5.2",
+   "matplotlib": "3.8.4",
+   "statsmodels": null
+  },
+  "workbench_commit_at_run": "6d4f48d79e0545fd3fb7ad84b86dbf659b57f107",
+  "pyepi_upstream_commit": "e8305ea2162634d07e92a3bb401df672e48f217b",
+  "cpu_count": 4
+ }
+}
