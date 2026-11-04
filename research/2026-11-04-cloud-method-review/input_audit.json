@@ -1,0 +1,470 @@
+{
+ "scope": "Inputs actually used by the 2026-11-04 cloud method review. Byte identity and alignment checks; not scientific validation.",
+ "workbench": {
+  "repository": "macelik/scientific-explorer",
+  "branch_reviewed": "allelic-segmentation",
+  "checkout_commit": "6d4f48d79e0545fd3fb7ad84b86dbf659b57f107",
+  "earlier_research_baseline": "994fb3afcf4caa93f6b52af7267d3668d469eec2",
+  "work_branch": "claude/eager-thompson-y0nc0t"
+ },
+ "data_package": {
+  "release_tag": "cloud-review-data-2026-11-04",
+  "archive_sha256": "bc8d7519e5a0b636f7d0f22e2ac3f1beb89aba412881bdc74a4f221289e4d26e",
+  "archive_checksum_verified": true,
+  "download_route": "curl from the GitHub release asset URLs (gh release download is blocked in this session: GraphQL 403)",
+  "files": [
+   {
+    "path": "pyepi_results/count_matrix.h5ad",
+    "size_bytes": 272099683,
+    "sha256": "b98a4f86cb80b86dc49382ffa90ab44cc6b3f1028f8481c80535cbf39683d5f8",
+    "matches_manifest": true
+   },
+   {
+    "path": "pyepi_results/binned_genome.csv",
+    "size_bytes": 1304293,
+    "sha256": "e5176b0950287b53e75eab7d3d87a880e35bb67bd5acce64b10d69715647ad30",
+    "matches_manifest": true
+   },
+   {
+    "path": "pyepi_results/hg38-blacklist.v2.bed",
+    "size_bytes": 26898,
+    "sha256": "31c69342df43bbc19dd8ef2886611a8150cb53e90f341de14d30e742c9251737",
+    "matches_manifest": true
+   },
+   {
+    "path": "pyepi_results/breakpoints.csv",
+    "size_bytes": 11889992,
+    "sha256": "fd212c206c72e22b5788732fb8baa68d8e475e0682078ab5f04f2e652999d5c1",
+    "matches_manifest": true
+   },
+   {
+    "path": "pyepi_results/clusters.json",
+    "size_bytes": 330121178,
+    "sha256": "604297c707ad9aa2883999cc851f1ab2b0577ffcef4a2a0433703da044a9ee62",
+    "matches_manifest": true
+   },
+   {
+    "path": "integration-story/data/integrated.h5mu",
+    "size_bytes": 310813168,
+    "sha256": "b6c9c5bce06b47a3d85d0c26e6b42f2a70dfcb6c72bd009aaab695ae78658bec",
+    "matches_manifest": true
+   },
+   {
+    "path": "integration-story/data/genome_pool/derived/karyogram_cluster_segments.tsv",
+    "size_bytes": 52475,
+    "sha256": "10ae63af37e002e458d2d89e1dd0d7e08b12176866d0cfd78d50ca123ccdbc0f",
+    "matches_manifest": true
+   },
+   {
+    "path": "integration-story/data/genome_pool/derived/percell_best_s.tsv",
+    "size_bytes": 138003,
+    "sha256": "c98cd3be95b93b190ab48e0b7368330cf58205d839637dc9404752900670e356",
+    "matches_manifest": true
+   },
+   {
+    "path": "integration-story/data/genome_pool/derived/percell_cn_states.npy",
+    "size_bytes": 350664208,
+    "sha256": "7c78f083e85282d1bc22bcf7856a8da5cfe96f636002797769c747c7c13b0d36",
+    "matches_manifest": true
+   },
+   {
+    "path": "integration-story/data/genome_pool/raw_accepted_breakpoints.tsv",
+    "size_bytes": 84734,
+    "sha256": "b6679fd979ffed12d8d4c72ccabb53f8ee9b68af8d7551e02138e7c577a88405",
+    "matches_manifest": true
+   },
+   {
+    "path": "integration-story/data/genome_pool/run.json",
+    "size_bytes": 648,
+    "sha256": "e17873a572a62acdfa57a9865d162ba7441becd746ca7aa538b2e31863f20012",
+    "matches_manifest": true
+   },
+   {
+    "path": "integration-story/data/genome_pool/segmentation_candidate_audit.tsv",
+    "size_bytes": 2183973,
+    "sha256": "a8c58ac125900283f88a693d501097aaf6dadbd96d25b93eb4f63e9c1c6dd99d",
+    "matches_manifest": true
+   },
+   {
+    "path": "integration-story/data/raw_accepted_breakpoints.tsv",
+    "size_bytes": 83800,
+    "sha256": "d024eab3c62db6dc7d5489e2573ffa08a0fc8a482137b64163db27ab96f61525",
+    "matches_manifest": true
+   },
+   {
+    "path": "default_300cells/README.md",
+    "size_bytes": 4438,
+    "sha256": "51ed5a14f74722ce78f13d9a83d6d0ee11983750587a07e50ff7d4831793da69",
+    "matches_manifest": true
+   },
+   {
+    "path": "default_300cells/bins.csv",
+    "size_bytes": 853458,
+    "sha256": "6e7cc1ebf4d67d09fe6e782f608604cbfd4d93c16173da1211925038e1cca100",
+    "matches_manifest": true
+   },
+   {
+    "path": "default_300cells/breakpoints.csv",
+    "size_bytes": 920320,
+    "sha256": "42acf225fd2496d8156efad381167226774ed7f243692201f4364d466d95fe31",
+    "matches_manifest": true
+   },
+   {
+    "path": "default_300cells/cells.csv",
+    "size_bytes": 33142,
+    "sha256": "8db0e633fe5cb0fd67fbdd391d6a176ef42b356f33b6143fd18a0a90bfad50f8",
+    "matches_manifest": true
+   },
+   {
+    "path": "default_300cells/cn_matrix.npy",
+    "size_bytes": 30404528,
+    "sha256": "c8830dbe3b7db1f3839e6eba79270ec9d0e3d759fc3125c481ae3ed89abbc41b",
+    "matches_manifest": true
+   },
+   {
+    "path": "default_300cells/cn_matrix_bins_x_cells.csv.gz",
+    "size_bytes": 302104,
+    "sha256": "96ce3d21264e167c079c8794531ece3dce0d49ca295efac25a175c305ff1281e",
+    "matches_manifest": true
+   },
+   {
+    "path": "default_300cells/region_rates.csv",
+    "size_bytes": 325,
+    "sha256": "dee05b7a158d5ffd092280e1eb7ce0f7cfcbfdf1c96d1c03e3f7f524c9fb5290",
+    "matches_manifest": true
+   },
+   {
+    "path": "default_300cells/segments.csv.gz",
+    "size_bytes": 192964,
+    "sha256": "ef9cbbc841dad0284b11012cff5af073092d43cd67ec241ce5186c25e6c9c4a5",
+    "matches_manifest": true
+   },
+   {
+    "path": "aligned_matrices/HA.parquet",
+    "size_bytes": 13417266,
+    "sha256": "ae513b4020193646c16fe0447c4239b2906b6c57e69b445bea61633c0799d9c5",
+    "matches_manifest": true
+   },
+   {
+    "path": "aligned_matrices/HB.parquet",
+    "size_bytes": 13379753,
+    "sha256": "2466b0f353faa3217eb4331184f5dd79ddce52f38ea1b9b527743c16edf4e751",
+    "matches_manifest": true
+   },
+   {
+    "path": "aligned_matrices/AT.parquet",
+    "size_bytes": 19089938,
+    "sha256": "20a64c089fdbf1ac80971e1e3754df1a93a5d9b7ff82cc181d76347760bd45c7",
+    "matches_manifest": true
+   }
+  ],
+  "all_files_match_manifest": true
+ },
+ "upstream_source": {
+  "repository": "https://github.com/colomemaria/pyEpiAneufinder",
+  "pinned_commit": "e8305ea2162634d07e92a3bb401df672e48f217b",
+  "checked_out_commit": "e8305ea2162634d07e92a3bb401df672e48f217b",
+  "pyproject_version": "0.3.5",
+  "files": [
+   {
+    "file": "__init__.py",
+    "sha256": "f160b037ceb33b3bad7addedd0431308e6a6470c885b08b27efb0a6754f22ab7",
+    "matches_manifest": true
+   },
+   {
+    "file": "assign_somy.py",
+    "sha256": "c0fa97799c06f5d3d966ecc21b550474a6b8d571e474df2e6b7f4c6ed10d6e02",
+    "matches_manifest": true
+   },
+   {
+    "file": "distance_statistics.py",
+    "sha256": "ef62dca7f4e5964a7604160eb86348d96ea76fd2f8bb2d9cfbb52b81640141c7",
+    "matches_manifest": true
+   },
+   {
+    "file": "evaluate_cnv_results.py",
+    "sha256": "de37b3caf695d489db274c470b1cb9d45d5e16cb6514584d5ab3e6473ae66400",
+    "matches_manifest": true
+   },
+   {
+    "file": "get_breakpoints.py",
+    "sha256": "ed00326b1cd3669d88d72de2c41b61e8a07a0d32403cb11eecda68526cdedb20",
+    "matches_manifest": true
+   },
+   {
+    "file": "karyotype_metrics.py",
+    "sha256": "67178fbb60ffa703386f94239d02d715469eb1a2d937a9acf78c2df6e3f2691b",
+    "matches_manifest": true
+   },
+   {
+    "file": "makeWindows.py",
+    "sha256": "16f83fe7e24856c0b9fbf03f4d30cca6c3de9b476889cd31915d66be48573e33",
+    "matches_manifest": true
+   },
+   {
+    "file": "plotting.py",
+    "sha256": "142a53543e5cc76910198978aaf33e4f221b3ae16825feecf131e21628f209d7",
+    "matches_manifest": true
+   },
+   {
+    "file": "postprocessing.py",
+    "sha256": "dd8edcf7fd528fca7f6ce4b80020d163df87e05ac28789cb5e847235d79899e5",
+    "matches_manifest": true
+   },
+   {
+    "file": "pyEpiAneufinder.py",
+    "sha256": "5864863775d70f8fe8d561b771f4cdce8926b69f52ee2094816d0feff737ad60",
+    "matches_manifest": true
+   },
+   {
+    "file": "pyEpiAneufinder_v1.py",
+    "sha256": "868ed30dd2798849adac18a0c363d78fb4733e079f4bf2da3ca9196469110b51",
+    "matches_manifest": true
+   },
+   {
+    "file": "render_fragments.py",
+    "sha256": "2e67d4879ef5af55b54dd57427508d48b92ecba0a209056f47ff854da7e80906",
+    "matches_manifest": true
+   }
+  ],
+  "all_files_match_manifest": true,
+  "license_note": "pyEpiAneufinder pyproject declares BSD-3-clause; earlier research recorded GPL-3.0-only for the repository. Not resolved here; see sources.json."
+ },
+ "anndata": {
+  "path": "pyepi_results/count_matrix.h5ad",
+  "shape": [
+   3460,
+   25337
+  ],
+  "X": "processed depth: GC-corrected (per-cell LOESS), np.rint to int, negatives set to 0, each row scaled to sum 1e5 (float64, CSR)",
+  "layers/raw": "post-QC, pre-GC integer fragment counts on retained cells and bins (int64, CSR)",
+  "explicit_zeros_stored": {
+   "X": 0,
+   "layers/raw": 0
+  },
+  "nnz": {
+   "layers/raw": 61621243,
+   "X": 61076659,
+   "raw_minus_X": 544584
+  },
+  "var": "seq (categorical), start (1-based), end (inclusive), GC",
+  "uns": "empty",
+  "obs": "cellID only",
+  "bins_per_chromosome": {
+   "chr1": 2232,
+   "chr2": 2225,
+   "chr3": 1830,
+   "chr4": 1846,
+   "chr5": 1695,
+   "chr6": 1599,
+   "chr7": 1495,
+   "chr8": 1345,
+   "chr9": 1031,
+   "chr10": 1279,
+   "chr11": 1222,
+   "chr12": 1282,
+   "chr13": 894,
+   "chr14": 770,
+   "chr15": 707,
+   "chr16": 711,
+   "chr17": 755,
+   "chr18": 718,
+   "chr19": 532,
+   "chr20": 594,
+   "chr21": 254,
+   "chr22": 321
+  }
+ },
+ "mudata": {
+  "path": "integration-story/data/integrated.h5mu",
+  "cells": 3460,
+  "obs_columns": [
+   "_index",
+   "depth:mod_weight",
+   "gc_norm_depth",
+   "haplo:mod_weight",
+   "n_bins_snp_covered",
+   "snp_coverage",
+   "total_raw_depth",
+   "wnn_depth_weight",
+   "wnn_haplo_weight",
+   "wnn_leiden",
+   "wnn_leiden_0.3",
+   "wnn_leiden_0.5",
+   "wnn_leiden_1.0",
+   "wnn_leiden_2.0"
+  ],
+  "modalities": {
+   "depth": {
+    "shape": [
+     3460,
+     25337
+    ],
+    "layers": [
+     "raw"
+    ],
+    "uns": [
+     "leiden",
+     "log1p",
+     "neighbors",
+     "pca",
+     "umap"
+    ]
+   },
+   "haplo": {
+    "shape": [
+     3460,
+     25337
+    ],
+    "layers": [],
+    "uns": [
+     "leiden",
+     "neighbors",
+     "pca",
+     "umap"
+    ]
+   }
+  },
+  "depth_X_note": "log1p-transformed depth (uns has log1p; sample values non-integer, min 1.02, max 5.12); not interchangeable with AnnData X",
+  "cluster_key_used": "wnn_leiden_0.3",
+  "cluster_sizes": {
+   "0": 1286,
+   "1": 833,
+   "2": 603,
+   "3": 556,
+   "4": 182
+  },
+  "cell_set_equal_anndata": true,
+  "cell_order_equal_anndata": true
+ },
+ "allelic": {
+  "files": [
+   "aligned_matrices/HA.parquet",
+   "aligned_matrices/HB.parquet",
+   "aligned_matrices/AT.parquet"
+  ],
+  "unit": "sum over selected phased heterozygous SNP sites of per-site DP split by haplotype; a fragment can contribute at several sites; not unique fragments",
+  "dtype": "float32 stored, integer valued",
+  "checks": {
+   "HA": {
+    "coords_match_anndata": true,
+    "n_barcodes": 3460,
+    "barcode_set_equal": true,
+    "column_order_equal_anndata": false
+   },
+   "HB": {
+    "coords_match_anndata": true,
+    "n_barcodes": 3460,
+    "barcode_set_equal": true,
+    "column_order_equal_anndata": false
+   },
+   "AT": {
+    "coords_match_anndata": true,
+    "n_barcodes": 3460,
+    "barcode_set_equal": true,
+    "column_order_equal_anndata": false
+   },
+   "AT_equals_HA_plus_HB_all_cells": true,
+   "nonnegative": true,
+   "integer_valued": true
+  },
+  "join": "by barcode name (column order differs from AnnData)",
+  "barcodes": 3460
+ },
+ "frozen_panel": {
+  "path": "research/2026-10-29-low-coverage/shared/cells.tsv",
+  "cells": 300,
+  "all_in_anndata": true,
+  "per_tercile": {
+   "low": 100,
+   "mid": 100,
+   "high": 100
+  }
+ },
+ "stage_availability": [
+  {
+   "stage": "source fragments / BAM",
+   "available": false,
+   "consequence": "cannot recount, change bin size, deduplicate or audit read filters"
+  },
+  {
+   "stage": "full bin grid after blacklist (binned_genome.csv)",
+   "available": true,
+   "consequence": "QC-removed bins can be located (experiment 02) but not their counts"
+  },
+  {
+   "stage": "pre-QC cell x bin matrix",
+   "available": false,
+   "consequence": "relaxed bin/cell QC cannot be evaluated; removed regions (e.g. CDKN2A/B) stay unobservable"
+  },
+  {
+   "stage": "QC masks / run parameters (parameter_configuration.txt)",
+   "available": false,
+   "consequence": "historical thresholds are inferred from source defaults, not records"
+  },
+  {
+   "stage": "intermediate GC fits",
+   "available": "reconstructed",
+   "consequence": "rebuilt with pinned source; 3,449/3,460 cells bit-identical (experiment 01)"
+  },
+  {
+   "stage": "pre-clipping floating values",
+   "available": "reconstructed",
+   "consequence": "available only from the rebuild, not historical"
+  },
+  {
+   "stage": "processed counts (X)",
+   "available": true,
+   "consequence": "used as the baseline estimand"
+  },
+  {
+   "stage": "SNP selection, genotype calls, per-SNP counts, phase blocks",
+   "available": false,
+   "consequence": "allelic tests are bin-level and phase-agnostic; unique-molecule counting unresolved"
+  },
+  {
+   "stage": "independent region-level DNA truth",
+   "available": false,
+   "consequence": "published karyotype loci used only as weak, prespecified positive controls"
+  }
+ ],
+ "historical_uncertainties": [
+  "17 cell-bins zero in saved X but large in every tested rebuild environment (experiment 01); historical environment unrecorded.",
+  "Historical run parameters (minFrags, thresholds, k for the production per-cell run) not recorded in the package; source defaults assumed.",
+  "Recorded handoff environment lists numpy 1.24.4 with scikit-misc 0.5.2, whose metadata require numpy >= 1.26.4: that environment cannot be resolved as recorded (installed here with --no-deps).",
+  "Pileup tool/version, UMI/read mode, SNP list and genotyping thresholds behind HA/HB/AT unknown.",
+  "1103 autosomal bins removed by the bin filter; their contents are unknown without pre-QC counts."
+ ],
+ "missing_prerequisites_for_candidates": {
+  "Numbat-multiome ATAC-bin": [
+   "fragment file(s) for binning",
+   "SNP-level allele counts from pileup_and_phase",
+   "binned ATAC reference from normal samples"
+  ],
+  "Alleloscope (scATAC)": [
+   "SNP-level allele counts per cell",
+   "region/segment definitions from DNA (sample-matched bulk DNA recommended)"
+  ],
+  "raw-count segmentation with exposure": [
+   "none for the retained grid; pre-QC counts needed to include removed bins"
+  ]
+ },
+ "environment": {
+  "python": "3.10.20",
+  "platform": "Linux-6.18.44-fc-v236-x86_64-with-glibc2.39",
+  "packages": {
+   "numpy": "1.24.4",
+   "pandas": "2.2.0",
+   "scipy": "1.8.0",
+   "h5py": "3.6.0",
+   "anndata": "0.8.0",
+   "pyarrow": "23.0.0",
+   "skmisc": "0.5.2",
+   "matplotlib": "3.8.4",
+   "statsmodels": null
+  },
+  "workbench_commit_at_run": "d6ce97bcb8c425e55b5c177592575b111c6aa468",
+  "pyepi_upstream_commit": "e8305ea2162634d07e92a3bb401df672e48f217b",
+  "cpu_count": 4
+ }
+}
