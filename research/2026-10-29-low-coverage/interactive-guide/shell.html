@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="An interactive, offline guide to CNV methods, their assumptions and their possible adaptation to a depth-plus-haplotype scATAC workflow.">
+  <title>CNV methods · Scientific Explorer field guide</title>
+  <style>/*__STYLE__*/</style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="masthead">
+    <a class="identity" href="#view=methods&id=A1" aria-label="Scientific Explorer, methods home"><span class="mark" aria-hidden="true">≋</span><span>Scientific Explorer<small>RESEARCH FIELD GUIDE · 01</small></span></a>
+    <nav class="view-nav" aria-label="Guide sections">
+      <button data-view="methods">Methods</button><button data-view="examples">Interactive examples</button><button data-view="pilot">Our data</button><button data-view="workflow">Workflow</button><button data-view="compare">Compare <span id="compare-count">0</span></button>
+    </nav>
+    <button class="quiet glossary-open" title="Open glossary">Glossary <span aria-hidden="true">↗</span></button>
+  </header>
+  <div class="layout">
+    <aside class="sidebar" aria-label="Method library">
+      <div class="sidebar-head"><span class="eyebrow">THE LIBRARY</span><span id="method-count">36 entries</span></div>
+      <label class="search-label" for="search">Find a method or concept</label><div class="search-wrap"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Try “HMM” or “reference”…" autocomplete="off"></div>
+      <label class="sr-only" for="category">Research category</label><select id="category"><option value="all">All research categories</option></select>
+      <div id="method-list" class="method-list"></div>
+      <div class="sidebar-foot"><span class="small-dot"></span> Local guide · no server needed<br><span>Research: 29 Oct 2026<br>Guide: 2 Nov 2026</span></div>
+    </aside>
+    <main id="main" tabindex="-1"></main>
+  </div>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <dialog id="glossary"><div class="dialog-head"><h2>Working vocabulary</h2><button id="close-glossary" class="quiet" aria-label="Close glossary">Close ×</button></div><div id="glossary-content"></div></dialog>
+  <script id="guide-data" type="application/json">/*__DATA__*/</script>
+  <script>/*__SCRIPT__*/</script>
+  <noscript><p>This interactive guide needs JavaScript enabled. The companion report.md contains the research summary.</p></noscript>
+</body>
+</html>

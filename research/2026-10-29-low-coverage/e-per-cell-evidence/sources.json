@@ -1,0 +1,69 @@
+[
+  {
+    "id": "numbat",
+    "title": "Haplotype-aware analysis of somatic copy number variations from single-cell transcriptomes",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10289836/",
+    "kind": "paper",
+    "accessed_at": "2026-10-29",
+    "locator": "Methods: generative statistical model and single-cell CNV evaluation; Results: phasing and pooling",
+    "supports": [
+      "Poisson-lognormal expression counts, beta-binomial allele emissions, phase errors, sparse single-cell uncertainty",
+      "Pooling distinct genotypes can dilute allelic signals"
+    ]
+  },
+  {
+    "id": "alleloscope",
+    "title": "Integrative single-cell analysis of allele-specific copy number alterations and chromatin accessibility in cancer",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9127226/",
+    "kind": "paper",
+    "accessed_at": "2026-10-29",
+    "locator": "Methods: segmentation; Results",
+    "supports": [
+      "scATAC allele-specific CNA investigation; segmentation requires assumptions and can use matched DNA"
+    ]
+  },
+  {
+    "id": "choi",
+    "title": "Bayesian model selection reveals biological origins of zero inflation in single-cell transcriptomics",
+    "url": "https://link.springer.com/article/10.1186/s13059-020-02103-2",
+    "kind": "paper",
+    "accessed_at": "2026-10-29",
+    "locator": "Abstract, Results and Methods",
+    "supports": [
+      "NB reference and zero-inflated model caveats in scRNA, not scATAC"
+    ]
+  },
+  {
+    "id": "svensson",
+    "title": "Droplet scRNA-seq is not zero-inflated",
+    "url": "https://www.nature.com/articles/s41587-019-0379-5",
+    "kind": "paper",
+    "accessed_at": "2026-10-29",
+    "locator": "Technical-control analysis",
+    "supports": [
+      "Technical control counts can be consistent with standard sampling models in droplet scRNA"
+    ]
+  },
+  {
+    "id": "chen",
+    "title": "Modified likelihood ratio test in finite mixture models with a structural parameter",
+    "url": "https://www.sciencedirect.com/science/article/abs/pii/S0378375804001569",
+    "kind": "paper",
+    "accessed_at": "2026-10-29",
+    "locator": "Abstract",
+    "supports": [
+      "Mixture testing is nonregular; ordinary likelihood-ratio asymptotics are not generally applicable"
+    ]
+  },
+  {
+    "id": "numbat_multiome_coordinator",
+    "title": "Numbat-multiome: inferring copy number variations by combining RNA and chromatin accessibility information from single-cell data",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12531993/",
+    "kind": "paper",
+    "accessed_at": "2026-10-29",
+    "locator": "Methods: connection to Numbat core inference algorithm; reference count data generation",
+    "supports": [
+      "Published scATAC evaluation exists; bin-count and beta-binomial allele emissions; study references use normal cells."
+    ]
+  }
+]

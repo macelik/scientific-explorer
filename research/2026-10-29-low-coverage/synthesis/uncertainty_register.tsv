@@ -1,0 +1,40 @@
+task_id	record_id	method	uncertainty
+A	A:1	epiAneufinder / pyEpiAneufinder	Exact commit, resources and detailed missing-data behavior not verified
+A	A:2	Copy-scAT (CopyscAT)	Exact commit, resources and detailed missing-data behavior not verified
+A	A:3	Alleloscope	Official DESCRIPTION was inaccessible; third-party GitHub package mirror reports GPL-2 and version 1.0.1 but does not verify current official terms; obtain source before reuse
+A	A:3	Alleloscope	Exact commit, compute cost and state limits not verified
+A	A:4	Numbat	Exact CLI mode flag and discrepancy between vignette prose and example require testing source version before execution
+A	A:4	Numbat	Current raw depth counting unit, SNP-level alleles and suitable ATAC reference not established
+A	A:4	Numbat	No-normal calibration, 0:0 sensitivity and uncertainty calibration not established
+A	A:5	CopyKAT	Exact commit, resources and detailed missing-data behavior not verified
+A	A:5	CopyKAT	License not verified; inspect actual license before reuse
+A	A:6	inferCNV	Exact commit, resources and detailed missing-data behavior not verified
+A	A:6	inferCNV	License not verified; inspect actual license before reuse
+A	A:7	CaSpER	Exact commit, resources and detailed missing-data behavior not verified
+A	A:7	CaSpER	License not verified; inspect actual license before reuse
+A	A:8	HoneyBADGER	Exact commit, resources and detailed missing-data behavior not verified
+A	A:9	XClone	Exact commit, resources and detailed missing-data behavior not verified
+A	A:9	XClone	License not verified; inspect actual license before reuse
+A	A:10	CHISEL	Exact commit, resources and detailed missing-data behavior not verified
+A	A:11	signals (Single Cell Genomes with Allele Specificity)	Exact commit, resources and detailed missing-data behavior not verified
+B	B:1	Numbat-multiome ATAC-bin	Gap/missing-emission and dependence treatment not verified
+B	B:1	Numbat-multiome ATAC-bin	Exact commit and no-reference mode not verified
+B	B:2	Masked count changepoint with conditional alleles (proposed)	Likelihood, covariance and calibration require empirical validation
+B	B:3	Covariance-aware joint segmentation / Bayesian HMM (proposed)	Joint measurement model and genomic transition policy unspecified
+B	B:4	FACETS joint CBS and ASCAT/ASPCF	Exact scATAC missing/gap treatment not applicable
+B	B:5	Blind-spot image denoising / Noise2Self	No study of this task identified
+C	C:4	Signac / ArchR label transfer	Verify exact installed versions and license terms before use.
+D	D:1	Atacformer	CN dosage preservation, out-of-distribution calibration, and exact local compatibility are unverified.
+D	D:2	PEAKVI	CN dosage preservation, out-of-distribution calibration, and exact local compatibility are unverified.
+D	D:3	SCALE	CN dosage preservation, out-of-distribution calibration, and exact local compatibility are unverified.
+D	D:4	ChromFound	CN dosage preservation, out-of-distribution calibration, and exact local compatibility are unverified.
+D	D:5	EpiFoundation	CN dosage preservation, out-of-distribution calibration, and exact local compatibility are unverified.
+D	D:6	scBasset	CN dosage preservation, out-of-distribution calibration, and exact local compatibility are unverified.
+E	E:1	Poisson / negative binomial exposure regression	Region-specific dispersion and controls not yet evaluated
+E	E:2	Phase-aware beta-binomial allele model	Observed per-region power and phase-set validity unknown
+E	E:3	Hurdle, zero-inflated NB or latent count mixtures	Bootstrap calibration and stability under model misspecification remain untested
+F	F:1	Sample-specific phased heterozygous SNP availability	Exact input and run provenance, applicable track license and version require verification
+F	F:2	ENCODE blacklist and genomic gap mask	Exact input and run provenance, applicable track license and version require verification
+F	F:3	Umap multi-read mappability	Exact input and run provenance, applicable track license and version require verification
+F	F:4	GC content and existing correction	Exact input and run provenance, applicable track license and version require verification
+F	F:5	Cell-type accessibility prior	Exact input and run provenance, applicable track license and version require verification

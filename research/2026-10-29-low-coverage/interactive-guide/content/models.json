@@ -1,0 +1,544 @@
+[
+  {
+    "id": "B1",
+    "name": "Numbat-multiome ATAC-bin",
+    "category": "B",
+    "tagline": "Published haplotype-aware joint inference; local comparison requires prerequisites.",
+    "steps": [
+      {
+        "title": "Prepare inputs",
+        "text": "Count fragments in genomic bins, obtain SNP-level allele counts and phase, and construct a defensible normalized reference profile."
+      },
+      {
+        "title": "Define hidden states",
+        "text": "The published expanded-state hidden Markov model (HMM) represents candidate dosage and haplotype-fraction states along the chromosome."
+      },
+      {
+        "title": "Score bin depth",
+        "text": "A Poisson-lognormal emission models each bin count: a Poisson sampling distribution has a variable lognormal rate, allowing baseline coverage, library size and dosage to influence expected counts and variability."
+      },
+      {
+        "title": "Score phased alleles",
+        "text": "A beta-binomial emission models phased haplotype counts conditional on total allele observations. It allows more variability than a fixed-fraction binomial; sparse allele counts give weak evidence."
+      },
+      {
+        "title": "Combine across neighbors",
+        "text": "The HMM combines emission scores with transitions that favor state persistence while allowing changes. Inference sums probability over possible neighboring state paths to estimate state uncertainty; this is model-based integration, not independent confirmation of depth by alleles."
+      },
+      {
+        "title": "Interpret relative to reference",
+        "text": "Compare inferred events and uncertainty with the reference and independent validation; audit the exact implementation treatment of gaps and missing observations."
+      }
+    ],
+    "example": {
+      "title": "Depth and alleles together",
+      "setup": "Illustrative bins have relative depths 1.0, 1.1, 0.5, 0.5; covered SNPs in the last region favor one phased haplotype.",
+      "steps": [
+        "Compare emissions for a persistent baseline with a change after bin 2.",
+        "Combine Poisson-lognormal depth and beta-binomial allele emission scores with transitions across neighboring bins; sum over possible state paths when calculating state probabilities.",
+        "Report a candidate boundary and uncertainty relative to the reference."
+      ],
+      "interpretation": "These numbers illustrate reasoning, not a Numbat fit or proof of an absolute deletion."
+    },
+    "adaptation": {
+      "stage": "inputs",
+      "available": [
+        "Raw bin counts",
+        "HA, HB and AT matrices"
+      ],
+      "needed": [
+        "SNP-level counts and phase sets",
+        "Defensible reference and exact count provenance",
+        "Audited gap handling"
+      ],
+      "first_experiment": "Audit barcode joins, phase and reference eligibility before any comparator run.",
+      "success": "A reproducible prerequisite report and, if feasible, comparison against independent truth."
+    },
+    "cautions": [
+      "MCF10-A is a development dataset; its identity does not establish normal or diploid truth.",
+      "AT is summed SNP-site depth and may count one molecule at multiple sites; do not assume it is independent of bin depth.",
+      "Missing allele observations are not balanced observations; exact implementation behavior needs audit.",
+      "Depth and allele signals can share fragments, so their agreement is not automatically independent confirmation; audit the published model assumptions for this assay."
+    ],
+    "sources": [
+      {
+        "title": "Numbat-multiome",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12531993/"
+      },
+      {
+        "title": "Haplotype-aware analysis of somatic copy number variations",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10289836/"
+      }
+    ],
+    "demo": "alleles"
+  },
+  {
+    "id": "B2",
+    "name": "Masked count changepoint with conditional alleles",
+    "category": "B",
+    "tagline": "Proposed depth-first segmentation, with alleles only when the joint measurement is justified.",
+    "steps": [
+      {
+        "title": "Keep the genomic grid",
+        "text": "Retain coordinates, observed zero counts, callable spans, exposure and explicit gaps; a missing measurement is not zero."
+      },
+      {
+        "title": "Specify a segment cost",
+        "text": "Choose a count likelihood, such as an exposure-adjusted Poisson or negative binomial, and calculate negative log likelihood within each candidate segment."
+      },
+      {
+        "title": "Optimize boundaries",
+        "text": "PELT minimizes the sum of segment costs plus a penalty per changepoint; it is an optimization algorithm, not a particular likelihood."
+      },
+      {
+        "title": "Quantify uncertainty",
+        "text": "Vary penalty and assumptions, and assess boundary stability with a suitable resampling or independent dataset."
+      },
+      {
+        "title": "Add conditional alleles",
+        "text": "Only after auditing shared molecules and phase, test an explicitly derived conditional allele model; otherwise report depth and allele evidence separately."
+      }
+    ],
+    "example": {
+      "title": "A boundary on a count grid",
+      "setup": "Four equally exposed bins contain 10, 12, 4, 3 counts.",
+      "steps": [
+        "A one-segment Poisson model uses mean 7.25.",
+        "A two-segment model after bin 2 uses means 11 and 3.5 and fits the counts better.",
+        "Keep the split only if the likelihood improvement exceeds the chosen changepoint penalty."
+      ],
+      "interpretation": "A retained boundary is a relative count change; accessibility or technical bias can also cause it."
+    },
+    "adaptation": {
+      "stage": "segment",
+      "available": [
+        "Raw depth and bin coordinates",
+        "Observed allele matrices"
+      ],
+      "needed": [
+        "Exposure and callable-mask audit",
+        "Penalty calibration",
+        "Independent validation and conditional measurement model"
+      ],
+      "first_experiment": "Freeze a grid and compare depth-only boundaries across penalties and held-out cells.",
+      "success": "Stable boundaries and calibrated uncertainty across independent datasets, with explicit abstention where coverage is weak."
+    },
+    "cautions": [
+      "This is a proposed diagnostic, not existing pyEpiAneufinder statistical behavior.",
+      "Selecting boundaries and testing them on the same data can bias significance.",
+      "A categorical loss or depth zero does not establish absolute zero copies."
+    ],
+    "sources": [
+      {
+        "title": "Optimal Detection of Changepoints With a Linear Computational Cost",
+        "url": "https://doi.org/10.1080/01621459.2012.737745"
+      },
+      {
+        "title": "BIC-seq2",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5772337/"
+      }
+    ],
+    "demo": "depth"
+  },
+  {
+    "id": "B3",
+    "name": "Covariance-aware joint segmentation / Bayesian HMM",
+    "category": "B",
+    "tagline": "Proposed joint model that explicitly represents dependence and missing evidence.",
+    "steps": [
+      {
+        "title": "Describe observations",
+        "text": "Define depth and SNP-site allele counts, exposure, phase blocks and whether measurements share fragments."
+      },
+      {
+        "title": "Write a joint emission",
+        "text": "Use a justified shared-fragment generative model or an empirically supported covariance model; do not simply multiply dependent likelihoods."
+      },
+      {
+        "title": "Handle partial observations",
+        "text": "Marginalize an unavailable component under an explicit missingness assumption; an observed count of zero remains an observation."
+      },
+      {
+        "title": "Model state continuity",
+        "text": "Assign genomic-distance-aware transition probabilities between candidate states and allow phase-block orientation uncertainty."
+      },
+      {
+        "title": "Infer and check",
+        "text": "Combine emissions and transitions to obtain boundary or state uncertainty, then check calibration and abstain where the model is uninformative."
+      }
+    ],
+    "example": {
+      "title": "One missing allele bin",
+      "setup": "Three bins have relative depth 1.0, 0.5, 0.5; the last has no callable allele observations.",
+      "steps": [
+        "Use depth evidence in all three bins and allele evidence only where measured.",
+        "A state transition after bin 1 competes with the prior favoring continuity.",
+        "The last bin contributes no invented balanced allele count; the transition and neighboring data still influence its posterior."
+      ],
+      "interpretation": "Missingness can itself be informative, so marginalization is valid only under justified assumptions."
+    },
+    "adaptation": {
+      "stage": "segment",
+      "available": [
+        "Raw depth",
+        "HA, HB and AT",
+        "Coordinates"
+      ],
+      "needed": [
+        "SNP phase blocks and molecule-level counting",
+        "Dependence and missingness model",
+        "Calibrated transition policy"
+      ],
+      "first_experiment": "Measure shared fragments and phase orientation before constructing simulated joint data.",
+      "success": "Held-out boundary coverage and false positives remain calibrated under sparse and correlated observations."
+    },
+    "cautions": [
+      "The model is proposed and unvalidated; its covariance can be difficult to estimate at low coverage.",
+      "A posterior reflects the chosen priors and likelihood, not independent biological validation.",
+      "AT site counts can duplicate molecules; phase orientation is not established."
+    ],
+    "sources": [
+      {
+        "title": "Haplotype-aware analysis of somatic copy number variations",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10289836/"
+      },
+      {
+        "title": "FACETS allele-specific copy number",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5027494/"
+      }
+    ],
+    "demo": "alleles"
+  },
+  {
+    "id": "B4",
+    "name": "FACETS joint CBS and ASCAT / ASPCF",
+    "category": "B",
+    "tagline": "Related bulk DNA approaches combine depth and allele information but solve different problems.",
+    "steps": [
+      {
+        "title": "Measure paired signals",
+        "text": "FACETS uses tumor and matched-normal sequencing at SNPs to construct total-depth and allele-imbalance signals; matched normal helps correct allele-specific biases."
+      },
+      {
+        "title": "Segment jointly",
+        "text": "FACETS uses multivariate rank-based circular binary segmentation (CBS) to locate shared changes in total-depth and allele-imbalance signals; sparse heterozygous sites carry limited allele information."
+      },
+      {
+        "title": "Infer states",
+        "text": "FACETS uses segmented signals and a purity/ploidy model to estimate allele-specific copy number under candidate solutions."
+      },
+      {
+        "title": "Use ASCAT separately",
+        "text": "ASCAT is a separate algorithm: it uses allele-specific tumor and normal signals, allele-specific piecewise constant fitting (ASPCF), and models tumor admixture and ploidy to infer allele-specific states. ASPCF is not FACETS CBS."
+      },
+      {
+        "title": "Compare candidate solutions",
+        "text": "Inspect ambiguity and compare independent evidence; neither method is automatically transferable from bulk DNA to sparse ATAC."
+      }
+    ],
+    "example": {
+      "title": "Same depth, different allele balance",
+      "setup": "Two hypothetical regions have equal normalized total depth; one has balanced alleles and the other has a persistent imbalance.",
+      "steps": [
+        "Joint segmentation can consider an allele shift even without a depth shift.",
+        "A purity/ploidy solution proposes allele-specific states compatible with both signals.",
+        "Another purity or baseline may also fit; assess alternative solutions."
+      ],
+      "interpretation": "Imbalance is informative but does not uniquely determine absolute copy number without identifiable assumptions."
+    },
+    "adaptation": {
+      "stage": "reference",
+      "available": [
+        "Relative depth and allele matrices"
+      ],
+      "needed": [
+        "Matched normal or other defensible bias controls",
+        "Assay-compatible signals",
+        "Validated purity/ploidy assumptions"
+      ],
+      "first_experiment": "Use these methods as conceptual comparators on external paired-DNA benchmark data before considering adaptation.",
+      "success": "Reproduce benchmark behavior and make solution ambiguity visible."
+    },
+    "cautions": [
+      "Published DNA and array methods are not drop-in scATAC callers.",
+      "No matched normal or diploid anchor is assumed locally.",
+      "Depth and alleles can share fragments, and accessibility can confound dosage."
+    ],
+    "sources": [
+      {
+        "title": "FACETS allele-specific copy number",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5027494/"
+      },
+      {
+        "title": "Allele-specific copy number analysis of tumors",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2947907/"
+      }
+    ],
+    "demo": "reference"
+  },
+  {
+    "id": "B5",
+    "name": "Blind-spot image denoising / Noise2Self",
+    "category": "B",
+    "tagline": "Predict masked observations for denoising; predictions are not new evidence.",
+    "steps": [
+      {
+        "title": "Choose masking groups",
+        "text": "Partition features into groups and hide each target group from the predictor used for it."
+      },
+      {
+        "title": "Predict from other features",
+        "text": "Train or tune a predictor using surrounding or related observations while preventing direct access to the masked value."
+      },
+      {
+        "title": "Use self-supervised loss",
+        "text": "Compare the masked prediction with the noisy held-out measurement; under appropriate independent-noise assumptions this can assess denoising risk."
+      },
+      {
+        "title": "Check assumptions",
+        "text": "Test whether noise dependence, spatial correlation and sparse coverage invalidate the masking design."
+      },
+      {
+        "title": "Keep predictions separate",
+        "text": "Display any prediction as an exploratory imputation and retain the original observed data and missingness mask."
+      }
+    ],
+    "example": {
+      "title": "A masked middle bin",
+      "setup": "Three adjacent observed counts are 8, 0, 10.",
+      "steps": [
+        "Hide the middle value from the predictor.",
+        "A simple neighbor-based predictor might return 9.",
+        "Compare that prediction with the held-out measured zero when evaluating prediction error."
+      ],
+      "interpretation": "The predicted 9 is not an observed count; a genuine boundary or correlated noise can make smoothing misleading."
+    },
+    "adaptation": {
+      "stage": "interpret",
+      "available": [
+        "Binned observations and masks"
+      ],
+      "needed": [
+        "A defensible noise-independence assumption",
+        "Held-out controls and boundary-preservation tests"
+      ],
+      "first_experiment": "Test denoising only on controlled synthetic data with known boundaries and realistic correlations.",
+      "success": "Predictions preserve boundaries and uncertainty in independent tests; raw evidence remains available."
+    },
+    "cautions": [
+      "Noise2Self was not established as a CN segmentation method for this assay.",
+      "Imputation can blur boundaries or invent apparent allele evidence.",
+      "Do not fill missing alleles and then treat predictions as measurements."
+    ],
+    "sources": [
+      {
+        "title": "Noise2Self: Blind Denoising by Self-Supervision",
+        "url": "https://arxiv.org/abs/1901.11365"
+      }
+    ],
+    "demo": "none"
+  },
+  {
+    "id": "E1",
+    "name": "Poisson / negative binomial exposure regression",
+    "category": "E",
+    "tagline": "Proposed relative count modeling starts by asking how many zeros sampling predicts.",
+    "steps": [
+      {
+        "title": "Define counts and exposure",
+        "text": "Use raw regional counts, callable span, per-cell exposure and carefully selected covariates."
+      },
+      {
+        "title": "Fit a mean model",
+        "text": "Relate log expected count to log exposure plus region and covariate effects; interpret coefficients as relative rates."
+      },
+      {
+        "title": "Compare distributions",
+        "text": "A Poisson model has variance μ; NB2 permits variance μ + μ²/r, accommodating extra variability for finite r."
+      },
+      {
+        "title": "Predict zeros",
+        "text": "Poisson predicts P(0)=exp(−μ); NB2 predicts P(0)=(r/(r+μ))^r. Compare predictions with held-out observations."
+      },
+      {
+        "title": "Report uncertainty",
+        "text": "Assess rate contrasts and model fit without treating the reference or a cluster as automatically diploid."
+      }
+    ],
+    "example": {
+      "title": "A low mean produces zeros",
+      "setup": "For illustration take μ=0.5 counts per cell and NB2 dispersion parameter r=1.",
+      "steps": [
+        "Poisson predicts exp(−0.5) ≈ 0.607 zeros.",
+        "NB2 predicts (1/1.5)^1 ≈ 0.667 zeros.",
+        "Compare these baseline predictions with held-out zeros rather than treating every zero as a deletion."
+      ],
+      "interpretation": "These numbers are illustrations, not fitted parameters or evidence of a biological state."
+    },
+    "adaptation": {
+      "stage": "inputs",
+      "available": [
+        "Raw regional count layer",
+        "Cell barcodes and genomic bins"
+      ],
+      "needed": [
+        "Exposure and callable spans",
+        "Suitable controls and independence audit",
+        "Held-out datasets"
+      ],
+      "first_experiment": "Fit Poisson and NB models on training cells and compare held-out zero rates by exposure.",
+      "success": "Predictive calibration and stable relative effects across datasets."
+    },
+    "cautions": [
+      "Accessibility, mappability and dosage are confounded.",
+      "Cluster adjustment may remove signal if cluster membership is coverage-confounded.",
+      "Selecting and testing the same region on the same data can bias inference."
+    ],
+    "sources": [
+      {
+        "title": "Bayesian model selection reveals biological origins of zero inflation",
+        "url": "https://link.springer.com/article/10.1186/s13059-020-02103-2"
+      },
+      {
+        "title": "Droplet scRNA-seq is not zero-inflated",
+        "url": "https://www.nature.com/articles/s41587-019-0379-5"
+      }
+    ],
+    "demo": "zeros"
+  },
+  {
+    "id": "E2",
+    "name": "Phase-aware beta-binomial allele model",
+    "category": "E",
+    "tagline": "Proposed regional allele evidence accounts for overdispersion and unknown phase.",
+    "steps": [
+      {
+        "title": "Audit allele counts",
+        "text": "Join cells by barcode and retain HA, HB and AT with callable masks; AT=0 supplies no allele fraction."
+      },
+      {
+        "title": "Establish orientation",
+        "text": "Determine SNP phase sets and orientation; model switches or avoid pooling blocks whose orientation is unknown."
+      },
+      {
+        "title": "Condition on total",
+        "text": "For A count k out of n, a binomial model assumes independent trials with fixed fraction p; a beta-binomial allows p to vary according to a beta distribution."
+      },
+      {
+        "title": "Estimate uncertainty",
+        "text": "Use an appropriate prior or fit dispersion from sufficient data, accounting for bias and ascertainment; sparse observations give broad intervals."
+      },
+      {
+        "title": "Interpret alongside depth",
+        "text": "Report allele imbalance and its uncertainty separately from dosage unless a justified joint measurement model is available."
+      }
+    ],
+    "example": {
+      "title": "Four allele observations",
+      "setup": "In one oriented block, HA=3 and HB=1, so AT=4 and the observed HA fraction is 0.75.",
+      "steps": [
+        "Under a binomial model with p=0.5, exactly three HA counts occur with probability 4/16 = 0.25.",
+        "A beta-binomial permits extra variation and can make extreme counts more plausible than a fixed-p binomial.",
+        "With AT=0 the fraction is undefined, not 0.5."
+      ],
+      "interpretation": "Four observations give weak evidence; this example is not a fitted or calibrated test."
+    },
+    "adaptation": {
+      "stage": "alleles",
+      "available": [
+        "HA, HB and AT matrices"
+      ],
+      "needed": [
+        "Phase-set orientation",
+        "Bias controls, SNP ascertainment and count-unit audit",
+        "Independent calibration"
+      ],
+      "first_experiment": "Measure phase continuity and simulate power across plausible coverage and dispersion.",
+      "success": "Intervals and false-positive rates are calibrated, with explicit insufficient-evidence outcomes."
+    },
+    "cautions": [
+      "One molecule may contribute to multiple SNP sites; counts are not automatically independent trials.",
+      "Opposing haplotype orientations or mixed states can cancel imbalance.",
+      "Allele fraction alone cannot identify a 0:0 state."
+    ],
+    "sources": [
+      {
+        "title": "Haplotype-aware analysis of somatic copy number variations",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10289836/"
+      },
+      {
+        "title": "Numbat-multiome",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12531993/"
+      }
+    ],
+    "demo": "alleles"
+  },
+  {
+    "id": "E3",
+    "name": "Hurdle, zero-inflated NB or latent count mixtures",
+    "category": "E",
+    "tagline": "Proposed alternatives separate zero mechanisms only when diagnostics justify the complexity.",
+    "steps": [
+      {
+        "title": "Fit baseline models",
+        "text": "Start with exposure-adjusted Poisson and negative binomial predictive checks, including zeros by exposure."
+      },
+      {
+        "title": "Define a ZINB model",
+        "text": "A zero-inflated negative binomial mixes a point mass at zero with an NB distribution; either component can produce an observed zero."
+      },
+      {
+        "title": "Define a hurdle model",
+        "text": "A hurdle model separately models zero versus positive occurrence, then models positive counts with a zero-truncated distribution."
+      },
+      {
+        "title": "Compare held-out predictions",
+        "text": "Assess calibration, stability and predictive performance across cells and independent datasets; low means and heterogeneity can already produce many zeros."
+      },
+      {
+        "title": "Calibrate comparisons",
+        "text": "Mixture parameters can be unidentified or on a boundary, so ordinary chi-square likelihood-ratio approximations may fail; use a justified calibrated procedure."
+      }
+    ],
+    "example": {
+      "title": "Two ways to generate zero",
+      "setup": "Suppose a ZINB model assigns point-mass probability 0.2 and its NB component predicts zero probability 0.5.",
+      "steps": [
+        "The total zero probability is 0.2 + 0.8 × 0.5 = 0.6.",
+        "In a hurdle model with zero probability 0.6, the positive-count component is conditional on being positive.",
+        "Both predict 60% zeros but tell different stories about positive counts."
+      ],
+      "interpretation": "Equal zero rates do not establish the same mechanism; these values are illustrative, not fitted."
+    },
+    "adaptation": {
+      "stage": "validate",
+      "available": [
+        "Raw counts",
+        "Potential exposure covariates"
+      ],
+      "needed": [
+        "Held-out cells and replicates",
+        "Technical controls",
+        "Mixture identifiability and calibrated model comparison"
+      ],
+      "first_experiment": "Compare baseline NB and alternative predictive distributions on held-out data before interpreting components.",
+      "success": "Improved reproducible calibration without unstable parameters; biological labels require independent evidence."
+    },
+    "cautions": [
+      "A statistical zero component is not proof of biallelic deletion.",
+      "Small means and unmodeled heterogeneity can mimic excess zeros.",
+      "Component interpretation and significance are sensitive to model assumptions."
+    ],
+    "sources": [
+      {
+        "title": "Bayesian model selection reveals biological origins of zero inflation",
+        "url": "https://link.springer.com/article/10.1186/s13059-020-02103-2"
+      },
+      {
+        "title": "Modified likelihood ratio test in finite mixture models",
+        "url": "https://www.sciencedirect.com/science/article/abs/pii/S0378375804001569"
+      }
+    ],
+    "demo": "zeros"
+  }
+]

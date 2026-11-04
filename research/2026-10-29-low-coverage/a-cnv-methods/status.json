@@ -1,0 +1,21 @@
+{
+  "task_id": "A",
+  "status": "complete",
+  "model": "gpt-6.1-terra",
+  "artifacts": [
+    "findings.md",
+    "methods.json",
+    "sources.json",
+    "pilot.md",
+    "status.json"
+  ],
+  "unresolved_questions": [
+    "Alleloscope official DESCRIPTION and license inaccessible; third-party mirror reports GPL-2 / 1.0.1",
+    "Exact repository commits not pinned",
+    "Numbat mode flag discrepancy and no-normal reference behavior",
+    "SNP-level data, counting unit and phase consistency",
+    "Quantitative computational cost and method-specific calibration"
+  ],
+  "scope": "Bounded first pass; no pipeline executed",
+  "model_selection_provenance": "Explicit coordinator spawn_agent model argument; resumed with followup_task"
+}

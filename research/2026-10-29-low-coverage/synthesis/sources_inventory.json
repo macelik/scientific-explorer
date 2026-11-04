@@ -1,0 +1,1265 @@
+{
+  "sources": [
+    {
+      "source_key": "A:epi",
+      "task_id": "A",
+      "record": {
+        "id": "epi",
+        "title": "epiAneufinder paper",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10511508/",
+        "kind": "paper",
+        "accessed_at": "2026-10-29",
+        "locator": "Algorithm, downsampling, evaluation",
+        "supports": [
+          "Algorithm, downsampling, evaluation"
+        ]
+      }
+    },
+    {
+      "source_key": "A:py",
+      "task_id": "A",
+      "record": {
+        "id": "py",
+        "title": "pyEpiAneufinder repository",
+        "url": "https://github.com/colomemaria/pyEpiAneufinder",
+        "kind": "code",
+        "accessed_at": "2026-10-29",
+        "locator": "README and license",
+        "supports": [
+          "README and license"
+        ]
+      }
+    },
+    {
+      "source_key": "A:copy",
+      "task_id": "A",
+      "record": {
+        "id": "copy",
+        "title": "Copy-scAT paper",
+        "url": "https://doi.org/10.1126/sciadv.abg6045",
+        "kind": "paper",
+        "accessed_at": "2026-10-29",
+        "locator": "Design and implementation",
+        "supports": [
+          "Design and implementation"
+        ]
+      }
+    },
+    {
+      "source_key": "A:copycode",
+      "task_id": "A",
+      "record": {
+        "id": "copycode",
+        "title": "Copy-scAT repository",
+        "url": "https://github.com/spcdot/CopyscAT",
+        "kind": "code",
+        "accessed_at": "2026-10-29",
+        "locator": "README and license",
+        "supports": [
+          "README and license"
+        ]
+      }
+    },
+    {
+      "source_key": "A:allelo",
+      "task_id": "A",
+      "record": {
+        "id": "allelo",
+        "title": "Alleloscope paper",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9127226/",
+        "kind": "paper",
+        "accessed_at": "2026-10-29",
+        "locator": "Methods; scATAC analysis; state confidence",
+        "supports": [
+          "Methods; scATAC analysis; state confidence"
+        ]
+      }
+    },
+    {
+      "source_key": "A:allelocode",
+      "task_id": "A",
+      "record": {
+        "id": "allelocode",
+        "title": "Alleloscope repository",
+        "url": "https://github.com/seasoncloud/Alleloscope",
+        "kind": "code",
+        "accessed_at": "2026-10-29",
+        "locator": "README and DESCRIPTION",
+        "supports": [
+          "README and DESCRIPTION"
+        ]
+      }
+    },
+    {
+      "source_key": "A:numbat",
+      "task_id": "A",
+      "record": {
+        "id": "numbat",
+        "title": "Numbat paper",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10289836/",
+        "kind": "paper",
+        "accessed_at": "2026-10-29",
+        "locator": "Methods, joint HMM and genotypes",
+        "supports": [
+          "Methods, joint HMM and genotypes"
+        ]
+      }
+    },
+    {
+      "source_key": "A:numbatdocs",
+      "task_id": "A",
+      "record": {
+        "id": "numbatdocs",
+        "title": "Numbat workflow",
+        "url": "https://kharchenkolab.github.io/numbat/articles/numbat.html",
+        "kind": "official_docs",
+        "accessed_at": "2026-10-29",
+        "locator": "Preparing data; clonal LOH; run parameters",
+        "supports": [
+          "Preparing data; clonal LOH; run parameters"
+        ]
+      }
+    },
+    {
+      "source_key": "A:numbatcode",
+      "task_id": "A",
+      "record": {
+        "id": "numbatcode",
+        "title": "Numbat repository",
+        "url": "https://github.com/kharchenkolab/numbat",
+        "kind": "code",
+        "accessed_at": "2026-10-29",
+        "locator": "README and LICENSE",
+        "supports": [
+          "README and LICENSE"
+        ]
+      }
+    },
+    {
+      "source_key": "A:xclone",
+      "task_id": "A",
+      "record": {
+        "id": "xclone",
+        "title": "XClone paper",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11303794/",
+        "kind": "paper",
+        "accessed_at": "2026-10-29",
+        "locator": "Overview and model",
+        "supports": [
+          "Overview and model"
+        ]
+      }
+    },
+    {
+      "source_key": "A:chisel",
+      "task_id": "A",
+      "record": {
+        "id": "chisel",
+        "title": "CHISEL paper",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9876616/",
+        "kind": "paper",
+        "accessed_at": "2026-10-29",
+        "locator": "Algorithm; methods; 5 Mb bins",
+        "supports": [
+          "Algorithm; methods; 5 Mb bins"
+        ]
+      }
+    },
+    {
+      "source_key": "A:chiselcode",
+      "task_id": "A",
+      "record": {
+        "id": "chiselcode",
+        "title": "CHISEL repository",
+        "url": "https://github.com/raphael-group/chisel",
+        "kind": "code",
+        "accessed_at": "2026-10-29",
+        "locator": "Required data, no-normal mode and license",
+        "supports": [
+          "Required data, no-normal mode and license"
+        ]
+      }
+    },
+    {
+      "source_key": "A:signals",
+      "task_id": "A",
+      "record": {
+        "id": "signals",
+        "title": "signals documentation",
+        "url": "https://shahcompbio.github.io/signals/",
+        "kind": "official_docs",
+        "accessed_at": "2026-10-29",
+        "locator": "Inputs, outputs, license",
+        "supports": [
+          "Inputs, outputs, license"
+        ]
+      }
+    },
+    {
+      "source_key": "A:honey",
+      "task_id": "A",
+      "record": {
+        "id": "honey",
+        "title": "HoneyBADGER repository",
+        "url": "https://github.com/JEFworks-Lab/HoneyBADGER",
+        "kind": "code",
+        "accessed_at": "2026-10-29",
+        "locator": "README and license",
+        "supports": [
+          "README and license"
+        ]
+      }
+    },
+    {
+      "source_key": "A:copykat",
+      "task_id": "A",
+      "record": {
+        "id": "copykat",
+        "title": "CopyKAT repository",
+        "url": "https://github.com/navinlabcode/copykat",
+        "kind": "code",
+        "accessed_at": "2026-10-29",
+        "locator": "README",
+        "supports": [
+          "README"
+        ]
+      }
+    },
+    {
+      "source_key": "A:infer",
+      "task_id": "A",
+      "record": {
+        "id": "infer",
+        "title": "inferCNV repository",
+        "url": "https://github.com/broadinstitute/infercnv",
+        "kind": "code",
+        "accessed_at": "2026-10-29",
+        "locator": "README and documentation",
+        "supports": [
+          "README and documentation"
+        ]
+      }
+    },
+    {
+      "source_key": "A:casper",
+      "task_id": "A",
+      "record": {
+        "id": "casper",
+        "title": "CaSpER paper",
+        "url": "https://doi.org/10.1038/s41467-019-13779-x",
+        "kind": "paper",
+        "accessed_at": "2026-10-29",
+        "locator": "Method and input",
+        "supports": [
+          "Method and input"
+        ]
+      }
+    },
+    {
+      "source_key": "A:xcode",
+      "task_id": "A",
+      "record": {
+        "id": "xcode",
+        "title": "XClone repository",
+        "url": "https://github.com/single-cell-genetics/XClone",
+        "kind": "code",
+        "accessed_at": "2026-10-29",
+        "locator": "README and license",
+        "supports": [
+          "README and license"
+        ]
+      }
+    },
+    {
+      "source_key": "A:pyproject",
+      "task_id": "A",
+      "record": {
+        "id": "pyproject",
+        "title": "pyEpiAneufinder package metadata",
+        "url": "https://github.com/colomemaria/pyEpiAneufinder/blob/main/pyproject.toml",
+        "kind": "code",
+        "accessed_at": "2026-10-29",
+        "locator": "project version and SPDX license",
+        "supports": [
+          "project version and SPDX license"
+        ]
+      }
+    },
+    {
+      "source_key": "A:multiome",
+      "task_id": "A",
+      "record": {
+        "id": "multiome",
+        "title": "Numbat-multiome paper",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12531993/",
+        "kind": "paper",
+        "accessed_at": "2026-10-29",
+        "locator": "Methods: reference, binning, HMM emissions, matched WGS evaluation",
+        "supports": [
+          "Methods: reference, binning, HMM emissions, matched WGS evaluation"
+        ]
+      }
+    },
+    {
+      "source_key": "A:multiomedocs",
+      "task_id": "A",
+      "record": {
+        "id": "multiomedocs",
+        "title": "Numbat-multiome input vignette",
+        "url": "https://kharchenkolab.github.io/numbat/articles/numbat-multiome.html",
+        "kind": "official_docs",
+        "accessed_at": "2026-10-29",
+        "locator": "Introduction and ATAC-bin input and command",
+        "supports": [
+          "Introduction and ATAC-bin input and command"
+        ]
+      }
+    },
+    {
+      "source_key": "A:numbatdesc",
+      "task_id": "A",
+      "record": {
+        "id": "numbatdesc",
+        "title": "Numbat DESCRIPTION",
+        "url": "https://github.com/kharchenkolab/numbat/blob/main/DESCRIPTION",
+        "kind": "code",
+        "accessed_at": "2026-10-29",
+        "locator": "Version and MIT + file LICENSE",
+        "supports": [
+          "Version and MIT + file LICENSE"
+        ]
+      }
+    },
+    {
+      "source_key": "A:numbatentry",
+      "task_id": "A",
+      "record": {
+        "id": "numbatentry",
+        "title": "Numbat-multiome source entry point",
+        "url": "https://github.com/kharchenkolab/numbat/blob/main/inst/bin/run_numbat_multiome.R",
+        "kind": "code",
+        "accessed_at": "2026-10-29",
+        "locator": "Entry point; direct file fetch unavailable, CLI details unresolved",
+        "supports": [
+          "Entry point; direct file fetch unavailable, CLI details unresolved"
+        ]
+      }
+    },
+    {
+      "source_key": "B:multi",
+      "task_id": "B",
+      "record": {
+        "id": "multi",
+        "title": "Numbat-multiome",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12531993/",
+        "kind": "paper",
+        "accessed_at": "2026-10-29",
+        "locator": "Materials and methods: binning, reference and evaluation",
+        "supports": [
+          "ATAC-bin, reference and WGS comparisons"
+        ]
+      }
+    },
+    {
+      "source_key": "B:vignette",
+      "task_id": "B",
+      "record": {
+        "id": "vignette",
+        "title": "Preparing inputs for Numbat-multiome",
+        "url": "https://kharchenkolab.github.io/numbat/articles/numbat-multiome.html",
+        "kind": "official_docs",
+        "accessed_at": "2026-10-29",
+        "locator": "ATAC-bin mode and inputs",
+        "supports": [
+          "raw fragment bins, reference, phased SNP input"
+        ]
+      }
+    },
+    {
+      "source_key": "B:numbat",
+      "task_id": "B",
+      "record": {
+        "id": "numbat",
+        "title": "Haplotype-aware analysis of somatic copy number variations",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10289836/",
+        "kind": "paper",
+        "accessed_at": "2026-10-29",
+        "locator": "Methods: joint HMM and haplotype phasing",
+        "supports": [
+          "joint model and phase limitations"
+        ]
+      }
+    },
+    {
+      "source_key": "B:facets",
+      "task_id": "B",
+      "record": {
+        "id": "facets",
+        "title": "FACETS allele-specific copy number",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5027494/",
+        "kind": "paper",
+        "accessed_at": "2026-10-29",
+        "locator": "Joint segmentation and integer copy number call",
+        "supports": [
+          "matched normal logOR and joint segmentation"
+        ]
+      }
+    },
+    {
+      "source_key": "B:ascat",
+      "task_id": "B",
+      "record": {
+        "id": "ascat",
+        "title": "Allele-specific copy number analysis of tumors",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2947907/",
+        "kind": "paper",
+        "accessed_at": "2026-10-29",
+        "locator": "Methods and abstract",
+        "supports": [
+          "ploidy and admixture ambiguity"
+        ]
+      }
+    },
+    {
+      "source_key": "B:bic",
+      "task_id": "B",
+      "record": {
+        "id": "bic",
+        "title": "BIC-seq2",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5772337/",
+        "kind": "paper",
+        "accessed_at": "2026-10-29",
+        "locator": "Materials and methods",
+        "supports": [
+          "bias correction and sequencing segmentation"
+        ]
+      }
+    },
+    {
+      "source_key": "B:pelt",
+      "task_id": "B",
+      "record": {
+        "id": "pelt",
+        "title": "Optimal Detection of Changepoints With a Linear Computational Cost",
+        "url": "https://doi.org/10.1080/01621459.2012.737745",
+        "kind": "paper",
+        "accessed_at": "2026-10-29",
+        "locator": "Abstract",
+        "supports": [
+          "penalized objective and conditional runtime"
+        ]
+      }
+    },
+    {
+      "source_key": "B:bayes",
+      "task_id": "B",
+      "record": {
+        "id": "bayes",
+        "title": "Bayesian Online Changepoint Detection",
+        "url": "https://arxiv.org/abs/0710.3742",
+        "kind": "preprint",
+        "accessed_at": "2026-10-29",
+        "locator": "model and assumptions",
+        "supports": [
+          "run length posterior and hazard"
+        ]
+      }
+    },
+    {
+      "source_key": "B:select",
+      "task_id": "B",
+      "record": {
+        "id": "select",
+        "title": "Selective Classification for Deep Neural Networks",
+        "url": "https://papers.neurips.cc/paper_files/paper/2017/hash/4a8423d5e91fda00bb7e46540e2b0cf1-Abstract.html",
+        "kind": "paper",
+        "accessed_at": "2026-10-29",
+        "locator": "Abstract",
+        "supports": [
+          "risk coverage on held-out examples"
+        ]
+      }
+    },
+    {
+      "source_key": "B:noise",
+      "task_id": "B",
+      "record": {
+        "id": "noise",
+        "title": "Noise2Self: Blind Denoising by Self-Supervision",
+        "url": "https://arxiv.org/abs/1901.11365",
+        "kind": "preprint",
+        "accessed_at": "2026-10-29",
+        "locator": "Abstract",
+        "supports": [
+          "independence assumptions and self-supervision"
+        ]
+      }
+    },
+    {
+      "source_key": "B:repo",
+      "task_id": "B",
+      "record": {
+        "id": "repo",
+        "title": "Numbat repository",
+        "url": "https://github.com/kharchenkolab/numbat",
+        "kind": "code",
+        "accessed_at": "2026-10-29",
+        "locator": "repository and license",
+        "supports": [
+          "implementation availability"
+        ]
+      }
+    },
+    {
+      "source_key": "B:shared",
+      "task_id": "B",
+      "record": {
+        "id": "shared",
+        "title": "Wave 1 shared brief",
+        "url": "../shared/WAVE1_BRIEF.md",
+        "kind": "local_provenance",
+        "accessed_at": "2026-10-29",
+        "locator": "items 1-5",
+        "supports": [
+          "local count and phase limitations"
+        ]
+      }
+    },
+    {
+      "source_key": "B:numbat_description",
+      "task_id": "B",
+      "record": {
+        "id": "numbat_description",
+        "title": "Numbat package DESCRIPTION",
+        "url": "https://github.com/kharchenkolab/numbat/blob/main/DESCRIPTION",
+        "kind": "code",
+        "accessed_at": "2026-10-29",
+        "locator": "Version and License fields on main",
+        "supports": [
+          "Moving main reports version 1.5.2 and MIT plus file LICENSE"
+        ]
+      }
+    },
+    {
+      "source_key": "B:numbat_license",
+      "task_id": "B",
+      "record": {
+        "id": "numbat_license",
+        "title": "Numbat license metadata",
+        "url": "https://github.com/kharchenkolab/numbat/blob/main/LICENSE",
+        "kind": "code",
+        "accessed_at": "2026-10-29",
+        "locator": "LICENSE metadata",
+        "supports": [
+          "MIT license copyright metadata referenced by DESCRIPTION"
+        ]
+      }
+    },
+    {
+      "source_key": "B:facets_description",
+      "task_id": "B",
+      "record": {
+        "id": "facets_description",
+        "title": "FACETS package DESCRIPTION",
+        "url": "https://github.com/mskcc/facets/blob/master/DESCRIPTION",
+        "kind": "code",
+        "accessed_at": "2026-10-29",
+        "locator": "Version and License fields on master",
+        "supports": [
+          "Moving master reports version 0.6.2 and GPL >= 2"
+        ]
+      }
+    },
+    {
+      "source_key": "C:numbat2025",
+      "task_id": "C",
+      "record": {
+        "id": "numbat2025",
+        "title": "Numbat-multiome",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12531993/",
+        "kind": "paper",
+        "accessed_at": "2026-10-29",
+        "locator": "Methods: reference count data generation and ATAC-bin evaluation",
+        "supports": [
+          "Methods: reference count data generation and ATAC-bin evaluation"
+        ]
+      }
+    },
+    {
+      "source_key": "C:numbatdocs",
+      "task_id": "C",
+      "record": {
+        "id": "numbatdocs",
+        "title": "Preparing Inputs for Numbat-multiome",
+        "url": "https://kharchenkolab.github.io/numbat/articles/numbat-multiome.html",
+        "kind": "official_docs",
+        "accessed_at": "2026-10-29",
+        "locator": "ATAC-bin inputs and reference preparation",
+        "supports": [
+          "ATAC-bin inputs and reference preparation"
+        ]
+      }
+    },
+    {
+      "source_key": "C:numbatmeta",
+      "task_id": "C",
+      "record": {
+        "id": "numbatmeta",
+        "title": "Numbat DESCRIPTION",
+        "url": "https://github.com/kharchenkolab/numbat/blob/main/DESCRIPTION",
+        "kind": "code",
+        "accessed_at": "2026-10-29",
+        "locator": "Version and license metadata",
+        "supports": [
+          "Version and license metadata"
+        ]
+      }
+    },
+    {
+      "source_key": "C:signac",
+      "task_id": "C",
+      "record": {
+        "id": "signac",
+        "title": "Signac scATAC integration",
+        "url": "https://stuartlab.org/signac/articles/integrate_atac",
+        "kind": "official_docs",
+        "accessed_at": "2026-10-29",
+        "locator": "Transfer labels between reference and query",
+        "supports": [
+          "Transfer labels between reference and query"
+        ]
+      }
+    },
+    {
+      "source_key": "C:archr",
+      "task_id": "C",
+      "record": {
+        "id": "archr",
+        "title": "ArchR addGeneIntegrationMatrix",
+        "url": "https://www.archrproject.com/archive/1.0.1/reference/addGeneIntegrationMatrix.html",
+        "kind": "official_docs",
+        "accessed_at": "2026-10-29",
+        "locator": "GeneScoreMatrix, RNA reference and predicted labels and score",
+        "supports": [
+          "GeneScoreMatrix, RNA reference and predicted labels and score"
+        ]
+      }
+    },
+    {
+      "source_key": "C:copyscat",
+      "task_id": "C",
+      "record": {
+        "id": "copyscat",
+        "title": "CopyscAT tutorial",
+        "url": "https://github.com/spcdot/CopyscAT/blob/master/copyscat_tutorial.R",
+        "kind": "code",
+        "accessed_at": "2026-10-29",
+        "locator": "identifyNonNeoplastic and alternate normal-cell baseline",
+        "supports": [
+          "identifyNonNeoplastic and alternate normal-cell baseline"
+        ]
+      }
+    },
+    {
+      "source_key": "C:epi",
+      "task_id": "C",
+      "record": {
+        "id": "epi",
+        "title": "epiAneufinder",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10511508/",
+        "kind": "paper",
+        "accessed_at": "2026-10-29",
+        "locator": "Algorithm, genome-wide mean baseline and low-coverage evaluation",
+        "supports": [
+          "Algorithm, genome-wide mean baseline and low-coverage evaluation"
+        ]
+      }
+    },
+    {
+      "source_key": "C:copykat",
+      "task_id": "C",
+      "record": {
+        "id": "copykat",
+        "title": "CopyKAT repository",
+        "url": "https://github.com/navinlabcode/copykat",
+        "kind": "code",
+        "accessed_at": "2026-10-29",
+        "locator": "Known normal cell list and baseline modes",
+        "supports": [
+          "Known normal cell list and baseline modes"
+        ]
+      }
+    },
+    {
+      "source_key": "C:infercnv",
+      "task_id": "C",
+      "record": {
+        "id": "infercnv",
+        "title": "inferCNV baseline interpretation",
+        "url": "https://github.com/broadinstitute/infercnv/wiki/Interpreting-the-figure",
+        "kind": "official_docs",
+        "accessed_at": "2026-10-29",
+        "locator": "Normal-cell baseline subtraction",
+        "supports": [
+          "Normal-cell baseline subtraction"
+        ]
+      }
+    },
+    {
+      "source_key": "C:pon",
+      "task_id": "C",
+      "record": {
+        "id": "pon",
+        "title": "GATK CNV workflow",
+        "url": "https://docs.gdc.cancer.gov/Data/Bioinformatics_Pipelines/DNA_Seq_WGS/",
+        "kind": "official_docs",
+        "accessed_at": "2026-10-29",
+        "locator": "DNA panel of normals and denoising; not scATAC validation",
+        "supports": [
+          "DNA panel of normals and denoising; not scATAC validation"
+        ]
+      }
+    },
+    {
+      "source_key": "C:signacmeta",
+      "task_id": "C",
+      "record": {
+        "id": "signacmeta",
+        "title": "Signac DESCRIPTION",
+        "url": "https://github.com/stuart-lab/signac/blob/master/DESCRIPTION",
+        "kind": "code",
+        "accessed_at": "2026-10-29",
+        "locator": "Version and license metadata",
+        "supports": [
+          "Version and license metadata"
+        ]
+      }
+    },
+    {
+      "source_key": "C:archrmeta",
+      "task_id": "C",
+      "record": {
+        "id": "archrmeta",
+        "title": "ArchR DESCRIPTION",
+        "url": "https://github.com/GreenleafLab/ArchR/blob/master/DESCRIPTION",
+        "kind": "code",
+        "accessed_at": "2026-10-29",
+        "locator": "Version and license metadata",
+        "supports": [
+          "Version and license metadata"
+        ]
+      }
+    },
+    {
+      "source_key": "C:zhang_atlas",
+      "task_id": "C",
+      "record": {
+        "id": "zhang_atlas",
+        "title": "A single-cell atlas of chromatin accessibility in the human genome",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8664161/",
+        "kind": "paper",
+        "accessed_at": "2026-10-29",
+        "locator": "Results, STAR Methods and data availability",
+        "supports": [
+          "30 adult tissues, sci-ATAC, donor eligibility, cell types and public GEO availability; fetal dataset lifted from hg19"
+        ]
+      }
+    },
+    {
+      "source_key": "C:geo_fragment",
+      "task_id": "C",
+      "record": {
+        "id": "geo_fragment",
+        "title": "GEO GSM5589349 adult aorta sample",
+        "url": "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM5589349",
+        "kind": "official_docs",
+        "accessed_at": "2026-10-29",
+        "locator": "Supplementary files and SRA relations",
+        "supports": [
+          "Public example fragment BED and SRA reads in GSE184462"
+        ]
+      }
+    },
+    {
+      "source_key": "D:atacpaper",
+      "task_id": "D",
+      "record": {
+        "id": "atacpaper",
+        "title": "Atacformer preprint",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12637716/",
+        "kind": "preprint",
+        "accessed_at": "2026-10-29",
+        "locator": "Results and Methods: atlas, tokenization and embedding",
+        "supports": [
+          "Results and Methods: atlas, tokenization and embedding"
+        ]
+      }
+    },
+    {
+      "source_key": "D:atacdocs",
+      "task_id": "D",
+      "record": {
+        "id": "atacdocs",
+        "title": "Atacformer quickstart",
+        "url": "https://docs.bedbase.org/geniml/atacformer/quickstart/",
+        "kind": "official_docs",
+        "accessed_at": "2026-10-29",
+        "locator": "pretrained checkpoint and input tokenization",
+        "supports": [
+          "pretrained checkpoint and input tokenization"
+        ]
+      }
+    },
+    {
+      "source_key": "D:ataccode",
+      "task_id": "D",
+      "record": {
+        "id": "ataccode",
+        "title": "geniml repository",
+        "url": "https://github.com/databio/geniml",
+        "kind": "code",
+        "accessed_at": "2026-10-29",
+        "locator": "README and license",
+        "supports": [
+          "README and license"
+        ]
+      }
+    },
+    {
+      "source_key": "D:atacweights",
+      "task_id": "D",
+      "record": {
+        "id": "atacweights",
+        "title": "atacformer-base-hg38 model",
+        "url": "https://huggingface.co/databio/atacformer-base-hg38",
+        "kind": "official_docs",
+        "accessed_at": "2026-10-29",
+        "locator": "model card and size",
+        "supports": [
+          "model card and size"
+        ]
+      }
+    },
+    {
+      "source_key": "D:chrompaper",
+      "task_id": "D",
+      "record": {
+        "id": "chrompaper",
+        "title": "ChromFound preprint",
+        "url": "https://arxiv.org/abs/2505.12638",
+        "kind": "preprint",
+        "accessed_at": "2026-10-29",
+        "locator": "abstract and method",
+        "supports": [
+          "abstract and method"
+        ]
+      }
+    },
+    {
+      "source_key": "D:chromcode",
+      "task_id": "D",
+      "record": {
+        "id": "chromcode",
+        "title": "ChromFound official implementation",
+        "url": "https://github.com/SAIS-LifeScience/ChromFound",
+        "kind": "code",
+        "accessed_at": "2026-10-29",
+        "locator": "README v1.0.0 input and dependencies",
+        "supports": [
+          "README v1.0.0 input and dependencies"
+        ]
+      }
+    },
+    {
+      "source_key": "D:epipaper",
+      "task_id": "D",
+      "record": {
+        "id": "epipaper",
+        "title": "EpiFoundation preprint",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11839112/",
+        "kind": "preprint",
+        "accessed_at": "2026-10-29",
+        "locator": "sections 3.2, 3.3 and 4",
+        "supports": [
+          "sections 3.2, 3.3 and 4"
+        ]
+      }
+    },
+    {
+      "source_key": "D:epicode",
+      "task_id": "D",
+      "record": {
+        "id": "epicode",
+        "title": "EpiFoundation official implementation",
+        "url": "https://github.com/UCSC-VLAA/EpiFoundation",
+        "kind": "code",
+        "accessed_at": "2026-10-29",
+        "locator": "README inputs and weights",
+        "supports": [
+          "README inputs and weights"
+        ]
+      }
+    },
+    {
+      "source_key": "D:peakpaper",
+      "task_id": "D",
+      "record": {
+        "id": "peakpaper",
+        "title": "PeakVI paper",
+        "url": "https://doi.org/10.1016/j.crmeth.2022.100182",
+        "kind": "paper",
+        "accessed_at": "2026-10-29",
+        "locator": "STAR Methods model",
+        "supports": [
+          "STAR Methods model"
+        ]
+      }
+    },
+    {
+      "source_key": "D:peakdocs",
+      "task_id": "D",
+      "record": {
+        "id": "peakdocs",
+        "title": "PeakVI documentation",
+        "url": "https://docs.scvi-tools.org/en/latest/api/reference/scvi.model.PEAKVI.html",
+        "kind": "official_docs",
+        "accessed_at": "2026-10-29",
+        "locator": "normalized accessibility and model API",
+        "supports": [
+          "normalized accessibility and model API"
+        ]
+      }
+    },
+    {
+      "source_key": "D:peakcode",
+      "task_id": "D",
+      "record": {
+        "id": "peakcode",
+        "title": "scvi-tools license",
+        "url": "https://github.com/scverse/scvi-tools/blob/main/LICENSE",
+        "kind": "code",
+        "accessed_at": "2026-10-29",
+        "locator": "license",
+        "supports": [
+          "license"
+        ]
+      }
+    },
+    {
+      "source_key": "D:scbcode",
+      "task_id": "D",
+      "record": {
+        "id": "scbcode",
+        "title": "scBasset implementation",
+        "url": "https://github.com/calico/scBasset",
+        "kind": "code",
+        "accessed_at": "2026-10-29",
+        "locator": "README preprocessing, training and license",
+        "supports": [
+          "README preprocessing, training and license"
+        ]
+      }
+    },
+    {
+      "source_key": "D:scbpaper",
+      "task_id": "D",
+      "record": {
+        "id": "scbpaper",
+        "title": "scBasset paper",
+        "url": "https://www.nature.com/articles/s41592-022-01562-8",
+        "kind": "paper",
+        "accessed_at": "2026-10-29",
+        "locator": "methods sequence-based model",
+        "supports": [
+          "methods sequence-based model"
+        ]
+      }
+    },
+    {
+      "source_key": "D:scalepaper",
+      "task_id": "D",
+      "record": {
+        "id": "scalepaper",
+        "title": "SCALE paper",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6783552/",
+        "kind": "paper",
+        "accessed_at": "2026-10-29",
+        "locator": "method and evaluations",
+        "supports": [
+          "method and evaluations"
+        ]
+      }
+    },
+    {
+      "source_key": "D:scalecode",
+      "task_id": "D",
+      "record": {
+        "id": "scalecode",
+        "title": "SCALE official implementation",
+        "url": "https://github.com/jsxlei/SCALE",
+        "kind": "code",
+        "accessed_at": "2026-10-29",
+        "locator": "README inputs outputs and license",
+        "supports": [
+          "README inputs outputs and license"
+        ]
+      }
+    },
+    {
+      "source_key": "E:numbat",
+      "task_id": "E",
+      "record": {
+        "id": "numbat",
+        "title": "Haplotype-aware analysis of somatic copy number variations from single-cell transcriptomes",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10289836/",
+        "kind": "paper",
+        "accessed_at": "2026-10-29",
+        "locator": "Methods: generative statistical model and single-cell CNV evaluation; Results: phasing and pooling",
+        "supports": [
+          "Poisson-lognormal expression counts, beta-binomial allele emissions, phase errors, sparse single-cell uncertainty",
+          "Pooling distinct genotypes can dilute allelic signals"
+        ]
+      }
+    },
+    {
+      "source_key": "E:alleloscope",
+      "task_id": "E",
+      "record": {
+        "id": "alleloscope",
+        "title": "Integrative single-cell analysis of allele-specific copy number alterations and chromatin accessibility in cancer",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9127226/",
+        "kind": "paper",
+        "accessed_at": "2026-10-29",
+        "locator": "Methods: segmentation; Results",
+        "supports": [
+          "scATAC allele-specific CNA investigation; segmentation requires assumptions and can use matched DNA"
+        ]
+      }
+    },
+    {
+      "source_key": "E:choi",
+      "task_id": "E",
+      "record": {
+        "id": "choi",
+        "title": "Bayesian model selection reveals biological origins of zero inflation in single-cell transcriptomics",
+        "url": "https://link.springer.com/article/10.1186/s13059-020-02103-2",
+        "kind": "paper",
+        "accessed_at": "2026-10-29",
+        "locator": "Abstract, Results and Methods",
+        "supports": [
+          "NB reference and zero-inflated model caveats in scRNA, not scATAC"
+        ]
+      }
+    },
+    {
+      "source_key": "E:svensson",
+      "task_id": "E",
+      "record": {
+        "id": "svensson",
+        "title": "Droplet scRNA-seq is not zero-inflated",
+        "url": "https://www.nature.com/articles/s41587-019-0379-5",
+        "kind": "paper",
+        "accessed_at": "2026-10-29",
+        "locator": "Technical-control analysis",
+        "supports": [
+          "Technical control counts can be consistent with standard sampling models in droplet scRNA"
+        ]
+      }
+    },
+    {
+      "source_key": "E:chen",
+      "task_id": "E",
+      "record": {
+        "id": "chen",
+        "title": "Modified likelihood ratio test in finite mixture models with a structural parameter",
+        "url": "https://www.sciencedirect.com/science/article/abs/pii/S0378375804001569",
+        "kind": "paper",
+        "accessed_at": "2026-10-29",
+        "locator": "Abstract",
+        "supports": [
+          "Mixture testing is nonregular; ordinary likelihood-ratio asymptotics are not generally applicable"
+        ]
+      }
+    },
+    {
+      "source_key": "E:numbat_multiome_coordinator",
+      "task_id": "E",
+      "record": {
+        "id": "numbat_multiome_coordinator",
+        "title": "Numbat-multiome: inferring copy number variations by combining RNA and chromatin accessibility information from single-cell data",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12531993/",
+        "kind": "paper",
+        "accessed_at": "2026-10-29",
+        "locator": "Methods: connection to Numbat core inference algorithm; reference count data generation",
+        "supports": [
+          "Published scATAC evaluation exists; bin-count and beta-binomial allele emissions; study references use normal cells."
+        ]
+      }
+    },
+    {
+      "source_key": "F:blacklist",
+      "task_id": "F",
+      "record": {
+        "id": "blacklist",
+        "title": "The ENCODE Blacklist: Identification of Problematic Regions of the Genome",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6597582/",
+        "kind": "paper",
+        "accessed_at": "2026-10-29",
+        "locator": "Methods and Introduction",
+        "supports": [
+          "hg38 blacklist identifies recurrent anomalous high-signal sequencing regions"
+        ]
+      }
+    },
+    {
+      "source_key": "F:umap",
+      "task_id": "F",
+      "record": {
+        "id": "umap",
+        "title": "Umap and Bismap: quantifying genome and methylome mappability",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6237805/",
+        "kind": "paper",
+        "accessed_at": "2026-10-29",
+        "locator": "Methods and Discussion",
+        "supports": [
+          "Read-length-dependent mappability and sample variation"
+        ]
+      }
+    },
+    {
+      "source_key": "F:umapdocs",
+      "task_id": "F",
+      "record": {
+        "id": "umapdocs",
+        "title": "Umap and Bismap tracks",
+        "url": "https://bismap.hoffmanlab.org/",
+        "kind": "official_docs",
+        "accessed_at": "2026-10-29",
+        "locator": "File formats and track availability",
+        "supports": [
+          "hg38 tracks, coordinate revision, read-length options"
+        ]
+      }
+    },
+    {
+      "source_key": "F:umapcode",
+      "task_id": "F",
+      "record": {
+        "id": "umapcode",
+        "title": "Umap official repository",
+        "url": "https://github.com/hoffmangroup/umap",
+        "kind": "code",
+        "accessed_at": "2026-10-29",
+        "locator": "README",
+        "supports": [
+          "version and maintenance status"
+        ]
+      }
+    },
+    {
+      "source_key": "F:epi",
+      "task_id": "F",
+      "record": {
+        "id": "epi",
+        "title": "epiAneufinder identifies copy number alterations from single-cell ATAC-seq data",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10511508/",
+        "kind": "paper",
+        "accessed_at": "2026-10-29",
+        "locator": "epiAneufinder algorithm",
+        "supports": [
+          "scATAC GC correction, blacklist and 85% zero filtering"
+        ]
+      }
+    },
+    {
+      "source_key": "F:cellsnp",
+      "task_id": "F",
+      "record": {
+        "id": "cellsnp",
+        "title": "cellsnp-lite manual",
+        "url": "https://cellsnp-lite.readthedocs.io/en/latest/main/manual.html",
+        "kind": "official_docs",
+        "accessed_at": "2026-10-29",
+        "locator": "Input, Output and optional arguments",
+        "supports": [
+          "AD and DP definitions; read or UMI unit depends on settings; site ascertainment and filtering"
+        ]
+      }
+    },
+    {
+      "source_key": "F:builder",
+      "task_id": "F",
+      "record": {
+        "id": "builder",
+        "title": "Build_Aligned_HA_HB.py local source",
+        "url": "file:///home/mami/Desktop/EGA/haplotype_aware_cnv/Build_Aligned_HA_HB.py",
+        "kind": "local_provenance",
+        "accessed_at": "2026-10-29",
+        "locator": "lines 60-76, 170-205, 221-240, 267-291, 319-321, 370-392; SHA-256 b3892252f9198f14539d2a16be19b9a8fa8e346c2dc348731366f5cbb56475df; historical execution not verified",
+        "supports": [
+          "GT selection and SNP identity, interval conversion, count aggregation, phase metadata omission"
+        ]
+      }
+    },
+    {
+      "source_key": "F:vcf",
+      "task_id": "F",
+      "record": {
+        "id": "vcf",
+        "title": "Local phased VCF header",
+        "url": "file:///home/mami/Desktop/EGA/SNP_project/alpha/haplo_initial/updated_phasing/phasing/phased.vcf.gz",
+        "kind": "local_provenance",
+        "accessed_at": "2026-10-29",
+        "locator": "contig, eagleCommand and sample header",
+        "supports": [
+          "hg38-labelled Eagle reference and map, contig lengths, genotype output"
+        ]
+      }
+    },
+    {
+      "source_key": "F:pyepi",
+      "task_id": "F",
+      "record": {
+        "id": "pyepi",
+        "title": "Local pyEpiAneufinder source",
+        "url": "file:///home/mami/Desktop/EGA/pyEpiAneufinder/pyEpiAneufinder/pyEpiAneufinder_v1.py",
+        "kind": "local_provenance",
+        "accessed_at": "2026-10-29",
+        "locator": "make_windows, filter_bins, GC correction",
+        "supports": [
+          "code paths for blacklist and dataset-specific zero filter; actual run config unconfirmed"
+        ]
+      }
+    },
+    {
+      "source_key": "F:blacklistcode",
+      "task_id": "F",
+      "record": {
+        "id": "blacklistcode",
+        "title": "Blacklist official repository license",
+        "url": "https://github.com/Boyle-Lab/Blacklist/blob/master/LICENSE",
+        "kind": "code",
+        "accessed_at": "2026-10-29",
+        "locator": "LICENSE and repository license declaration",
+        "supports": [
+          "Repository declares GPL version 3; separate track terms not established"
+        ]
+      }
+    },
+    {
+      "source_key": "F:umaplicense",
+      "task_id": "F",
+      "record": {
+        "id": "umaplicense",
+        "title": "Umap project metadata",
+        "url": "https://github.com/hoffmangroup/umap/blob/master/pyproject.toml",
+        "kind": "code",
+        "accessed_at": "2026-10-29",
+        "locator": "project.license on master",
+        "supports": [
+          "Current master states GPL-3.0-only; historical tag and track terms not established"
+        ]
+      }
+    }
+  ]
+}

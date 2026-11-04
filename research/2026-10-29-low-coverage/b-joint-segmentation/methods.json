@@ -1,0 +1,173 @@
+{
+  "task_id": "B",
+  "methods": [
+    {
+      "name": "Numbat-multiome ATAC-bin",
+      "assay": "Published scATAC tumor cohorts, WGS comparisons",
+      "inputs": "Raw fragment bin counts; SNP-level phased allele counts; bins; normalized reference per cell type",
+      "outputs": "HMM event states, clone and cell probabilities relative to reference",
+      "mechanism": "Haplotype-aware depth/allele HMM with binned accessibility",
+      "reference_requirements": "Reference count profiles; evaluated with annotated normal cells",
+      "low_coverage_handling": "Sparse allele data limit inference; exact missing-site/gap behavior needs source-level audit",
+      "homozygous_deletion": "No local validation; do not interpret categorical loss as absolute zero",
+      "evidence": "Published scATAC; current sample compatibility untested",
+      "implementation": {
+        "code_url": "https://github.com/kharchenkolab/numbat",
+        "version_or_commit": "1.5.2 declared on main, accessed 2026-10-29; commit not pinned",
+        "license": "MIT + file LICENSE (package DESCRIPTION)",
+        "license_url": "https://github.com/kharchenkolab/numbat/blob/main/LICENSE",
+        "compute_notes": "No local runtime measured; paper used 2500 cells, 8 cores, 16 GB for bin-size evaluation; smaller bins increased runtime."
+      },
+      "fit": "Most relevant published comparator if SNP-level phase and defensible reference recovered",
+      "limitations": [
+        "Missing phase sets and normalized reference; depth and SNP counts overlap; baseline ambiguity",
+        "Posterior calibration and dependence under this assay unresolved",
+        "Event-level arm/focal benchmark excluded segments <10% of an arm or <200 kb; separate bin-size analysis was visual in one complex sample."
+      ],
+      "source_ids": [
+        "multi",
+        "vignette",
+        "numbat",
+        "repo",
+        "shared",
+        "numbat_description",
+        "numbat_license"
+      ],
+      "uncertain": [
+        "Gap/missing-emission and dependence treatment not verified",
+        "Exact commit and no-reference mode not verified"
+      ]
+    },
+    {
+      "name": "Masked count changepoint with conditional alleles (proposed)",
+      "assay": "Untested transfer from count segmentation to scATAC",
+      "inputs": "Raw counts and exposure/covariates; retained bin coordinates; SNP-level counts and phase blocks if available",
+      "outputs": "Relative depth segments, boundary intervals; allele evidence or insufficient evidence",
+      "mechanism": "Count likelihood or heteroscedastic model for depth; conditional allele model only after dependence/phase assumptions tested; count zero retained; missing emission omitted",
+      "reference_requirements": "No normal required for relative boundaries; absolute loss needs anchor",
+      "low_coverage_handling": "Depth can yield a boundary without allele coverage; genomic gaps represented explicitly; no fabricated balance",
+      "homozygous_deletion": "Unsupported as definitive state without anchor and orthogonal evidence",
+      "evidence": "PELT/BIC-seq2 support changepoint ideas in other contexts, not this design",
+      "implementation": {
+        "code_url": null,
+        "version_or_commit": null,
+        "license": null,
+        "license_url": null,
+        "compute_notes": "Not measured; no installation or runtime conducted."
+      },
+      "fit": "Feasible depth-only diagnostic on frozen grid; joint extension blocked by phase and dependence",
+      "limitations": [
+        "Accessibility and dosage confounded; adaptive boundary selection biases downstream significance",
+        "Conditional factorization must be derived from actual molecule counting; AT is SNP DP and not unique fragment count"
+      ],
+      "source_ids": [
+        "bic",
+        "pelt",
+        "shared"
+      ],
+      "uncertain": [
+        "Likelihood, covariance and calibration require empirical validation"
+      ]
+    },
+    {
+      "name": "Covariance-aware joint segmentation / Bayesian HMM (proposed)",
+      "assay": "Untested scATAC adaptation of multivariate segmentation",
+      "inputs": "Depth and allele observations with covariance or explicit shared-fragment generative model; phase sets; coordinates",
+      "outputs": "Boundary posterior or intervals; relative depth and allele-state uncertainty; abstention",
+      "mechanism": "Joint likelihood with missing components marginalized; distance-aware transitions; phase-block-specific nuisance orientation",
+      "reference_requirements": "Relative segmentation possible without normal; absolute states need identifiable anchor",
+      "low_coverage_handling": "Unobserved allele emission contributes no evidence; calibrated conditional dependence essential; gap uncertainty retained",
+      "homozygous_deletion": "Not established",
+      "evidence": "FACETS and original Numbat studied other designs; proposed joint model unvalidated",
+      "implementation": {
+        "code_url": null,
+        "version_or_commit": null,
+        "license": null,
+        "license_url": null,
+        "compute_notes": "Not measured; no installation or runtime conducted."
+      },
+      "fit": "Longer-term candidate once molecule counting and phasing documented",
+      "limitations": [
+        "Estimated covariance unstable in sparse data; priors/transition hazard influence results",
+        "Marginalizing missing data assumes justified missingness mechanism; ascertainment may be informative"
+      ],
+      "source_ids": [
+        "facets",
+        "numbat",
+        "bayes",
+        "shared"
+      ],
+      "uncertain": [
+        "Joint measurement model and genomic transition policy unspecified"
+      ]
+    },
+    {
+      "name": "FACETS joint CBS and ASCAT/ASPCF",
+      "assay": "Bulk paired tumor-normal DNA sequencing; SNP arrays",
+      "inputs": "Matched normal and tumor SNP depth/allele signals; ASCAT baseline and ploidy assumptions",
+      "outputs": "Joint boundaries and allele-specific CN; purity/ploidy",
+      "mechanism": "FACETS multivariate rank-based CBS and matched normal log odds; ASCAT models admixture/ploidy",
+      "reference_requirements": "FACETS paired normal corrects allelic mapping bias; ASCAT requires identifying suitable solution",
+      "low_coverage_handling": "Sparse heterozygote weights do not create evidence; ATAC transfer untested",
+      "homozygous_deletion": "DNA state model can represent zero, but local ATAC identification not established",
+      "evidence": "Published DNA/array; transfer not evaluated",
+      "implementation": {
+        "code_url": "https://github.com/mskcc/facets",
+        "version_or_commit": "FACETS 0.6.2 declared on master, accessed 2026-10-29; commit not pinned; ASCAT not checked",
+        "license": "FACETS GPL (>= 2); ASCAT unverified",
+        "license_url": "https://github.com/mskcc/facets/blob/master/DESCRIPTION",
+        "compute_notes": "Not measured; no installation or runtime conducted."
+      },
+      "fit": "Methodological comparator, not drop-in caller",
+      "limitations": [
+        "No matched normal or identified diploid anchor",
+        "Shared count dependence and accessibility confounding remain"
+      ],
+      "source_ids": [
+        "facets",
+        "ascat",
+        "facets_description"
+      ],
+      "uncertain": [
+        "Exact scATAC missing/gap treatment not applicable"
+      ]
+    },
+    {
+      "name": "Blind-spot image denoising / Noise2Self",
+      "assay": "Images and single-cell expression examples",
+      "inputs": "Noisy data and assumed suitable independent noise",
+      "outputs": "Denoised predictions, not independent CN evidence",
+      "mechanism": "Mask observations and predict from other features",
+      "reference_requirements": "No CN baseline provided",
+      "low_coverage_handling": "Masked predictions are imputation, not observed alleles",
+      "homozygous_deletion": "Not applicable",
+      "evidence": "Published outside genomic CN segmentation; transfer untested",
+      "implementation": {
+        "code_url": null,
+        "version_or_commit": null,
+        "license": null,
+        "license_url": null,
+        "compute_notes": "Not measured; no installation or runtime conducted."
+      },
+      "fit": "Do not use for evidence or fill allele gaps",
+      "limitations": [
+        "Spatially correlated accessibility, phase and count noise violate straightforward transfer",
+        "Can blur boundaries and hallucinate signal"
+      ],
+      "source_ids": [
+        "noise"
+      ],
+      "uncertain": [
+        "No study of this task identified"
+      ]
+    }
+  ],
+  "recommendations": [
+    "First assess Numbat-multiome prerequisites; use depth-only count segmentation as an exploratory fallback, not CN truth.",
+    "Develop joint model only after observation dependence and phase sets are established.",
+    "Evaluate abstention and boundary uncertainty on independent truth datasets."
+  ],
+  "uncertain": [
+    "All proposed joint models are unvalidated; exact commits and ASCAT license remain unverified."
+  ]
+}

@@ -1,0 +1,167 @@
+[
+  {
+    "id": "multi",
+    "title": "Numbat-multiome",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12531993/",
+    "kind": "paper",
+    "accessed_at": "2026-10-29",
+    "locator": "Materials and methods: binning, reference and evaluation",
+    "supports": [
+      "ATAC-bin, reference and WGS comparisons"
+    ]
+  },
+  {
+    "id": "vignette",
+    "title": "Preparing inputs for Numbat-multiome",
+    "url": "https://kharchenkolab.github.io/numbat/articles/numbat-multiome.html",
+    "kind": "official_docs",
+    "accessed_at": "2026-10-29",
+    "locator": "ATAC-bin mode and inputs",
+    "supports": [
+      "raw fragment bins, reference, phased SNP input"
+    ]
+  },
+  {
+    "id": "numbat",
+    "title": "Haplotype-aware analysis of somatic copy number variations",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10289836/",
+    "kind": "paper",
+    "accessed_at": "2026-10-29",
+    "locator": "Methods: joint HMM and haplotype phasing",
+    "supports": [
+      "joint model and phase limitations"
+    ]
+  },
+  {
+    "id": "facets",
+    "title": "FACETS allele-specific copy number",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5027494/",
+    "kind": "paper",
+    "accessed_at": "2026-10-29",
+    "locator": "Joint segmentation and integer copy number call",
+    "supports": [
+      "matched normal logOR and joint segmentation"
+    ]
+  },
+  {
+    "id": "ascat",
+    "title": "Allele-specific copy number analysis of tumors",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2947907/",
+    "kind": "paper",
+    "accessed_at": "2026-10-29",
+    "locator": "Methods and abstract",
+    "supports": [
+      "ploidy and admixture ambiguity"
+    ]
+  },
+  {
+    "id": "bic",
+    "title": "BIC-seq2",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5772337/",
+    "kind": "paper",
+    "accessed_at": "2026-10-29",
+    "locator": "Materials and methods",
+    "supports": [
+      "bias correction and sequencing segmentation"
+    ]
+  },
+  {
+    "id": "pelt",
+    "title": "Optimal Detection of Changepoints With a Linear Computational Cost",
+    "url": "https://doi.org/10.1080/01621459.2012.737745",
+    "kind": "paper",
+    "accessed_at": "2026-10-29",
+    "locator": "Abstract",
+    "supports": [
+      "penalized objective and conditional runtime"
+    ]
+  },
+  {
+    "id": "bayes",
+    "title": "Bayesian Online Changepoint Detection",
+    "url": "https://arxiv.org/abs/0710.3742",
+    "kind": "preprint",
+    "accessed_at": "2026-10-29",
+    "locator": "model and assumptions",
+    "supports": [
+      "run length posterior and hazard"
+    ]
+  },
+  {
+    "id": "select",
+    "title": "Selective Classification for Deep Neural Networks",
+    "url": "https://papers.neurips.cc/paper_files/paper/2017/hash/4a8423d5e91fda00bb7e46540e2b0cf1-Abstract.html",
+    "kind": "paper",
+    "accessed_at": "2026-10-29",
+    "locator": "Abstract",
+    "supports": [
+      "risk coverage on held-out examples"
+    ]
+  },
+  {
+    "id": "noise",
+    "title": "Noise2Self: Blind Denoising by Self-Supervision",
+    "url": "https://arxiv.org/abs/1901.11365",
+    "kind": "preprint",
+    "accessed_at": "2026-10-29",
+    "locator": "Abstract",
+    "supports": [
+      "independence assumptions and self-supervision"
+    ]
+  },
+  {
+    "id": "repo",
+    "title": "Numbat repository",
+    "url": "https://github.com/kharchenkolab/numbat",
+    "kind": "code",
+    "accessed_at": "2026-10-29",
+    "locator": "repository and license",
+    "supports": [
+      "implementation availability"
+    ]
+  },
+  {
+    "id": "shared",
+    "title": "Wave 1 shared brief",
+    "url": "../shared/WAVE1_BRIEF.md",
+    "kind": "local_provenance",
+    "accessed_at": "2026-10-29",
+    "locator": "items 1-5",
+    "supports": [
+      "local count and phase limitations"
+    ]
+  },
+  {
+    "id": "numbat_description",
+    "title": "Numbat package DESCRIPTION",
+    "url": "https://github.com/kharchenkolab/numbat/blob/main/DESCRIPTION",
+    "kind": "code",
+    "accessed_at": "2026-10-29",
+    "locator": "Version and License fields on main",
+    "supports": [
+      "Moving main reports version 1.5.2 and MIT plus file LICENSE"
+    ]
+  },
+  {
+    "id": "numbat_license",
+    "title": "Numbat license metadata",
+    "url": "https://github.com/kharchenkolab/numbat/blob/main/LICENSE",
+    "kind": "code",
+    "accessed_at": "2026-10-29",
+    "locator": "LICENSE metadata",
+    "supports": [
+      "MIT license copyright metadata referenced by DESCRIPTION"
+    ]
+  },
+  {
+    "id": "facets_description",
+    "title": "FACETS package DESCRIPTION",
+    "url": "https://github.com/mskcc/facets/blob/master/DESCRIPTION",
+    "kind": "code",
+    "accessed_at": "2026-10-29",
+    "locator": "Version and License fields on master",
+    "supports": [
+      "Moving master reports version 0.6.2 and GPL >= 2"
+    ]
+  }
+]

@@ -1,0 +1,255 @@
+[
+  {
+    "id": "epi",
+    "title": "epiAneufinder paper",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10511508/",
+    "kind": "paper",
+    "accessed_at": "2026-10-29",
+    "locator": "Algorithm, downsampling, evaluation",
+    "supports": [
+      "Algorithm, downsampling, evaluation"
+    ]
+  },
+  {
+    "id": "py",
+    "title": "pyEpiAneufinder repository",
+    "url": "https://github.com/colomemaria/pyEpiAneufinder",
+    "kind": "code",
+    "accessed_at": "2026-10-29",
+    "locator": "README and license",
+    "supports": [
+      "README and license"
+    ]
+  },
+  {
+    "id": "copy",
+    "title": "Copy-scAT paper",
+    "url": "https://doi.org/10.1126/sciadv.abg6045",
+    "kind": "paper",
+    "accessed_at": "2026-10-29",
+    "locator": "Design and implementation",
+    "supports": [
+      "Design and implementation"
+    ]
+  },
+  {
+    "id": "copycode",
+    "title": "Copy-scAT repository",
+    "url": "https://github.com/spcdot/CopyscAT",
+    "kind": "code",
+    "accessed_at": "2026-10-29",
+    "locator": "README and license",
+    "supports": [
+      "README and license"
+    ]
+  },
+  {
+    "id": "allelo",
+    "title": "Alleloscope paper",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9127226/",
+    "kind": "paper",
+    "accessed_at": "2026-10-29",
+    "locator": "Methods; scATAC analysis; state confidence",
+    "supports": [
+      "Methods; scATAC analysis; state confidence"
+    ]
+  },
+  {
+    "id": "allelocode",
+    "title": "Alleloscope repository",
+    "url": "https://github.com/seasoncloud/Alleloscope",
+    "kind": "code",
+    "accessed_at": "2026-10-29",
+    "locator": "README and DESCRIPTION",
+    "supports": [
+      "README and DESCRIPTION"
+    ]
+  },
+  {
+    "id": "numbat",
+    "title": "Numbat paper",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10289836/",
+    "kind": "paper",
+    "accessed_at": "2026-10-29",
+    "locator": "Methods, joint HMM and genotypes",
+    "supports": [
+      "Methods, joint HMM and genotypes"
+    ]
+  },
+  {
+    "id": "numbatdocs",
+    "title": "Numbat workflow",
+    "url": "https://kharchenkolab.github.io/numbat/articles/numbat.html",
+    "kind": "official_docs",
+    "accessed_at": "2026-10-29",
+    "locator": "Preparing data; clonal LOH; run parameters",
+    "supports": [
+      "Preparing data; clonal LOH; run parameters"
+    ]
+  },
+  {
+    "id": "numbatcode",
+    "title": "Numbat repository",
+    "url": "https://github.com/kharchenkolab/numbat",
+    "kind": "code",
+    "accessed_at": "2026-10-29",
+    "locator": "README and LICENSE",
+    "supports": [
+      "README and LICENSE"
+    ]
+  },
+  {
+    "id": "xclone",
+    "title": "XClone paper",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11303794/",
+    "kind": "paper",
+    "accessed_at": "2026-10-29",
+    "locator": "Overview and model",
+    "supports": [
+      "Overview and model"
+    ]
+  },
+  {
+    "id": "chisel",
+    "title": "CHISEL paper",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9876616/",
+    "kind": "paper",
+    "accessed_at": "2026-10-29",
+    "locator": "Algorithm; methods; 5 Mb bins",
+    "supports": [
+      "Algorithm; methods; 5 Mb bins"
+    ]
+  },
+  {
+    "id": "chiselcode",
+    "title": "CHISEL repository",
+    "url": "https://github.com/raphael-group/chisel",
+    "kind": "code",
+    "accessed_at": "2026-10-29",
+    "locator": "Required data, no-normal mode and license",
+    "supports": [
+      "Required data, no-normal mode and license"
+    ]
+  },
+  {
+    "id": "signals",
+    "title": "signals documentation",
+    "url": "https://shahcompbio.github.io/signals/",
+    "kind": "official_docs",
+    "accessed_at": "2026-10-29",
+    "locator": "Inputs, outputs, license",
+    "supports": [
+      "Inputs, outputs, license"
+    ]
+  },
+  {
+    "id": "honey",
+    "title": "HoneyBADGER repository",
+    "url": "https://github.com/JEFworks-Lab/HoneyBADGER",
+    "kind": "code",
+    "accessed_at": "2026-10-29",
+    "locator": "README and license",
+    "supports": [
+      "README and license"
+    ]
+  },
+  {
+    "id": "copykat",
+    "title": "CopyKAT repository",
+    "url": "https://github.com/navinlabcode/copykat",
+    "kind": "code",
+    "accessed_at": "2026-10-29",
+    "locator": "README",
+    "supports": [
+      "README"
+    ]
+  },
+  {
+    "id": "infer",
+    "title": "inferCNV repository",
+    "url": "https://github.com/broadinstitute/infercnv",
+    "kind": "code",
+    "accessed_at": "2026-10-29",
+    "locator": "README and documentation",
+    "supports": [
+      "README and documentation"
+    ]
+  },
+  {
+    "id": "casper",
+    "title": "CaSpER paper",
+    "url": "https://doi.org/10.1038/s41467-019-13779-x",
+    "kind": "paper",
+    "accessed_at": "2026-10-29",
+    "locator": "Method and input",
+    "supports": [
+      "Method and input"
+    ]
+  },
+  {
+    "id": "xcode",
+    "title": "XClone repository",
+    "url": "https://github.com/single-cell-genetics/XClone",
+    "kind": "code",
+    "accessed_at": "2026-10-29",
+    "locator": "README and license",
+    "supports": [
+      "README and license"
+    ]
+  },
+  {
+    "id": "pyproject",
+    "title": "pyEpiAneufinder package metadata",
+    "url": "https://github.com/colomemaria/pyEpiAneufinder/blob/main/pyproject.toml",
+    "kind": "code",
+    "accessed_at": "2026-10-29",
+    "locator": "project version and SPDX license",
+    "supports": [
+      "project version and SPDX license"
+    ]
+  },
+  {
+    "id": "multiome",
+    "title": "Numbat-multiome paper",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12531993/",
+    "kind": "paper",
+    "accessed_at": "2026-10-29",
+    "locator": "Methods: reference, binning, HMM emissions, matched WGS evaluation",
+    "supports": [
+      "Methods: reference, binning, HMM emissions, matched WGS evaluation"
+    ]
+  },
+  {
+    "id": "multiomedocs",
+    "title": "Numbat-multiome input vignette",
+    "url": "https://kharchenkolab.github.io/numbat/articles/numbat-multiome.html",
+    "kind": "official_docs",
+    "accessed_at": "2026-10-29",
+    "locator": "Introduction and ATAC-bin input and command",
+    "supports": [
+      "Introduction and ATAC-bin input and command"
+    ]
+  },
+  {
+    "id": "numbatdesc",
+    "title": "Numbat DESCRIPTION",
+    "url": "https://github.com/kharchenkolab/numbat/blob/main/DESCRIPTION",
+    "kind": "code",
+    "accessed_at": "2026-10-29",
+    "locator": "Version and MIT + file LICENSE",
+    "supports": [
+      "Version and MIT + file LICENSE"
+    ]
+  },
+  {
+    "id": "numbatentry",
+    "title": "Numbat-multiome source entry point",
+    "url": "https://github.com/kharchenkolab/numbat/blob/main/inst/bin/run_numbat_multiome.R",
+    "kind": "code",
+    "accessed_at": "2026-10-29",
+    "locator": "Entry point; direct file fetch unavailable, CLI details unresolved",
+    "supports": [
+      "Entry point; direct file fetch unavailable, CLI details unresolved"
+    ]
+  }
+]

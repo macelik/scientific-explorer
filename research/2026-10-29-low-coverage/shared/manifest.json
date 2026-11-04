@@ -1,0 +1,108 @@
+{
+  "date": "2026-10-29",
+  "sample": "MCF10-A; user supplied identity; not region-level CN truth",
+  "repo_commit": "3bb9aec8dd65be0a7c85cb7383e4ef8914172ca7",
+  "repo_status": [
+    "?? docs/notes/2026-10-29-low-coverage-research-plan.md",
+    "?? docs/notes/2026-10-29-research-handoff-low-coverage-segments.md",
+    "?? docs/superpowers/plans/2026-09-21-typesafe-jev-judgment-layers.md",
+    "?? docs/superpowers/plans/2026-09-30-portfolio-repository-polish.md",
+    "?? research/"
+  ],
+  "panel": "Existing coverage-stratified 300 cells; legacy sampling seed unverified; exact membership frozen",
+  "new_randomness": "None; these are deterministic descriptive exports",
+  "coordinate_convention": "1-based inclusive; window starts converted from Mb boundaries by adding 1",
+  "flanks": "50 retained bins on each side on same chromosome; may overlap other candidate windows",
+  "allelic_caution": "Sums are descriptive; phase continuity and counting units require upstream audit; do not treat sums as LOH tests",
+  "checks": {
+    "unique_cells": true,
+    "barcode_alignment": true,
+    "coordinates_match_all_matrices": true,
+    "AT_equals_HA_plus_HB_all_300": true,
+    "raw_nonnegative_integer": true,
+    "no_refiltering": true
+  },
+  "environment": {
+    "python": "3.10.12",
+    "numpy": "1.24.4",
+    "pandas": "2.2.0",
+    "h5py": "3.6.0",
+    "pyarrow": "23.0.0"
+  },
+  "inputs": [
+    {
+      "path": "/home/mami/Desktop/EGA/pyEpiAneufinder/analysis/2026-09-16-interactive-app-planning/integration-story/data/count_matrix.h5ad",
+      "size": 272099683,
+      "mtime_ns": 1789763354855102000,
+      "sha256": "b98a4f86cb80b86dc49382ffa90ab44cc6b3f1028f8481c80535cbf39683d5f8"
+    },
+    {
+      "path": "/home/mami/Desktop/EGA/pyEpiAneufinder/analysis/2026-09-16-interactive-app-planning/integration-story/data/integrated.h5mu",
+      "size": 310813168,
+      "mtime_ns": 1789763355188110000,
+      "sha256": "b6c9c5bce06b47a3d85d0c26e6b42f2a70dfcb6c72bd009aaab695ae78658bec"
+    },
+    {
+      "path": "/home/mami/Desktop/EGA/pyEpiAneufinder/analysis/2026-09-16-interactive-app-planning/default_300cells/cells.csv",
+      "size": 33142,
+      "mtime_ns": 1786960666958224407,
+      "sha256": "8db0e633fe5cb0fd67fbdd391d6a176ef42b356f33b6143fd18a0a90bfad50f8"
+    },
+    {
+      "path": "/home/mami/Desktop/EGA/pyEpiAneufinder/analysis/2026-09-16-interactive-app-planning/integration-story/data/genome_pool/derived/karyogram_cluster_segments.tsv",
+      "size": 52475,
+      "mtime_ns": 1793217397782359339,
+      "sha256": "10ae63af37e002e458d2d89e1dd0d7e08b12176866d0cfd78d50ca123ccdbc0f"
+    },
+    {
+      "path": "/home/mami/Desktop/EGA/haplotype_aware_cnv/hapcnv_outs_from_updated_phasing/aligned_matrices/HA.parquet",
+      "size": 13417266,
+      "mtime_ns": 1774274325503934162,
+      "sha256": "ae513b4020193646c16fe0447c4239b2906b6c57e69b445bea61633c0799d9c5"
+    },
+    {
+      "path": "/home/mami/Desktop/EGA/haplotype_aware_cnv/hapcnv_outs_from_updated_phasing/aligned_matrices/HB.parquet",
+      "size": 13379753,
+      "mtime_ns": 1774274326828966925,
+      "sha256": "2466b0f353faa3217eb4331184f5dd79ddce52f38ea1b9b527743c16edf4e751"
+    },
+    {
+      "path": "/home/mami/Desktop/EGA/haplotype_aware_cnv/hapcnv_outs_from_updated_phasing/aligned_matrices/AT.parquet",
+      "size": 19089938,
+      "mtime_ns": 1774274328227001487,
+      "sha256": "20a64c089fdbf1ac80971e1e3754df1a93a5d9b7ff82cc181d76347760bd45c7"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "/home/mami/Desktop/EGA/pyEpiAneufinder/analysis/2026-09-16-interactive-app-planning/scientific-explorer/research/2026-10-29-low-coverage/shared/cells.tsv",
+      "size": 17566,
+      "mtime_ns": 1793284877128581458,
+      "sha256": "10a37543b38f79782436f434e8844eae294929d66815e0cebc90fa6b33cc23c4"
+    },
+    {
+      "path": "/home/mami/Desktop/EGA/pyEpiAneufinder/analysis/2026-09-16-interactive-app-planning/scientific-explorer/research/2026-10-29-low-coverage/shared/existing_chr7_chr9_segments.tsv",
+      "size": 7727,
+      "mtime_ns": 1793284877359587076,
+      "sha256": "128513f16844aaef347a11e6733ae5313c2de513b8b190ff6bf702662a3fde9d"
+    },
+    {
+      "path": "/home/mami/Desktop/EGA/pyEpiAneufinder/analysis/2026-09-16-interactive-app-planning/scientific-explorer/research/2026-10-29-low-coverage/shared/region_bins.tsv",
+      "size": 62285,
+      "mtime_ns": 1793284877312585933,
+      "sha256": "bc58e922f340cc0e143b7a57c1d6c38405c94a126b016a8c7646a2dcb645f05a"
+    },
+    {
+      "path": "/home/mami/Desktop/EGA/pyEpiAneufinder/analysis/2026-09-16-interactive-app-planning/scientific-explorer/research/2026-10-29-low-coverage/shared/region_counts.tsv",
+      "size": 785793,
+      "mtime_ns": 1793284877355586978,
+      "sha256": "ee9113acea13baa3c9ffd8da176b2a09c11b0521437e5fa460751febbc9ea718"
+    },
+    {
+      "path": "/home/mami/Desktop/EGA/pyEpiAneufinder/analysis/2026-09-16-interactive-app-planning/scientific-explorer/research/2026-10-29-low-coverage/shared/regions.tsv",
+      "size": 2876,
+      "mtime_ns": 1793284877309585860,
+      "sha256": "e38857779ca98bb9d775e9d404942102fa7b727d995784de1b4a18fbf4eb239c"
+    }
+  ]
+}

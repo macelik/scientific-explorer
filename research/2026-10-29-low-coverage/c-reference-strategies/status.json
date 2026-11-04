@@ -1,0 +1,24 @@
+{
+  "task_id": "C",
+  "status": "complete",
+  "model": "gpt-6.1-terra",
+  "artifacts": [
+    "findings.md",
+    "methods.json",
+    "sources.json",
+    "pilot.md",
+    "status.json"
+  ],
+  "unresolved_questions": [
+    "Independent internal or external reference and regional CN characterization",
+    "Exact alignment build, counting units, and SNP-level phase inputs",
+    "Public dataset compatibility, access and license",
+    "Prespecified benchmark tolerances and availability"
+  ],
+  "model_selection_provenance": "Explicit coordinator spawn_agent model argument; resumed with followup_task",
+  "completion_review": "Resumed and validated artifacts; added specific public scATAC reference candidate and provenance.",
+  "interruption_history": {
+    "reason": "Usage limit in preceding turn",
+    "resolved": "User reset limits and agent completed resumed review"
+  }
+}

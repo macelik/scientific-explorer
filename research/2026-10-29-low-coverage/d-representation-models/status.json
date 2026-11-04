@@ -1,0 +1,22 @@
+{
+  "task_id": "D",
+  "status": "complete",
+  "model": "gpt-6.1-terra",
+  "artifacts": [
+    "findings.md",
+    "methods.json",
+    "sources.json",
+    "pilot.md",
+    "status.json"
+  ],
+  "unresolved_questions": [
+    "Availability of compatible peaks/fragments and verified build",
+    "Checkpoint licensing and precise hardware costs",
+    "Out-of-distribution and dosage calibration"
+  ],
+  "model_selection_provenance": "Explicit coordinator spawn_agent model argument; resumed with followup_task",
+  "interruption_history": {
+    "reason": "Usage limit in preceding turn",
+    "resolved": "User reset limits and agent completed resumed review"
+  }
+}

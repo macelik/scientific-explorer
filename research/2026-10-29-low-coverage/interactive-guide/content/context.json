@@ -1,0 +1,967 @@
+[
+  {
+    "id": "C1",
+    "name": "Independent internal normal controls",
+    "category": "C",
+    "tagline": "Optional for future mixed samples; none identified in current homogeneous cell line",
+    "steps": [
+      {
+        "title": "Select controls before comparing",
+        "text": "Select independently supported cells with compatible assay, build and regional DNA evidence. A lineage label alone does not establish copy neutrality."
+      },
+      {
+        "title": "Build the reference",
+        "text": "Aggregate their 100 kb bin counts with a documented library-size normalization, checking callable coverage and variation between donors."
+      },
+      {
+        "title": "Compare and stress-test",
+        "text": "Compare query counts with the reference and leave donors or cell groups out; uncertainty grows where reference coverage is poor."
+      }
+    ],
+    "example": {
+      "title": "Toy matched-control comparison",
+      "setup": "Suppose 20 independently characterized control cells and 30 query cells have counts in the same bin grid.",
+      "steps": [
+        "Normalize each cell for exposure; aggregate the 20 controls.",
+        "A query bin is 0.7 relative to the reference; repeat excluding one donor."
+      ],
+      "interpretation": "A stable relative decrease is consistent with a difference, not an absolute copy state."
+    },
+    "adaptation": {
+      "stage": "reference",
+      "available": [
+        "100 kb retained bins",
+        "development depth data"
+      ],
+      "needed": [
+        "independently characterized controls",
+        "matched count units and build",
+        "donor metadata"
+      ],
+      "first_experiment": "Audit control identity and compare donor-held-out reference profiles.",
+      "success": "Reference profiles remain stable within prespecified uncertainty across held-out controls."
+    },
+    "cautions": [
+      "Independent provenance is needed; shared germline changes and accessibility differ by cell type.",
+      "This is exploratory; no normal population or absolute CN anchor is assumed."
+    ],
+    "sources": [
+      {
+        "title": "Numbat-multiome",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12531993/"
+      },
+      {
+        "title": "Preparing Inputs for Numbat-multiome",
+        "url": "https://kharchenkolab.github.io/numbat/articles/numbat-multiome.html"
+      }
+    ],
+    "demo": "reference"
+  },
+  {
+    "id": "C2",
+    "name": "Compatible external normal reference / Numbat-multiome ATAC-bin",
+    "category": "C",
+    "tagline": "Candidate only after matching reference and verifying input counts and SNP data Public candidate: Zhang adult tissue sci-ATAC atlas GSE184462; per-sample fragments and barcode-to-label compatibility require audit, and copy neutrality is unproven.",
+    "steps": [
+      {
+        "title": "Choose a compatible atlas",
+        "text": "Published Numbat-multiome ATAC-bin workflows use normal-cell reference counts and phased SNP-level observations."
+      },
+      {
+        "title": "Rebuild compatible bins",
+        "text": "Re-bin genuine scATAC fragments using matching coordinates and counting rules, then normalize reference by cell type; check donors and assay chemistry."
+      },
+      {
+        "title": "Combine evidence",
+        "text": "The published model combines reference-relative counts and phased allele observations. Check coverage and phase provenance before any comparison."
+      }
+    ],
+    "example": {
+      "title": "Toy external reference",
+      "setup": "A query and two external donors have matched 100 kb bins and genuine fragment counts.",
+      "steps": [
+        "Normalize within donor and make a bin-by-cell-type reference.",
+        "Compare query relative depth; repeat while leaving each donor out."
+      ],
+      "interpretation": "A changing contrast signals reference mismatch; allele-site observations remain a separate, dependent evidence stream."
+    },
+    "adaptation": {
+      "stage": "reference",
+      "available": [
+        "retained bin coordinates",
+        "candidate published atlas"
+      ],
+      "needed": [
+        "matched raw integer counts",
+        "independently characterized controls",
+        "phased SNP-level data"
+      ],
+      "first_experiment": "Audit atlas fragments, build, donor labels and count compatibility.",
+      "success": "Held-out donor differences meet prespecified mismatch tolerances."
+    },
+    "cautions": [
+      "Protocol, cell type, batch, assembly, coverage and control CN mismatch confound reference; source data may require access and license checks.",
+      "This is exploratory; no normal population or absolute CN anchor is assumed."
+    ],
+    "sources": [
+      {
+        "title": "Numbat-multiome",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12531993/"
+      },
+      {
+        "title": "Preparing Inputs for Numbat-multiome",
+        "url": "https://kharchenkolab.github.io/numbat/articles/numbat-multiome.html"
+      }
+    ],
+    "demo": "reference"
+  },
+  {
+    "id": "C3",
+    "name": "Reference-free relative baseline sensitivity",
+    "category": "C",
+    "tagline": "Directly applicable as exploratory sensitivity after provenance audit",
+    "steps": [
+      {
+        "title": "Choose relative baselines",
+        "text": "Use the existing genome-wide centering as one baseline and specify alternative robust regional baselines before looking at candidate calls."
+      },
+      {
+        "title": "Normalize depth",
+        "text": "Account for cell exposure and compare retained callable bins while recording how each baseline is defined."
+      },
+      {
+        "title": "Measure sensitivity",
+        "text": "Repeat after excluding candidate regions and across coverage strata. A shared broad event can be absorbed by every self-baseline."
+      }
+    ],
+    "example": {
+      "title": "Toy self-centering",
+      "setup": "A cell has normalized values 8, 9, 10 and 13 in four callable bins.",
+      "steps": [
+        "Center by the mean 10, yielding relative values 0.8, 0.9, 1.0 and 1.3.",
+        "Repeat with a prespecified alternate baseline and report changes."
+      ],
+      "interpretation": "These are relative contrasts; the center has no established diploid meaning."
+    },
+    "adaptation": {
+      "stage": "reference",
+      "available": [
+        "retained depth grid",
+        "existing relative profiles"
+      ],
+      "needed": [
+        "raw count provenance",
+        "prespecified alternate baselines"
+      ],
+      "first_experiment": "Compare existing centering with a frozen robust alternative.",
+      "success": "Report sensitivity and abstain where direction changes or coverage is insufficient."
+    },
+    "cautions": [
+      "Shared broad events are absorbed into baseline; whole-genome ploidy unidentifiable; baseline changes can reverse calls.",
+      "This is exploratory; no normal population or absolute CN anchor is assumed."
+    ],
+    "sources": [
+      {
+        "title": "epiAneufinder",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10511508/"
+      }
+    ],
+    "demo": "reference"
+  },
+  {
+    "id": "C4",
+    "name": "Signac / ArchR label transfer",
+    "category": "C",
+    "tagline": "Optional future candidate discovery, not currently runnable with only 100 kb CN bins",
+    "steps": [
+      {
+        "title": "Find comparable cells",
+        "text": "Signac integrates compatible accessibility datasets; ArchR can integrate ATAC gene scores with a labelled RNA reference."
+      },
+      {
+        "title": "Transfer annotations",
+        "text": "Use reference-query correspondences to transfer candidate cell-type labels and scores; inspect low confidence and out-of-reference cells."
+      },
+      {
+        "title": "Separate identity from CN",
+        "text": "Use labels only to nominate possible matched groups, then seek independent regional DNA and control evidence."
+      }
+    ],
+    "example": {
+      "title": "Toy label transfer",
+      "setup": "Suppose a compatible reference contains 100 labelled epithelial and 100 immune cells.",
+      "steps": [
+        "Project 50 query cells and obtain labels and transfer scores.",
+        "Compare matched groups only after checking coverage and independent control provenance."
+      ],
+      "interpretation": "A 0.9 transfer score describes annotation confidence in that workflow; it does not establish normal copy number."
+    },
+    "adaptation": {
+      "stage": "reference",
+      "available": [
+        "100 kb bin grid"
+      ],
+      "needed": [
+        "genuine peaks or gene scores",
+        "annotated reference",
+        "independent CN characterization"
+      ],
+      "first_experiment": "Check whether compatible peak or fragment inputs exist.",
+      "success": "Labels replicate known cell identities without being used as CN truth."
+    },
+    "cautions": [
+      "Out-of-reference cells can get misleading labels; prediction scores require calibration; missing peak or gene activity inputs.",
+      "This is exploratory; no normal population or absolute CN anchor is assumed."
+    ],
+    "sources": [
+      {
+        "title": "Signac scATAC integration",
+        "url": "https://stuartlab.org/signac/articles/integrate_atac"
+      },
+      {
+        "title": "ArchR addGeneIntegrationMatrix",
+        "url": "https://www.archrproject.com/archive/1.0.1/reference/addGeneIntegrationMatrix.html"
+      }
+    ],
+    "demo": "reference"
+  },
+  {
+    "id": "C5",
+    "name": "CN-selected controls: CopyscAT / CopyKAT / inferCNV",
+    "category": "C",
+    "tagline": "Comparator or sensitivity analysis, not validation of normal status",
+    "steps": [
+      {
+        "title": "Select candidate controls",
+        "text": "CopyscAT offers inferred or supplied controls; CopyKAT and inferCNV are RNA approaches, not scATAC callers."
+      },
+      {
+        "title": "Center on candidates",
+        "text": "Form relative profiles against chosen candidate cells, retaining the original selection rule and coverage filters."
+      },
+      {
+        "title": "Test for circularity",
+        "text": "If the same CN pattern selected and evaluated controls, separation is not independent validation; shared alterations may disappear."
+      }
+    ],
+    "example": {
+      "title": "Toy CN-selected baseline",
+      "setup": "Suppose 40 cells all share a broad alteration but 10 have the lowest apparent variation.",
+      "steps": [
+        "Choose those 10 by a frozen variation rule and center the other cells.",
+        "Compare against an independently selected baseline and a held-out chromosome."
+      ],
+      "interpretation": "A flat selected group may reflect a shared event, rather than a normal population."
+    },
+    "adaptation": {
+      "stage": "reference",
+      "available": [
+        "relative CN profiles"
+      ],
+      "needed": [
+        "independent DNA evidence",
+        "control selection rule",
+        "separate evaluation regions"
+      ],
+      "first_experiment": "Measure sensitivity to control selection without calling selected cells normal.",
+      "success": "Report changes in contrasts and any unresolved shared events."
+    },
+    "cautions": [
+      "Shared alterations can be absorbed; homogeneous altered populations lack identifiable normal group; RNA methods are not ATAC callers.",
+      "This is exploratory; no normal population or absolute CN anchor is assumed."
+    ],
+    "sources": [
+      {
+        "title": "CopyscAT tutorial",
+        "url": "https://github.com/spcdot/CopyscAT/blob/master/copyscat_tutorial.R"
+      },
+      {
+        "title": "CopyKAT repository",
+        "url": "https://github.com/navinlabcode/copykat"
+      }
+    ],
+    "demo": "reference"
+  },
+  {
+    "id": "C6",
+    "name": "DNA panel of normals as technical analogy",
+    "category": "C",
+    "tagline": "Consider only assay-matched independently characterized scATAC panel",
+    "steps": [
+      {
+        "title": "Learn recurring artifacts",
+        "text": "DNA panels aggregate compatible control samples to characterize recurrent technical variation across genomic bins."
+      },
+      {
+        "title": "Denoise relative counts",
+        "text": "A DNA workflow uses the panel to reduce shared technical patterns before relative CN interpretation."
+      },
+      {
+        "title": "Assess transfer",
+        "text": "An scATAC analogue would require matched assay and cell-state controls; DNA panels cannot directly represent chromatin accessibility."
+      }
+    ],
+    "example": {
+      "title": "Toy panel analogy",
+      "setup": "Suppose five matched scATAC controls show a recurring technical spike in one 100 kb bin.",
+      "steps": [
+        "Record the spike and compare a sixth held-out control.",
+        "Check whether a proposed panel adjustment suppresses it without erasing DNA-supported events."
+      ],
+      "interpretation": "This is a proposed scATAC adaptation, not an established panel or copy-neutral anchor."
+    },
+    "adaptation": {
+      "stage": "reference",
+      "available": [
+        "100 kb grid"
+      ],
+      "needed": [
+        "assay-matched independent controls",
+        "orthogonal DNA comparisons"
+      ],
+      "first_experiment": "Assess reproducibility of bin-level artifacts in held-out controls.",
+      "success": "Technical effects generalize while prespecified DNA-supported contrasts remain detectable."
+    },
+    "cautions": [
+      "A DNA panel ignores cell-type chromatin accessibility; panel artifacts and donor CNVs can bias calls.",
+      "This is exploratory; no normal population or absolute CN anchor is assumed."
+    ],
+    "sources": [
+      {
+        "title": "GATK CNV workflow",
+        "url": "https://docs.gdc.cancer.gov/Data/Bioinformatics_Pipelines/DNA_Seq_WGS/"
+      }
+    ],
+    "demo": "reference"
+  },
+  {
+    "id": "D1",
+    "name": "Atacformer",
+    "category": "D",
+    "tagline": "Conditional zero-shot comparison once genuine peaks/fragments and confirmed assembly exist. 100 kb count bins do not encode appropriate accessible intervals.",
+    "steps": [
+      {
+        "title": "Tokenize accessible intervals",
+        "text": "Atacformer overlaps each cell’s accessible intervals with its fixed hg38 vocabulary, producing a set of region tokens; 100 kb count bins are not peaks."
+      },
+      {
+        "title": "Learn context",
+        "text": "Region embeddings pass through transformer blocks with multi-head attention. Pretraining identifies randomly replaced tokens using their context."
+      },
+      {
+        "title": "Pool representations",
+        "text": "Contextual region embeddings can be pooled into a cell embedding for exploratory comparisons; token presence need not preserve dosage."
+      }
+    ],
+    "example": {
+      "title": "Toy interval mapping",
+      "setup": "A cell has three real accessible intervals and a verified hg38 vocabulary.",
+      "steps": [
+        "Overlap intervals with vocabulary regions and encode matched tokens.",
+        "Pool contextual embeddings, then compare them with a simple peak-based embedding."
+      ],
+      "interpretation": "Nearby points indicate a learned accessibility resemblance, not a CN state."
+    },
+    "adaptation": {
+      "stage": "inputs",
+      "available": [
+        "100 kb count bins"
+      ],
+      "needed": [
+        "authentic peaks or fragments",
+        "confirmed build",
+        "checkpoint terms",
+        "held-out DNA truth"
+      ],
+      "first_experiment": "Check vocabulary overlap and compare embeddings on independent benchmark samples.",
+      "success": "Prespecified event discrimination improves without depth or sample confounding."
+    },
+    "cautions": [
+      "Token presence and pooling may discard count dosage; coverage/sequence distribution shift may drive embedding; fine tuning can remove or introduce CN structure.",
+      "Checkpoint weight license not stated on inspected model card; verify before reuse.",
+      "Accessibility embeddings and predictions are not calibrated CN calls; independent DNA validation is required."
+    ],
+    "sources": [
+      {
+        "title": "Atacformer preprint",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12637716/"
+      },
+      {
+        "title": "Atacformer quickstart",
+        "url": "https://docs.bedbase.org/geniml/atacformer/quickstart/"
+      }
+    ],
+    "demo": "none"
+  },
+  {
+    "id": "D2",
+    "name": "PEAKVI",
+    "category": "D",
+    "tagline": "Conditional baseline for accessibility representation once compatible peak matrix exists, not this pass.",
+    "steps": [
+      {
+        "title": "Encode accessibility",
+        "text": "PEAKVI fits a variational autoencoder to peak-by-cell accessibility observations and learns a latent representation for each cell."
+      },
+      {
+        "title": "Model detection",
+        "text": "It models whether a peak has any observations as Bernoulli with accessibility probability multiplied by cell- and region-specific detection factors."
+      },
+      {
+        "title": "Decode probabilities",
+        "text": "The decoder estimates peak accessibility probabilities; these are not probabilities of a CN state."
+      }
+    ],
+    "example": {
+      "title": "Toy detection probability",
+      "setup": "For one peak in one cell, suppose accessibility is 0.8 and cell and region factors are 0.5 and 0.75.",
+      "steps": [
+        "Multiply 0.8 × 0.5 × 0.75 to obtain a model detection probability of 0.30.",
+        "A zero observation remains plausible even when estimated accessibility is high."
+      ],
+      "interpretation": "These hypothetical parameters illustrate the model; they do not imply deletion or verified values."
+    },
+    "adaptation": {
+      "stage": "inputs",
+      "available": [
+        "100 kb bin counts"
+      ],
+      "needed": [
+        "peak-by-cell matrix",
+        "training setup and seed",
+        "orthogonal CN benchmark"
+      ],
+      "first_experiment": "Fit a frozen peak-based comparator on compatible benchmark data.",
+      "success": "Measure held-out performance and depth sensitivity against a simple baseline."
+    },
+    "cautions": [
+      "Binarization loses count magnitude; detection probabilities and latent uncertainty are not CN confidence; training required.",
+      "OOD behavior is not established.",
+      "Accessibility embeddings and predictions are not calibrated CN calls; independent DNA validation is required."
+    ],
+    "sources": [
+      {
+        "title": "PeakVI paper",
+        "url": "https://doi.org/10.1016/j.crmeth.2022.100182"
+      },
+      {
+        "title": "PeakVI documentation",
+        "url": "https://docs.scvi-tools.org/en/latest/api/reference/scvi.model.PEAKVI.html"
+      }
+    ],
+    "demo": "zeros"
+  },
+  {
+    "id": "D3",
+    "name": "SCALE",
+    "category": "D",
+    "tagline": "Secondary simple learned representation comparator if compatible peak data appear.",
+    "steps": [
+      {
+        "title": "Compress peaks",
+        "text": "SCALE encodes a sparse peak-by-cell matrix into a low-dimensional distribution for each cell using a variational autoencoder."
+      },
+      {
+        "title": "Represent mixtures",
+        "text": "Its prior uses multiple Gaussian components, encouraging latent structure; the decoder models binary accessibility with Bernoulli probabilities."
+      },
+      {
+        "title": "Use embeddings carefully",
+        "text": "Clustering or imputation can reveal accessibility patterns, but inferred groups and filled values do not independently establish CN."
+      }
+    ],
+    "example": {
+      "title": "Toy mixture",
+      "setup": "Suppose 200 cells have a compatible matrix of 10,000 peaks.",
+      "steps": [
+        "Train with a fixed seed and specified number of mixture components.",
+        "Compare the embedding against simple peak-based features on held-out DNA-labelled samples."
+      ],
+      "interpretation": "A separated group may reflect cell state, batch or CN; the mixture component is not a copy state."
+    },
+    "adaptation": {
+      "stage": "inputs",
+      "available": [
+        "100 kb bin counts"
+      ],
+      "needed": [
+        "peak matrix",
+        "training resources and seed",
+        "held-out DNA truth"
+      ],
+      "first_experiment": "Evaluate reproducibility across seeds and depth strata.",
+      "success": "Any added signal replicates on held-out samples without excessive depth association."
+    },
+    "cautions": [
+      "Filtering and imputation can alter dosage and amplify circularity; no calibrated CN uncertainty.",
+      "Documentation reflects older releases; current maintenance not established.",
+      "Accessibility embeddings and predictions are not calibrated CN calls; independent DNA validation is required."
+    ],
+    "sources": [
+      {
+        "title": "SCALE paper",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6783552/"
+      },
+      {
+        "title": "SCALE official implementation",
+        "url": "https://github.com/jsxlei/SCALE"
+      }
+    ],
+    "demo": "none"
+  },
+  {
+    "id": "D4",
+    "name": "ChromFound",
+    "category": "D",
+    "tagline": "Defer: greater setup cost and no evidence of CN advantage; current bins incompatible.",
+    "steps": [
+      {
+        "title": "Map to a genome vocabulary",
+        "text": "ChromFound uses genome-aware tokenization of accessible regions to represent a cell across a standardized region universe."
+      },
+      {
+        "title": "Model local and long context",
+        "text": "Its hybrid encoder combines windowed attention with Mamba sequence modeling to capture local and longer-range dependencies."
+      },
+      {
+        "title": "Reconstruct masked signals",
+        "text": "The published objective masks zero and nonzero regions and predicts normalized log-transformed accessibility with mean squared error."
+      }
+    ],
+    "example": {
+      "title": "Toy masked-region task",
+      "setup": "Suppose compatible peak data map to 1,000 vocabulary regions in a cell.",
+      "steps": [
+        "Mask a subset of observed and zero entries according to the model protocol.",
+        "Predict masked normalized signals and compare with observed signals on held-out cells."
+      ],
+      "interpretation": "Reconstruction measures accessibility prediction, not independent CN validation."
+    },
+    "adaptation": {
+      "stage": "inputs",
+      "available": [
+        "100 kb bin counts"
+      ],
+      "needed": [
+        "compatible peaks and hg38 coordinates",
+        "checkpoint and vocabulary",
+        "suitable GPU",
+        "DNA benchmark"
+      ],
+      "first_experiment": "Verify input compatibility and checkpoint terms before a held-out comparison.",
+      "success": "A reproducible accessibility diagnostic adds value over a simple baseline without CN leakage."
+    },
+    "cautions": [
+      "Code repository identifies Apache-2.0; model weight terms must be checked separately.",
+      "Example metadata requires cell type column; cannot assume labels.",
+      "Accessibility embeddings and predictions are not calibrated CN calls; independent DNA validation is required."
+    ],
+    "sources": [
+      {
+        "title": "ChromFound preprint",
+        "url": "https://arxiv.org/abs/2505.12638"
+      },
+      {
+        "title": "ChromFound official implementation",
+        "url": "https://github.com/SAIS-LifeScience/ChromFound"
+      }
+    ],
+    "demo": "none"
+  },
+  {
+    "id": "D5",
+    "name": "EpiFoundation",
+    "category": "D",
+    "tagline": "Defer: input and checkpoint/vocabulary need verification, gene prediction adds no direct CN evidence.",
+    "steps": [
+      {
+        "title": "Encode peak accessibility",
+        "text": "EpiFoundation starts with binarized peak accessibility and embeds peak and genomic context for a transformer encoder."
+      },
+      {
+        "title": "Align modalities",
+        "text": "Pretraining uses paired multiome data to align ATAC-derived representations with gene expression; the published task links peak information to genes."
+      },
+      {
+        "title": "Apply downstream",
+        "text": "Cell embeddings and gene-expression predictions describe learned regulatory relationships, not direct DNA copy measurements."
+      }
+    ],
+    "example": {
+      "title": "Toy cross-modality",
+      "setup": "Suppose 500 paired cells have matched peaks and RNA counts in a compatible vocabulary.",
+      "steps": [
+        "Encode each cell’s observed peak set.",
+        "Predict a gene expression profile and compare with RNA held out from training."
+      ],
+      "interpretation": "Accurate predicted expression does not independently confirm a CN event affecting that gene."
+    },
+    "adaptation": {
+      "stage": "inputs",
+      "available": [
+        "100 kb bin counts"
+      ],
+      "needed": [
+        "genuine peaks",
+        "compatible genome and vocabulary",
+        "checkpoint terms",
+        "independent DNA data"
+      ],
+      "first_experiment": "Verify checkpoint, features and peak-to-gene preprocessing on benchmark data.",
+      "success": "Held-out performance is reproducible and independent CN evaluation remains separate."
+    },
+    "cautions": [
+      "Binarized peaks remove read magnitude; paired RNA setup and downstream decoders complicate transfer.",
+      "Code and weights license not verified.",
+      "Accessibility embeddings and predictions are not calibrated CN calls; independent DNA validation is required."
+    ],
+    "sources": [
+      {
+        "title": "EpiFoundation preprint",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11839112/"
+      },
+      {
+        "title": "EpiFoundation official implementation",
+        "url": "https://github.com/UCSC-VLAA/EpiFoundation"
+      }
+    ],
+    "demo": "none"
+  },
+  {
+    "id": "D6",
+    "name": "scBasset",
+    "category": "D",
+    "tagline": "Defer: peak/FASTA inputs, fitting cost and binary objective mismatch CN task.",
+    "steps": [
+      {
+        "title": "Read DNA sequence",
+        "text": "scBasset converts peak sequences from a matched reference FASTA into one-hot nucleotide inputs for a convolutional neural network."
+      },
+      {
+        "title": "Learn region and cell features",
+        "text": "The network learns sequence-derived region embeddings jointly with cell embeddings to reconstruct a binary peak-by-cell accessibility matrix."
+      },
+      {
+        "title": "Predict accessibility",
+        "text": "The learned model predicts accessibility from sequence and cell features; the training objective does not directly infer dosage."
+      }
+    ],
+    "example": {
+      "title": "Toy sequence model",
+      "setup": "A dataset has 1,000 peak sequences and 200 cells with binary peak calls.",
+      "steps": [
+        "Train using the aligned sequences and matrix with a recorded seed.",
+        "Predict held-out peak accessibility and assess performance by cell and depth."
+      ],
+      "interpretation": "A predicted accessible peak is a regulatory prediction, not new independent evidence of copy number."
+    },
+    "adaptation": {
+      "stage": "inputs",
+      "available": [
+        "100 kb bin counts"
+      ],
+      "needed": [
+        "peak sequences",
+        "matching FASTA and peak matrix",
+        "training resources",
+        "DNA benchmark"
+      ],
+      "first_experiment": "Audit genuine peak inputs before considering a trained benchmark.",
+      "success": "Predictions generalize to held-out cells and do not substitute for DNA validation."
+    },
+    "cautions": [
+      "Sequence and cellular accessibility are confounded with dosage; imputed values cannot validate unobserved CN.",
+      "Accessibility embeddings and predictions are not calibrated CN calls; independent DNA validation is required."
+    ],
+    "sources": [
+      {
+        "title": "scBasset paper",
+        "url": "https://www.nature.com/articles/s41592-022-01562-8"
+      },
+      {
+        "title": "scBasset implementation",
+        "url": "https://github.com/calico/scBasset"
+      }
+    ],
+    "demo": "none"
+  },
+  {
+    "id": "F1",
+    "name": "Sample-specific phased heterozygous SNP availability",
+    "category": "F",
+    "tagline": "Highest priority; per-site auxiliary tables may support ascertainment audit",
+    "steps": [
+      {
+        "title": "Identify selected variants",
+        "text": "Inspect the sample genotype and phase inputs; the audited builder selects phased 0|1 or 1|0 calls and exact chromosome, position, REF and ALT matches."
+      },
+      {
+        "title": "Map and aggregate",
+        "text": "Convert coordinates carefully and sum selected SNP-site depth within each bin and cell. AT is a sum of site observations, not necessarily unique fragments."
+      },
+      {
+        "title": "Track missingness",
+        "text": "Record candidate, selected and observed SNP counts separately. Phase-set continuity and historical execution remain unverified."
+      }
+    ],
+    "example": {
+      "title": "Toy site audit",
+      "setup": "A 100 kb bin contains five candidate SNPs, two selected heterozygotes and site depths 3 and 4.",
+      "steps": [
+        "Match both alleles exactly and map the sites to the bin.",
+        "Sum the selected site depths to AT = 7; retain the number of selected sites."
+      ],
+      "interpretation": "AT = 7 is not seven unique molecules, and AT = 0 does not indicate balanced alleles."
+    },
+    "adaptation": {
+      "stage": "alleles",
+      "available": [
+        "HA, HB and AT matrices",
+        "selected-site auxiliary data"
+      ],
+      "needed": [
+        "actual pileup command",
+        "genotype and phase provenance",
+        "per-site observations"
+      ],
+      "first_experiment": "Audit selection and counting units in fixed bins.",
+      "success": "Reconcile site counts with AT while explicitly retaining unresolved phase."
+    },
+    "cautions": [
+      "Observed het density is not population reference density; phase labels absent from matrices; filter-induced selection and LOH can reduce sites",
+      "Counting unit and run parameters unknown",
+      "This is exploratory; no normal population or absolute CN anchor is assumed."
+    ],
+    "sources": [
+      {
+        "title": "cellsnp-lite manual",
+        "url": "https://cellsnp-lite.readthedocs.io/en/latest/main/manual.html"
+      }
+    ],
+    "demo": "alleles"
+  },
+  {
+    "id": "F2",
+    "name": "ENCODE blacklist and genomic gap mask",
+    "category": "F",
+    "tagline": "High; check historical blacklist before any new exclusions",
+    "steps": [
+      {
+        "title": "Match coordinates",
+        "text": "Obtain assembly-matched blacklist and assembly gap intervals and confirm BED coordinate conventions."
+      },
+      {
+        "title": "Calculate overlap",
+        "text": "For each original 100 kb bin, compute the fraction overlapping blacklisted intervals and flag gap intersections."
+      },
+      {
+        "title": "Keep exclusions visible",
+        "text": "Compare retained and original grids and test flagged versus unflagged sensitivity without inventing reasons for missing historical bins."
+      }
+    ],
+    "example": {
+      "title": "Toy interval overlap",
+      "setup": "A 100 kb bin overlaps 20 kb of blacklist and 5 kb of assembly gap.",
+      "steps": [
+        "Calculate blacklist overlap as 20% and mark the gap.",
+        "Compare results with and without the flagged bin as a prespecified sensitivity analysis."
+      ],
+      "interpretation": "The annotation flags technical uncertainty; it does not establish deletion or explain a missing bin."
+    },
+    "adaptation": {
+      "stage": "inputs",
+      "available": [
+        "retained bin coordinates"
+      ],
+      "needed": [
+        "confirmed build",
+        "original bin grid",
+        "matched tracks and versions"
+      ],
+      "first_experiment": "Annotate overlaps without imposing a new default mask.",
+      "success": "Coordinates reconcile and interpretations report sensitivity to flags."
+    },
+    "cautions": [
+      "Low accessibility is not synonymous with blacklist; whole-bin exclusion can remove genuine events",
+      "Cannot infer why individual missing bins were removed from retained grid alone",
+      "This is exploratory; no normal population or absolute CN anchor is assumed."
+    ],
+    "sources": [
+      {
+        "title": "The ENCODE Blacklist: Identification of Problematic Regions of the Genome",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6597582/"
+      },
+      {
+        "title": "epiAneufinder identifies copy number alterations from single-cell ATAC-seq data",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10511508/"
+      }
+    ],
+    "demo": "zeros"
+  },
+  {
+    "id": "F3",
+    "name": "Umap multi-read mappability",
+    "category": "F",
+    "tagline": "Useful later once read parameters and track license confirmed",
+    "steps": [
+      {
+        "title": "Choose a matching track",
+        "text": "Select a multi-read mappability track for the confirmed assembly, contigs and relevant read length."
+      },
+      {
+        "title": "Summarize per bin",
+        "text": "Intersect the track with each 100 kb bin and summarize the fraction or continuous score; record missing track coverage."
+      },
+      {
+        "title": "Use as a sensitivity flag",
+        "text": "A low value signals possible mapping ambiguity, not an observed sample-specific mapping rate or a copy state."
+      }
+    ],
+    "example": {
+      "title": "Toy mappability annotation",
+      "setup": "Suppose a compatible track indicates 60 kb of a 100 kb bin has a score of 1 and 40 kb a score of 0.",
+      "steps": [
+        "Compute the mean track score as 0.60.",
+        "Compare depth interpretation for high- and low-scoring bins without automatically excluding either."
+      ],
+      "interpretation": "This simplified calculation describes reference uniqueness; real tracks and paired-end behavior need verification."
+    },
+    "adaptation": {
+      "stage": "inputs",
+      "available": [
+        "retained bin coordinates"
+      ],
+      "needed": [
+        "verified assembly and read length",
+        "compatible track",
+        "track terms"
+      ],
+      "first_experiment": "Join track summaries to bins after checking provenance.",
+      "success": "Sensitivity estimates remain interpretable across mappability strata."
+    },
+    "cautions": [
+      "Single-read and multi-read scores differ; paired-end mapping and genetic variation alter applicability",
+      "No threshold validated for CNV inference",
+      "This is exploratory; no normal population or absolute CN anchor is assumed."
+    ],
+    "sources": [
+      {
+        "title": "Umap and Bismap: quantifying genome and methylome mappability",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6237805/"
+      },
+      {
+        "title": "Umap and Bismap tracks",
+        "url": "https://bismap.hoffmanlab.org/"
+      }
+    ],
+    "demo": "depth"
+  },
+  {
+    "id": "F4",
+    "name": "GC content and existing correction",
+    "category": "F",
+    "tagline": "GC exists in retained-grid var, usable without external join after provenance check",
+    "steps": [
+      {
+        "title": "Calculate GC",
+        "text": "Use a confirmed reference FASTA to calculate the fraction of G and C bases in each retained bin; existing GC values require provenance checks."
+      },
+      {
+        "title": "Inspect correction",
+        "text": "Published epiAneufinder uses per-cell LOESS GC correction; determine whether and how the historical run applied it."
+      },
+      {
+        "title": "Compare signals",
+        "text": "Compare raw depth, GC and processed values across callable bins without treating corrected values as new observations."
+      }
+    ],
+    "example": {
+      "title": "Toy GC check",
+      "setup": "Two 100 kb bins have GC fractions 0.35 and 0.65 and raw counts 10 and 5 in one cell.",
+      "steps": [
+        "Plot counts against GC across many bins and inspect the fitted trend.",
+        "Compare the candidate contrast before and after the existing documented correction."
+      ],
+      "interpretation": "A changed contrast may reflect bias correction or attenuation of biological signal; neither is established by this example."
+    },
+    "adaptation": {
+      "stage": "inputs",
+      "available": [
+        "retained-grid GC values",
+        "depth profiles"
+      ],
+      "needed": [
+        "FASTA provenance",
+        "raw count units",
+        "historical correction configuration"
+      ],
+      "first_experiment": "Audit raw and processed depth against GC using existing code.",
+      "success": "Report event sensitivity and preserve raw observations."
+    },
+    "cautions": [
+      "GC correlates with technical and biological signals; correction can attenuate events",
+      "Actual reference and configuration need audit",
+      "This is exploratory; no normal population or absolute CN anchor is assumed."
+    ],
+    "sources": [
+      {
+        "title": "epiAneufinder identifies copy number alterations from single-cell ATAC-seq data",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10511508/"
+      }
+    ],
+    "demo": "depth"
+  },
+  {
+    "id": "F5",
+    "name": "Cell-type accessibility prior",
+    "category": "F",
+    "tagline": "Defer until peak or fragment data and sample matching are established",
+    "steps": [
+      {
+        "title": "Find relevant context",
+        "text": "Choose a tissue- and state-matched accessibility atlas with compatible assay, assembly, peaks and cell labels."
+      },
+      {
+        "title": "Summarize accessibility",
+        "text": "Aggregate genuine peak or fragment observations by independently annotated cell type and compare corresponding genomic regions."
+      },
+      {
+        "title": "Treat as context",
+        "text": "A region with low accessibility in a reference cell state may be difficult to observe; it is not automatically deleted in a query."
+      }
+    ],
+    "example": {
+      "title": "Toy context comparison",
+      "setup": "In a compatible atlas, 5 of 100 matched cells have a peak detected in one region.",
+      "steps": [
+        "Record the 5% detection frequency alongside query depth.",
+        "Repeat with another donor and compatible cell state."
+      ],
+      "interpretation": "Low reference detection is contextual evidence for sparse observation, not copy-neutral or deletion truth."
+    },
+    "adaptation": {
+      "stage": "interpret",
+      "available": [
+        "100 kb depth grid"
+      ],
+      "needed": [
+        "matched peaks or fragments",
+        "atlas cell labels and donors",
+        "verified build"
+      ],
+      "first_experiment": "First assess whether compatible peak inputs and tissue context exist.",
+      "success": "Context is reproducible across donors and kept separate from CN validation."
+    },
+    "cautions": [
+      "Cell-type mismatch and CN confounding; circularity if same focal evidence defines prior",
+      "This is exploratory; no normal population or absolute CN anchor is assumed."
+    ],
+    "sources": [
+      {
+        "title": "epiAneufinder identifies copy number alterations from single-cell ATAC-seq data",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10511508/"
+      }
+    ],
+    "demo": "zeros"
+  }
+]

@@ -1,0 +1,36 @@
+{
+  "status": "passed",
+  "scope": "Existing DataStore and IntegrationStore light loading against freshly extracted files; no server, segmentation or full background indexing executed.",
+  "h5ad_cells": 3460,
+  "bins": 25337,
+  "cohort_cells": 300,
+  "integration_cells": 3460,
+  "cluster_sizes": {
+    "cluster0": 1286,
+    "cluster1": 833,
+    "cluster2": 603,
+    "cluster3": 556,
+    "cluster4": 182,
+    "all": 3460
+  },
+  "problems": [],
+  "notes": [
+    "Allelic bins are assumed positionally aligned to depth. The supplied haplo var has no genomic coordinates, so equal bin counts do not independently verify this alignment.",
+    "segmentation audit: /tmp/cnv-cloud-handoff-2026-11-04/verified-extraction/cloud-review-data-2026-11-04/integration-story/data/genome_pool/segmentation_candidate_audit.tsv"
+  ],
+  "loaded_tables": [
+    "breakpoints",
+    "initial_boundary_scores",
+    "karyogram_cluster_segments",
+    "percell_best_s",
+    "retained_boundaries",
+    "review_summary",
+    "simplified_segments",
+    "small_segment_bootstrap",
+    "small_segment_flank_scores",
+    "small_segment_scores",
+    "srd_descriptive",
+    "threshold_sensitivity",
+    "unresolved_segments"
+  ]
+}

@@ -1,0 +1,182 @@
+{
+  "task_id": "C",
+  "methods": [
+    {
+      "homozygous_deletion": "Not established by reference choice; zero observations are not a 0:0 call.",
+      "low_coverage_handling": "Assess coverage and callable bins; missing allele observations are unresolved, not balanced.",
+      "uncertain": [],
+      "name": "Independent internal normal controls",
+      "assay": "scATAC; mixed samples",
+      "inputs": "Independently supported normal cells, same assay/build/bin definitions, coverage and cell-type information",
+      "outputs": "Reference-relative depth and uncertainty",
+      "mechanism": "Aggregate independently selected cells, assess sample and cell-type effects, leave-one-donor/cell-group-out sensitivity",
+      "reference_requirements": "Control identity and regional CN status need independent evidence; normal cell type alone is insufficient",
+      "evidence": "Design informed by published scATAC Numbat reference construction",
+      "implementation": {
+        "code_url": null,
+        "version_or_commit": null,
+        "license": null,
+        "license_url": null,
+        "compute_notes": "No implementation recommended; design requires calibration."
+      },
+      "fit": "Optional for future mixed samples; none identified in current homogeneous cell line",
+      "limitations": [
+        "Independent provenance is needed; shared germline changes and accessibility differ by cell type."
+      ],
+      "source_ids": [
+        "numbat2025",
+        "numbatdocs"
+      ]
+    },
+    {
+      "homozygous_deletion": "Not established by reference choice; zero observations are not a 0:0 call.",
+      "low_coverage_handling": "Assess coverage and callable bins; missing allele observations are unresolved, not balanced.",
+      "uncertain": [],
+      "name": "Compatible external normal reference / Numbat-multiome ATAC-bin",
+      "assay": "Published scATAC",
+      "inputs": "Raw integer ATAC bin fragment counts, phased SNP-level observations, bin coordinates, normalized bin-by-cell-type reference",
+      "outputs": "Reference-relative and allele-specific joint CN states under model assumptions",
+      "mechanism": "Normalized bin count reference combined with phased allele evidence; published references use normal cells",
+      "reference_requirements": "Published examples use normal cells matched by cell type, including external healthy donors; no normal-free validation established",
+      "evidence": "Published scATAC comparison with WGS in myeloma and CLL/RS",
+      "implementation": {
+        "code_url": "https://github.com/kharchenkolab/numbat",
+        "version_or_commit": "1.5.2 documentation; commit not pinned",
+        "license": "MIT",
+        "license_url": "https://github.com/kharchenkolab/numbat/blob/main/DESCRIPTION",
+        "compute_notes": "Full pipeline requires SNP phasing and reference preparation; not run."
+      },
+      "fit": "Candidate only after matching reference and verifying input counts and SNP data Public candidate: Zhang adult tissue sci-ATAC atlas GSE184462; per-sample fragments and barcode-to-label compatibility require audit, and copy neutrality is unproven.",
+      "limitations": [
+        "Protocol, cell type, batch, assembly, coverage and control CN mismatch confound reference; source data may require access and license checks."
+      ],
+      "source_ids": [
+        "numbat2025",
+        "numbatdocs",
+        "numbatmeta",
+        "zhang_atlas",
+        "geo_fragment"
+      ]
+    },
+    {
+      "homozygous_deletion": "Not established by reference choice; zero observations are not a 0:0 call.",
+      "low_coverage_handling": "Assess coverage and callable bins; missing allele observations are unresolved, not balanced.",
+      "uncertain": [],
+      "name": "Reference-free relative baseline sensitivity",
+      "assay": "scATAC; homogeneous or mixed samples",
+      "inputs": "Raw bin counts, exposure, callable regions, GC/mappability; multiple prespecified baselines",
+      "outputs": "Relative depth contrast and sensitivity; unanchored or abstention",
+      "mechanism": "Compare genome-wide centering, robust baseline and held-out alternative regions; expose baseline choice",
+      "reference_requirements": "No normal required; assumes enough stable bins for a useful relative baseline, which can fail",
+      "evidence": "Published scATAC genome-wide mean baseline; robust sensitivity is an untested transfer/design",
+      "implementation": {
+        "code_url": null,
+        "version_or_commit": null,
+        "license": null,
+        "license_url": null,
+        "compute_notes": "No implementation recommended; design requires calibration."
+      },
+      "fit": "Directly applicable as exploratory sensitivity after provenance audit",
+      "limitations": [
+        "Shared broad events are absorbed into baseline; whole-genome ploidy unidentifiable; baseline changes can reverse calls."
+      ],
+      "source_ids": [
+        "epi"
+      ]
+    },
+    {
+      "homozygous_deletion": "Not established by reference choice; zero observations are not a 0:0 call.",
+      "low_coverage_handling": "Assess coverage and callable bins; missing allele observations are unresolved, not balanced.",
+      "uncertain": [
+        "Verify exact installed versions and license terms before use."
+      ],
+      "name": "Signac / ArchR label transfer",
+      "assay": "scATAC annotation and RNA integration",
+      "inputs": "Compatible peak/fragments or gene scores, annotated reference and build",
+      "outputs": "Cell-type labels and transfer scores, not malignancy or CN",
+      "mechanism": "Reference-query integration and label transfer",
+      "reference_requirements": "Relevant reference types, coverage and comparable features required; labels do not establish normal genomic status",
+      "evidence": "Published/official scATAC annotation workflows",
+      "implementation": {
+        "code_url": "https://github.com/stuart-lab/signac; https://github.com/GreenleafLab/ArchR",
+        "version_or_commit": "Signac vignette April 2026; ArchR docs 1.0.1; exact commits unpinned",
+        "license": null,
+        "license_url": null,
+        "compute_notes": "Reference preparation and integration; no inputs or run confirmed."
+      },
+      "fit": "Optional future candidate discovery, not currently runnable with only 100 kb CN bins",
+      "limitations": [
+        "Out-of-reference cells can get misleading labels; prediction scores require calibration; missing peak or gene activity inputs."
+      ],
+      "source_ids": [
+        "signac",
+        "archr",
+        "signacmeta",
+        "archrmeta"
+      ]
+    },
+    {
+      "homozygous_deletion": "Not established by reference choice; zero observations are not a 0:0 call.",
+      "low_coverage_handling": "Assess coverage and callable bins; missing allele observations are unresolved, not balanced.",
+      "uncertain": [],
+      "name": "CN-selected controls: CopyscAT / CopyKAT / inferCNV",
+      "assay": "CopyscAT scATAC; CopyKAT and inferCNV scRNA",
+      "inputs": "Candidate cells or count matrix and method-specific processing",
+      "outputs": "Inferred or supplied normal/diploid reference and relative profiles",
+      "mechanism": "Method-specific normal selection or user reference followed by centering",
+      "reference_requirements": "Selection from same CN signal is circular for validating that signal; not independent normal evidence",
+      "evidence": "Published scATAC CopyscAT; RNA methods are ideas only",
+      "implementation": {
+        "code_url": null,
+        "version_or_commit": null,
+        "license": null,
+        "license_url": null,
+        "compute_notes": "No implementation recommended; design requires calibration."
+      },
+      "fit": "Comparator or sensitivity analysis, not validation of normal status",
+      "limitations": [
+        "Shared alterations can be absorbed; homogeneous altered populations lack identifiable normal group; RNA methods are not ATAC callers."
+      ],
+      "source_ids": [
+        "copyscat",
+        "copykat",
+        "infercnv"
+      ]
+    },
+    {
+      "homozygous_deletion": "Not established by reference choice; zero observations are not a 0:0 call.",
+      "low_coverage_handling": "Assess coverage and callable bins; missing allele observations are unresolved, not balanced.",
+      "uncertain": [],
+      "name": "DNA panel of normals as technical analogy",
+      "assay": "Bulk DNA sequencing, not validated here for scATAC",
+      "inputs": "Compatible control counts, same assay and preprocessing",
+      "outputs": "Denoised relative copy ratios",
+      "mechanism": "Panel learns recurrent technical variation",
+      "reference_requirements": "Control panel must represent technical biases; DNA panels do not directly transfer to accessibility",
+      "evidence": "Published/official DNA workflow; proposed scATAC transfer untested",
+      "implementation": {
+        "code_url": null,
+        "version_or_commit": null,
+        "license": null,
+        "license_url": null,
+        "compute_notes": "No implementation recommended; design requires calibration."
+      },
+      "fit": "Consider only assay-matched independently characterized scATAC panel",
+      "limitations": [
+        "A DNA panel ignores cell-type chromatin accessibility; panel artifacts and donor CNVs can bias calls."
+      ],
+      "source_ids": [
+        "pon"
+      ]
+    }
+  ],
+  "recommendations": [
+    "Independent matched controls when available",
+    "Compatible independently characterized external scATAC controls",
+    "Reference-free relative sensitivity with explicit abstention",
+    "Screen public Zhang adult atlas sample-level fragments and independent donor DNA evidence before treating any as a reference."
+  ],
+  "uncertain": [
+    "Exact genome assembly, input count units, SNP-level phase data, compatible controls and their license/access remain unresolved."
+  ]
+}

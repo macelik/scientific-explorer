@@ -1,0 +1,30 @@
+{
+  "edition": "2026-11-02",
+  "entry_count": 36,
+  "category_counts": {
+    "A": 11,
+    "B": 5,
+    "C": 6,
+    "D": 6,
+    "E": 3,
+    "F": 5
+  },
+  "pilot_rows": 54,
+  "inputs_sha256": {
+    "interactive-guide/shell.html": "9dda5d3a35d14c1ded86f35203f0363c15cf76b1b2bad7e24a7ca88f09973559",
+    "interactive-guide/guide.css": "08ddf4a2f684baa4514c43ea23f5d97bcd1f255e2e3eaa29acbe677f6de64e82",
+    "interactive-guide/guide.js": "2099ad0b4a46dbc345a6b4a386f93ee1aa95aeabbc04700cdf08103fd5e15042",
+    "a-cnv-methods/methods.json": "e442ae9e90a6141e3e0fe440bfa8e57e7867b9760fdd9bfd1285e7f29b69138a",
+    "b-joint-segmentation/methods.json": "6035ee507af8981881e64378417ff05d03e8aa0c096ea1fa075e1b405908e911",
+    "c-reference-strategies/methods.json": "3bbdbf6ab51115a4299a4caff0b042b1589961d56447b472a7d653f511d453f0",
+    "d-representation-models/methods.json": "d808c8b494e947f0a15249311b0ae7feac2a19c62590a8724161a900430da54f",
+    "e-per-cell-evidence/methods.json": "554e6a39b42f0756b249dab88de33b7790cdcddda6a02541f8dd52f6bdf52e3d",
+    "f-technical-priors/methods.json": "b9ace7547768d747c21605ea1ea875a7f1ac3bdcd910fe9278eb060ba44c2a00",
+    "interactive-guide/content/callers.json": "f38d77661c773e06499aa58f1b7e3f6530645e5c74d42469edd28cf52950c084",
+    "interactive-guide/content/context.json": "d3487668b3145dec2fd8594f2dc3782d484a224c6facbf342ca218db8a792684",
+    "interactive-guide/content/models.json": "98887aba4a0bd1a5656897b8f1a6556619e393707f8ba2205af994de5ba60e85",
+    "e-per-cell-evidence/artifacts/zero_support_by_stratum.tsv": "078f7a50b6f1a82794a8e52c1a6f4f81539e0fe134bde579442199da82bcff6c"
+  },
+  "output_sha256": "b46840e08c539fdfdf00e328a52a08c121c62cae8ae2ef1858ba343af8e6edc4",
+  "scope": "Offline educational export; no caller execution or new data fitting."
+}

@@ -1,0 +1,169 @@
+{
+  "task_id": "F",
+  "methods": [
+    {
+      "reference_requirements": "No labelled normal required for annotation; not an absolute-ploidy anchor",
+      "homozygous_deletion": "Not applicable; no deletion state inferred",
+      "implementation": {
+        "code_url": null,
+        "version_or_commit": null,
+        "license": null,
+        "license_url": null,
+        "compute_notes": "Small bin-level annotation joins after matching assembly and coordinate system"
+      },
+      "uncertain": [
+        "Exact input and run provenance, applicable track license and version require verification"
+      ],
+      "name": "Sample-specific phased heterozygous SNP availability",
+      "assay": "scATAC SNP pileup and reference-panel phasing",
+      "inputs": "Phased genotype VCF, matched pileup SNPs, per-site counts, barcode and phase provenance",
+      "outputs": "Counts of selected SNPs and observations; uncertainty flags",
+      "mechanism": "Select 0|1/1|0 and exact chr/POS/REF/ALT match; AT sums selected site DP",
+      "low_coverage_handling": "Zero selected sites or AT is missing allelic information, not balance",
+      "evidence": "Exploratory local code audit; cellSNP docs are generic, not proof of actual invocation",
+      "fit": "Highest priority; per-site auxiliary tables may support ascertainment audit",
+      "limitations": [
+        "Observed het density is not population reference density; phase labels absent from matrices; filter-induced selection and LOH can reduce sites",
+        "Counting unit and run parameters unknown"
+      ],
+      "source_ids": [
+        "builder",
+        "vcf",
+        "cellsnp"
+      ]
+    },
+    {
+      "reference_requirements": "No labelled normal required for annotation; not an absolute-ploidy anchor",
+      "homozygous_deletion": "Not applicable; no deletion state inferred",
+      "implementation": {
+        "code_url": "https://github.com/Boyle-Lab/Blacklist",
+        "version_or_commit": "v2.0 release f4a45ab; locally used BED version not confirmed",
+        "license": "Repository declares GPL-3.0; separate BED redistribution terms unverified",
+        "license_url": "https://github.com/Boyle-Lab/Blacklist/blob/master/LICENSE",
+        "compute_notes": "Small bin-level annotation joins after matching assembly and coordinate system"
+      },
+      "uncertain": [
+        "Exact input and run provenance, applicable track license and version require verification"
+      ],
+      "name": "ENCODE blacklist and genomic gap mask",
+      "assay": "Functional genomics sequencing; scATAC reuse",
+      "inputs": "Build-matched blacklist and assembly gap BED; retained and original grid",
+      "outputs": "Overlap fractions and gap flags",
+      "mechanism": "Flag known recurrent artifacts and genomic gaps; avoid joining through gaps",
+      "low_coverage_handling": "Masked regions are unobserved, not zero biological signal",
+      "evidence": "Blacklist evaluated on input sequencing; epiAneufinder applied blacklist to scATAC",
+      "fit": "High; check historical blacklist before any new exclusions",
+      "limitations": [
+        "Low accessibility is not synonymous with blacklist; whole-bin exclusion can remove genuine events",
+        "Cannot infer why individual missing bins were removed from retained grid alone"
+      ],
+      "source_ids": [
+        "blacklist",
+        "epi",
+        "pyepi",
+        "blacklistcode"
+      ]
+    },
+    {
+      "reference_requirements": "No labelled normal required for annotation; not an absolute-ploidy anchor",
+      "homozygous_deletion": "Not applicable; no deletion state inferred",
+      "implementation": {
+        "code_url": "https://github.com/hoffmangroup/umap",
+        "version_or_commit": "1.2.1 recommended by repository; tracks version separately unpinned",
+        "license": "Master metadata GPL-3.0-only; v1.2.1 tag not checked; track redistribution terms unverified",
+        "license_url": "https://github.com/hoffmangroup/umap/blob/master/pyproject.toml",
+        "compute_notes": "Existing track summaries inexpensive; generating tracks is substantially more costly"
+      },
+      "uncertain": [
+        "Exact input and run provenance, applicable track license and version require verification"
+      ],
+      "name": "Umap multi-read mappability",
+      "assay": "Reference genome short-read sequencing; transfer to scATAC",
+      "inputs": "Verified build, read length, assembly contigs and matching multi-read bigWig",
+      "outputs": "Per-bin callable fraction or continuous mappability",
+      "mechanism": "Fraction of overlapping possible k-mers that map uniquely",
+      "low_coverage_handling": "Soft flag low mappability; no replacement for missing allele observations",
+      "evidence": "Published genome mappability; scATAC weighting is untested transfer",
+      "fit": "Useful later once read parameters and track license confirmed",
+      "limitations": [
+        "Single-read and multi-read scores differ; paired-end mapping and genetic variation alter applicability",
+        "No threshold validated for CNV inference"
+      ],
+      "source_ids": [
+        "umap",
+        "umapdocs",
+        "umapcode",
+        "umaplicense"
+      ]
+    },
+    {
+      "reference_requirements": "No labelled normal required for annotation; not an absolute-ploidy anchor",
+      "homozygous_deletion": "Not applicable; no deletion state inferred",
+      "implementation": {
+        "code_url": null,
+        "version_or_commit": null,
+        "license": null,
+        "license_url": null,
+        "compute_notes": "Small bin-level annotation joins after matching assembly and coordinate system"
+      },
+      "uncertain": [
+        "Exact input and run provenance, applicable track license and version require verification"
+      ],
+      "name": "GC content and existing correction",
+      "assay": "scATAC count normalization",
+      "inputs": "Reference FASTA and per-bin GC; raw and processed matrices",
+      "outputs": "GC covariate and correction sensitivity",
+      "mechanism": "epiAneufinder applies per-cell LOESS correction",
+      "low_coverage_handling": "Raw zeros remain observations; correction cannot restore missing signal",
+      "evidence": "Published scATAC method; local implementation inspected",
+      "fit": "GC exists in retained-grid var, usable without external join after provenance check",
+      "limitations": [
+        "GC correlates with technical and biological signals; correction can attenuate events",
+        "Actual reference and configuration need audit"
+      ],
+      "source_ids": [
+        "epi",
+        "pyepi"
+      ]
+    },
+    {
+      "reference_requirements": "No labelled normal required for annotation; not an absolute-ploidy anchor",
+      "homozygous_deletion": "Not applicable; no deletion state inferred",
+      "implementation": {
+        "code_url": null,
+        "version_or_commit": null,
+        "license": null,
+        "license_url": null,
+        "compute_notes": "Small bin-level annotation joins after matching assembly and coordinate system"
+      },
+      "uncertain": [
+        "Exact input and run provenance, applicable track license and version require verification"
+      ],
+      "name": "Cell-type accessibility prior",
+      "assay": "scATAC atlas, transferred as annotation",
+      "inputs": "Matched tissue and assay, genome build, peaks or fragments and cell states",
+      "outputs": "Accessibility context, not copy-number prediction",
+      "mechanism": "External contextual signal or covariate",
+      "low_coverage_handling": "Sparse regions may be inaccessible in a state or genuinely deleted",
+      "evidence": "Transfer idea; no compatible local atlas inputs established",
+      "fit": "Defer until peak or fragment data and sample matching are established",
+      "limitations": [
+        "Cell-type mismatch and CN confounding; circularity if same focal evidence defines prior"
+      ],
+      "source_ids": [
+        "epi"
+      ]
+    }
+  ],
+  "recommendations": [
+    "Audit sample-specific SNP selection and counting units first",
+    "After build confirmation annotate retained-bin gap and blacklist overlaps without new default masks",
+    "Add read-length-matched mappability and GC as sensitivity flags, not automatic corrections"
+  ],
+  "uncertain": [
+    "Alignment FASTA and exact reference build are not proven",
+    "cellSNP invocation, genotype caller, phasing confidence and input ascertainment are unknown",
+    "Historical pyEpi configuration and raw depth counting mode are not established",
+    "No track data license was independently verified"
+  ]
+}
