@@ -81,6 +81,16 @@ trace `server/config.py`, `server/data.py`, `server/integration.py`,
 `server/pyepi_adapter.py`, `server/allelic_data.py`, `server/allelic_scan.py`,
 `server/cn_recall.py`, and `tools/segment_depth_genome_pool.py`.
 
+The GC/clipping/normalization implementation is not vendored in this workbench.
+Read these exact original-repository locations before proposing changes:
+
+- [Per-cell GC LOESS helper](https://github.com/colomemaria/pyEpiAneufinder/blob/e8305ea2162634d07e92a3bb401df672e48f217b/pyEpiAneufinder/render_fragments.py#L155-L164).
+- [GC correction → rounding → clip negatives to zero → normalize each cell to 100,000 → store X](https://github.com/colomemaria/pyEpiAneufinder/blob/e8305ea2162634d07e92a3bb401df672e48f217b/pyEpiAneufinder/pyEpiAneufinder.py#L252-L271).
+
+Both links are pinned to public commit `e8305ea2162634d07e92a3bb401df672e48f217b`,
+which matches the local package. Do not substitute today's upstream default
+branch when reconstructing this baseline.
+
 Investigate these concrete questions:
 
 - QC: how do bin nonzero-frequency filtering, cell coverage filtering and

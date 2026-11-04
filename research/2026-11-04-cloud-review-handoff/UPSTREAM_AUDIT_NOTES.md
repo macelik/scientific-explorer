@@ -21,7 +21,9 @@ review, so record and compare versions explicitly.
 
 ## Preprocessing path visible in that source
 
-In `pyEpiAneufinder/pyEpiAneufinder.py`, approximately lines 201–280:
+The original source is outside this repository. The main preprocessing path is
+in `pyEpiAneufinder/pyEpiAneufinder.py`, approximately lines 201–280; its
+[GC correction through X assignment block is lines 252–271](https://github.com/colomemaria/pyEpiAneufinder/blob/e8305ea2162634d07e92a3bb401df672e48f217b/pyEpiAneufinder/pyEpiAneufinder.py#L252-L271):
 
 1. Keep bins meeting a nonzero-frequency criterion across cells.
 2. Keep cells meeting a nonzero-bin-frequency criterion on the retained grid.
@@ -35,7 +37,8 @@ In `pyEpiAneufinder/pyEpiAneufinder.py`, approximately lines 201–280:
 7. Set negative corrected values to zero.
 8. Scale each corrected row to a total of `1e5`; store it in `X`.
 
-`render_fragments.py:get_loess_smoothed` uses a span of `0.75` and, on an
+[The `render_fragments.py:get_loess_smoothed` helper, lines 155–164](https://github.com/colomemaria/pyEpiAneufinder/blob/e8305ea2162634d07e92a3bb401df672e48f217b/pyEpiAneufinder/render_fragments.py#L155-L164),
+uses a span of `0.75` and, on an
 exception, prints the error and returns the input count vector. The reviewer
 should investigate the effect of this fallback and denominator behavior;
 we have not established that a fit failed in the historical run.

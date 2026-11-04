@@ -29,6 +29,16 @@ observations. It cannot recover excluded cells/bins to evaluate relaxed QC.
 Read [UPSTREAM_AUDIT_NOTES.md](UPSTREAM_AUDIT_NOTES.md) for the verified source
 path and important remaining uncertainties.
 
+The preprocessing implementation is **external to this workbench repository**.
+Direct links to the pinned original source are:
+
+- [GC fitting: `get_loess_smoothed`, lines 155–164](https://github.com/colomemaria/pyEpiAneufinder/blob/e8305ea2162634d07e92a3bb401df672e48f217b/pyEpiAneufinder/render_fragments.py#L155-L164).
+- [GC correction, integer rounding, negative-to-zero clipping, and per-cell normalization to 100,000, lines 252–271](https://github.com/colomemaria/pyEpiAneufinder/blob/e8305ea2162634d07e92a3bb401df672e48f217b/pyEpiAneufinder/pyEpiAneufinder.py#L252-L271).
+
+These source files match the local package by hash. The cloud agent must still
+check whether this source and recorded/reconstructed settings reproduce the
+saved AnnData `X`; the historical execution is not fully documented in that file.
+
 ## Data delivery
 
 The data package is published at the
