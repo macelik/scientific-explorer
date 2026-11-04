@@ -9,6 +9,7 @@ import SessionBar from './components/SessionBar'
 import ExperimentView from './components/ExperimentView'
 import IntegrationClustersView from './components/IntegrationClustersView'
 import IntegrationSegmentationView from './components/IntegrationSegmentationView'
+import AllelicSegmentationView from './components/AllelicSegmentationView'
 import './components/integration.css'
 
 class ErrorBoundary extends React.Component<{ children: React.ReactNode; label: string }, { error: string | null }> {
@@ -71,6 +72,7 @@ export default function App() {
           <span className="tab-sep" aria-hidden="true" />
           <button className={tab === 'clusters' ? 'on' : ''} onClick={() => setTab('clusters')}>Integration · clusters</button>
           <button className={tab === 'clusterseg' ? 'on' : ''} onClick={() => setTab('clusterseg')}>Integration · segmentation &amp; CN</button>
+          <button className={tab === 'allelicseg' ? 'on' : ''} onClick={() => setTab('allelicseg')}>Integration · allelic segmentation</button>
         </nav>
         <span className="session-bar"><SessionBar /><button className="btn-sm" onClick={() => setShowInspector(!showInspector)}>{showInspector ? 'hide' : 'show'} inspector</button>
           <button className={`btn-sm ${presentation ? 'on' : ''}`} title="Presentation mode: no hover labels, tooltips or toasts so a pointer stays visible (shortcut: P, Esc to leave)" onClick={() => setPresentation(!presentation)}>{presentation ? '● presenting (P)' : 'present (P)'}</button></span>
@@ -101,6 +103,7 @@ export default function App() {
           <div style={{ display: tab === 'experiment' ? 'block' : 'none' }}>{tab === 'experiment' && <ErrorBoundary label="X experiments"><ExperimentView /></ErrorBoundary>}</div>
           <div style={{ display: tab === 'clusters' ? 'block' : 'none' }}>{tab === 'clusters' && <ErrorBoundary label="Integration · clusters"><IntegrationClustersView /></ErrorBoundary>}</div>
           <div style={{ display: tab === 'clusterseg' ? 'block' : 'none' }}>{tab === 'clusterseg' && <ErrorBoundary label="Integration · segmentation"><IntegrationSegmentationView /></ErrorBoundary>}</div>
+          <div style={{ display: tab === 'allelicseg' ? 'block' : 'none' }}>{tab === 'allelicseg' && <ErrorBoundary label="Integration · allelic segmentation"><AllelicSegmentationView /></ErrorBoundary>}</div>
         </main>
         {showInspector && <ErrorBoundary label="Inspector"><Inspector /></ErrorBoundary>}
       </div>

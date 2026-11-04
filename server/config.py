@@ -25,6 +25,8 @@ class Config:
     prototype_dir: str = ""
     derived_dir: str = ""
     cluster_breakpoints: str = ""
+    allelic_dir: str = ""
+    segmentation_audit: str = ""
 
     @staticmethod
     def from_env(data_root: str | None = None) -> "Config":
@@ -51,8 +53,11 @@ class Config:
             integration_dir=integration_dir,
             h5mu=os.environ.get("PYEPI_SCIENTIFIC_H5MU", ""),
             prototype_dir=os.environ.get("PYEPI_SCIENTIFIC_PROTOTYPE", prototype),
-            derived_dir=os.environ.get("PYEPI_SCIENTIFIC_DERIVED", os.path.join(integration_dir, "data", "derived")),
-            cluster_breakpoints=os.environ.get("PYEPI_SCIENTIFIC_CLUSTER_BREAKPOINTS", os.path.join(integration_dir, "data", "raw_accepted_breakpoints.tsv")),
+            derived_dir=os.environ.get("PYEPI_SCIENTIFIC_DERIVED", os.path.join(integration_dir, "data", "genome_pool", "derived")),
+            cluster_breakpoints=os.environ.get("PYEPI_SCIENTIFIC_CLUSTER_BREAKPOINTS", os.path.join(integration_dir, "data", "genome_pool", "raw_accepted_breakpoints.tsv")),
+            segmentation_audit=os.environ.get("PYEPI_SCIENTIFIC_SEGMENTATION_AUDIT", ""),
+            allelic_dir=os.environ.get("PYEPI_SCIENTIFIC_ALLELIC", os.path.normpath(os.path.join(
+                root, "..", "..", "..", "haplotype_aware_cnv", "hapcnv_outs_from_updated_phasing", "aligned_matrices"))),
         )
 
     def validate(self) -> None:

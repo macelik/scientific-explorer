@@ -1,0 +1,134 @@
+{
+  "base_url": "http://127.0.0.1:8767",
+  "pilot_chromosomes": [
+    "chr1",
+    "chr2",
+    "chr5",
+    "chr7",
+    "chr8",
+    "chr9",
+    "chr13"
+  ],
+  "pairs": [
+    {
+      "archived": "flank_scores.delta",
+      "live": "delta_median",
+      "archived_rows": 162,
+      "matched_segments": 162,
+      "unmatched_segments": 0,
+      "compared_values": 324,
+      "max_abs_diff": 4.996832172987631e-05,
+      "worst": {
+        "key": [
+          "cluster3",
+          "chr2",
+          81,
+          125
+        ],
+        "side": "left",
+        "archived": 1.7282,
+        "live": 1.72815003167827
+      }
+    },
+    {
+      "archived": "flank_scores.delta_mean",
+      "live": "delta_mean",
+      "archived_rows": 162,
+      "matched_segments": 162,
+      "unmatched_segments": 0,
+      "compared_values": 324,
+      "max_abs_diff": 4.966917555893069e-05,
+      "worst": {
+        "key": [
+          "cluster0",
+          "chr7",
+          79,
+          104
+        ],
+        "side": "right",
+        "archived": -1.669,
+        "live": -1.668950330824441
+      }
+    },
+    {
+      "archived": "flank_scores.delta_trim",
+      "live": "delta_iqr_mean",
+      "archived_rows": 162,
+      "matched_segments": 162,
+      "unmatched_segments": 0,
+      "compared_values": 324,
+      "max_abs_diff": 4.9879970229094184e-05,
+      "worst": {
+        "key": [
+          "cluster3",
+          "chr9",
+          660,
+          690
+        ],
+        "side": "left",
+        "archived": -1.3774,
+        "live": -1.377449879970229
+      }
+    },
+    {
+      "archived": "flank_scores.srd_phi",
+      "live": "srd_phi",
+      "archived_rows": 162,
+      "matched_segments": 162,
+      "unmatched_segments": 0,
+      "compared_values": 324,
+      "max_abs_diff": 4.991301477286214e-05,
+      "worst": {
+        "key": [
+          "cluster1",
+          "chr2",
+          744,
+          765
+        ],
+        "side": "left",
+        "archived": -6.9529,
+        "live": -6.952850086985227
+      }
+    },
+    {
+      "archived": "screening.log2fc",
+      "live": "delta_mean",
+      "archived_rows": 196,
+      "matched_segments": 196,
+      "unmatched_segments": 0,
+      "compared_values": 392,
+      "max_abs_diff": 4.9931582640994066e-05,
+      "worst": {
+        "key": [
+          "all",
+          "chr7",
+          79,
+          104
+        ],
+        "side": "right",
+        "archived": -1.672,
+        "live": -1.672049931582641
+      }
+    },
+    {
+      "archived": "screening.srd",
+      "live": "srd",
+      "archived_rows": 196,
+      "matched_segments": 196,
+      "unmatched_segments": 0,
+      "compared_values": 392,
+      "max_abs_diff": 4.941123986146323e-05,
+      "worst": {
+        "key": [
+          "all",
+          "chr1",
+          674,
+          763
+        ],
+        "side": "left",
+        "archived": -3.6908,
+        "live": -3.6907505887601384
+      }
+    }
+  ]
+}

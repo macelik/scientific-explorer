@@ -12,7 +12,7 @@ This directory holds two kinds of content:
 
 ## Subdirectories
 
-- **`hatch-merge/`** — evidence and handoff for the exploratory hatch-layer
+- **`hatch-merge/`** — evidence and handoff for the exploratory merge-rules
   and adjacent-segment merge feature.
 - **`integration-freeze/`** — evidence and report for the segmentation tab's
   scroll-triggered chart loading and the responsiveness investigation behind

@@ -63,21 +63,28 @@ consequences before deciding whether to run another.
 - **Hypothesis:** specific adjacent segments should not have been split, or
   the metric used to judge that boundary is itself ambiguous at that
   location.
-- **Diagnostic:** the three hatch layers in Chromosome tracks — transition
-  zone (opposite-sign flank scores), merge proposal (a flank score below
-  threshold), and ambiguous flank preference (the weaker SRD-variant flank
-  disagrees with the weaker delta-log2FC flank) — followed by the
-  exploratory adjacent-segment merge tool, whose eligibility is the union of
-  whichever layers are enabled.
-- **Recompute:** one boundary merges per step; pooled dispersion φ is
+- **Diagnostic:** the Chromosome tracks' Rule 0 criteria (chosen flank below
+  τ / SRD/√φ ref) hatch candidate segments from live flank scores, with
+  an amber | for segments that pass but whose flank signs disagree, a black | for segments that fail with disagreeing signs, and a black × for the optional last phase (segments that fail the criteria only because their flank signs disagree; exploratory). Rule 0 merges toward the flank of the criterion furthest below its threshold; a Rule 0 copy can be added as a user rule. User-defined
+  rules add further conditions (e.g. "weaker SRD/√φ flank below 3 AND segment
+  ≤ 20 bins", or "Δlog2FC flank signs disagree") and hatch the segments they
+  flag, followed by the exploratory adjacent-segment merge, which starts from those flagged segments and re-evaluates every
+  rule after each merge, so segments not hatched at the start can become
+  eligible later.
+- **Recompute:** one segment merges per step, into its more similar
+  neighbour under the claiming rule's metric; pooled dispersion φ is
   recomputed, unconditionally, after every merge, since it is shared across
   the whole chromosome's segmentation.
 - **Inspect:** the merge-history table, the step slider, and the
   original-vs-current segmentation plots side by side.
 - **Revise:** the tool is explicitly labelled, in its own UI copy, as "an
   independent exploratory rule, not the original bootstrap/chain-guard merge
-  prototype," and it "does not recompute CN calls on the merged boundaries" —
-  a deliberate scope limit, not an oversight.
+  prototype," and "Run merge" "does not recompute CN"; the separate "Merge genome
+  & re-call CN" action does (see below) — a deliberate scope limit, not an oversight.
+
+**Re-calling CN on the merged segmentation.** The genome-wide re-call (Merge genome & re-call CN) merges every chromosome with the same rules, then re-calls copy number with pyEpiAneufinder's `assign_gainloss_new`, unmodified and in the same way as `make_karyograms.py`. A no-op identity test (re-calling an unmerged segmentation) reproduces `karyogram_cluster_segments.tsv` exactly and 20 sampled cells of `percell_cn_states.npy` (with their `best_s`). `best_s` is fitted genome-wide, so a merge on one chromosome can change calls on others; the impact summary counts changes everywhere, not only where segments merged. These results are exploratory diagnostics, not validated replacement calls.
+
+**Merge rounds.** An adopted re-call becomes the base for the next one. Every round merges on the original pseudobulk; only the boundaries carry over from round to round, so a round never works on a smoothed signal. For the same reason, running the same rules twice gives 0 merges the second time: the boundaries those rules would remove are already gone. Zig-zags whose two steps point the same way are kept by Rule 0 by design, and the separate spike/dip rule for them is parked. A gain next to a loss can be real (for example an unbalanced rearrangement), so the noise table counts it but nothing merges it automatically. The call-noise table (segments, zig-zags, zig-zag median length, gain next to loss) is a descriptive comparison between rounds, not a validation of the calls.
 
 ## What this repository's diagnostic capabilities support, by loop stage
 
@@ -88,7 +95,7 @@ consequences before deciding whether to run another.
   breakpoint placement.
 - **Recomputing under the perturbation:** automatic resegmentation at
   configurable recursion depth (k = 1–10), full-genome CN fitting, the
-  hatch-layer scores and adjacent-segment merge tool, alternative segment
+  user-defined merge rules with hatching and adjacent-segment merge, alternative segment
   estimators (arithmetic / upper-tail IQR / two-sided IQR).
 - **Inspecting consequences:** event-edge diagnostics, both permutation
   tests, four CN comparison rows, the alternative flank view and paired-cell
@@ -114,7 +121,11 @@ See [VALIDATION.md](VALIDATION.md) for what has actually been checked —
 byte-for-byte reproduction of archived tables, and browser/parity test
 coverage — versus what remains exploratory or descriptive. Some concrete
 examples of language this repository uses deliberately: SRD/√φ is "a
-dispersion-scaled deviance statistic, not a p-value"; the hatch/merge layers
+dispersion-scaled deviance statistic, not a p-value"; the merge rules
 are "an independent exploratory rule"; the simulation transformation "is not
 a validated biological CN simulator." None of these are hedges — they are
 precise statements of scope.
+
+## Which depth segmentation the app uses
+
+The depth cluster segmentation the Integration tabs load is recomputed with original pyEpi's genome-wide global permutation test (the pool is each cluster pseudobulk's whole genome), by `tools/segment_depth_genome_pool.py`. The earlier run sampled the global test from each chromosome's own bins; those files are unchanged in `integration-story/data/` and `data/derived/`. The two segmentations share 767 breakpoints; 47 are old-only and 56 new-only (`validation/depth-genome-pool/README.md`). Switch back with `PYEPI_SCIENTIFIC_CLUSTER_BREAKPOINTS`, `PYEPI_SCIENTIFIC_DERIVED` and `PYEPI_SCIENTIFIC_SEGMENTATION_AUDIT` (values in `docs/USAGE.md`). The alternative flank view and the archived merge-prototype tables still describe the original segmentation.

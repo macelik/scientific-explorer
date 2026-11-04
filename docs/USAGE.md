@@ -61,17 +61,118 @@ coverage, weights, chr8 group and what a higher resolution adds).
 
 **Integration · segmentation & CN**: the cluster-level and per-cell karyograms come first (click a
 cluster row to jump its chromosome into the tracks; click a cell for its card). In the tracks,
-choose the metric that colours small segments and which flank it is read from, switch between
-binned bands and a continuous scale, and add the label layers you want to talk about (proposal,
-x/o// consistency, reason, values, CN strip, candidate audit, allelic). Click a shaded segment or a
-point in the diagnostics to open the segment's full flank table. τ and the SRD reference are
-inspection settings, not thresholds.
+choose the metric that colours small segments (read on its own smaller-|value| flank), switch between
+binned bands and a continuous scale, and add the label layers you want to talk about (small segments, signs-disagree hatch, retained reason (archived),
+length + value labels, cluster CN strip, candidate audit, allelic). Click a shaded segment or a
+point in the diagnostics to open the segment's full flank table. τ and SRD/√φ ref are Rule 0's
+thresholds (see the section below).
 
-### Exploratory hatching and adjacent-segment merging
+### Visualization and merge rules
 
-Three new hatch layers in Chromosome tracks are computed live from the current accepted-breakpoint segmentation and pseudobulk profile, for any chromosome (not only the seven with archived diagnostic tables): **transition zone** (/, opposite-sign flank scores), **merge proposal** (×, at least one flank's |score| below its own threshold), and **ambiguous flank preference** (×, the weaker SRD/√φ flank disagrees with the weaker delta-log2FC flank). Each has its own metric/estimator/threshold controls and is clearly labelled "new" to distinguish it from the archived "flank-consistency hatch"/"SRD-screen proposal" layers above, which still reflect only the original prototype's saved tables.
+The Chromosome tracks panel starts with **1. Visualization and Rule 0**. It holds the colouring, scale, track level, smoothing, "small ≤" and τ settings, and the criteria that define Rule 0.
 
-Below Chromosome tracks, **Exploratory adjacent-segment merge** runs a separate, new rule. Merge eligibility is the union of whichever hatch layers you've enabled above: ticking transition zone, merge proposal, and/or ambiguous flank preference makes that layer's already-configured metric/threshold/estimator count directly toward eligibility — there is no separate metric configuration in the merge tool itself, and "Run merge" stays disabled with an explanatory message until at least one layer is on. Each step merges the single eligible boundary ranked highest (smallest proposal `|score|` when that layer is enabled, else leftmost), recomputing every score — including the pooled dispersion φ, which is shared across the whole chromosome's segmentation — after each merge, until none remain eligible. An optional, off-by-default size restriction can limit eligibility to boundaries touching a small segment; genomic gaps are never crossed unless you explicitly allow it. Use the step slider (or Reset/Undo) to inspect any intermediate segmentation, and download the full run (JSON) or just the merge-history table (CSV). This is an independent exploratory rule, not the original bootstrap/chain-guard merge prototype, and it does not recompute CN calls on the merged boundaries.
+**Colouring.** Small internal segments (at most "small ≤" bins) are coloured by live flank scores computed on demand for any chromosome, not only the pilot chromosomes. The colour-by options are Δlog2FC (median, mean or two-sided IQR-mean levels), |SRD| and |SRD/√φ|. Each segment takes the chosen metric's value on that metric's own smaller-|value| flank; a missing side loses, and a segment with both sides missing is grey "N/A". The tracks used to read these values from the archived small-segment tables for the pilot chromosomes. The live and archived values agree to within about 5e-05 (the archived tables are rounded to four decimals) on all 162 flank and 196 screening rows of the pilot chromosomes; see [the agreement record](../validation/rule0/README.md). The archived diagnostics panel, merge-prototype summary, "retained reason" label layer, candidate audit and the archived extras in the click card (bootstrap fraction, SRD-screen bootstrap SE) stay archived and are labelled as such.
+
+**Rule 0.** The same section defines Rule 0, the rule hatched on the tracks and always part of the merge. It has:
+
+- A **criteria checklist**, at least one of: min |Δlog2FC median| flank < τ; min |Δlog2FC mean| flank < τ; min |Δlog2FC IQR-mean| flank < τ; min |SRD/√φ| flank < SRD/√φ ref. The defaults are the mean criterion and the SRD/√φ criterion, with SRD/√φ ref 3.3. Each criterion looks at its own smaller-|value| flank (ties go left).
+- An **all / any** toggle: with *all* every checked criterion must pass; with *any* one is enough.
+- **Direction.** A passing segment merges toward the flank of the criterion furthest below its threshold (the passing criterion with the smallest value-to-threshold ratio wins; ties go left). This is always so; there is no switch for it.
+- Two switches, both off by default. **Merge sign-disagreeing segments** lets a segment that passes the test merge although its flank SRD/√φ values have opposite signs. **Also merge signs-disagree segments that fail Rule 0 (last, black ×)** (`mergeSignsOnly`) adds a last phase: segments that fail the test but whose flank signs disagree merge after every other candidate, toward the failing criterion closest to its threshold. This phase merges segments that fail every displayed threshold, solely because their flank SRD/√φ signs disagree; it is exploratory.
+
+A segment that passes the test, is not held back and does not touch a genomic gap on its merge side is a *would merge now* segment and is drawn with a × hatch in Rule 0's colour. The other cases:
+
+- *Would merge, signs disagree* (switch on): × plus an amber vertical | overlay.
+- *Held back*: the segment passes the test but its signs disagree while the sign switch is off. It is not merged and is drawn with the amber | mark and a ⚠ on its marker.
+- *Signs disagree only*: the segment fails the test but its flank SRD/√φ signs differ; drawn with a black | and not merged, unless the last-phase option is ticked, in which case it is hatched with a black × and merges last. The "signs-disagree hatch" layer checkbox toggles only this case; would-merge and held-back marks are always drawn.
+- *Merges last* (option ticked): the same segment is drawn with a black × instead and counted under "merges last" (with "+N blocked by gap" for those whose chosen flank sits across a genomic gap).
+- *Blocked by gap*: a segment that would merge but whose chosen flank sits across a genomic gap is drawn only with a dotted outline in Rule 0's colour (no ×), and is counted under "blocked by gap", not under "would merge now". It gets the × and moves into "would merge now" only when **allow merging across a genomic gap** is ticked, so the hatch always shows what a merge run would merge now. A flank counts as a genomic gap only when a real gap separates the bins (the next bin starts more than one position after the previous bin ends); adjacent bins no longer count as a gap, so most segments are no longer gap-blocked (see [the gap fix](../validation/rule0/gap_fix.md)). The hover text says `genomic gap on the … flank` for the sides that are. When all would-merge segments are gap-adjacent, a notice beside the Rule 0 controls says so.
+
+The Rule 0 legend is a single line: `Rule 0 would merge now: M`, then ` · blocked by gap: G (merge only with gap crossing)` when G > 0, then the signs-disagree count (over all would-merge segments, blocked or not), `held back`, and either `signs disagree only: N` (option off) or `merges last: N` (option on, plus `+N blocked by gap`). Hover over a segment's marker for the per-criterion detail: each checked criterion's flank, value, threshold, fraction and pass/fail, then the combined result, the sign check, the direction, the outcome and which user rules also match. These hatches and settings only change what is drawn until you run a merge. The earlier "SRD-screen proposal" layer, the flank dropdown and the "effect metric for flank choice" dropdown were removed; the criteria checklist replaces them.
+
+**2. Merge rules**, below the tracks, starts with a pinned **Rule 0 card**. It cannot be edited, deleted or moved; it summarises the section 1 settings on one line and shows `would merge now: M segment(s)` across the displayed rows, plus ` · blocked by gap: G` when G > 0 and ` · merges last: N` when the last-phase option is on. Below it is an ordered list of rules you build yourself, which add to Rule 0. Add a blank rule, a preset (weak flank, flank signs disagree, ambiguous flank preference, small segment) or a **Rule 0 copy (current section-1 settings)**. A copy is an ordinary rule in the list, with its own combine, τ, SRD/√φ ref, size limit, criteria and sign switch, initialised from the current Rule 0 settings and then independent of them; it can be disabled, reordered, duplicated or deleted, and it blocks Run merge while enabled with an empty or invalid τ. Copies have no last-phase option. Each user rule has:
+
+- **Conditions, all of which must hold** for an internal segment: *weaker flank below threshold* (min(|L|, |R|) < threshold, for SRD, SRD/√φ or Δlog2FC with an estimator), *flank signs disagree*, *SRD and Δlog2FC disagree on the weaker flank*, and *segment size at most N bins*.
+- **Merge into**: the metric that decides which neighbour a flagged segment joins (the flank with the smaller |score|; ties go left).
+- **A hatch pattern and colour.** Each enabled rule hatches exactly the segments it flags, live, and its card shows how many segments it flags on the displayed rows. Hover over a hatched segment's diamond marker for each condition's values and the merge outcome.
+
+A segment is flagged when Rule 0 or any enabled rule matches. **Run merge** then merges one flagged segment per step: Rule 0 goes first, then the user rules in list order (Rule 0 copies included), then the smallest score, then the leftmost segment, (the order is phase, rule, score, start: all phase 1 candidates, which are Rule 0 would-merge segments and every user-rule claim, go before any phase 2 candidate, the last-phase signs merges; a phase 2 merge that creates a phase 1 candidate is followed by that candidate), recomputing every score, including the pooled dispersion φ and each criterion's flank choice, and re-evaluating every rule after each merge (so segments not hatched at the start can become eligible later). Run merge works with Rule 0 alone; the user rule list may be empty. It needs at least one criterion, positive τ and SRD/√φ ref, an integer "small ≤" of at least 1, and every enabled user rule complete. The φ shown in the merge history is the pooled dispersion of the partition the merge decision was made on, i.e. before that step's merge. Genomic gaps are never crossed unless you allow it; a segment whose chosen neighbour sits across a gap is skipped, not redirected. Use the step slider (or Reset/Undo) to inspect intermediate segmentations and download the run (JSON) or the merge history (CSV), which names the rule behind each merge (Rule 0 appears as `rule0`) and the phase (1 or 2) of each step. Rules and the section 1 settings are saved in sessions. Sessions saved before this change are converted into preset rules (migrated merge-proposal rules do not flag a segment whose other flank score is missing, e.g. Δlog2FC with a zero level, unlike the old layer). Sessions that stored an archived colour choice are mapped to the live metric: `delta_median` to Δlog2FC median, `delta_mean` and `log2fc` (SRD-screen) to Δlog2FC mean, `delta_trim` to Δlog2FC IQR-mean, `srd` to |SRD|, `srd_phi` to |SRD/√φ|. The old flank and effect-metric settings, the old proposal layer flag, and the removed flank-conflict switch, accepted-breakpoint and recursion-depth layers are dropped, and the old flank-consistency label flag becomes the signs-disagree layer. Rule 0 is an exploratory diagnostic built from the displayed settings, not a validated decision rule. It is independent of the original bootstrap/chain-guard merge prototype, and CN calls are not recomputed by Run merge; use Merge genome & re-call CN.
+
+**Candidate audit.** For a candidate that was selected for significance but not accepted and has no recorded rejection reason, hovering shows a reason derived from the archived p-values: "local permutation p = … ≥ 0.001", otherwise "global permutation p = … ≥ 0.001", otherwise "not accepted (no recorded reason)". Each derived reason ends with "(cutoff inferred: all accepted candidates have p < 0.001)"; the cutoff is inferred, not recorded.
+
+### Merge genome & re-call CN
+
+**Merge genome & re-call CN** (beside Run merge in the merge panel) applies the current Rule 0 and user rules to every chromosome, then re-calls copy number on the merged segmentation. It is an exploratory diagnostic: the original data and files are not changed. A status line shows the stages `merging → cluster CN → per-cell`, with per-cell progress as `done / total` cells, and ends with `done`; if a stage fails it shows `error:` with the stage name and the button is available again. The cluster-level result is ready first, so the per-cell karyogram fills in a little later (about a minute on the full dataset).
+
+Both karyograms get a **Karyogram mode** switch: **Before** (the original calls, always identical to the normal view), **After** (the re-called calls) and **Changed** (only bins whose call changed are drawn in colour). Above the cluster karyogram, under the switch, **CN re-call impact** lists, per source (cluster0..4 and all), the merges, the bins changed and the call transitions, then the number of cells with any change and the median share of bins changed. Four exports are named by file: `merged_breakpoints.tsv`, `recalled_cluster_segments.tsv`, `recalled_percell_best_s.tsv` and `cn_change_summary.tsv`; each begins with `#` header lines holding the rules and provenance. Without merge rounds the segmentation tracks keep showing the original accepted breakpoints and only the two karyograms switch; with rounds adopted the tracks show the base's breakpoints (see Merge rounds). Editing a rule afterwards shows "Rules changed since this re-call; showing the previous one." until you re-run it.
+
+Results are kept in memory only: the latest 3 re-calls are kept and all are lost on restart. Identical rules on the same data reuse the finished result.
+
+### Merge rounds
+
+A re-call can be adopted as a **merge round**, so that section 2 (tracks, scores, hatching, the merge panel) works on the merged segmentation instead of the original one.
+
+1. Run **Merge genome & re-call CN** with the rules you want. When it is done, click **Adopt as round N** in **CN re-call impact**.
+2. The strip *Segmentation base: Original → Round 1 (…, M merges)* shows the current base. The tracks lose the breakpoints that round merged away, and the scores and hatches are computed on the new base.
+3. Change the rules, then re-call again (**Merge genome & re-call CN**). The re-call now starts from the base, and can be adopted as the next round.
+4. **Undo last round** removes the newest round; **Back to original** removes all of them.
+
+**Original / Before / After / Changed.** *Original* always shows the unmerged data. *Before* shows the current base (the same as Original when there are no rounds). *After* shows the latest re-call on that base, and *Changed* draws in colour only the bins where After differs from Before.
+
+**Call noise by round.** The table lists, per source and per level (cluster and cells), the segments, the zig-zags, the zig-zag median length (bins) and gain next to loss, with one column per round (Original, Round 1, …, After). Use the scope switch for this chromosome or genome-wide. Definitions, shown under the table:
+
+- Calls are read per chromosome as the sequence of segment states. Segments with no call are skipped. Gain = state > 1 (weak gain included), loss = state < 1.
+- Zig-zag: an internal segment whose state differs from both neighbours, while the two neighbours have the same state as each other.
+- Gain next to loss: a boundary with a gain on one side and a loss on the other. This can be real (for example an unbalanced rearrangement), so it is counted but never merged automatically.
+- Cell values: the mean per cell over all cells of the cluster. The zig-zag median length is taken over all of those cells' zig-zags. For all, the cells are every cell, each read under its own cluster's segmentation.
+
+The table downloads as `noise_by_round.tsv`.
+
+The alternative flank view and the archived merge-prototype tables stay on the original accepted breakpoints.
+
+Rounds are saved with the session. After a server restart the base's per-cell calls are recomputed on first use (about 60 s); the rounds themselves are not lost.
+
+## Allelic segmentation
+
+**Integration · allelic segmentation** runs the same recursive Anderson-Darling scan that produced the depth breakpoints on a per-cluster allelic pseudobulk signal, then compares the result with the depth segmentation. It is exploratory: plain counts and per-segment summaries, with no combined score.
+
+**Data.** The tab reads `HA.parquet`, `HB.parquet` and `AT.parquet` from `<EGA>/haplotype_aware_cnv/hapcnv_outs_from_updated_phasing/aligned_matrices/`. Set `PYEPI_SCIENTIFIC_ALLELIC` to use another folder. If the folder is missing, or its bins, barcodes or AT = HA + HB check do not match the app's data, the tab is disabled and its status lists the problem; nothing else in the app changes. The older `hapcnv_outs` sets (18,738 bins) are not supported.
+
+**Signals.** HA, HB and AT are a source's pseudobulk sums (over the source's cells) for one bin.
+
+| Signal | Formula |
+|---|---|
+| signed dBAF (`dbaf`) | (HB − HA) / (2·AT) |
+| \|dBAF\| (`abs_dbaf`, default) | \|HB − HA\| / (2·AT) |
+| shrunk \|dBAF\| (`shrunk_abs_dbaf`) | \|HB − HA\| / (2·(AT + 2)) |
+| oriented to all cells (`oriented_all`) | sign(ΣHB_all − ΣHA_all) · (HB − HA) / (2·AT) |
+
+**min AT and kept bins.** A bin is kept when AT ≥ min AT (default 10). For `oriented_all` the all-cells HA and HB must also differ. Skipped bins never enter the scan and are never imputed; they show as small grey ticks on the x axis. A breakpoint between two kept bins with skipped bins between them is drawn as a shaded band (a gap breakpoint).
+
+**AD settings** (collapsed group; defaults are the depth run's): k 6, permutations 1000, alpha 0.001, min child 20 kept bins, min from chromosome end 50 kept bins, global pool genome.
+
+**Global test pool.** The global permutation test draws random segment pairs from a pool. `genome` (default) uses all of the source's kept bins genome-wide, which is how original pyEpi applies it. `chromosome` uses the chromosome's own kept bins, which is how the earlier depth run (`integration-story/data/raw_accepted_breakpoints.tsv`) was made. The app's depth breakpoints now use the genome pool too (see "Depth segmentation"), so the default allelic run and the depth tracks share one test. The two pools give different p-values, so a chromosome-pool allelic run is not directly comparable with them. The tab shows a note under the settings.
+
+**Run segmentation.** One background job runs per signal and settings over every source and chromosome (one at a time; a new request waits, a later one replaces the waiting one) and shows `running · cluster2 · chr8 · 74/132`. Repeats of a finished job return at once from `cache/allelic/`. Before a run the tracks show the allelic dots only, with the hint "Run segmentation to see allelic segments." If you change the signal or settings after a run, the segments stay and the note "Segments shown are from an earlier run (signal …, settings …). Run again to update." appears.
+
+**Tracks.** For each checked source, a depth panel (pseudobulk with depth segments coloured by CN call) sits above an allelic panel (one dot per kept bin, opacity scaled by AT; allelic segment means as horizontal lines; allelic breakpoints as solid vertical lines; depth breakpoints as faint dashed lines). The y range is −0.5 to 0.5 for the signed signals and 0 to 0.5 otherwise.
+
+**Depth segments: current round / original.** *Current round* (default) uses the merge-rounds base; *original* uses the on-disk breakpoints and cluster segments.
+
+**Depth vs allelic segments.** Three tables under the tracks, which need a finished run. The matching distance N (default 3 bins) is a number field. A scope switch (this chromosome / genome-wide) applies to table 1 only; tables 2 and 3 cover the chosen chromosome.
+1. *Breakpoint agreement*: per source, depth bps, allelic bps, matched, depth only, allelic only, median offset.
+2. *Depth segments seen by the allelic signal*: per depth segment, kept bins, mean and sd of the allelic signal, allelic bps inside.
+3. *Allelic segments seen by depth*: per allelic segment, kept bins, mean signal, depth calls spanned (for example "1.0: 80% · 1.5: 20%").
+
+Definitions, as shown under the tables:
+
+- Matching is one-to-one, nearest first: all depth–allelic pairs within N bins are sorted by distance and accepted greedily, skipping any breakpoint already matched; ties go to the lower depth bin.
+- An allelic breakpoint inside a gap of skipped bins is at distance 0 from any bin of that gap; outside it, the distance is to the nearer gap edge.
+- Distances count genomic bins, not kept bins. Median offset is taken over matched pairs.
+- Depth segments: kept bins have AT ≥ min AT; mean and sd (population) of the allelic signal over kept bins; "allelic bps inside" counts allelic breakpoints more than N bins from both segment edges.
+- Allelic segments: each depth CN call with its share of the segment's bins, largest first.
+
+**Export.** `allelic_vs_depth.tsv` holds a header (signal, settings, N, depth segments source, table 1 scope) and the three tables.
 
 ## Recompute integration flank comparisons
 
@@ -84,3 +185,17 @@ The original generators and configuration were found upstream and successfully r
 ## Integration chart loading
 
 The segmentation tab renders its chromosome and diagnostic charts as you scroll them into view. This avoids initializing all eight plots during the initial CN-panel load. Once displayed, plots retain their zoom while scrolling. See [responsiveness checks](../validation/integration-freeze/REPORT.md) for the reported freeze investigation and its current limits.
+
+## Depth segmentation
+
+The depth cluster breakpoints used by the Integration tabs, the merge rules, the re-call and the allelic comparison are made by `tools/segment_depth_genome_pool.py` (about one minute): original pyEpi's genome-wide global permutation test, where each cluster pseudobulk's whole genome (all bins, nothing masked) is the pool, at k 6, 1000 permutations, alpha 0.001, min child 20, min terminal 50. Its output (`raw_accepted_breakpoints.tsv`, `segmentation_candidate_audit.tsv`, `run.json`) goes to `integration-story/data/genome_pool/`; `make_karyograms.py --breakpoints ... --derived-dir ...` writes the derived tables there. The tool refuses to write into `integration-story/data/` itself. Compared with the original chromosome-pool file it keeps 767 of 814 breakpoints, drops 47 and adds 56 (`validation/depth-genome-pool/README.md`).
+
+The original chromosome-pool files are unchanged. To switch the app back, set before starting it:
+
+```
+PYEPI_SCIENTIFIC_CLUSTER_BREAKPOINTS=<integration_dir>/data/raw_accepted_breakpoints.tsv
+PYEPI_SCIENTIFIC_DERIVED=<integration_dir>/data/derived
+PYEPI_SCIENTIFIC_SEGMENTATION_AUDIT=<prototype_dir>/segmentation_candidate_audit.tsv
+```
+
+The alternative flank view and the archived merge-prototype tables (`data/prototype/`) still describe the original segmentation.

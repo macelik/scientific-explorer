@@ -54,7 +54,9 @@ worked examples of this loop in this repository.
 - **Manual segmentation** — user-selected boundaries, exact tests, undo/redo, full-genome CN fitting, and alternative (arithmetic/IQR) segment estimators.
 - **X experiments** — original-vs-edited data, empirical state simulations, region extension/duplication, width series, event-edge tests, four CN comparisons.
 - **Integration · clusters** — multimodal WNN/depth/allelic UMAPs with linked selection and per-cell inspection.
-- **Integration · segmentation & CN** — cluster-level and per-cell karyograms, configurable chromosome tracks, an on-demand alternative flank view and paired-cell bootstrap, and the exploratory hatch-layer/adjacent-segment merge tool.
+- **Integration · segmentation & CN** — cluster-level and per-cell karyograms, configurable chromosome tracks, an on-demand alternative flank view and paired-cell bootstrap, and live-score tracks (any chromosome) hatched by Rule 0, user-defined merge rules with per-rule hatching, and an exploratory adjacent-segment merge. A genome-wide **Merge genome & re-call CN** button re-calls copy number on the merged segmentation and compares it on the karyograms (Before · After · Changed) with an impact summary and TSV exports; results are held in memory only.
+- **Integration · allelic segmentation** — runs the depth Anderson-Darling scan on a per-cluster allelic pseudobulk signal (|dBAF|, signed dBAF, shrunk |dBAF| or dBAF oriented to all cells), draws the allelic tracks and segments under the depth tracks, and compares breakpoints and segments with the depth ones in three tables (`allelic_vs_depth.tsv` export).
+- **Merge rounds** — adopt a re-call as a merge round; section 2 then works on the merged segmentation; undo or go back to the original; call-noise table by round.
 
 See [docs/USAGE.md](docs/USAGE.md) for the full operational detail.
 
@@ -72,8 +74,8 @@ production call — it is a call-conditioned exploratory model, not an
 independently validated biological CN simulator. SRD/√φ is a
 dispersion-scaled deviance statistic, not a p-value. The exploratory
 hatch-merge tool is an independent rule, not the original bootstrap/
-chain-guard merge prototype, and does not recompute CN calls on merged
-boundaries. See [docs/VALIDATION.md](docs/VALIDATION.md) and
+chain-guard merge prototype, and Run merge does not recompute CN calls on merged
+boundaries (the separate re-call button does, as an exploratory diagnostic). See [docs/VALIDATION.md](docs/VALIDATION.md) and
 [docs/USAGE.md](docs/USAGE.md) for the full statement of scope.
 
 ## Architecture
@@ -121,7 +123,7 @@ For frontend development, `npm run dev` serves port 5174 and proxies API request
 ### Tests
 
 ```bash
-python3 -m pytest -q tests/test_hatch_merge.py tests/test_experiments.py tests/test_segment_estimators.py tests/test_integration_review.py
+python3 -m pytest -q tests/test_merge_rules.py tests/test_hatch_merge.py tests/test_experiments.py tests/test_segment_estimators.py tests/test_integration_review.py
 ```
 
 See [tests/README.md](tests/README.md) for the full test suite, browser-test prerequisites, and parity checks.
@@ -157,14 +159,18 @@ external runtime dependency, not vendored into this repository — see
 
 Integration tabs (multimodal clustering and pseudobulk segmentation): two
 read-only tabs load the exported artifacts of the depth + haplotype
-integration story (`../integration-story/`); nothing is re-clustered,
-re-integrated or re-segmented.
+integration story (`../integration-story/`); nothing is re-clustered or re-integrated.
+
+Note: the archived merge-prototype tables (retained reasons, prototype summary) describe the earlier chromosome-pool depth segmentation, not the current breakpoints.
+
+Depth segmentation: the depth cluster breakpoints the app loads come from `tools/segment_depth_genome_pool.py`, which runs the segmentation with original pyEpi's genome-wide global permutation test (the pool is the cluster pseudobulk's whole genome). The earlier chromosome-pool files remain unchanged in `integration-story/data/` and `data/derived/`; see `validation/depth-genome-pool/README.md` for the comparison and `docs/USAGE.md` for how to switch back.
 
 | Input | Default location | Override |
 |---|---|---|
 | `integrated.h5mu` (cells, labels at four Leiden resolutions, WNN weights, UMAPs, PCA, graphs, allelic abs-dBAF) | `integration-story/data/integrated.h5mu`, else the path recorded in `data/prototype/run_manifest.json` | `PYEPI_SCIENTIFIC_H5MU` |
-| pseudobulk breakpoints (`raw_accepted_breakpoints.tsv`) | `integration-story/data/` | `PYEPI_SCIENTIFIC_CLUSTER_BREAKPOINTS` |
-| derived cluster segments / per-cell CN (`data/derived/`) | `integration-story/data/derived` | `PYEPI_SCIENTIFIC_DERIVED` |
+| pseudobulk breakpoints (`raw_accepted_breakpoints.tsv`) | `integration-story/data/genome_pool/` | `PYEPI_SCIENTIFIC_CLUSTER_BREAKPOINTS` |
+| derived cluster segments / per-cell CN | `integration-story/data/genome_pool/derived` | `PYEPI_SCIENTIFIC_DERIVED` |
+| candidate audit | `integration-story/data/genome_pool/segmentation_candidate_audit.tsv`, else the prototype directory's | `PYEPI_SCIENTIFIC_SEGMENTATION_AUDIT` |
 | merge-prototype and SRD-screen tables (`data/prototype/`) | `integration-story/data/prototype`, else the verified `scientific-explorer/reference/integration-prototype/regenerated` | `PYEPI_SCIENTIFIC_PROTOTYPE` |
 | whole story directory | `<root>/integration-story` | `PYEPI_SCIENTIFIC_INTEGRATION` |
 
@@ -176,6 +182,6 @@ API: `/api/integration/{status,meta,pseudobulk.bin,percell_karyogram.bin,cell/{i
 
 `POST /api/integration/hatch-scores` `{chrom, source}` returns per-internal-segment SRD, SRD/√φ and delta-log2FC (mean/median/two-sided-IQR-mean) scores against both flanks, plus the chromosome's pooled φ and per-side genomic-gap flags, computed live from `server/hatch_merge.py` — genome-wide, not limited to the archived pilot chromosomes.
 
-`POST /api/integration/hatch-merge` `{chrom, source, transition?, proposal?, ambiguous?, small_max_bins?, allow_gap_crossing?}` runs the new exploratory greedy merge. Eligibility is the union of whichever of the three layers is present (at least one is required): `transition` and `ambiguous` each carry `{metric, estimator}` and fire when either adjacent segment is itself so classified; `proposal` carries `{metric, estimator, threshold}` and fires on a direct threshold comparison between the two flanks. Each layer reuses the same metric/estimator/threshold already visible in the Chromosome tracks hatch controls of the same name — there is no separate metric configuration in the merge tool itself. Pooled dispersion φ is recomputed every iteration; one boundary merges per step, ranked by the smallest proposal `|score|` when available, else leftmost. The response returns the full step history (original → final), so the frontend can undo/reset/inspect any intermediate step purely by indexing into the response — no server-side session state. See `server/hatch_merge.py` for the numerical rules and `tests/test_hatch_merge.py` for their test coverage.
+`POST /api/integration/hatch-merge` `{chrom, source, rules, allow_gap_crossing?}` runs the exploratory greedy merge driven by user-defined rules. `rules[0]` must be Rule 0, `{id: "rule0", type: "flank_threshold", name, criteria, combine, tau, srdRef, maxBins, mergeSignMismatch, mergeSignsOnly, hatch}` (`mergeSignsOnly` adds a last phase for segments that fail the test but whose flank SRD/√φ signs disagree; `mergeFlankConflict` is ignored), built from section 1 of the tracks (`criteria` is a non-empty subset of `delta_median`, `delta_mean`, `delta_iqr_mean`, `srd_phi`; `combine` is `all` or `any`); it always goes first. User rules follow it and add to it. A user rule is either a condition rule `{id, name, enabled, conditions, mergeInto, hatch}` or a Rule 0 copy `{id, type: "flank_threshold", name, enabled, criteria, combine, tau, srdRef, maxBins, mergeSignMismatch, hatch}` (no `mergeSignsOnly`); a Rule 0 would-merge segment merges toward the criterion furthest below its threshold. For condition rules, their conditions (`weak_flank`, `sign_mismatch`, `ambiguous`, `max_size`) must all hold for an internal segment, and a segment is flagged when Rule 0 or any enabled user rule matches. The topmost matching rule (Rule 0 first) claims the segment and its `mergeInto` metric picks the neighbour to merge into (smaller |score|, ties left). One merge happens per step, ordered by `(phase, rule, score, start)` (phase 1 is Rule 0 would-merge segments and every user-rule claim, phase 2 the last-phase signs merges), with every score and the pooled φ recomputed after each merge; gap-blocked segments are skipped, not redirected. Disabled rules are ignored; invalid enabled rules return 422. The response returns the full step history (original → final), naming the rule and the phase behind each merge (`phase` is null on step 0). See `server/merge_rules.py` and `tests/test_merge_rules.py`.
 
 See [the multimodal design handoff](../HANDOFF_FOR_MULTIMODAL_DESIGN_AGENT.md) for the next design phase's architecture, proposed visualization workspaces, scientific constraints, data contracts and setup lessons.

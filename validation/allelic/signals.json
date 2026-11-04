@@ -1,0 +1,54 @@
+{
+ "abs_dbaf": {
+  "status": "done",
+  "seconds": 0,
+  "breakpoints_per_source": {
+   "cluster0": 7,
+   "cluster1": 8,
+   "cluster2": 8,
+   "cluster3": 11,
+   "cluster4": 4,
+   "all": 11
+  },
+  "gap_breakpoints": 9
+ },
+ "dbaf": {
+  "status": "done",
+  "seconds": 16,
+  "breakpoints_per_source": {
+   "cluster0": 12,
+   "cluster1": 12,
+   "cluster2": 8,
+   "cluster3": 9,
+   "cluster4": 10,
+   "all": 11
+  },
+  "gap_breakpoints": 19
+ },
+ "shrunk_abs_dbaf": {
+  "status": "done",
+  "seconds": 14,
+  "breakpoints_per_source": {
+   "cluster0": 6,
+   "cluster1": 8,
+   "cluster2": 7,
+   "cluster3": 9,
+   "cluster4": 4,
+   "all": 12
+  },
+  "gap_breakpoints": 9
+ },
+ "oriented_all": {
+  "status": "done",
+  "seconds": 14,
+  "breakpoints_per_source": {
+   "cluster0": 6,
+   "cluster1": 5,
+   "cluster2": 6,
+   "cluster3": 5,
+   "cluster4": 6,
+   "all": 18
+  },
+  "gap_breakpoints": 12
+ }
+}

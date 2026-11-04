@@ -6,6 +6,7 @@
  * classify_ambiguous, so raw scores can be reclassified client-side as the
  * user adjusts a threshold, without a network round trip. */
 import { hatchShapes } from './integration'
+import type { AnyRule } from './mergeRules'
 
 export type HatchMetric = 'srd' | 'srd_phi' | 'delta_log2fc'
 export type Estimator = 'mean' | 'median' | 'iqr_mean'
@@ -24,36 +25,28 @@ export interface HatchScoresResult {
 export interface MergeStep {
   step: number; segments: { start: number; end: number }[]
   removed_boundary: number | null; merged_interval: [number, number] | null
-  fired: ('transition' | 'proposal' | 'ambiguous')[]; score: number | null; phi: number | null
+  segment: [number, number] | null; rule_id: string | null; rule_name: string | null; phase: 1 | 2 | null
+  side: 'left' | 'right' | null; score: number | null; phi: number | null
 }
-export interface TransitionLayerConfig { metric: HatchMetric; estimator: Estimator }
-export interface ProposalLayerConfig { metric: HatchMetric; estimator: Estimator; threshold: number }
-export interface AmbiguousLayerConfig { estimator: Estimator }
-export interface MergeSettings {
-  transition: TransitionLayerConfig | null; proposal: ProposalLayerConfig | null; ambiguous: AmbiguousLayerConfig | null
-  small_max_bins: number | null; allow_gap_crossing: boolean
-}
+export interface MergeSettings { rules: AnyRule[]; allow_gap_crossing: boolean; rounds?: { rules: unknown[]; allow_gap_crossing: boolean }[] }
 export interface MergeResult {
   original: { start: number; end: number }[]; final: { start: number; end: number }[]
   steps: MergeStep[]; settings: MergeSettings
   source: string; chrom: string; start_bp: number[]; end_bp: number[]; provenance: unknown
 }
-/** Eligibility is the union of whichever of these three layers is present
- * (at least one required); each uses its own metric/estimator/threshold,
- * matching the Chromosome tracks hatch layers exactly. */
-export interface MergeRequest {
-  chrom: string; source: string
-  transition?: TransitionLayerConfig; proposal?: ProposalLayerConfig; ambiguous?: AmbiguousLayerConfig
-  small_max_bins?: number; allow_gap_crossing?: boolean
-}
+/** Rules are evaluated server-side by server/merge_rules.py; disabled rules are ignored. */
+export interface MergeRequest { chrom: string; source: string; rules: AnyRule[]; allow_gap_crossing: boolean }
 
 async function postJson<T>(url: string, body: unknown): Promise<T> {
   const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
-  if (!res.ok) throw new Error((await res.json().catch(() => ({}))).detail ?? res.statusText)
+  if (!res.ok) {
+    const detail = (await res.json().catch(() => ({}))).detail
+    throw new Error(Array.isArray(detail) ? detail.map((d) => d?.msg ?? JSON.stringify(d)).join('; ') : typeof detail === 'string' ? detail : res.statusText)
+  }
   return res.json()
 }
-export const fetchHatchScores = (chrom: string, source: string) =>
-  postJson<HatchScoresResult>('/api/integration/hatch-scores', { chrom, source })
+export const fetchHatchScores = (chrom: string, source: string, rounds: { rules: unknown[]; allow_gap_crossing: boolean }[] = []) =>
+  postJson<HatchScoresResult>('/api/integration/hatch-scores', { chrom, source, rounds })
 export const runHatchMerge = (req: MergeRequest) => postJson<MergeResult>('/api/integration/hatch-merge', req)
 
 const finite = (v: number | null | undefined): v is number => v !== null && v !== undefined && Number.isFinite(v)

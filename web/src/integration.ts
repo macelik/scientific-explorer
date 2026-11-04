@@ -90,12 +90,19 @@ function unitDiag(step: number, back: boolean): { x0: number; y0: number; x1: nu
   }
   return out
 }
-/** Plotly `line` shapes hatching a rect (x0..x1 data units, y 0..1 of the given axis' domain): '/' single forward diagonal, '\' single backward diagonal, 'x' both crossed, 'none' nothing. */
-export function hatchShapes(x0: number, x1: number, yref: string, style: 'none' | '/' | '\\' | 'x', color = 'rgba(17,24,39,0.55)'): any[] {
+export type HatchStyle = 'none' | '/' | '\\' | 'x' | '-' | '|' | '.'
+export function hatchShapes(x0: number, x1: number, yref: string, style: HatchStyle, color = 'rgba(17,24,39,0.55)'): any[] {
   if (style === 'none') return []
-  const step = 0.22, w = x1 - x0
+  const w = x1 - x0
+  const line = (ax0: number, ax1: number, ay0: number, ay1: number, width = 1) =>
+    ({ type: 'line', xref: 'x', yref: `${yref} domain`, x0: x0 + ax0 * w, x1: x0 + ax1 * w, y0: ay0, y1: ay1, line: { color, width }, layer: 'above' })
+  const fractions = [0.1, 0.3, 0.5, 0.7, 0.9]
+  if (style === '-') return fractions.map((y) => line(0, 1, y, y))
+  if (style === '|') return fractions.map((x) => line(x, x, 0, 1))
+  if (style === '.') return fractions.flatMap((x) => fractions.map((y) => line(x - 0.015, x + 0.015, y, y, 3)))
+  const step = 0.22
   const lines = style === 'x' ? [...unitDiag(step, false), ...unitDiag(step, true)] : style === '\\' ? unitDiag(step, true) : unitDiag(step, false)
-  return lines.map((l) => ({ type: 'line', xref: 'x', yref: `${yref} domain`, x0: x0 + l.x0 * w, x1: x0 + l.x1 * w, y0: l.y0, y1: l.y1, line: { color, width: 1 }, layer: 'above' }))
+  return lines.map((l) => line(l.x0, l.x1, l.y0, l.y1))
 }
 export function binIndex(v: number, bins: number[]): number { let i = 0; while (i < bins.length && v >= bins[i]) i++; return i }
 export function binColor(v: number | null, bins: number[]): string {

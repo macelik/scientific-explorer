@@ -78,3 +78,44 @@ To re-run this exact walkthrough later (e.g. after a future change to this featu
 4. Use the **Step** slider (or **Reset to original** / **Undo one step** / **Jump to final**) to move through the merge history; the two plots above the table always show the original segmentation and the currently selected step's segmentation, with the most recently merged interval hatched. The table below lists every merge with its metric, score, threshold and pooled φ at that step.
 5. **Download JSON** saves the full run (every step); **Download merge-history CSV** saves just the merge table. Neither is stored in normal app sessions — download before navigating away if you need to keep a specific run.
 6. Remember: this tool does not touch CN calls, and its thresholds are for exploration, not for making a calibrated merge decision.
+
+## Merge rules redesign (2026-10-02)
+
+Command run (server on port 8767, started from this branch with a fresh `web/dist` build):
+
+```
+BASE_URL=http://127.0.0.1:8767 \
+PLAYWRIGHT_MODULE=/home/mami/Desktop/EGA/job_search/career-ops/node_modules/playwright \
+CHROMIUM_PATH=/home/mami/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome \
+node tests/browser_hatch_merge_walkthrough.cjs
+```
+
+Result: PASS. For the weak-flank rule, `flagsHigh` = 30 (threshold 1000) and `flagsLow` = 0 (threshold 0.0001); hatch shapes on the tracks rose from 136 to 736 with the rule enabled. The merge run (rules: flank signs disagree, then weak flank at 3.3, gap crossing allowed) gave `historyRows` = 1; summary: "cluster4 chr8: 11 original segments → 10 after 1 merge(s)". Session restore and legacy `hatchLayers` migration (three preset rules, enabled states true/false/true) both passed, and `errors` was empty. Backend suite: 114 passed. The script scrolls the result table into view after a run because the result plots are lazy (DeferredPlot).
+
+This supersedes the union-of-layers model from commit `3c86329`, whose UI-level check this run also covers.
+
+## Rule 0 (2026-10-26)
+
+Command run (own server on port 8767, fresh `web/dist` build):
+
+```
+BASE_URL=http://127.0.0.1:8767 \
+PLAYWRIGHT_MODULE=/home/mami/Desktop/EGA/job_search/career-ops/node_modules/playwright \
+CHROMIUM_PATH=/home/mami/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome \
+node tests/browser_hatch_merge_walkthrough.cjs
+```
+
+Key values from `merge_rules_check_results.json`:
+- Rule 0 total would-merge (Rule 0 card "would merge now" + "blocked by gap") on chr8: `r0High` = 13 (tau 5, combine any), `r0Low` = 0 (tau 0.0001, SRD/√φ criterion off). `runEnabledWithRule0Only` = true.
+- Merge switches, one at a time (SRD/√φ ref 8, tau 5, combine all, gap crossing off; legend held back / total would merge = would merge now + blocked by gap, plus the hover-text hold reasons): off/off 2 / 13 (1 signs only, 1 signs+flanks), sign switch only 1 / 14 (the flank-conflict hold remains), flank switch only 2 / 13 (both sign holds remain), both on 0 / 15 (total 13 + held 2 = 15, all gap-blocked while crossing is off). No segment is held for flanks only on chr8 at any tried setting.
+- Combine alone (tau 0.2, both criteria checked): flags all = 0, any = 4 (`combineAll`, `combineAny`).
+- Gap-aware counts on chr8 (SRD/√φ ref 8, tau 5, combine all; true defaults flag no segment on chr8): with gap crossing off `defaultsOff` = would merge now 0, blocked by gap 13 (legend and Rule 0 card agree), no × hatch is drawn and the notice "All Rule 0 segments here are next to a genomic gap; ..." is visible; after ticking "allow merging across a genomic gap" `defaultsOn` = would merge now 13, blocked by gap 0 and the notice is gone.
+- `chr3SmallSegments` = 4 (non-pilot chromosome gets live small segments); `auditDerivedReason` = true.
+- `rule0HistoryRows` = 2 (tau 5, combine any) for a Rule 0-only run on cluster0 chr8 with gap crossing allowed; the first row's rule is "Rule 0 — shown on the tracks". Without gap crossing the same run makes 0 merges for every cluster on chr8, because every would-merge segment there sits next to a genomic gap.
+- A cleared tau gives "τ must be a positive number" and disables Run merge. `errors` was empty.
+
+Result line: `PASS merge rules: split sections, editor, live hatches, reorder, run, stale, session restore, legacy migration`
+
+Backend suite (`python3 -m pytest -q tests/test_*.py`): 147 passed.
+
+The archived-vs-live flank-score comparison is in `validation/rule0/README.md`.

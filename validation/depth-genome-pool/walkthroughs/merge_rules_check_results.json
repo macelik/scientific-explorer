@@ -1,0 +1,238 @@
+{
+  "generated_at": "2026-10-28T20:05:13.019Z",
+  "visHeading": 1,
+  "shapesBaseline": 90,
+  "shapesWithRule": 432,
+  "runEnabledWithRule0Only": true,
+  "r0High": 14,
+  "r0Low": 0,
+  "wmOff": 14,
+  "hbOff": 5,
+  "wmOn": 19,
+  "hbOn": 0,
+  "swOffOff": {
+    "wm": 14,
+    "hb": 5,
+    "gap": 0,
+    "tot": 14,
+    "mergesLast": null,
+    "signsOnly": 0,
+    "signsMergeBlocked": 0,
+    "text": "×Rule 0 would merge now: 14 · | ⚠ held back: 5 · | signs disagree only: 0",
+    "reasons": {
+      "signs": 5,
+      "other": 0
+    }
+  },
+  "swSignOnly": {
+    "wm": 19,
+    "hb": 0,
+    "gap": 0,
+    "tot": 19,
+    "mergesLast": null,
+    "signsOnly": 0,
+    "signsMergeBlocked": 0,
+    "text": "×Rule 0 would merge now: 19 · signs disagree: 5 · | ⚠ held back: 0 · | signs disagree only: 0",
+    "reasons": {
+      "signs": 0,
+      "other": 0
+    }
+  },
+  "flankSwitchCount": 0,
+  "breakpointLayerCount": 0,
+  "depthLayerCount": 0,
+  "layerLabels": [
+    "small segments",
+    "signs-disagree hatch (black |) on segments that do not pass Rule 0",
+    "retained reason (archived prototype, where available)",
+    "length + value labels",
+    "cluster CN strip",
+    "candidate audit (rejected / blocked)",
+    "allelic |dBAF| pseudobulk (right axis)"
+  ],
+  "gapChrom": "chr3",
+  "gapCounts": {
+    "small": 3,
+    "gap": 1
+  },
+  "gapCountsChr8": {
+    "small": 19,
+    "gap": 0
+  },
+  "gapScan": {
+    "chr1": {
+      "small": 22,
+      "gap": 0
+    },
+    "chr2": {
+      "small": 18,
+      "gap": 0
+    },
+    "chr3": {
+      "small": 3,
+      "gap": 1
+    }
+  },
+  "ctrlPhase2Steps": 0,
+  "ctrlPhases": [
+    null
+  ],
+  "ctrlReqBody": "{\"chrom\":\"chr7\",\"source\":\"cluster0\",\"rules\":[{\"id\":\"rule0\",\"type\":\"flank_threshold\",\"name\":\"Rule 0 — shown on the tracks\",\"criteria\":[\"delta_mean\",\"srd_phi\"],\"combine\":\"all\",\"tau\":0.2,\"srdRef\":3.3,\"maxBins\":100,\"mergeSignMismatch\":false,\"mergeSignsOnly\":false,\"hatch\":{\"pattern\":\"x\",\"color\":\"#b91c1c\"}}],\"allow_gap_crossing\":false,\"rounds\":[]}",
+  "signsOnlyBefore": {
+    "wm": 0,
+    "hb": 0,
+    "gap": 0,
+    "tot": 0,
+    "mergesLast": null,
+    "signsOnly": 13,
+    "signsMergeBlocked": 0,
+    "text": "×Rule 0 would merge now: 0 · | ⚠ held back: 0 · | signs disagree only: 13"
+  },
+  "signsOnlyAfter": {
+    "wm": 0,
+    "hb": 0,
+    "gap": 0,
+    "tot": 0,
+    "mergesLast": 13,
+    "signsOnly": null,
+    "signsMergeBlocked": 0,
+    "text": "×Rule 0 would merge now: 0 · | ⚠ held back: 0 · × signs disagree, fails Rule 0, merges last: 13"
+  },
+  "r0StatusWithOption": "→ would merge now: 0 segment(s) on chr7 across the displayed rows · merges last: 13",
+  "phase2Chrom": "chr7",
+  "phase2Steps": 2,
+  "phases": [
+    null,
+    2,
+    2
+  ],
+  "mergeReqBody": "{\"chrom\":\"chr7\",\"source\":\"cluster0\",\"rules\":[{\"id\":\"rule0\",\"type\":\"flank_threshold\",\"name\":\"Rule 0 — shown on the tracks\",\"criteria\":[\"delta_mean\",\"srd_phi\"],\"combine\":\"all\",\"tau\":0.2,\"srdRef\":3.3,\"maxBins\":100,\"mergeSignMismatch\":false,\"mergeSignsOnly\":true,\"hatch\":{\"pattern\":\"x\",\"color\":\"#b91c1c\"}}],\"allow_gap_crossing\":false,\"rounds\":[]}",
+  "mergeNote": null,
+  "mergePhase2Step": {
+    "step": 1,
+    "segments": [
+      {
+        "start": 0,
+        "end": 79
+      },
+      {
+        "start": 79,
+        "end": 104
+      },
+      {
+        "start": 104,
+        "end": 302
+      },
+      {
+        "start": 302,
+        "end": 509
+      },
+      {
+        "start": 509,
+        "end": 529
+      },
+      {
+        "start": 529,
+        "end": 598
+      },
+      {
+        "start": 598,
+        "end": 658
+      },
+      {
+        "start": 658,
+        "end": 714
+      },
+      {
+        "start": 714,
+        "end": 774
+      },
+      {
+        "start": 774,
+        "end": 823
+      },
+      {
+        "start": 823,
+        "end": 1369
+      },
+      {
+        "start": 1369,
+        "end": 1495
+      }
+    ],
+    "removed_boundary": 625,
+    "merged_interval": [
+      598,
+      658
+    ],
+    "segment": [
+      625,
+      658
+    ],
+    "rule_id": "rule0",
+    "rule_name": "Rule 0 — shown on the tracks · signs disagree, fails Rule 0",
+    "phase": 2,
+    "side": "left",
+    "score": 0.9608929325125234,
+    "phi": 1.2732260584085529
+  },
+  "copyCombineVisible": true,
+  "copyName": "Rule 0 copy",
+  "runDisabledWhenCopyTauEmpty": true,
+  "runEnabledWhenCopyTauRestored": true,
+  "copyRemoved": true,
+  "combineAll": 0,
+  "combineAny": 4,
+  "combineTried": [
+    {
+      "tau": "0.2",
+      "all": 0,
+      "any": 4
+    }
+  ],
+  "invalidR0Status": "τ must be a positive number",
+  "runDisabledWhenR0Invalid": true,
+  "chr3SmallSegments": 3,
+  "auditDerivedReason": true,
+  "rule0HistoryRows": 3,
+  "rule0FirstRuleCell": "Rule 0 — shown on the tracks",
+  "colourByAfterLegacy": "delta_mean",
+  "signsLayerAfterLegacy": false,
+  "flagsHigh": 36,
+  "flagsLow": 0,
+  "emptyThresholdProblem": true,
+  "runDisabledWhenIncomplete": true,
+  "legendHasBothRules": true,
+  "rule1NameAfterMove": "flank signs disagree",
+  "summaryText": "cluster0 chr8: 8 original segments → 4 after 4 merge(s). Rules: Rule 0: all of: min |Δlog2FC mean| flank < 0.2, min |SRD/√φ| flank < 3.3 · segments ≤ 100 bins · signs disagree: held back · fails Rule 0 with signs disagreeing: not merged | flank signs disagree: SRD/√φ flank signs disagree | weak SRD/√φ flank: weaker flank |SRD/√φ| < 3.3.",
+  "headers": [
+    "step",
+    "source",
+    "chromosome",
+    "merged interval (bins)",
+    "removed boundary",
+    "segment",
+    "rule",
+    "phase",
+    "side",
+    "score",
+    "φ"
+  ],
+  "historyRows": 4,
+  "firstRuleCell": "flank signs disagree",
+  "staleText": "Settings changed; showing the previous run. cluster0 chr8: 8 original segments → 4 after 4 merge(s). Rules: Rule 0: all of: min |Δlog2FC mean| flank < 0.2, min |SRD/√φ| flank < 3.3 · segments ≤ 100 bins · signs disagree: held back · fails Rule 0 with signs disagreeing: not merged | flank signs disagree: SRD/√φ flank signs disagree | weak SRD/√φ flank: weaker flank |SRD/√φ| < 3.3.",
+  "enabledBeforeRestore": false,
+  "enabledAfterRestore": true,
+  "rulesAfterRestore": 2,
+  "legacyNames": [
+    "transition zone (from saved session)",
+    "merge proposal (from saved session)",
+    "ambiguous flank preference (from saved session)"
+  ],
+  "legacyEnabled": [
+    true,
+    false,
+    true
+  ],
+  "errors": []
+}

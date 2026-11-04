@@ -18,8 +18,8 @@ The FastAPI backend: serves the JSON API and the built frontend
 - `integration.py` / `integration_api.py` — multimodal clustering/pseudobulk
   data adapter for the Integration tabs.
 - `flank_view.py` — the alternative flank view and paired-cell bootstrap.
-- `hatch_merge.py` / `hatch_merge_api.py` — the exploratory hatch-layer
-  scoring and adjacent-segment merge module.
+- `hatch_merge.py` (exploratory flank scoring) and `merge_rules.py` /
+  `hatch_merge_api.py` (user-defined merge rules and their routes).
 - `jobs.py` — bounded worker-process pool (multiprocessing `spawn`; worker
   functions must be importable/picklable).
 
