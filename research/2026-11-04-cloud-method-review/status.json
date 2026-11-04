@@ -1,0 +1,41 @@
+{
+ "review": "2026-11-04 cloud method review",
+ "status": "complete (recommendation delivered; numerical work limited to the supplied package)",
+ "workbench_checkout": {"branch": "allelic-segmentation", "commit": "6d4f48d79e0545fd3fb7ad84b86dbf659b57f107", "work_branch": "claude/eager-thompson-y0nc0t"},
+ "data_package": {"release": "cloud-review-data-2026-11-04", "archive_sha256_verified": true, "verify_handoff.py": "passed (24 data files, 12 upstream files)"},
+ "upstream_source": {"repository": "colomemaria/pyEpiAneufinder", "commit": "e8305ea2162634d07e92a3bb401df672e48f217b", "hash_verified": true},
+ "completed": [
+  {"item": "Input audit", "output": "input_audit.json, experiments/00_input_audit/report.html"},
+  {"item": "Historical reconstruction of X with pinned source", "output": "experiments/01_reconstruct_x/", "result": "3,449/3,460 cells bit-identical; 17 cell-bins unexplained"},
+  {"item": "QC-removed bins and introduced zeros", "output": "experiments/02_zero_clip_audit/"},
+  {"item": "Normalization, aggregation and CN assignment with fixed segmentation", "output": "experiments/03_normalization_aggregation/"},
+  {"item": "Fixed-region raw-count contrasts incl. gains, literature controls and random windows", "output": "experiments/04_fixed_region_contrasts/"},
+  {"item": "Segmentation calibration and boundary stability", "output": "experiments/05_segmentation_calibration/"},
+  {"item": "Allelic observability, effective imbalance and anchored power", "output": "experiments/06_allelic_information/"},
+  {"item": "Subwindow profiles and gaps", "output": "experiments/07_subwindow_profiles/"},
+  {"item": "Preprocessing audit, method comparison, sources, recommendation", "output": "preprocessing_audit.md, method_comparison.tsv, sources.json, recommendation.md"},
+  {"item": "Repository tests", "result": "python3 -m pytest -q tests/test_merge_rules.py tests/test_hatch_merge.py tests/test_experiments.py tests/test_segment_estimators.py tests/test_integration_review.py: 166 passed with the handoff README's PYEPI_SCIENTIFIC_* paths (15 errors without them: package path default ../pyEpiAneufinder absent). No application code changed; npm build not applicable."}
+ ],
+ "skipped": [
+  {"item": "Deeper GC-correction alternatives (span/degree/robust fits, guards) and their re-segmentation", "reason": "Deprioritized at the user's request mid-review (dataset-specific); provenance and effect sizes were established instead."},
+  {"item": "Re-segmentation under alternative estimands", "reason": "Kept segmentation fixed to isolate CN-assignment effects (prompt's isolation rule); a combined change would confound attribution."},
+  {"item": "Large parameter searches", "reason": "Out of scope by design."},
+  {"item": "Application/production formula changes", "reason": "Require a separate scientific decision; this review ends in a recommendation."}
+ ],
+ "blocked": [
+  {"item": "Relaxed-QC experiments and contents of removed bins", "reason": "No pre-QC matrix, fragments or QC masks in the package."},
+  {"item": "Numbat-multiome ATAC-bin execution", "reason": "Requires fragments, SNP-level allele counts from pileup_and_phase.R and a normal-sample ATAC reference (vignette at commit b444f3c); none available."},
+  {"item": "Alleloscope execution", "reason": "Requires SNP-level per-cell counts and DNA-defined segments."},
+  {"item": "SNP-level / phase-block / unique-molecule allelic audit", "reason": "Only bin-summed HA/HB/AT supplied; pileup invocation and SNP list unknown."},
+  {"item": "Full-text literature verification", "reason": "Session network policy rejected NCBI/PMC/EBI hosts; claims checked against search-index abstracts and official repositories only (see sources.json access fields)."},
+  {"item": "Mappability track overlay for chr7 windows", "reason": "Not attempted: external track download outside the package and alignment-reference provenance unresolved; recommended as stage 2."},
+  {"item": "Delegation to GPT 6.1 Terra", "reason": "That model is not available in this environment; all work was done directly by the reviewing agent without subagents."},
+  {"item": "Historical environment for the 17 unexplained cell-bins", "reason": "Run environment not recorded; five tested environments agree with each other, not with history."}
+ ],
+ "open_questions": [
+  "Are the chr7 0.13-0.34x plateaus mappability, accessibility or dosage? (needs cross-sample baseline + mappability + DNA)",
+  "What caused the 17 historical zeros at near-zero LOESS predictions?",
+  "How much of the allelic attenuation is due to repeated site counting vs phase inconsistency within bins?",
+  "Which removed-bin runs are biological deletions?"
+ ]
+}

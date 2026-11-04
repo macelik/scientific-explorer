@@ -1,0 +1,61 @@
+{
+ "accessed": "2026-11-04",
+ "access_note": "This session's network policy blocked pmc.ncbi.nlm.nih.gov, www.ncbi.nlm.nih.gov, eutils.ncbi.nlm.nih.gov and www.ebi.ac.uk (proxy connect_rejected). Literature claims marked access='search_index' were checked against search-engine abstracts/snippets only, not full text; locators name the section or statement as quoted there. Repository claims were checked against shallow clones at the stated commits. Entries carried from the 2026-10-29 review are marked access='prior_review' and were not re-verified here.",
+ "sources": [
+  {"id": "S1", "type": "paper", "citation": "Ramakrishnan A, Symeonidi A, Hanel P, Schmid KT, Richter ML, Schubert M, Colomé-Tatché M. epiAneufinder identifies copy number alterations from single-cell ATAC-seq data. Nat Commun 14, 5846 (2023).", "doi": "10.1038/s41467-023-41076-1", "url": "https://www.nature.com/articles/s41467-023-41076-1",
+   "access": "search_index",
+   "claims": [
+    {"claim": "Read counts per genomic region are used as a proxy for DNA copy number.", "locator": "Abstract/Methods summary"},
+    {"claim": "Bins with zero counts in more than 85% of cells are removed, intended to discard low-mappability regions; the threshold is adjustable.", "locator": "Methods, data preprocessing"},
+    {"claim": "Binned data are GC corrected with a LOESS fit of raw counts on GC content; the correction scales counts by mean count over the LOESS fit.", "locator": "Methods, GC correction"},
+    {"claim": "Profiles were reported concordant with scWGS from the same samples.", "locator": "Abstract"}]},
+  {"id": "S2", "type": "code", "citation": "colomemaria/pyEpiAneufinder, commit e8305ea2162634d07e92a3bb401df672e48f217b (pyproject version 0.3.5, license field BSD-3-clause)", "url": "https://github.com/colomemaria/pyEpiAneufinder/tree/e8305ea2162634d07e92a3bb401df672e48f217b",
+   "access": "git clone, all 12 package files hash-verified against DATA_MANIFEST.json",
+   "claims": [
+    {"claim": "Bin filter nnz >= (1-0.85) n_cells; cell filter nnz > 0.35 n_bins; IQR outlier filters on totals and SD.", "locator": "pyEpiAneufinder/pyEpiAneufinder.py L212-L238"},
+    {"claim": "GC correction = mean/LOESS fit, np.rint + astype(int), raw saved, negatives clipped to 0, rows scaled to 1e5.", "locator": "pyEpiAneufinder/pyEpiAneufinder.py L252-L271"},
+    {"claim": "LOESS span 0.75; on exception returns the input counts.", "locator": "pyEpiAneufinder/render_fragments.py L155-L164"},
+    {"claim": "Scale grid [0.5 median, min(1.2, 0.75 median)]; state weights (2, 1.5, 1/2..1/6); Holmes clip(k,1,3)-1; Watson <=1 / >=3.", "locator": "pyEpiAneufinder/assign_somy.py L165-L303"},
+    {"claim": "Local and global permutation tests compare the observed statistic at the selected cut with fixed-length nulls (random_state 42).", "locator": "pyEpiAneufinder/get_breakpoints.py L6-L100"}]},
+  {"id": "S3", "type": "code", "citation": "colomemaria/epiAneufinder (R), commit 47293f7fbc93c7b0be6ca5631c43ac61d8931544, DESCRIPTION Version 1.1.5, License GPL-3", "url": "https://github.com/colomemaria/epiAneufinder", "access": "git clone --depth 1",
+   "claims": [{"claim": "Current R package version and license.", "locator": "DESCRIPTION"}]},
+  {"id": "S4", "type": "paper", "citation": "Numbat-multiome: inferring copy number variations by combining RNA and chromatin accessibility information from single-cell data. Briefings in Bioinformatics 26(5): bbaf516 (2025).", "doi": "10.1093/bib/bbaf516", "url": "https://academic.oup.com/bib/article/26/5/bbaf516/8290422", "pmc": "PMC12531993",
+   "access": "search_index",
+   "claims": [
+    {"claim": "Extends Numbat to scATAC alone and to paired RNA/ATAC; four modes: RNA-gene, RNA-bin, ATAC-bin, Combined-bin.", "locator": "Abstract"},
+    {"claim": "Median F1 > 0.9 across event types; benchmarks in multiple myeloma and CLL-to-Richter's syndrome validated against WGS.", "locator": "Abstract"},
+    {"claim": "Combining coverage and allelic signals improves detection of copy-neutral LOH.", "locator": "Abstract"},
+    {"claim": "Arm/focal event evaluation excluded segments below 10% of an arm or below 200 kb.", "locator": "Results, event-level evaluation (carried from prior review A/B)", "access": "prior_review"}]},
+  {"id": "S5", "type": "code", "citation": "kharchenkolab/numbat, commit b444f3c51f1ed38f400b2b8bc435cd40fabe6f4e (2026-02-03), DESCRIPTION Version 1.5.2, License MIT + file LICENSE", "url": "https://github.com/kharchenkolab/numbat", "access": "git clone --depth 1",
+   "claims": [
+    {"claim": "ATAC feature matrix = cell-by-bin integer counts of Tn5 fragments; reference = feature-by-cell-type normalized counts from normal samples.", "locator": "vignettes/numbat-multiome.Rmd L14-L16"},
+    {"claim": "Inputs prepared by inst/bin/pileup_and_phase.R (allele counts), get_binned_atac.R (fragments to bins), and a reference aggregated from normal samples.", "locator": "vignettes/numbat-multiome.Rmd L37-L160; inst/bin/"},
+    {"claim": "Joint multiome assays (direct linkage in the same nucleus) not yet fully supported.", "locator": "vignettes/numbat-multiome.Rmd L9-L10"}]},
+  {"id": "S6", "type": "paper", "citation": "Gao T, Soldatov R, Sarkar H, et al. Haplotype-aware analysis of somatic copy number variations from single-cell transcriptomes. Nat Biotechnol 41, 417-426 (2023).", "doi": "10.1038/s41587-022-01468-y", "access": "search_index",
+   "claims": [{"claim": "Original Numbat: haplotype-aware CNV inference from scRNA-seq combining expression, allele and haplotype information.", "locator": "Title/abstract"}]},
+  {"id": "S7", "type": "paper", "citation": "Wu CY, Lau BT, Kim HS, et al. Integrative single-cell analysis of allele-specific copy number alterations and chromatin accessibility in cancer. Nat Biotechnol 39, 1259-1269 (2021).", "doi": "10.1038/s41587-021-00911-w", "pmc": "PMC9127226", "access": "search_index",
+   "claims": [
+    {"claim": "Alleloscope estimates allele-specific CN from scDNA or from scATAC with sample-matched bulk DNA; does not require external phasing.", "locator": "Abstract"},
+    {"claim": "Applied to scATAC of two basal cell carcinomas and a gastric cancer cell line.", "locator": "Abstract"}]},
+  {"id": "S8", "type": "code", "citation": "seasoncloud/Alleloscope, commit 565bb1ba0ea4a776a0ede8d9e7fd37b03506284d (2023-03-10), DESCRIPTION Version 1.0.1, License GPL-2", "url": "https://github.com/seasoncloud/Alleloscope", "access": "git clone --depth 1",
+   "claims": [{"claim": "Version and license as declared in the official repository's DESCRIPTION (resolves the prior review's unverified license).", "locator": "DESCRIPTION"}]},
+  {"id": "S9", "type": "paper", "citation": "Cowell JK, et al. (full author list not verified). Molecular characterization of the t(3;9) associated with immortalization in the MCF10A cell line. Cancer Genet Cytogenet 163, 23-29 (2005).", "doi": "10.1016/j.cancergencyto.2005.04.019", "access": "search_index",
+   "claims": [
+    {"claim": "t(3;9)(p14;p21) is the cytogenetic event accompanying immortalization of MCF10A.", "locator": "Abstract"},
+    {"claim": "The 9p breakpoint is associated with a ~4 Mb deletion on der(9) including CDKN2A; the CDKN2A/B BAC is also deleted on the normal chromosome 9, making MCF10A null for p16/p15.", "locator": "Abstract"},
+    {"claim": "BAC arrays characterized gains/losses from rearrangements involving 1q, 5q and 8q (extents not visible in snippet).", "locator": "Abstract"}],
+   "use_in_review": "prespecified 9p21 positive-control loci (exp 02, 04, 06); coordinates approximate"},
+  {"id": "S10", "type": "paper", "citation": "SNP-array study of the MCF10A progression series (MCF10A, MCF10AT, MCF10CA1h, MCF10CA1a); PMC2821407. Citation details (Kadota et al., PLoS One 2010, 'Delineating genetic alterations for tumor progression in the MCF10A series of breast cancer cell lines') from search snippet, not verified against full text.", "pmc": "PMC2821407", "access": "search_index",
+   "claims": [
+    {"claim": "Homozygous deletion (~400 kb) at CDKN2A (9p21.3) in all four lines, embedded in a ~4 Mb hemizygous deletion.", "locator": "Results/abstract as quoted in snippet"},
+    {"claim": "MYC amplification in all four lines; 19q13-qter gain in MCF10A, MCF10AT and MCF10CA1h.", "locator": "Results/abstract as quoted in snippet"}],
+   "use_in_review": "prespecified MYC and 19q13-qter gain controls"},
+  {"id": "S11", "type": "paper", "citation": "Cytogenetic/array study reporting gain of 5q13-qter in untransformed MCF-10A (Breast Cancer Res Treat, 2005/2006). Title and authors not verified.", "doi": "10.1007/s10549-005-9077-8", "access": "search_index",
+   "claims": [{"claim": "Gain of 5q13-qter in MCF-10A.", "locator": "snippet only"}], "use_in_review": "prespecified 5q13-qter gain control; weakest-sourced control"},
+  {"id": "S12", "type": "annotation", "citation": "NCBI Gene, GRCh38.p14 coordinates: MTAP chr9:21,802,636-21,941,115; CDKN2A chr9:21,967,752-21,995,301; CDKN2B chr9:22,002,903-22,009,313.", "access": "not re-fetched (NCBI blocked); values from the reviewer's knowledge. Used only to choose 100 kb bins chr9:21.8-22.1 Mb, which is robust to small coordinate differences.", "claims": [{"claim": "Gene positions used for the prespecified 9p21 locus.", "locator": "Gene records"}]},
+  {"id": "S13", "type": "paper", "citation": "Amemiya HM, Kundaje A, Boyle AP. The ENCODE Blacklist: identification of problematic regions of the genome. Sci Rep 9, 9354 (2019).", "doi": "10.1038/s41598-019-45839-z", "access": "prior_review", "claims": [{"claim": "Blacklist regions show recurrent anomalous signal; not all low-accessibility regions.", "locator": "prior review F findings"}]},
+  {"id": "S14", "type": "paper", "citation": "Karimzadeh M, Ernst C, Kundaje A, Hoffman MM. Umap and Bismap: quantifying genome and methylome mappability. Nucleic Acids Res 46, e120 (2018).", "doi": "10.1093/nar/gky677", "access": "prior_review", "claims": [{"claim": "Read-length-specific multi-read mappability tracks; reference uniqueness is not observed sample mapping.", "locator": "prior review F findings"}]},
+  {"id": "S15", "type": "documentation", "citation": "cellsnp-lite manual: DP = REF + ALT, AD = ALT; read or UMI counting depends on invocation.", "url": "https://cellsnp-lite.readthedocs.io/en/latest/main/manual.html", "access": "prior_review", "claims": [{"claim": "Per-site DP counts reads/UMIs at a site; summing sites can count one molecule more than once.", "locator": "manual, output fields"}]},
+  {"id": "S16", "type": "prior_research", "citation": "research/2026-10-29-low-coverage (six reviews, synthesis, uncertainty register)", "access": "repository", "claims": [{"claim": "Ranked shortlist, method inventories, source inventories and pilot reused as starting point; claims there were not all re-verified.", "locator": "report.md, synthesis/"}]}
+ ]
+}

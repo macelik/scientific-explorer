@@ -52,14 +52,14 @@ def work(args):
         fallback = fit is counts
         fit = np.asarray(fit, dtype=np.float64)
         with np.errstate(divide="ignore", invalid="ignore"):
-            correction = counts.mean() / fit          # pinned L260
-            loess_norm_row = counts * correction      # pinned L261
+            correction = counts.mean() / fit          # pinned L257
+            loess_norm_row = counts * correction      # pinned L258
         with np.errstate(invalid="ignore"):
-            as_int = np.rint(loess_norm_row).astype(int)  # pinned L263 (may wrap non-finite)
+            as_int = np.rint(loess_norm_row).astype(int)  # pinned L260 (may wrap non-finite)
         clipped = as_int.copy()
-        clipped[clipped < 0] = 0                      # pinned L270
+        clipped[clipped < 0] = 0                      # pinned L267
         tot = clipped.sum()
-        xr = clipped / (tot / 1e5)                    # pinned L272
+        xr = clipped / (tot / 1e5)                    # pinned L269
         fin = np.isfinite(loess_norm_row)
         rp = counts > 0
         round0 = rp & fin & (loess_norm_row >= 0) & (loess_norm_row < 0.5)
