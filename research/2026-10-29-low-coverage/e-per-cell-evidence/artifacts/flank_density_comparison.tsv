@@ -1,0 +1,7 @@
+region	raw_per_mb_target	raw_per_mb_left_flank	raw_per_mb_right_flank	raw_per_mb_target_over_left_flank	raw_per_mb_target_over_right_flank	processed_per_mb_target	processed_per_mb_left_flank	processed_per_mb_right_flank	processed_per_mb_target_over_left_flank	processed_per_mb_target_over_right_flank
+chr7_51.4_53.5	2.9105	20.2960	14.6553	0.1434	0.1986	7.9217	33.6915	25.3767	0.2351	0.3122
+chr7_67.4_70.0	2.3974	16.3813	20.2080	0.1464	0.1186	3.9087	22.1052	20.8698	0.1768	0.1873
+chr7_70.0_73.3	7.5929	12.3187	31.8767	0.6164	0.2382	11.7554	16.8639	35.3772	0.6971	0.3323
+chr7_8.3_10.7	3.8625	27.1527	11.9533	0.1423	0.3231	14.3200	34.9671	41.9251	0.4095	0.3416
+chr9_20_27	9.5987	15.1987	10.5487	0.6316	0.9099	26.0653	31.0908	33.2441	0.8384	0.7841
+chr9_22.5_26.6	6.2360	13.3473	11.1280	0.4672	0.5604	18.9181	30.6679	33.7258	0.6169	0.5609

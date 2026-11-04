@@ -1,0 +1,52 @@
+{
+  "date": "2026-10-29",
+  "research_status": "complete_first_pass",
+  "model": "gpt-6.1-terra",
+  "tasks": [
+    {
+      "task_id": "A",
+      "directory": "a-cnv-methods",
+      "status": "complete",
+      "scope": "Bounded first-pass research"
+    },
+    {
+      "task_id": "B",
+      "directory": "b-joint-segmentation",
+      "status": "complete",
+      "scope": "Bounded first-pass research"
+    },
+    {
+      "task_id": "C",
+      "directory": "c-reference-strategies",
+      "status": "complete",
+      "scope": "Bounded first-pass research"
+    },
+    {
+      "task_id": "D",
+      "directory": "d-representation-models",
+      "status": "complete",
+      "scope": "Bounded first-pass research"
+    },
+    {
+      "task_id": "E",
+      "directory": "e-per-cell-evidence",
+      "status": "complete",
+      "scope": "Bounded first-pass research"
+    },
+    {
+      "task_id": "F",
+      "directory": "f-technical-priors",
+      "status": "complete",
+      "scope": "Bounded first-pass research"
+    }
+  ],
+  "shared_panel_cells": 300,
+  "scientific_pilot": "Descriptive only; task E",
+  "final_synthesis_complete": true,
+  "report": "../report.md",
+  "next_experiments": "NEXT_EXPERIMENTS.md",
+  "method_records": 36,
+  "source_records": 84,
+  "uncertainty_records": 39,
+  "limits": "Research completed; unresolved science and future experimental validation remain documented."
+}

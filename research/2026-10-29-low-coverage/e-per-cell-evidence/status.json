@@ -1,0 +1,20 @@
+{
+  "task_id": "E",
+  "status": "complete",
+  "model": "gpt-6.1-terra",
+  "artifacts": [
+    "findings.md",
+    "methods.json",
+    "sources.json",
+    "pilot.md",
+    "status.json",
+    "artifacts/zero_support_by_stratum.tsv",
+    "artifacts/flank_density_comparison.tsv"
+  ],
+  "unresolved": [
+    "Phase continuity, site-observation duplication, bias and contamination prevent allelic inference or numerical power estimates.",
+    "No fitted null model or independent truth establishes structural zeros, deletion, absolute ploidy, or excess zeros.",
+    "Flanks may overlap candidates; selection and coverage confounding remain."
+  ],
+  "model_selection_provenance": "Explicit coordinator spawn_agent model argument; resumed with followup_task"
+}

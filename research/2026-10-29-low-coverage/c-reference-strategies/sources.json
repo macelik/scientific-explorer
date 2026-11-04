@@ -1,0 +1,156 @@
+[
+  {
+    "id": "numbat2025",
+    "title": "Numbat-multiome",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12531993/",
+    "kind": "paper",
+    "accessed_at": "2026-10-29",
+    "locator": "Methods: reference count data generation and ATAC-bin evaluation",
+    "supports": [
+      "Methods: reference count data generation and ATAC-bin evaluation"
+    ]
+  },
+  {
+    "id": "numbatdocs",
+    "title": "Preparing Inputs for Numbat-multiome",
+    "url": "https://kharchenkolab.github.io/numbat/articles/numbat-multiome.html",
+    "kind": "official_docs",
+    "accessed_at": "2026-10-29",
+    "locator": "ATAC-bin inputs and reference preparation",
+    "supports": [
+      "ATAC-bin inputs and reference preparation"
+    ]
+  },
+  {
+    "id": "numbatmeta",
+    "title": "Numbat DESCRIPTION",
+    "url": "https://github.com/kharchenkolab/numbat/blob/main/DESCRIPTION",
+    "kind": "code",
+    "accessed_at": "2026-10-29",
+    "locator": "Version and license metadata",
+    "supports": [
+      "Version and license metadata"
+    ]
+  },
+  {
+    "id": "signac",
+    "title": "Signac scATAC integration",
+    "url": "https://stuartlab.org/signac/articles/integrate_atac",
+    "kind": "official_docs",
+    "accessed_at": "2026-10-29",
+    "locator": "Transfer labels between reference and query",
+    "supports": [
+      "Transfer labels between reference and query"
+    ]
+  },
+  {
+    "id": "archr",
+    "title": "ArchR addGeneIntegrationMatrix",
+    "url": "https://www.archrproject.com/archive/1.0.1/reference/addGeneIntegrationMatrix.html",
+    "kind": "official_docs",
+    "accessed_at": "2026-10-29",
+    "locator": "GeneScoreMatrix, RNA reference and predicted labels and score",
+    "supports": [
+      "GeneScoreMatrix, RNA reference and predicted labels and score"
+    ]
+  },
+  {
+    "id": "copyscat",
+    "title": "CopyscAT tutorial",
+    "url": "https://github.com/spcdot/CopyscAT/blob/master/copyscat_tutorial.R",
+    "kind": "code",
+    "accessed_at": "2026-10-29",
+    "locator": "identifyNonNeoplastic and alternate normal-cell baseline",
+    "supports": [
+      "identifyNonNeoplastic and alternate normal-cell baseline"
+    ]
+  },
+  {
+    "id": "epi",
+    "title": "epiAneufinder",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10511508/",
+    "kind": "paper",
+    "accessed_at": "2026-10-29",
+    "locator": "Algorithm, genome-wide mean baseline and low-coverage evaluation",
+    "supports": [
+      "Algorithm, genome-wide mean baseline and low-coverage evaluation"
+    ]
+  },
+  {
+    "id": "copykat",
+    "title": "CopyKAT repository",
+    "url": "https://github.com/navinlabcode/copykat",
+    "kind": "code",
+    "accessed_at": "2026-10-29",
+    "locator": "Known normal cell list and baseline modes",
+    "supports": [
+      "Known normal cell list and baseline modes"
+    ]
+  },
+  {
+    "id": "infercnv",
+    "title": "inferCNV baseline interpretation",
+    "url": "https://github.com/broadinstitute/infercnv/wiki/Interpreting-the-figure",
+    "kind": "official_docs",
+    "accessed_at": "2026-10-29",
+    "locator": "Normal-cell baseline subtraction",
+    "supports": [
+      "Normal-cell baseline subtraction"
+    ]
+  },
+  {
+    "id": "pon",
+    "title": "GATK CNV workflow",
+    "url": "https://docs.gdc.cancer.gov/Data/Bioinformatics_Pipelines/DNA_Seq_WGS/",
+    "kind": "official_docs",
+    "accessed_at": "2026-10-29",
+    "locator": "DNA panel of normals and denoising; not scATAC validation",
+    "supports": [
+      "DNA panel of normals and denoising; not scATAC validation"
+    ]
+  },
+  {
+    "id": "signacmeta",
+    "title": "Signac DESCRIPTION",
+    "url": "https://github.com/stuart-lab/signac/blob/master/DESCRIPTION",
+    "kind": "code",
+    "accessed_at": "2026-10-29",
+    "locator": "Version and license metadata",
+    "supports": [
+      "Version and license metadata"
+    ]
+  },
+  {
+    "id": "archrmeta",
+    "title": "ArchR DESCRIPTION",
+    "url": "https://github.com/GreenleafLab/ArchR/blob/master/DESCRIPTION",
+    "kind": "code",
+    "accessed_at": "2026-10-29",
+    "locator": "Version and license metadata",
+    "supports": [
+      "Version and license metadata"
+    ]
+  },
+  {
+    "id": "zhang_atlas",
+    "title": "A single-cell atlas of chromatin accessibility in the human genome",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8664161/",
+    "kind": "paper",
+    "accessed_at": "2026-10-29",
+    "locator": "Results, STAR Methods and data availability",
+    "supports": [
+      "30 adult tissues, sci-ATAC, donor eligibility, cell types and public GEO availability; fetal dataset lifted from hg19"
+    ]
+  },
+  {
+    "id": "geo_fragment",
+    "title": "GEO GSM5589349 adult aorta sample",
+    "url": "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM5589349",
+    "kind": "official_docs",
+    "accessed_at": "2026-10-29",
+    "locator": "Supplementary files and SRA relations",
+    "supports": [
+      "Public example fragment BED and SRA reads in GSE184462"
+    ]
+  }
+]

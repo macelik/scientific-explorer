@@ -1,0 +1,123 @@
+[
+  {
+    "id": "blacklist",
+    "title": "The ENCODE Blacklist: Identification of Problematic Regions of the Genome",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6597582/",
+    "kind": "paper",
+    "accessed_at": "2026-10-29",
+    "locator": "Methods and Introduction",
+    "supports": [
+      "hg38 blacklist identifies recurrent anomalous high-signal sequencing regions"
+    ]
+  },
+  {
+    "id": "umap",
+    "title": "Umap and Bismap: quantifying genome and methylome mappability",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6237805/",
+    "kind": "paper",
+    "accessed_at": "2026-10-29",
+    "locator": "Methods and Discussion",
+    "supports": [
+      "Read-length-dependent mappability and sample variation"
+    ]
+  },
+  {
+    "id": "umapdocs",
+    "title": "Umap and Bismap tracks",
+    "url": "https://bismap.hoffmanlab.org/",
+    "kind": "official_docs",
+    "accessed_at": "2026-10-29",
+    "locator": "File formats and track availability",
+    "supports": [
+      "hg38 tracks, coordinate revision, read-length options"
+    ]
+  },
+  {
+    "id": "umapcode",
+    "title": "Umap official repository",
+    "url": "https://github.com/hoffmangroup/umap",
+    "kind": "code",
+    "accessed_at": "2026-10-29",
+    "locator": "README",
+    "supports": [
+      "version and maintenance status"
+    ]
+  },
+  {
+    "id": "epi",
+    "title": "epiAneufinder identifies copy number alterations from single-cell ATAC-seq data",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10511508/",
+    "kind": "paper",
+    "accessed_at": "2026-10-29",
+    "locator": "epiAneufinder algorithm",
+    "supports": [
+      "scATAC GC correction, blacklist and 85% zero filtering"
+    ]
+  },
+  {
+    "id": "cellsnp",
+    "title": "cellsnp-lite manual",
+    "url": "https://cellsnp-lite.readthedocs.io/en/latest/main/manual.html",
+    "kind": "official_docs",
+    "accessed_at": "2026-10-29",
+    "locator": "Input, Output and optional arguments",
+    "supports": [
+      "AD and DP definitions; read or UMI unit depends on settings; site ascertainment and filtering"
+    ]
+  },
+  {
+    "id": "builder",
+    "title": "Build_Aligned_HA_HB.py local source",
+    "url": "file:///home/mami/Desktop/EGA/haplotype_aware_cnv/Build_Aligned_HA_HB.py",
+    "kind": "local_provenance",
+    "accessed_at": "2026-10-29",
+    "locator": "lines 60-76, 170-205, 221-240, 267-291, 319-321, 370-392; SHA-256 b3892252f9198f14539d2a16be19b9a8fa8e346c2dc348731366f5cbb56475df; historical execution not verified",
+    "supports": [
+      "GT selection and SNP identity, interval conversion, count aggregation, phase metadata omission"
+    ]
+  },
+  {
+    "id": "vcf",
+    "title": "Local phased VCF header",
+    "url": "file:///home/mami/Desktop/EGA/SNP_project/alpha/haplo_initial/updated_phasing/phasing/phased.vcf.gz",
+    "kind": "local_provenance",
+    "accessed_at": "2026-10-29",
+    "locator": "contig, eagleCommand and sample header",
+    "supports": [
+      "hg38-labelled Eagle reference and map, contig lengths, genotype output"
+    ]
+  },
+  {
+    "id": "pyepi",
+    "title": "Local pyEpiAneufinder source",
+    "url": "file:///home/mami/Desktop/EGA/pyEpiAneufinder/pyEpiAneufinder/pyEpiAneufinder_v1.py",
+    "kind": "local_provenance",
+    "accessed_at": "2026-10-29",
+    "locator": "make_windows, filter_bins, GC correction",
+    "supports": [
+      "code paths for blacklist and dataset-specific zero filter; actual run config unconfirmed"
+    ]
+  },
+  {
+    "id": "blacklistcode",
+    "title": "Blacklist official repository license",
+    "url": "https://github.com/Boyle-Lab/Blacklist/blob/master/LICENSE",
+    "kind": "code",
+    "accessed_at": "2026-10-29",
+    "locator": "LICENSE and repository license declaration",
+    "supports": [
+      "Repository declares GPL version 3; separate track terms not established"
+    ]
+  },
+  {
+    "id": "umaplicense",
+    "title": "Umap project metadata",
+    "url": "https://github.com/hoffmangroup/umap/blob/master/pyproject.toml",
+    "kind": "code",
+    "accessed_at": "2026-10-29",
+    "locator": "project.license on master",
+    "supports": [
+      "Current master states GPL-3.0-only; historical tag and track terms not established"
+    ]
+  }
+]

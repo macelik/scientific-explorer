@@ -1,0 +1,20 @@
+{
+  "task_id": "F",
+  "status": "complete",
+  "model": "gpt-6.1-terra",
+  "artifacts": [
+    "findings.md",
+    "methods.json",
+    "sources.json",
+    "pilot.md",
+    "status.json"
+  ],
+  "unresolved": [
+    "Alignment FASTA identity and actual pyEpi run configuration",
+    "SNP candidate set, calling filters and pileup invocation/count units",
+    "Phase reliability and orientation",
+    "Track licensing and compatible annotation resources"
+  ],
+  "model_selection_provenance": "Explicit coordinator spawn_agent model argument; resumed with followup_task",
+  "count_pilot": "Completed separately by task E; see ../e-per-cell-evidence/pilot.md"
+}

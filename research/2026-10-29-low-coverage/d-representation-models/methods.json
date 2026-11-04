@@ -1,0 +1,194 @@
+{
+  "task_id": "D",
+  "methods": [
+    {
+      "reference_requirements": "No labelled normal needed for representation; no absolute ploidy anchor or calibrated CN state supplied.",
+      "low_coverage_handling": "Sparse accessibility is modeled; zero observations are not proof of deletion. Missing allele counts and CN uncertainty are not modeled.",
+      "homozygous_deletion": "No demonstrated explicit homozygous-deletion call or calibration.",
+      "uncertain": [
+        "CN dosage preservation, out-of-distribution calibration, and exact local compatibility are unverified."
+      ],
+      "name": "Atacformer",
+      "assay": "scATAC human hg38",
+      "inputs": "Accessible per-cell peak/fragment genomic intervals; hg38 vocabulary and matching tokenizer",
+      "outputs": "Contextual region and pooled cell embeddings; fine-tuned cell type; not CN",
+      "mechanism": "Pretrained replaced-token detection on 1.2M cells, 30 tissues; 890,704-region vocabulary; sets mapped by overlaps",
+      "evidence": "Preprint or conference scATAC representation work; CN transfer untested",
+      "implementation": {
+        "code_url": "https://github.com/databio/geniml",
+        "version_or_commit": "Current repository documentation accessed 2026-10-29; commit not pinned",
+        "license": "BSD-2-Clause",
+        "license_url": "https://github.com/databio/geniml/blob/master/LICENSE.txt",
+        "compute_notes": "Pretrained base hg38 available; model card 0.2B parameters; GPU optional in quickstart; actual resource use unmeasured."
+      },
+      "fit": "Conditional zero-shot comparison once genuine peaks/fragments and confirmed assembly exist. 100 kb count bins do not encode appropriate accessible intervals.",
+      "limitations": [
+        "Token presence and pooling may discard count dosage; coverage/sequence distribution shift may drive embedding; fine tuning can remove or introduce CN structure.",
+        "Checkpoint weight license not stated on inspected model card; verify before reuse."
+      ],
+      "source_ids": [
+        "atacpaper",
+        "atacdocs",
+        "ataccode",
+        "atacweights"
+      ]
+    },
+    {
+      "reference_requirements": "No labelled normal needed for representation; no absolute ploidy anchor or calibrated CN state supplied.",
+      "low_coverage_handling": "Sparse accessibility is modeled; zero observations are not proof of deletion. Missing allele counts and CN uncertainty are not modeled.",
+      "homozygous_deletion": "No demonstrated explicit homozygous-deletion call or calibration.",
+      "uncertain": [
+        "CN dosage preservation, out-of-distribution calibration, and exact local compatibility are unverified."
+      ],
+      "name": "PEAKVI",
+      "assay": "scATAC accessibility",
+      "inputs": "Peak-by-cell raw accessibility counts, batch covariates as appropriate",
+      "outputs": "Cell latent space and modeled accessibility probabilities, not copy-number states",
+      "mechanism": "Dataset-trained variational model for binarized region detection with cell and region effects",
+      "evidence": "Published scATAC representation work",
+      "implementation": {
+        "code_url": "https://github.com/scverse/scvi-tools",
+        "version_or_commit": "Current repository documentation accessed 2026-10-29; commit not pinned",
+        "license": "BSD-3-Clause",
+        "license_url": "https://github.com/scverse/scvi-tools/blob/main/LICENSE",
+        "compute_notes": "Dataset-specific fitting; CPU/GPU possible, cost depends on cells and peaks; no universal pretrained checkpoint assumed."
+      },
+      "fit": "Conditional baseline for accessibility representation once compatible peak matrix exists, not this pass.",
+      "limitations": [
+        "Binarization loses count magnitude; detection probabilities and latent uncertainty are not CN confidence; training required.",
+        "OOD behavior is not established."
+      ],
+      "source_ids": [
+        "peakpaper",
+        "peakdocs",
+        "peakcode"
+      ]
+    },
+    {
+      "reference_requirements": "No labelled normal needed for representation; no absolute ploidy anchor or calibrated CN state supplied.",
+      "low_coverage_handling": "Sparse accessibility is modeled; zero observations are not proof of deletion. Missing allele counts and CN uncertainty are not modeled.",
+      "homozygous_deletion": "No demonstrated explicit homozygous-deletion call or calibration.",
+      "uncertain": [
+        "CN dosage preservation, out-of-distribution calibration, and exact local compatibility are unverified."
+      ],
+      "name": "SCALE",
+      "assay": "scATAC accessibility",
+      "inputs": "Peak-by-cell count matrix or H5AD; peak filtering",
+      "outputs": "Latent embedding, clusters and imputed accessibility, not CN",
+      "mechanism": "Variational autoencoder with Gaussian-mixture latent prior; dataset fit",
+      "evidence": "Published scATAC representation work",
+      "implementation": {
+        "code_url": "https://github.com/jsxlei/SCALE",
+        "version_or_commit": "Current repository documentation accessed 2026-10-29; commit not pinned",
+        "license": "MIT",
+        "license_url": "https://github.com/jsxlei/SCALE/blob/master/LICENSE",
+        "compute_notes": "CUDA recommended; default maximum 30,000 iterations. Saved model is reusable for matching data, not established general pretrained model."
+      },
+      "fit": "Secondary simple learned representation comparator if compatible peak data appear.",
+      "limitations": [
+        "Filtering and imputation can alter dosage and amplify circularity; no calibrated CN uncertainty.",
+        "Documentation reflects older releases; current maintenance not established."
+      ],
+      "source_ids": [
+        "scalepaper",
+        "scalecode"
+      ]
+    },
+    {
+      "reference_requirements": "No labelled normal needed for representation; no absolute ploidy anchor or calibrated CN state supplied.",
+      "low_coverage_handling": "Sparse accessibility is modeled; zero observations are not proof of deletion. Missing allele counts and CN uncertainty are not modeled.",
+      "homozygous_deletion": "No demonstrated explicit homozygous-deletion call or calibration.",
+      "uncertain": [
+        "CN dosage preservation, out-of-distribution calibration, and exact local compatibility are unverified."
+      ],
+      "name": "ChromFound",
+      "assay": "Human scATAC hg38",
+      "inputs": "H5AD with peak coordinates 0-based hg38 and chromosome vocabulary; metadata per documented workflow",
+      "outputs": "Cell embeddings and annotation, not CN",
+      "mechanism": "Genome-aware tokenization and hybrid model pretrained on 1.97M cells across 30 tissues and six disease contexts",
+      "evidence": "Preprint or conference scATAC representation work; CN transfer untested",
+      "implementation": {
+        "code_url": "https://github.com/SAIS-LifeScience/ChromFound",
+        "version_or_commit": "Current repository documentation accessed 2026-10-29; commit not pinned",
+        "license": "Apache-2.0",
+        "license_url": "https://github.com/SAIS-LifeScience/ChromFound/blob/main/LICENSE",
+        "compute_notes": "Official v1.0.0; checkpoint external; CUDA 12.1, FlashAttention-compatible GPU and Mamba dependencies."
+      },
+      "fit": "Defer: greater setup cost and no evidence of CN advantage; current bins incompatible.",
+      "limitations": [
+        "Code repository identifies Apache-2.0; model weight terms must be checked separately.",
+        "Example metadata requires cell type column; cannot assume labels."
+      ],
+      "source_ids": [
+        "chrompaper",
+        "chromcode"
+      ]
+    },
+    {
+      "reference_requirements": "No labelled normal needed for representation; no absolute ploidy anchor or calibrated CN state supplied.",
+      "low_coverage_handling": "Sparse accessibility is modeled; zero observations are not proof of deletion. Missing allele counts and CN uncertainty are not modeled.",
+      "homozygous_deletion": "No demonstrated explicit homozygous-deletion call or calibration.",
+      "uncertain": [
+        "CN dosage preservation, out-of-distribution calibration, and exact local compatibility are unverified."
+      ],
+      "name": "EpiFoundation",
+      "assay": "Human paired scATAC and scRNA pretraining",
+      "inputs": "Nonzero peak set and chromosome/peak vocabulary; paired RNA for pretraining and supervised outputs",
+      "outputs": "Cell representation, cell-type and gene-expression predictions, not CN",
+      "mechanism": "Peak-to-gene alignment pretrained on >100,000 human GRCh38 multiome cells across 19 tissues",
+      "evidence": "Preprint or conference scATAC representation work; CN transfer untested",
+      "implementation": {
+        "code_url": "https://github.com/UCSC-VLAA/EpiFoundation",
+        "version_or_commit": "Current repository documentation accessed 2026-10-29; commit not pinned",
+        "license": null,
+        "license_url": null,
+        "compute_notes": "Weights linked externally; FlashAttention2 architecture; inference resources not established."
+      },
+      "fit": "Defer: input and checkpoint/vocabulary need verification, gene prediction adds no direct CN evidence.",
+      "limitations": [
+        "Binarized peaks remove read magnitude; paired RNA setup and downstream decoders complicate transfer.",
+        "Code and weights license not verified."
+      ],
+      "source_ids": [
+        "epipaper",
+        "epicode"
+      ]
+    },
+    {
+      "reference_requirements": "No labelled normal needed for representation; no absolute ploidy anchor or calibrated CN state supplied.",
+      "low_coverage_handling": "Sparse accessibility is modeled; zero observations are not proof of deletion. Missing allele counts and CN uncertainty are not modeled.",
+      "homozygous_deletion": "No demonstrated explicit homozygous-deletion call or calibration.",
+      "uncertain": [
+        "CN dosage preservation, out-of-distribution calibration, and exact local compatibility are unverified."
+      ],
+      "name": "scBasset",
+      "assay": "scATAC with DNA sequence",
+      "inputs": "Peak-by-cell matrix, matching peak order, reference FASTA",
+      "outputs": "Sequence-based accessibility prediction and cell representations, not CN",
+      "mechanism": "Convolutional model trained from peak sequences and binary accessibility for cells",
+      "evidence": "Published scATAC representation work",
+      "implementation": {
+        "code_url": "https://github.com/calico/scBasset",
+        "version_or_commit": "Current repository documentation accessed 2026-10-29; commit not pinned",
+        "license": "Apache-2.0",
+        "license_url": "https://github.com/calico/scBasset/blob/main/LICENSE",
+        "compute_notes": "Dataset model training default 1000 epochs with early stopping; pretrained dataset-specific examples do not establish transferable cell CN model."
+      },
+      "fit": "Defer: peak/FASTA inputs, fitting cost and binary objective mismatch CN task.",
+      "limitations": [
+        "Sequence and cellular accessibility are confounded with dosage; imputed values cannot validate unobserved CN."
+      ],
+      "source_ids": [
+        "scbpaper",
+        "scbcode"
+      ]
+    }
+  ],
+  "recommendations": [
+    "Conditional Atacformer zero-shot diagnostic only after input and assembly validation; compare against non-learned baseline and held-out orthogonal CN truth.",
+    "PEAKVI and SCALE are secondary trained accessibility comparators, not current experiments."
+  ],
+  "uncertain": [
+    "All exact computational resource requirements, weight licenses, CN-specific calibration and local peak/fragment availability require verification."
+  ]
+}

@@ -1,0 +1,27 @@
+# methods.json: object with task_id, methods (array), recommendations (array), uncertain (array).
+# Every method record has all fields below. Use null for unknown facts and explain in uncertain.
+method_fields:
+  name: Exact method or prior name
+  assay: Original assay and intended setting
+  inputs: Required observations, references and preprocessing
+  outputs: Estimated quantities or states; distinguish CN from annotation or embeddings
+  mechanism: Relevant model, pooling, masking or correction mechanism
+  reference_requirements: Assumptions about normal cells, baseline and absolute ploidy
+  low_coverage_handling: Missingness, zeros, allelic power and limitations
+  homozygous_deletion: Explicit capability/evidence, unsupported, not applicable, or unknown
+  evidence: Published assay, benchmark scope and whether transfer is untested
+  implementation: Object containing code_url, version_or_commit, license, license_url and compute_notes
+  fit: Proposed relevance and input gaps for this project
+  limitations: Array of substantive limitations
+  source_ids: Array of IDs from sources.json supporting the record
+  uncertain: Array of unresolved fields or claims
+# sources.json: array of records with all fields below.
+source_fields:
+  id: Stable local source identifier
+  title: Source title
+  url: Primary paper, official documentation or source-code URL
+  kind: paper, preprint, official_docs, code, or local_provenance
+  accessed_at: ISO date of access
+  locator: Methods section, figure, source file/function or other claim locator
+  supports: Array of claims supported by this source
+# Findings must include citations near claims, not only a bibliography.

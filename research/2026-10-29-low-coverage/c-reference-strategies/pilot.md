@@ -1,0 +1,3 @@
+# Pilot decision
+
+No computational pilot was run. The shared panel already has descriptive depth and AT summaries, but no independent normal, DNA anchor, phase-set continuity or compatible external reference has been established. Re-centering these data cannot validate a reference and would not resolve baseline identifiability. A label-transfer pilot additionally requires peak/fragments or a compatible gene-activity matrix, which have not been located. No random sampling, model fitting or data download was performed; therefore there is no seed or command to report. The next experiment and acceptance criteria are in findings.md.

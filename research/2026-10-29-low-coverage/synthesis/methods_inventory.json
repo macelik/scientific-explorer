@@ -1,0 +1,1286 @@
+{
+  "scope": "Preserves records across categories; repeated methods are not independent evidence",
+  "records": [
+    {
+      "record_id": "A:1",
+      "task_id": "A",
+      "task_directory": "a-cnv-methods",
+      "record": {
+        "name": "epiAneufinder / pyEpiAneufinder",
+        "assay": "scATAC",
+        "inputs": "BAM/fragments or binned counts; GC and blacklist metadata",
+        "outputs": "Relative loss/base/gain; breakpoints and AD scores",
+        "mechanism": "Per-cell binned depth, GC LOESS, iterative AD segmentation; no allele pooling",
+        "reference_requirements": "Genome-wide mean per cell; no normal required; no absolute ploidy",
+        "low_coverage_handling": "Filters low-coverage cells and bins >85% zeros; sparse counts can create false loss",
+        "homozygous_deletion": "No: loss is relative category, not zero copies",
+        "evidence": "Published scATAC; 100 kb bins, downsampled SNU601; py version beta",
+        "implementation": {
+          "code_url": "https://github.com/colomemaria/pyEpiAneufinder",
+          "version_or_commit": "pyproject.toml on main declares 0.3.7, accessed 2026-10-29; commit not pinned",
+          "license": "GPL-3.0-only",
+          "license_url": "https://github.com/colomemaria/pyEpiAneufinder/blob/main/LICENSE",
+          "compute_notes": "No execution or benchmark; runtime depends on cells and genomic resolution."
+        },
+        "fit": "Existing data and caller provide a directly relevant baseline",
+        "limitations": [
+          "Absolute biological truth and calibration cannot be inferred from agreement.",
+          "Exact uncertainty, state limits and tested resolution need further source audit where not stated."
+        ],
+        "source_ids": [
+          "epi",
+          "py",
+          "pyproject"
+        ],
+        "uncertain": [
+          "Exact commit, resources and detailed missing-data behavior not verified"
+        ]
+      }
+    },
+    {
+      "record_id": "A:2",
+      "task_id": "A",
+      "task_directory": "a-cnv-methods",
+      "record": {
+        "name": "Copy-scAT (CopyscAT)",
+        "assay": "scATAC",
+        "inputs": "10x fragments; genomic bins; optional baseline corrections",
+        "outputs": "Relative large-scale CNA and focal amplification",
+        "mechanism": "Depth pileups, library normalization, bin filtering, chromosome-arm and focal analysis",
+        "reference_requirements": "No external control required; baseline correction has assumptions",
+        "low_coverage_handling": "Default 5,000 fragments/cell, 1 Mb bins; discard bins >=80% zero",
+        "homozygous_deletion": "No explicit validated biallelic deletion state found",
+        "evidence": "Published scATAC; default arm-level calls; focal amplification separate",
+        "implementation": {
+          "code_url": "https://github.com/spcdot/CopyscAT",
+          "version_or_commit": "Repository default branch inspected 2026-10-29; exact commit not pinned",
+          "license": "GPL-3.0-or-later",
+          "license_url": "https://github.com/spcdot/CopyscAT/blob/master/gpl_license.txt",
+          "compute_notes": "No execution or benchmark; runtime depends on cells and genomic resolution."
+        },
+        "fit": "Useful comparator, but fragments not located and coarser default",
+        "limitations": [
+          "Absolute biological truth and calibration cannot be inferred from agreement.",
+          "Exact uncertainty, state limits and tested resolution need further source audit where not stated."
+        ],
+        "source_ids": [
+          "copy",
+          "copycode"
+        ],
+        "uncertain": [
+          "Exact commit, resources and detailed missing-data behavior not verified"
+        ]
+      }
+    },
+    {
+      "record_id": "A:3",
+      "task_id": "A",
+      "task_directory": "a-cnv-methods",
+      "record": {
+        "name": "Alleloscope",
+        "assay": "scDNA and scATAC",
+        "inputs": "SNP allele counts per cell and region, depth counts, candidate regions; matched DNA segmentation recommended for scATAC",
+        "outputs": "Per-cell major haplotype proportion, relative coverage, allele states and posterior confidence",
+        "mechanism": "EM phases SNPs across cells and pools SNPs per region; relative depth and allelic proportions",
+        "reference_requirements": "Not intrinsically reliant on a designated normal; calibration and absolute states require additional assumptions; matched DNA recommended",
+        "low_coverage_handling": "Pooling increases information but phase errors, mixture and no allele reads limit inference",
+        "homozygous_deletion": "Not established: neither generic loss nor missing allele observations prove 0:0",
+        "evidence": "Published scATAC and scDNA; regional events and selected marker regions, not a universal resolution guarantee",
+        "implementation": {
+          "code_url": "https://github.com/seasoncloud/Alleloscope",
+          "version_or_commit": "GitHub package metadata mirror reports 1.0.1; current official DESCRIPTION inaccessible; commit not pinned",
+          "license": null,
+          "license_url": "https://github.com/seasoncloud/Alleloscope/blob/main/DESCRIPTION",
+          "compute_notes": "No execution or benchmark; runtime depends on cells and genomic resolution."
+        },
+        "fit": "Relevant regional allele model; current bin sums may lack SNP-level phase and matched DNA segments",
+        "limitations": [
+          "Absolute biological truth and calibration cannot be inferred from agreement.",
+          "Exact uncertainty, state limits and tested resolution need further source audit where not stated."
+        ],
+        "source_ids": [
+          "allelo",
+          "allelocode"
+        ],
+        "uncertain": [
+          "Official DESCRIPTION was inaccessible; third-party GitHub package mirror reports GPL-2 and version 1.0.1 but does not verify current official terms; obtain source before reuse",
+          "Exact commit, compute cost and state limits not verified"
+        ]
+      }
+    },
+    {
+      "record_id": "A:4",
+      "task_id": "A",
+      "task_directory": "a-cnv-methods",
+      "record": {
+        "name": "Numbat",
+        "assay": "Numbat-multiome: published scATAC alone, scRNA alone or separate same-sample modalities",
+        "inputs": "ATAC-bin: raw integer bin-by-cell fragment counts; bin-by-reference-type normalized ATAC matrix; genomic-bin GRanges; phased SNP-level allele-count table; parameter file. Official preparation uses aligned barcoded BAM, SNP VCF and Eagle2 reference panel.",
+        "outputs": "Allele-specific alteration states, posterior probabilities and clones",
+        "mechanism": "Published joint HMM models bin coverage with Poisson log-normal and phased allele counts with beta-binomial, 15 joint states; iterative clone-aware pooling.",
+        "reference_requirements": "ATAC-bin documented with normalized ATAC reference generated from normal cells; paper used healthy donor normal plasma or annotated normal cells. No suitable reference is known here; do not assume MCF10-A diploid.",
+        "low_coverage_handling": "Uses pooled SNPs and HMM; loss of informative heterozygotes and phase uncertainty restrict power. Paper removes unobserved bins before benchmark; missing-data behavior in all modes still requires code audit.",
+        "homozygous_deletion": "Explicit (0,0) candidate genotype in scRNA model; not proof that ATAC can resolve it",
+        "evidence": "Published scATAC ATAC-bin mode benchmarked against matched WGS in MM and CLL/RS tumor cohorts; average ~200 kb bins, bin sizes 50\u2013500 kb examined; not validated here or in no-normal homogeneous samples.",
+        "implementation": {
+          "code_url": "https://github.com/kharchenkolab/numbat",
+          "version_or_commit": "DESCRIPTION main 1.5.2, accessed 2026-10-29; exact commit not pinned",
+          "license": "MIT + file LICENSE",
+          "license_url": "https://github.com/kharchenkolab/numbat/blob/main/LICENSE",
+          "compute_notes": "Paper evaluates 2,500 cells on 8 cores / 16 GB at 50\u2013500 kb; runtime depends on resolution. No local execution."
+        },
+        "fit": "Direct candidate for later ATAC-only feasibility experiment, contingent on suitable reference and SNP-level data; existing raw depth counting unit and bin geometry need reconciliation.",
+        "limitations": [
+          "Absolute biological truth and calibration cannot be inferred from agreement.",
+          "Exact uncertainty, state limits and tested resolution need further source audit where not stated."
+        ],
+        "source_ids": [
+          "numbat",
+          "numbatdocs",
+          "numbatcode",
+          "multiome",
+          "multiomedocs",
+          "numbatdesc",
+          "numbatentry"
+        ],
+        "uncertain": [
+          "Exact CLI mode flag and discrepancy between vignette prose and example require testing source version before execution",
+          "Current raw depth counting unit, SNP-level alleles and suitable ATAC reference not established",
+          "No-normal calibration, 0:0 sensitivity and uncertainty calibration not established"
+        ]
+      }
+    },
+    {
+      "record_id": "A:5",
+      "task_id": "A",
+      "task_directory": "a-cnv-methods",
+      "record": {
+        "name": "CopyKAT",
+        "assay": "scRNA",
+        "inputs": "Gene-by-cell expression and gene positions",
+        "outputs": "Relative aneuploid/diploid labels and CNA profiles",
+        "mechanism": "Expression smoothing and segmentation; no allele counts",
+        "reference_requirements": "Infers putative diploid baseline; failure possible with no suitable reference",
+        "low_coverage_handling": "Gene smoothing addresses sparse expression but obscures fine events",
+        "homozygous_deletion": "Not established",
+        "evidence": "Published scRNA; ~5 Mb claimed resolution",
+        "implementation": {
+          "code_url": "https://github.com/navinlabcode/copykat",
+          "version_or_commit": "Repository default branch inspected 2026-10-29; exact commit not pinned",
+          "license": null,
+          "license_url": null,
+          "compute_notes": "No execution or benchmark; runtime depends on cells and genomic resolution."
+        },
+        "fit": "No compatible gene expression matrix; baseline inference circular if unverified",
+        "limitations": [
+          "Absolute biological truth and calibration cannot be inferred from agreement.",
+          "Exact uncertainty, state limits and tested resolution need further source audit where not stated."
+        ],
+        "source_ids": [
+          "copykat",
+          "xclone"
+        ],
+        "uncertain": [
+          "Exact commit, resources and detailed missing-data behavior not verified",
+          "License not verified; inspect actual license before reuse"
+        ]
+      }
+    },
+    {
+      "record_id": "A:6",
+      "task_id": "A",
+      "task_directory": "a-cnv-methods",
+      "record": {
+        "name": "inferCNV",
+        "assay": "scRNA",
+        "inputs": "Gene expression, genomic gene order and reference annotations",
+        "outputs": "Relative smoothed expression CNA estimates; optional HMM states",
+        "mechanism": "Genomic smoothing and denoising of gene expression",
+        "reference_requirements": "Requires reference strategy; no validated diploid anchor here",
+        "low_coverage_handling": "Smoothing sparse genes does not establish missing regions",
+        "homozygous_deletion": "Not established",
+        "evidence": "scRNA method; untested transfer to ATAC bins",
+        "implementation": {
+          "code_url": "https://github.com/broadinstitute/infercnv",
+          "version_or_commit": "Repository default branch inspected 2026-10-29; exact commit not pinned",
+          "license": null,
+          "license_url": null,
+          "compute_notes": "No execution or benchmark; runtime depends on cells and genomic resolution."
+        },
+        "fit": "Reject direct application to binned ATAC",
+        "limitations": [
+          "Absolute biological truth and calibration cannot be inferred from agreement.",
+          "Exact uncertainty, state limits and tested resolution need further source audit where not stated."
+        ],
+        "source_ids": [
+          "infer",
+          "xclone"
+        ],
+        "uncertain": [
+          "Exact commit, resources and detailed missing-data behavior not verified",
+          "License not verified; inspect actual license before reuse"
+        ]
+      }
+    },
+    {
+      "record_id": "A:7",
+      "task_id": "A",
+      "task_directory": "a-cnv-methods",
+      "record": {
+        "name": "CaSpER",
+        "assay": "scRNA and bulk RNA",
+        "inputs": "Expression plus allele reads and gene coordinates",
+        "outputs": "Expression/allelic CNA and LOH estimates",
+        "mechanism": "Multiscale expression and BAF smoothing",
+        "reference_requirements": "Reference and baseline details require dedicated review",
+        "low_coverage_handling": "Sparse RNA alleles and smoothing limit resolution",
+        "homozygous_deletion": "Not established",
+        "evidence": "Published RNA; ATAC transfer untested",
+        "implementation": {
+          "code_url": "https://github.com/akdess/CaSpER",
+          "version_or_commit": "Repository default branch inspected 2026-10-29; exact commit not pinned",
+          "license": null,
+          "license_url": null,
+          "compute_notes": "No execution or benchmark; runtime depends on cells and genomic resolution."
+        },
+        "fit": "Expression model and inputs unavailable",
+        "limitations": [
+          "Absolute biological truth and calibration cannot be inferred from agreement.",
+          "Exact uncertainty, state limits and tested resolution need further source audit where not stated."
+        ],
+        "source_ids": [
+          "casper",
+          "xclone"
+        ],
+        "uncertain": [
+          "Exact commit, resources and detailed missing-data behavior not verified",
+          "License not verified; inspect actual license before reuse"
+        ]
+      }
+    },
+    {
+      "record_id": "A:8",
+      "task_id": "A",
+      "task_directory": "a-cnv-methods",
+      "record": {
+        "name": "HoneyBADGER",
+        "assay": "scRNA",
+        "inputs": "Expression and allele measurements with genomic coordinates",
+        "outputs": "CNV and LOH posterior estimates",
+        "mechanism": "Bayesian HMM integrates expression and allelic information",
+        "reference_requirements": "Baseline assumptions require further inspection",
+        "low_coverage_handling": "Pools sparse data; detailed missing-data treatment unresolved",
+        "homozygous_deletion": "Not established",
+        "evidence": "Published scRNA; ATAC transfer untested",
+        "implementation": {
+          "code_url": "https://github.com/JEFworks-Lab/HoneyBADGER",
+          "version_or_commit": "Repository default branch inspected 2026-10-29; exact commit not pinned",
+          "license": "GPL-3.0",
+          "license_url": "https://github.com/JEFworks-Lab/HoneyBADGER/blob/master/LICENSE",
+          "compute_notes": "No execution or benchmark; runtime depends on cells and genomic resolution."
+        },
+        "fit": "Potential HMM concept only",
+        "limitations": [
+          "Absolute biological truth and calibration cannot be inferred from agreement.",
+          "Exact uncertainty, state limits and tested resolution need further source audit where not stated."
+        ],
+        "source_ids": [
+          "honey"
+        ],
+        "uncertain": [
+          "Exact commit, resources and detailed missing-data behavior not verified"
+        ]
+      }
+    },
+    {
+      "record_id": "A:9",
+      "task_id": "A",
+      "task_directory": "a-cnv-methods",
+      "record": {
+        "name": "XClone",
+        "assay": "scRNA",
+        "inputs": "Gene counts and allele-specific read counts, reference annotations",
+        "outputs": "Posterior CNA states combining RDR and BAF",
+        "mechanism": "Separate RDR/BAF models and phasing, then combines results",
+        "reference_requirements": "Reference expression required; baseline assumptions constrain inference",
+        "low_coverage_handling": "Models sparse RNA, local/global phasing and smoothing",
+        "homozygous_deletion": "Exact 0:0 detection capability not verified",
+        "evidence": "Published scRNA; ATAC transfer untested",
+        "implementation": {
+          "code_url": "https://github.com/single-cell-genetics/XClone",
+          "version_or_commit": "Repository default branch inspected 2026-10-29; exact commit not pinned",
+          "license": null,
+          "license_url": null,
+          "compute_notes": "No execution or benchmark; runtime depends on cells and genomic resolution."
+        },
+        "fit": "Conceptual separate-signal comparison only",
+        "limitations": [
+          "Absolute biological truth and calibration cannot be inferred from agreement.",
+          "Exact uncertainty, state limits and tested resolution need further source audit where not stated."
+        ],
+        "source_ids": [
+          "xclone",
+          "xcode"
+        ],
+        "uncertain": [
+          "Exact commit, resources and detailed missing-data behavior not verified",
+          "License not verified; inspect actual license before reuse"
+        ]
+      }
+    },
+    {
+      "record_id": "A:10",
+      "task_id": "A",
+      "task_directory": "a-cnv-methods",
+      "record": {
+        "name": "CHISEL",
+        "assay": "scDNA",
+        "inputs": "Barcoded DNA BAM, phased germline SNPs, matched normal in default mode",
+        "outputs": "Integer allele/haplotype states, ploidy and clones",
+        "mechanism": "Cross-cell SNP block phasing and joint RDR/BAF clustering",
+        "reference_requirements": "Default matched normal; no-normal variant available; integer ploidy remains assumption-sensitive",
+        "low_coverage_handling": "Uses across-cell aggregation; paper used 5 Mb bins at <0.05x",
+        "homozygous_deletion": "Integer model allows nonnegative allele copies; specific detection/calibration of 0:0 not verified",
+        "evidence": "Published low-coverage scDNA, not established for ATAC",
+        "implementation": {
+          "code_url": "https://github.com/raphael-group/chisel",
+          "version_or_commit": "Repository default branch inspected 2026-10-29; exact commit not pinned",
+          "license": "BSD-3-Clause",
+          "license_url": "https://github.com/raphael-group/chisel/blob/master/LICENSE",
+          "compute_notes": "No execution or benchmark; runtime depends on cells and genomic resolution."
+        },
+        "fit": "Phasing strategy only; DNA depth emission and BAM incompatible with ATAC assumptions",
+        "limitations": [
+          "Absolute biological truth and calibration cannot be inferred from agreement.",
+          "Exact uncertainty, state limits and tested resolution need further source audit where not stated."
+        ],
+        "source_ids": [
+          "chisel",
+          "chiselcode"
+        ],
+        "uncertain": [
+          "Exact commit, resources and detailed missing-data behavior not verified"
+        ]
+      }
+    },
+    {
+      "record_id": "A:11",
+      "task_id": "A",
+      "task_directory": "a-cnv-methods",
+      "record": {
+        "name": "signals (Single Cell Genomes with Allele Specificity)",
+        "assay": "scDNA DLP+",
+        "inputs": "Total integer CN bins and per-cell haplotype block counts",
+        "outputs": "Allele/haplotype-specific states, BAF and LOH labels",
+        "mechanism": "Cross-cell phasing and allele HMM",
+        "reference_requirements": "Requires upstream total integer CN/ploidy-corrected input",
+        "low_coverage_handling": "Designed for 0.01\u20130.1x DNA; block counts must be adequate",
+        "homozygous_deletion": "Not verified; A-Hom/B-Hom denote one allele lost, not 0:0",
+        "evidence": "Published scDNA; scATAC transfer untested",
+        "implementation": {
+          "code_url": "https://github.com/shahcompbio/signals",
+          "version_or_commit": "Repository default branch inspected 2026-10-29; exact commit not pinned",
+          "license": "MIT + file LICENSE",
+          "license_url": "https://github.com/shahcompbio/signals/blob/master/LICENSE",
+          "compute_notes": "No execution or benchmark; runtime depends on cells and genomic resolution."
+        },
+        "fit": "Current categorical loss/base/gain cannot supply required absolute total CN",
+        "limitations": [
+          "Absolute biological truth and calibration cannot be inferred from agreement.",
+          "Exact uncertainty, state limits and tested resolution need further source audit where not stated."
+        ],
+        "source_ids": [
+          "signals"
+        ],
+        "uncertain": [
+          "Exact commit, resources and detailed missing-data behavior not verified"
+        ]
+      }
+    },
+    {
+      "record_id": "B:1",
+      "task_id": "B",
+      "task_directory": "b-joint-segmentation",
+      "record": {
+        "name": "Numbat-multiome ATAC-bin",
+        "assay": "Published scATAC tumor cohorts, WGS comparisons",
+        "inputs": "Raw fragment bin counts; SNP-level phased allele counts; bins; normalized reference per cell type",
+        "outputs": "HMM event states, clone and cell probabilities relative to reference",
+        "mechanism": "Haplotype-aware depth/allele HMM with binned accessibility",
+        "reference_requirements": "Reference count profiles; evaluated with annotated normal cells",
+        "low_coverage_handling": "Sparse allele data limit inference; exact missing-site/gap behavior needs source-level audit",
+        "homozygous_deletion": "No local validation; do not interpret categorical loss as absolute zero",
+        "evidence": "Published scATAC; current sample compatibility untested",
+        "implementation": {
+          "code_url": "https://github.com/kharchenkolab/numbat",
+          "version_or_commit": "1.5.2 declared on main, accessed 2026-10-29; commit not pinned",
+          "license": "MIT + file LICENSE (package DESCRIPTION)",
+          "license_url": "https://github.com/kharchenkolab/numbat/blob/main/LICENSE",
+          "compute_notes": "No local runtime measured; paper used 2500 cells, 8 cores, 16 GB for bin-size evaluation; smaller bins increased runtime."
+        },
+        "fit": "Most relevant published comparator if SNP-level phase and defensible reference recovered",
+        "limitations": [
+          "Missing phase sets and normalized reference; depth and SNP counts overlap; baseline ambiguity",
+          "Posterior calibration and dependence under this assay unresolved",
+          "Event-level arm/focal benchmark excluded segments <10% of an arm or <200 kb; separate bin-size analysis was visual in one complex sample."
+        ],
+        "source_ids": [
+          "multi",
+          "vignette",
+          "numbat",
+          "repo",
+          "shared",
+          "numbat_description",
+          "numbat_license"
+        ],
+        "uncertain": [
+          "Gap/missing-emission and dependence treatment not verified",
+          "Exact commit and no-reference mode not verified"
+        ]
+      }
+    },
+    {
+      "record_id": "B:2",
+      "task_id": "B",
+      "task_directory": "b-joint-segmentation",
+      "record": {
+        "name": "Masked count changepoint with conditional alleles (proposed)",
+        "assay": "Untested transfer from count segmentation to scATAC",
+        "inputs": "Raw counts and exposure/covariates; retained bin coordinates; SNP-level counts and phase blocks if available",
+        "outputs": "Relative depth segments, boundary intervals; allele evidence or insufficient evidence",
+        "mechanism": "Count likelihood or heteroscedastic model for depth; conditional allele model only after dependence/phase assumptions tested; count zero retained; missing emission omitted",
+        "reference_requirements": "No normal required for relative boundaries; absolute loss needs anchor",
+        "low_coverage_handling": "Depth can yield a boundary without allele coverage; genomic gaps represented explicitly; no fabricated balance",
+        "homozygous_deletion": "Unsupported as definitive state without anchor and orthogonal evidence",
+        "evidence": "PELT/BIC-seq2 support changepoint ideas in other contexts, not this design",
+        "implementation": {
+          "code_url": null,
+          "version_or_commit": null,
+          "license": null,
+          "license_url": null,
+          "compute_notes": "Not measured; no installation or runtime conducted."
+        },
+        "fit": "Feasible depth-only diagnostic on frozen grid; joint extension blocked by phase and dependence",
+        "limitations": [
+          "Accessibility and dosage confounded; adaptive boundary selection biases downstream significance",
+          "Conditional factorization must be derived from actual molecule counting; AT is SNP DP and not unique fragment count"
+        ],
+        "source_ids": [
+          "bic",
+          "pelt",
+          "shared"
+        ],
+        "uncertain": [
+          "Likelihood, covariance and calibration require empirical validation"
+        ]
+      }
+    },
+    {
+      "record_id": "B:3",
+      "task_id": "B",
+      "task_directory": "b-joint-segmentation",
+      "record": {
+        "name": "Covariance-aware joint segmentation / Bayesian HMM (proposed)",
+        "assay": "Untested scATAC adaptation of multivariate segmentation",
+        "inputs": "Depth and allele observations with covariance or explicit shared-fragment generative model; phase sets; coordinates",
+        "outputs": "Boundary posterior or intervals; relative depth and allele-state uncertainty; abstention",
+        "mechanism": "Joint likelihood with missing components marginalized; distance-aware transitions; phase-block-specific nuisance orientation",
+        "reference_requirements": "Relative segmentation possible without normal; absolute states need identifiable anchor",
+        "low_coverage_handling": "Unobserved allele emission contributes no evidence; calibrated conditional dependence essential; gap uncertainty retained",
+        "homozygous_deletion": "Not established",
+        "evidence": "FACETS and original Numbat studied other designs; proposed joint model unvalidated",
+        "implementation": {
+          "code_url": null,
+          "version_or_commit": null,
+          "license": null,
+          "license_url": null,
+          "compute_notes": "Not measured; no installation or runtime conducted."
+        },
+        "fit": "Longer-term candidate once molecule counting and phasing documented",
+        "limitations": [
+          "Estimated covariance unstable in sparse data; priors/transition hazard influence results",
+          "Marginalizing missing data assumes justified missingness mechanism; ascertainment may be informative"
+        ],
+        "source_ids": [
+          "facets",
+          "numbat",
+          "bayes",
+          "shared"
+        ],
+        "uncertain": [
+          "Joint measurement model and genomic transition policy unspecified"
+        ]
+      }
+    },
+    {
+      "record_id": "B:4",
+      "task_id": "B",
+      "task_directory": "b-joint-segmentation",
+      "record": {
+        "name": "FACETS joint CBS and ASCAT/ASPCF",
+        "assay": "Bulk paired tumor-normal DNA sequencing; SNP arrays",
+        "inputs": "Matched normal and tumor SNP depth/allele signals; ASCAT baseline and ploidy assumptions",
+        "outputs": "Joint boundaries and allele-specific CN; purity/ploidy",
+        "mechanism": "FACETS multivariate rank-based CBS and matched normal log odds; ASCAT models admixture/ploidy",
+        "reference_requirements": "FACETS paired normal corrects allelic mapping bias; ASCAT requires identifying suitable solution",
+        "low_coverage_handling": "Sparse heterozygote weights do not create evidence; ATAC transfer untested",
+        "homozygous_deletion": "DNA state model can represent zero, but local ATAC identification not established",
+        "evidence": "Published DNA/array; transfer not evaluated",
+        "implementation": {
+          "code_url": "https://github.com/mskcc/facets",
+          "version_or_commit": "FACETS 0.6.2 declared on master, accessed 2026-10-29; commit not pinned; ASCAT not checked",
+          "license": "FACETS GPL (>= 2); ASCAT unverified",
+          "license_url": "https://github.com/mskcc/facets/blob/master/DESCRIPTION",
+          "compute_notes": "Not measured; no installation or runtime conducted."
+        },
+        "fit": "Methodological comparator, not drop-in caller",
+        "limitations": [
+          "No matched normal or identified diploid anchor",
+          "Shared count dependence and accessibility confounding remain"
+        ],
+        "source_ids": [
+          "facets",
+          "ascat",
+          "facets_description"
+        ],
+        "uncertain": [
+          "Exact scATAC missing/gap treatment not applicable"
+        ]
+      }
+    },
+    {
+      "record_id": "B:5",
+      "task_id": "B",
+      "task_directory": "b-joint-segmentation",
+      "record": {
+        "name": "Blind-spot image denoising / Noise2Self",
+        "assay": "Images and single-cell expression examples",
+        "inputs": "Noisy data and assumed suitable independent noise",
+        "outputs": "Denoised predictions, not independent CN evidence",
+        "mechanism": "Mask observations and predict from other features",
+        "reference_requirements": "No CN baseline provided",
+        "low_coverage_handling": "Masked predictions are imputation, not observed alleles",
+        "homozygous_deletion": "Not applicable",
+        "evidence": "Published outside genomic CN segmentation; transfer untested",
+        "implementation": {
+          "code_url": null,
+          "version_or_commit": null,
+          "license": null,
+          "license_url": null,
+          "compute_notes": "Not measured; no installation or runtime conducted."
+        },
+        "fit": "Do not use for evidence or fill allele gaps",
+        "limitations": [
+          "Spatially correlated accessibility, phase and count noise violate straightforward transfer",
+          "Can blur boundaries and hallucinate signal"
+        ],
+        "source_ids": [
+          "noise"
+        ],
+        "uncertain": [
+          "No study of this task identified"
+        ]
+      }
+    },
+    {
+      "record_id": "C:1",
+      "task_id": "C",
+      "task_directory": "c-reference-strategies",
+      "record": {
+        "homozygous_deletion": "Not established by reference choice; zero observations are not a 0:0 call.",
+        "low_coverage_handling": "Assess coverage and callable bins; missing allele observations are unresolved, not balanced.",
+        "uncertain": [],
+        "name": "Independent internal normal controls",
+        "assay": "scATAC; mixed samples",
+        "inputs": "Independently supported normal cells, same assay/build/bin definitions, coverage and cell-type information",
+        "outputs": "Reference-relative depth and uncertainty",
+        "mechanism": "Aggregate independently selected cells, assess sample and cell-type effects, leave-one-donor/cell-group-out sensitivity",
+        "reference_requirements": "Control identity and regional CN status need independent evidence; normal cell type alone is insufficient",
+        "evidence": "Design informed by published scATAC Numbat reference construction",
+        "implementation": {
+          "code_url": null,
+          "version_or_commit": null,
+          "license": null,
+          "license_url": null,
+          "compute_notes": "No implementation recommended; design requires calibration."
+        },
+        "fit": "Optional for future mixed samples; none identified in current homogeneous cell line",
+        "limitations": [
+          "Independent provenance is needed; shared germline changes and accessibility differ by cell type."
+        ],
+        "source_ids": [
+          "numbat2025",
+          "numbatdocs"
+        ]
+      }
+    },
+    {
+      "record_id": "C:2",
+      "task_id": "C",
+      "task_directory": "c-reference-strategies",
+      "record": {
+        "homozygous_deletion": "Not established by reference choice; zero observations are not a 0:0 call.",
+        "low_coverage_handling": "Assess coverage and callable bins; missing allele observations are unresolved, not balanced.",
+        "uncertain": [],
+        "name": "Compatible external normal reference / Numbat-multiome ATAC-bin",
+        "assay": "Published scATAC",
+        "inputs": "Raw integer ATAC bin fragment counts, phased SNP-level observations, bin coordinates, normalized bin-by-cell-type reference",
+        "outputs": "Reference-relative and allele-specific joint CN states under model assumptions",
+        "mechanism": "Normalized bin count reference combined with phased allele evidence; published references use normal cells",
+        "reference_requirements": "Published examples use normal cells matched by cell type, including external healthy donors; no normal-free validation established",
+        "evidence": "Published scATAC comparison with WGS in myeloma and CLL/RS",
+        "implementation": {
+          "code_url": "https://github.com/kharchenkolab/numbat",
+          "version_or_commit": "1.5.2 documentation; commit not pinned",
+          "license": "MIT",
+          "license_url": "https://github.com/kharchenkolab/numbat/blob/main/DESCRIPTION",
+          "compute_notes": "Full pipeline requires SNP phasing and reference preparation; not run."
+        },
+        "fit": "Candidate only after matching reference and verifying input counts and SNP data Public candidate: Zhang adult tissue sci-ATAC atlas GSE184462; per-sample fragments and barcode-to-label compatibility require audit, and copy neutrality is unproven.",
+        "limitations": [
+          "Protocol, cell type, batch, assembly, coverage and control CN mismatch confound reference; source data may require access and license checks."
+        ],
+        "source_ids": [
+          "numbat2025",
+          "numbatdocs",
+          "numbatmeta",
+          "zhang_atlas",
+          "geo_fragment"
+        ]
+      }
+    },
+    {
+      "record_id": "C:3",
+      "task_id": "C",
+      "task_directory": "c-reference-strategies",
+      "record": {
+        "homozygous_deletion": "Not established by reference choice; zero observations are not a 0:0 call.",
+        "low_coverage_handling": "Assess coverage and callable bins; missing allele observations are unresolved, not balanced.",
+        "uncertain": [],
+        "name": "Reference-free relative baseline sensitivity",
+        "assay": "scATAC; homogeneous or mixed samples",
+        "inputs": "Raw bin counts, exposure, callable regions, GC/mappability; multiple prespecified baselines",
+        "outputs": "Relative depth contrast and sensitivity; unanchored or abstention",
+        "mechanism": "Compare genome-wide centering, robust baseline and held-out alternative regions; expose baseline choice",
+        "reference_requirements": "No normal required; assumes enough stable bins for a useful relative baseline, which can fail",
+        "evidence": "Published scATAC genome-wide mean baseline; robust sensitivity is an untested transfer/design",
+        "implementation": {
+          "code_url": null,
+          "version_or_commit": null,
+          "license": null,
+          "license_url": null,
+          "compute_notes": "No implementation recommended; design requires calibration."
+        },
+        "fit": "Directly applicable as exploratory sensitivity after provenance audit",
+        "limitations": [
+          "Shared broad events are absorbed into baseline; whole-genome ploidy unidentifiable; baseline changes can reverse calls."
+        ],
+        "source_ids": [
+          "epi"
+        ]
+      }
+    },
+    {
+      "record_id": "C:4",
+      "task_id": "C",
+      "task_directory": "c-reference-strategies",
+      "record": {
+        "homozygous_deletion": "Not established by reference choice; zero observations are not a 0:0 call.",
+        "low_coverage_handling": "Assess coverage and callable bins; missing allele observations are unresolved, not balanced.",
+        "uncertain": [
+          "Verify exact installed versions and license terms before use."
+        ],
+        "name": "Signac / ArchR label transfer",
+        "assay": "scATAC annotation and RNA integration",
+        "inputs": "Compatible peak/fragments or gene scores, annotated reference and build",
+        "outputs": "Cell-type labels and transfer scores, not malignancy or CN",
+        "mechanism": "Reference-query integration and label transfer",
+        "reference_requirements": "Relevant reference types, coverage and comparable features required; labels do not establish normal genomic status",
+        "evidence": "Published/official scATAC annotation workflows",
+        "implementation": {
+          "code_url": "https://github.com/stuart-lab/signac; https://github.com/GreenleafLab/ArchR",
+          "version_or_commit": "Signac vignette April 2026; ArchR docs 1.0.1; exact commits unpinned",
+          "license": null,
+          "license_url": null,
+          "compute_notes": "Reference preparation and integration; no inputs or run confirmed."
+        },
+        "fit": "Optional future candidate discovery, not currently runnable with only 100 kb CN bins",
+        "limitations": [
+          "Out-of-reference cells can get misleading labels; prediction scores require calibration; missing peak or gene activity inputs."
+        ],
+        "source_ids": [
+          "signac",
+          "archr",
+          "signacmeta",
+          "archrmeta"
+        ]
+      }
+    },
+    {
+      "record_id": "C:5",
+      "task_id": "C",
+      "task_directory": "c-reference-strategies",
+      "record": {
+        "homozygous_deletion": "Not established by reference choice; zero observations are not a 0:0 call.",
+        "low_coverage_handling": "Assess coverage and callable bins; missing allele observations are unresolved, not balanced.",
+        "uncertain": [],
+        "name": "CN-selected controls: CopyscAT / CopyKAT / inferCNV",
+        "assay": "CopyscAT scATAC; CopyKAT and inferCNV scRNA",
+        "inputs": "Candidate cells or count matrix and method-specific processing",
+        "outputs": "Inferred or supplied normal/diploid reference and relative profiles",
+        "mechanism": "Method-specific normal selection or user reference followed by centering",
+        "reference_requirements": "Selection from same CN signal is circular for validating that signal; not independent normal evidence",
+        "evidence": "Published scATAC CopyscAT; RNA methods are ideas only",
+        "implementation": {
+          "code_url": null,
+          "version_or_commit": null,
+          "license": null,
+          "license_url": null,
+          "compute_notes": "No implementation recommended; design requires calibration."
+        },
+        "fit": "Comparator or sensitivity analysis, not validation of normal status",
+        "limitations": [
+          "Shared alterations can be absorbed; homogeneous altered populations lack identifiable normal group; RNA methods are not ATAC callers."
+        ],
+        "source_ids": [
+          "copyscat",
+          "copykat",
+          "infercnv"
+        ]
+      }
+    },
+    {
+      "record_id": "C:6",
+      "task_id": "C",
+      "task_directory": "c-reference-strategies",
+      "record": {
+        "homozygous_deletion": "Not established by reference choice; zero observations are not a 0:0 call.",
+        "low_coverage_handling": "Assess coverage and callable bins; missing allele observations are unresolved, not balanced.",
+        "uncertain": [],
+        "name": "DNA panel of normals as technical analogy",
+        "assay": "Bulk DNA sequencing, not validated here for scATAC",
+        "inputs": "Compatible control counts, same assay and preprocessing",
+        "outputs": "Denoised relative copy ratios",
+        "mechanism": "Panel learns recurrent technical variation",
+        "reference_requirements": "Control panel must represent technical biases; DNA panels do not directly transfer to accessibility",
+        "evidence": "Published/official DNA workflow; proposed scATAC transfer untested",
+        "implementation": {
+          "code_url": null,
+          "version_or_commit": null,
+          "license": null,
+          "license_url": null,
+          "compute_notes": "No implementation recommended; design requires calibration."
+        },
+        "fit": "Consider only assay-matched independently characterized scATAC panel",
+        "limitations": [
+          "A DNA panel ignores cell-type chromatin accessibility; panel artifacts and donor CNVs can bias calls."
+        ],
+        "source_ids": [
+          "pon"
+        ]
+      }
+    },
+    {
+      "record_id": "D:1",
+      "task_id": "D",
+      "task_directory": "d-representation-models",
+      "record": {
+        "reference_requirements": "No labelled normal needed for representation; no absolute ploidy anchor or calibrated CN state supplied.",
+        "low_coverage_handling": "Sparse accessibility is modeled; zero observations are not proof of deletion. Missing allele counts and CN uncertainty are not modeled.",
+        "homozygous_deletion": "No demonstrated explicit homozygous-deletion call or calibration.",
+        "uncertain": [
+          "CN dosage preservation, out-of-distribution calibration, and exact local compatibility are unverified."
+        ],
+        "name": "Atacformer",
+        "assay": "scATAC human hg38",
+        "inputs": "Accessible per-cell peak/fragment genomic intervals; hg38 vocabulary and matching tokenizer",
+        "outputs": "Contextual region and pooled cell embeddings; fine-tuned cell type; not CN",
+        "mechanism": "Pretrained replaced-token detection on 1.2M cells, 30 tissues; 890,704-region vocabulary; sets mapped by overlaps",
+        "evidence": "Preprint or conference scATAC representation work; CN transfer untested",
+        "implementation": {
+          "code_url": "https://github.com/databio/geniml",
+          "version_or_commit": "Current repository documentation accessed 2026-10-29; commit not pinned",
+          "license": "BSD-2-Clause",
+          "license_url": "https://github.com/databio/geniml/blob/master/LICENSE.txt",
+          "compute_notes": "Pretrained base hg38 available; model card 0.2B parameters; GPU optional in quickstart; actual resource use unmeasured."
+        },
+        "fit": "Conditional zero-shot comparison once genuine peaks/fragments and confirmed assembly exist. 100 kb count bins do not encode appropriate accessible intervals.",
+        "limitations": [
+          "Token presence and pooling may discard count dosage; coverage/sequence distribution shift may drive embedding; fine tuning can remove or introduce CN structure.",
+          "Checkpoint weight license not stated on inspected model card; verify before reuse."
+        ],
+        "source_ids": [
+          "atacpaper",
+          "atacdocs",
+          "ataccode",
+          "atacweights"
+        ]
+      }
+    },
+    {
+      "record_id": "D:2",
+      "task_id": "D",
+      "task_directory": "d-representation-models",
+      "record": {
+        "reference_requirements": "No labelled normal needed for representation; no absolute ploidy anchor or calibrated CN state supplied.",
+        "low_coverage_handling": "Sparse accessibility is modeled; zero observations are not proof of deletion. Missing allele counts and CN uncertainty are not modeled.",
+        "homozygous_deletion": "No demonstrated explicit homozygous-deletion call or calibration.",
+        "uncertain": [
+          "CN dosage preservation, out-of-distribution calibration, and exact local compatibility are unverified."
+        ],
+        "name": "PEAKVI",
+        "assay": "scATAC accessibility",
+        "inputs": "Peak-by-cell raw accessibility counts, batch covariates as appropriate",
+        "outputs": "Cell latent space and modeled accessibility probabilities, not copy-number states",
+        "mechanism": "Dataset-trained variational model for binarized region detection with cell and region effects",
+        "evidence": "Published scATAC representation work",
+        "implementation": {
+          "code_url": "https://github.com/scverse/scvi-tools",
+          "version_or_commit": "Current repository documentation accessed 2026-10-29; commit not pinned",
+          "license": "BSD-3-Clause",
+          "license_url": "https://github.com/scverse/scvi-tools/blob/main/LICENSE",
+          "compute_notes": "Dataset-specific fitting; CPU/GPU possible, cost depends on cells and peaks; no universal pretrained checkpoint assumed."
+        },
+        "fit": "Conditional baseline for accessibility representation once compatible peak matrix exists, not this pass.",
+        "limitations": [
+          "Binarization loses count magnitude; detection probabilities and latent uncertainty are not CN confidence; training required.",
+          "OOD behavior is not established."
+        ],
+        "source_ids": [
+          "peakpaper",
+          "peakdocs",
+          "peakcode"
+        ]
+      }
+    },
+    {
+      "record_id": "D:3",
+      "task_id": "D",
+      "task_directory": "d-representation-models",
+      "record": {
+        "reference_requirements": "No labelled normal needed for representation; no absolute ploidy anchor or calibrated CN state supplied.",
+        "low_coverage_handling": "Sparse accessibility is modeled; zero observations are not proof of deletion. Missing allele counts and CN uncertainty are not modeled.",
+        "homozygous_deletion": "No demonstrated explicit homozygous-deletion call or calibration.",
+        "uncertain": [
+          "CN dosage preservation, out-of-distribution calibration, and exact local compatibility are unverified."
+        ],
+        "name": "SCALE",
+        "assay": "scATAC accessibility",
+        "inputs": "Peak-by-cell count matrix or H5AD; peak filtering",
+        "outputs": "Latent embedding, clusters and imputed accessibility, not CN",
+        "mechanism": "Variational autoencoder with Gaussian-mixture latent prior; dataset fit",
+        "evidence": "Published scATAC representation work",
+        "implementation": {
+          "code_url": "https://github.com/jsxlei/SCALE",
+          "version_or_commit": "Current repository documentation accessed 2026-10-29; commit not pinned",
+          "license": "MIT",
+          "license_url": "https://github.com/jsxlei/SCALE/blob/master/LICENSE",
+          "compute_notes": "CUDA recommended; default maximum 30,000 iterations. Saved model is reusable for matching data, not established general pretrained model."
+        },
+        "fit": "Secondary simple learned representation comparator if compatible peak data appear.",
+        "limitations": [
+          "Filtering and imputation can alter dosage and amplify circularity; no calibrated CN uncertainty.",
+          "Documentation reflects older releases; current maintenance not established."
+        ],
+        "source_ids": [
+          "scalepaper",
+          "scalecode"
+        ]
+      }
+    },
+    {
+      "record_id": "D:4",
+      "task_id": "D",
+      "task_directory": "d-representation-models",
+      "record": {
+        "reference_requirements": "No labelled normal needed for representation; no absolute ploidy anchor or calibrated CN state supplied.",
+        "low_coverage_handling": "Sparse accessibility is modeled; zero observations are not proof of deletion. Missing allele counts and CN uncertainty are not modeled.",
+        "homozygous_deletion": "No demonstrated explicit homozygous-deletion call or calibration.",
+        "uncertain": [
+          "CN dosage preservation, out-of-distribution calibration, and exact local compatibility are unverified."
+        ],
+        "name": "ChromFound",
+        "assay": "Human scATAC hg38",
+        "inputs": "H5AD with peak coordinates 0-based hg38 and chromosome vocabulary; metadata per documented workflow",
+        "outputs": "Cell embeddings and annotation, not CN",
+        "mechanism": "Genome-aware tokenization and hybrid model pretrained on 1.97M cells across 30 tissues and six disease contexts",
+        "evidence": "Preprint or conference scATAC representation work; CN transfer untested",
+        "implementation": {
+          "code_url": "https://github.com/SAIS-LifeScience/ChromFound",
+          "version_or_commit": "Current repository documentation accessed 2026-10-29; commit not pinned",
+          "license": "Apache-2.0",
+          "license_url": "https://github.com/SAIS-LifeScience/ChromFound/blob/main/LICENSE",
+          "compute_notes": "Official v1.0.0; checkpoint external; CUDA 12.1, FlashAttention-compatible GPU and Mamba dependencies."
+        },
+        "fit": "Defer: greater setup cost and no evidence of CN advantage; current bins incompatible.",
+        "limitations": [
+          "Code repository identifies Apache-2.0; model weight terms must be checked separately.",
+          "Example metadata requires cell type column; cannot assume labels."
+        ],
+        "source_ids": [
+          "chrompaper",
+          "chromcode"
+        ]
+      }
+    },
+    {
+      "record_id": "D:5",
+      "task_id": "D",
+      "task_directory": "d-representation-models",
+      "record": {
+        "reference_requirements": "No labelled normal needed for representation; no absolute ploidy anchor or calibrated CN state supplied.",
+        "low_coverage_handling": "Sparse accessibility is modeled; zero observations are not proof of deletion. Missing allele counts and CN uncertainty are not modeled.",
+        "homozygous_deletion": "No demonstrated explicit homozygous-deletion call or calibration.",
+        "uncertain": [
+          "CN dosage preservation, out-of-distribution calibration, and exact local compatibility are unverified."
+        ],
+        "name": "EpiFoundation",
+        "assay": "Human paired scATAC and scRNA pretraining",
+        "inputs": "Nonzero peak set and chromosome/peak vocabulary; paired RNA for pretraining and supervised outputs",
+        "outputs": "Cell representation, cell-type and gene-expression predictions, not CN",
+        "mechanism": "Peak-to-gene alignment pretrained on >100,000 human GRCh38 multiome cells across 19 tissues",
+        "evidence": "Preprint or conference scATAC representation work; CN transfer untested",
+        "implementation": {
+          "code_url": "https://github.com/UCSC-VLAA/EpiFoundation",
+          "version_or_commit": "Current repository documentation accessed 2026-10-29; commit not pinned",
+          "license": null,
+          "license_url": null,
+          "compute_notes": "Weights linked externally; FlashAttention2 architecture; inference resources not established."
+        },
+        "fit": "Defer: input and checkpoint/vocabulary need verification, gene prediction adds no direct CN evidence.",
+        "limitations": [
+          "Binarized peaks remove read magnitude; paired RNA setup and downstream decoders complicate transfer.",
+          "Code and weights license not verified."
+        ],
+        "source_ids": [
+          "epipaper",
+          "epicode"
+        ]
+      }
+    },
+    {
+      "record_id": "D:6",
+      "task_id": "D",
+      "task_directory": "d-representation-models",
+      "record": {
+        "reference_requirements": "No labelled normal needed for representation; no absolute ploidy anchor or calibrated CN state supplied.",
+        "low_coverage_handling": "Sparse accessibility is modeled; zero observations are not proof of deletion. Missing allele counts and CN uncertainty are not modeled.",
+        "homozygous_deletion": "No demonstrated explicit homozygous-deletion call or calibration.",
+        "uncertain": [
+          "CN dosage preservation, out-of-distribution calibration, and exact local compatibility are unverified."
+        ],
+        "name": "scBasset",
+        "assay": "scATAC with DNA sequence",
+        "inputs": "Peak-by-cell matrix, matching peak order, reference FASTA",
+        "outputs": "Sequence-based accessibility prediction and cell representations, not CN",
+        "mechanism": "Convolutional model trained from peak sequences and binary accessibility for cells",
+        "evidence": "Published scATAC representation work",
+        "implementation": {
+          "code_url": "https://github.com/calico/scBasset",
+          "version_or_commit": "Current repository documentation accessed 2026-10-29; commit not pinned",
+          "license": "Apache-2.0",
+          "license_url": "https://github.com/calico/scBasset/blob/main/LICENSE",
+          "compute_notes": "Dataset model training default 1000 epochs with early stopping; pretrained dataset-specific examples do not establish transferable cell CN model."
+        },
+        "fit": "Defer: peak/FASTA inputs, fitting cost and binary objective mismatch CN task.",
+        "limitations": [
+          "Sequence and cellular accessibility are confounded with dosage; imputed values cannot validate unobserved CN."
+        ],
+        "source_ids": [
+          "scbpaper",
+          "scbcode"
+        ]
+      }
+    },
+    {
+      "record_id": "E:1",
+      "task_id": "E",
+      "task_directory": "e-per-cell-evidence",
+      "record": {
+        "name": "Poisson / negative binomial exposure regression",
+        "assay": "General count model; scATAC application proposed",
+        "inputs": "Raw regional counts, per-cell exposure, matched regions, cluster covariate, callable span",
+        "outputs": "Relative rate ratios, uncertainty and predictive zero rates",
+        "mechanism": "log mean = log exposure + region effect + covariates; NB dispersion accommodates extra-Poisson variability",
+        "reference_requirements": "Relative controls; no assumed diploid reference; absolute CN needs independent anchor",
+        "low_coverage_handling": "Zeros are measured counts; estimate predictive zero fraction conditional on exposure",
+        "homozygous_deletion": "Not identifiable from zeros alone",
+        "evidence": "Count-model reference supported in scRNA; scATAC transfer unvalidated",
+        "fit": "Raw layer available; units, controls and independence need audit",
+        "limitations": [
+          "Accessibility, mappability and CN are confounded",
+          "Cluster is coverage-confounded and adjustment may remove signal",
+          "Segments selected using same data create selection bias"
+        ],
+        "source_ids": [
+          "choi",
+          "svensson"
+        ],
+        "uncertain": [
+          "Region-specific dispersion and controls not yet evaluated"
+        ],
+        "implementation": {
+          "code_url": null,
+          "version_or_commit": null,
+          "license": null,
+          "license_url": null,
+          "compute_notes": "Small region-level fits are feasible in principle; no implementation or benchmark run."
+        }
+      }
+    },
+    {
+      "record_id": "E:2",
+      "task_id": "E",
+      "task_directory": "e-per-cell-evidence",
+      "record": {
+        "name": "Phase-aware beta-binomial allele model",
+        "assay": "Numbat published for scRNA; proposed transfer to scATAC",
+        "inputs": "Phased allele observations and total allele counts, phase-set confidence, bias controls",
+        "outputs": "Haplotype fraction with interval and power against a specified imbalance; no allele data means no inference",
+        "mechanism": "Beta-binomial for counts given total with overdispersion; phase-switch error and heterogeneous mixtures require explicit modeling",
+        "reference_requirements": "No normal assumption for relative imbalance; calibrated baseline and SNP ascertainment remain necessary",
+        "low_coverage_handling": "AT=0 gives no allele-fraction information; finite counts yield wide uncertainty",
+        "homozygous_deletion": "Cannot identify 0:0 from allele fraction without independent dosage evidence",
+        "evidence": {
+          "original_review": "Numbat evaluated on scRNA; scATAC transfer untested",
+          "coordinator_update": "Numbat-multiome 2025 provides scATAC evaluation of the joint model family; a new regional test on this dataset remains exploratory."
+        },
+        "fit": "HA/HB/AT present but phase orientation, count units and SNP selection not verified",
+        "limitations": [
+          "Overdispersion may be unidentifiable at sparse coverage",
+          "Mixing opposing states cancels signal",
+          "AT and raw depth may share fragments"
+        ],
+        "source_ids": [
+          "numbat",
+          "alleloscope",
+          "numbat_multiome_coordinator"
+        ],
+        "uncertain": [
+          "Observed per-region power and phase-set validity unknown"
+        ],
+        "implementation": {
+          "code_url": null,
+          "version_or_commit": null,
+          "license": null,
+          "license_url": null,
+          "compute_notes": "Small region-level fits are feasible in principle; no implementation or benchmark run."
+        }
+      }
+    },
+    {
+      "record_id": "E:3",
+      "task_id": "E",
+      "task_directory": "e-per-cell-evidence",
+      "record": {
+        "name": "Hurdle, zero-inflated NB or latent count mixtures",
+        "assay": "General statistical alternatives; exploratory transfer",
+        "inputs": "Same raw-count inputs and fitted baseline; technical controls and replicated datasets",
+        "outputs": "Predictive distribution and latent mixture uncertainty, not biological deletion classification",
+        "mechanism": "Separate probability of zero or mixture component; assess held-out predictions and model-based calibration",
+        "reference_requirements": "Component labels need external biological validation and identifiability",
+        "low_coverage_handling": "Extra zeros depend on the null model; small means and heterogeneity can mimic a zero component",
+        "homozygous_deletion": "A zero component is not proof of biallelic loss",
+        "evidence": "Zero-inflation evidence shown in scRNA; mixture asymptotic issues general",
+        "fit": "Consider only after baseline checks identify systematic misfit",
+        "limitations": [
+          "Boundary and unidentified parameters invalidate naive chi-square LRT",
+          "Component instability and count confounding",
+          "No orthogonal truth"
+        ],
+        "source_ids": [
+          "choi",
+          "chen"
+        ],
+        "uncertain": [
+          "Bootstrap calibration and stability under model misspecification remain untested"
+        ],
+        "implementation": {
+          "code_url": null,
+          "version_or_commit": null,
+          "license": null,
+          "license_url": null,
+          "compute_notes": "Small region-level fits are feasible in principle; no implementation or benchmark run."
+        }
+      }
+    },
+    {
+      "record_id": "F:1",
+      "task_id": "F",
+      "task_directory": "f-technical-priors",
+      "record": {
+        "reference_requirements": "No labelled normal required for annotation; not an absolute-ploidy anchor",
+        "homozygous_deletion": "Not applicable; no deletion state inferred",
+        "implementation": {
+          "code_url": null,
+          "version_or_commit": null,
+          "license": null,
+          "license_url": null,
+          "compute_notes": "Small bin-level annotation joins after matching assembly and coordinate system"
+        },
+        "uncertain": [
+          "Exact input and run provenance, applicable track license and version require verification"
+        ],
+        "name": "Sample-specific phased heterozygous SNP availability",
+        "assay": "scATAC SNP pileup and reference-panel phasing",
+        "inputs": "Phased genotype VCF, matched pileup SNPs, per-site counts, barcode and phase provenance",
+        "outputs": "Counts of selected SNPs and observations; uncertainty flags",
+        "mechanism": "Select 0|1/1|0 and exact chr/POS/REF/ALT match; AT sums selected site DP",
+        "low_coverage_handling": "Zero selected sites or AT is missing allelic information, not balance",
+        "evidence": "Exploratory local code audit; cellSNP docs are generic, not proof of actual invocation",
+        "fit": "Highest priority; per-site auxiliary tables may support ascertainment audit",
+        "limitations": [
+          "Observed het density is not population reference density; phase labels absent from matrices; filter-induced selection and LOH can reduce sites",
+          "Counting unit and run parameters unknown"
+        ],
+        "source_ids": [
+          "builder",
+          "vcf",
+          "cellsnp"
+        ]
+      }
+    },
+    {
+      "record_id": "F:2",
+      "task_id": "F",
+      "task_directory": "f-technical-priors",
+      "record": {
+        "reference_requirements": "No labelled normal required for annotation; not an absolute-ploidy anchor",
+        "homozygous_deletion": "Not applicable; no deletion state inferred",
+        "implementation": {
+          "code_url": "https://github.com/Boyle-Lab/Blacklist",
+          "version_or_commit": "v2.0 release f4a45ab; locally used BED version not confirmed",
+          "license": "Repository declares GPL-3.0; separate BED redistribution terms unverified",
+          "license_url": "https://github.com/Boyle-Lab/Blacklist/blob/master/LICENSE",
+          "compute_notes": "Small bin-level annotation joins after matching assembly and coordinate system"
+        },
+        "uncertain": [
+          "Exact input and run provenance, applicable track license and version require verification"
+        ],
+        "name": "ENCODE blacklist and genomic gap mask",
+        "assay": "Functional genomics sequencing; scATAC reuse",
+        "inputs": "Build-matched blacklist and assembly gap BED; retained and original grid",
+        "outputs": "Overlap fractions and gap flags",
+        "mechanism": "Flag known recurrent artifacts and genomic gaps; avoid joining through gaps",
+        "low_coverage_handling": "Masked regions are unobserved, not zero biological signal",
+        "evidence": "Blacklist evaluated on input sequencing; epiAneufinder applied blacklist to scATAC",
+        "fit": "High; check historical blacklist before any new exclusions",
+        "limitations": [
+          "Low accessibility is not synonymous with blacklist; whole-bin exclusion can remove genuine events",
+          "Cannot infer why individual missing bins were removed from retained grid alone"
+        ],
+        "source_ids": [
+          "blacklist",
+          "epi",
+          "pyepi",
+          "blacklistcode"
+        ]
+      }
+    },
+    {
+      "record_id": "F:3",
+      "task_id": "F",
+      "task_directory": "f-technical-priors",
+      "record": {
+        "reference_requirements": "No labelled normal required for annotation; not an absolute-ploidy anchor",
+        "homozygous_deletion": "Not applicable; no deletion state inferred",
+        "implementation": {
+          "code_url": "https://github.com/hoffmangroup/umap",
+          "version_or_commit": "1.2.1 recommended by repository; tracks version separately unpinned",
+          "license": "Master metadata GPL-3.0-only; v1.2.1 tag not checked; track redistribution terms unverified",
+          "license_url": "https://github.com/hoffmangroup/umap/blob/master/pyproject.toml",
+          "compute_notes": "Existing track summaries inexpensive; generating tracks is substantially more costly"
+        },
+        "uncertain": [
+          "Exact input and run provenance, applicable track license and version require verification"
+        ],
+        "name": "Umap multi-read mappability",
+        "assay": "Reference genome short-read sequencing; transfer to scATAC",
+        "inputs": "Verified build, read length, assembly contigs and matching multi-read bigWig",
+        "outputs": "Per-bin callable fraction or continuous mappability",
+        "mechanism": "Fraction of overlapping possible k-mers that map uniquely",
+        "low_coverage_handling": "Soft flag low mappability; no replacement for missing allele observations",
+        "evidence": "Published genome mappability; scATAC weighting is untested transfer",
+        "fit": "Useful later once read parameters and track license confirmed",
+        "limitations": [
+          "Single-read and multi-read scores differ; paired-end mapping and genetic variation alter applicability",
+          "No threshold validated for CNV inference"
+        ],
+        "source_ids": [
+          "umap",
+          "umapdocs",
+          "umapcode",
+          "umaplicense"
+        ]
+      }
+    },
+    {
+      "record_id": "F:4",
+      "task_id": "F",
+      "task_directory": "f-technical-priors",
+      "record": {
+        "reference_requirements": "No labelled normal required for annotation; not an absolute-ploidy anchor",
+        "homozygous_deletion": "Not applicable; no deletion state inferred",
+        "implementation": {
+          "code_url": null,
+          "version_or_commit": null,
+          "license": null,
+          "license_url": null,
+          "compute_notes": "Small bin-level annotation joins after matching assembly and coordinate system"
+        },
+        "uncertain": [
+          "Exact input and run provenance, applicable track license and version require verification"
+        ],
+        "name": "GC content and existing correction",
+        "assay": "scATAC count normalization",
+        "inputs": "Reference FASTA and per-bin GC; raw and processed matrices",
+        "outputs": "GC covariate and correction sensitivity",
+        "mechanism": "epiAneufinder applies per-cell LOESS correction",
+        "low_coverage_handling": "Raw zeros remain observations; correction cannot restore missing signal",
+        "evidence": "Published scATAC method; local implementation inspected",
+        "fit": "GC exists in retained-grid var, usable without external join after provenance check",
+        "limitations": [
+          "GC correlates with technical and biological signals; correction can attenuate events",
+          "Actual reference and configuration need audit"
+        ],
+        "source_ids": [
+          "epi",
+          "pyepi"
+        ]
+      }
+    },
+    {
+      "record_id": "F:5",
+      "task_id": "F",
+      "task_directory": "f-technical-priors",
+      "record": {
+        "reference_requirements": "No labelled normal required for annotation; not an absolute-ploidy anchor",
+        "homozygous_deletion": "Not applicable; no deletion state inferred",
+        "implementation": {
+          "code_url": null,
+          "version_or_commit": null,
+          "license": null,
+          "license_url": null,
+          "compute_notes": "Small bin-level annotation joins after matching assembly and coordinate system"
+        },
+        "uncertain": [
+          "Exact input and run provenance, applicable track license and version require verification"
+        ],
+        "name": "Cell-type accessibility prior",
+        "assay": "scATAC atlas, transferred as annotation",
+        "inputs": "Matched tissue and assay, genome build, peaks or fragments and cell states",
+        "outputs": "Accessibility context, not copy-number prediction",
+        "mechanism": "External contextual signal or covariate",
+        "low_coverage_handling": "Sparse regions may be inaccessible in a state or genuinely deleted",
+        "evidence": "Transfer idea; no compatible local atlas inputs established",
+        "fit": "Defer until peak or fragment data and sample matching are established",
+        "limitations": [
+          "Cell-type mismatch and CN confounding; circularity if same focal evidence defines prior"
+        ],
+        "source_ids": [
+          "epi"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+{
+  "task_id": "E",
+  "methods": [
+    {
+      "name": "Poisson / negative binomial exposure regression",
+      "assay": "General count model; scATAC application proposed",
+      "inputs": "Raw regional counts, per-cell exposure, matched regions, cluster covariate, callable span",
+      "outputs": "Relative rate ratios, uncertainty and predictive zero rates",
+      "mechanism": "log mean = log exposure + region effect + covariates; NB dispersion accommodates extra-Poisson variability",
+      "reference_requirements": "Relative controls; no assumed diploid reference; absolute CN needs independent anchor",
+      "low_coverage_handling": "Zeros are measured counts; estimate predictive zero fraction conditional on exposure",
+      "homozygous_deletion": "Not identifiable from zeros alone",
+      "evidence": "Count-model reference supported in scRNA; scATAC transfer unvalidated",
+      "fit": "Raw layer available; units, controls and independence need audit",
+      "limitations": [
+        "Accessibility, mappability and CN are confounded",
+        "Cluster is coverage-confounded and adjustment may remove signal",
+        "Segments selected using same data create selection bias"
+      ],
+      "source_ids": [
+        "choi",
+        "svensson"
+      ],
+      "uncertain": [
+        "Region-specific dispersion and controls not yet evaluated"
+      ],
+      "implementation": {
+        "code_url": null,
+        "version_or_commit": null,
+        "license": null,
+        "license_url": null,
+        "compute_notes": "Small region-level fits are feasible in principle; no implementation or benchmark run."
+      }
+    },
+    {
+      "name": "Phase-aware beta-binomial allele model",
+      "assay": "Numbat published for scRNA; proposed transfer to scATAC",
+      "inputs": "Phased allele observations and total allele counts, phase-set confidence, bias controls",
+      "outputs": "Haplotype fraction with interval and power against a specified imbalance; no allele data means no inference",
+      "mechanism": "Beta-binomial for counts given total with overdispersion; phase-switch error and heterogeneous mixtures require explicit modeling",
+      "reference_requirements": "No normal assumption for relative imbalance; calibrated baseline and SNP ascertainment remain necessary",
+      "low_coverage_handling": "AT=0 gives no allele-fraction information; finite counts yield wide uncertainty",
+      "homozygous_deletion": "Cannot identify 0:0 from allele fraction without independent dosage evidence",
+      "evidence": {
+        "original_review": "Numbat evaluated on scRNA; scATAC transfer untested",
+        "coordinator_update": "Numbat-multiome 2025 provides scATAC evaluation of the joint model family; a new regional test on this dataset remains exploratory."
+      },
+      "fit": "HA/HB/AT present but phase orientation, count units and SNP selection not verified",
+      "limitations": [
+        "Overdispersion may be unidentifiable at sparse coverage",
+        "Mixing opposing states cancels signal",
+        "AT and raw depth may share fragments"
+      ],
+      "source_ids": [
+        "numbat",
+        "alleloscope",
+        "numbat_multiome_coordinator"
+      ],
+      "uncertain": [
+        "Observed per-region power and phase-set validity unknown"
+      ],
+      "implementation": {
+        "code_url": null,
+        "version_or_commit": null,
+        "license": null,
+        "license_url": null,
+        "compute_notes": "Small region-level fits are feasible in principle; no implementation or benchmark run."
+      }
+    },
+    {
+      "name": "Hurdle, zero-inflated NB or latent count mixtures",
+      "assay": "General statistical alternatives; exploratory transfer",
+      "inputs": "Same raw-count inputs and fitted baseline; technical controls and replicated datasets",
+      "outputs": "Predictive distribution and latent mixture uncertainty, not biological deletion classification",
+      "mechanism": "Separate probability of zero or mixture component; assess held-out predictions and model-based calibration",
+      "reference_requirements": "Component labels need external biological validation and identifiability",
+      "low_coverage_handling": "Extra zeros depend on the null model; small means and heterogeneity can mimic a zero component",
+      "homozygous_deletion": "A zero component is not proof of biallelic loss",
+      "evidence": "Zero-inflation evidence shown in scRNA; mixture asymptotic issues general",
+      "fit": "Consider only after baseline checks identify systematic misfit",
+      "limitations": [
+        "Boundary and unidentified parameters invalidate naive chi-square LRT",
+        "Component instability and count confounding",
+        "No orthogonal truth"
+      ],
+      "source_ids": [
+        "choi",
+        "chen"
+      ],
+      "uncertain": [
+        "Bootstrap calibration and stability under model misspecification remain untested"
+      ],
+      "implementation": {
+        "code_url": null,
+        "version_or_commit": null,
+        "license": null,
+        "license_url": null,
+        "compute_notes": "Small region-level fits are feasible in principle; no implementation or benchmark run."
+      }
+    }
+  ],
+  "recommendations": [
+    "Start with exposure-adjusted count predictive checks and a phase-aware allele power analysis.",
+    "Use zero-inflated or mixture models only as exploratory alternatives when held-out diagnostics motivate them."
+  ],
+  "uncertain": [
+    "Numerical region-specific power, independent allelic trials and phase continuity remain unestablished. Descriptive regional counts and density contrasts were summarized in pilot.md.",
+    "No structural-zero model or independent CN truth was evaluated; model designs are not implementation or reuse decisions."
+  ]
+}

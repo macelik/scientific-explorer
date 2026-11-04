@@ -1,0 +1,689 @@
+[
+  {
+    "id": "A1",
+    "name": "epiAneufinder / pyEpiAneufinder",
+    "category": "A",
+    "tagline": "A depth profile is corrected for bias, segmented, and classified relative to the cell.",
+    "steps": [
+      {
+        "title": "Prepare",
+        "text": "Bin and GC-correct scATAC depth, filter unreliable cells and bins, and form cluster pseudobulk profiles."
+      },
+      {
+        "title": "Propose",
+        "text": "Recursively search eligible split positions for the strongest Anderson–Darling (AD) difference, respecting minimum segment sizes."
+      },
+      {
+        "title": "Test",
+        "text": "Accept a proposed split only when local and genome-pool global permutation tests meet the configured criterion; recurse on accepted segments."
+      },
+      {
+        "title": "Assign",
+        "text": "Use the original pyEpi assign_gainloss_new with genome-wide fitted best_s to assign relative per-cell states on the resulting segments."
+      },
+      {
+        "title": "Explore separately",
+        "text": "The app’s optional adjacent-segment merging and re-calling is an exploratory transformation, not an implicit step of baseline segmentation."
+      }
+    ],
+    "example": {
+      "title": "A candidate boundary across many bins",
+      "setup": "Illustratively, four consecutive stretches each contain many bins; their corrected mean depths are approximately 10, 11, 5 and 5.",
+      "steps": [
+        "Search eligible positions in the full bin-level profile, subject to size constraints.",
+        "A split near the change from the second to third stretch is a candidate; local and genome-pool permutations determine acceptance.",
+        "If accepted, recursively examine resulting segments, then fit best_s and assign relative states."
+      ],
+      "interpretation": "The block means alone cannot determine whether a split passes either test; an accepted lower segment is a relative signal, not an absolute copy count."
+    },
+    "adaptation": {
+      "stage": "segment",
+      "available": [
+        "Existing pyEpi binned depth and relative calls",
+        "AD segmentation baseline"
+      ],
+      "needed": [
+        "Counting-unit and bin provenance",
+        "Independent truth or realistic simulations"
+      ],
+      "first_experiment": "Inspect low-depth segments across coverage thresholds and record seeds for any subsampling.",
+      "success": "Report stability and uncertainty against independent evidence, without treating agreement as truth."
+    },
+    "cautions": [
+      "Sparse accessibility can resemble loss.",
+      "Category 0 means relative loss, not zero copies.",
+      "MCF10-A is a nonmalignant development sample, not a diploid label."
+    ],
+    "sources": [
+      {
+        "title": "epiAneufinder paper",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10511508/"
+      },
+      {
+        "title": "pyEpiAneufinder",
+        "url": "https://github.com/colomemaria/pyEpiAneufinder"
+      }
+    ],
+    "demo": "depth"
+  },
+  {
+    "id": "A2",
+    "name": "Copy-scAT",
+    "category": "A",
+    "tagline": "Chromosome-scale scATAC coverage is normalized and assessed for broad and focal alterations.",
+    "steps": [
+      {
+        "title": "Bin",
+        "text": "Count fragments in genomic bins for each cell."
+      },
+      {
+        "title": "Filter",
+        "text": "Remove low-quality cells and bins that are mostly zero."
+      },
+      {
+        "title": "Normalize",
+        "text": "Adjust for library size and relevant baseline effects."
+      },
+      {
+        "title": "Assess",
+        "text": "Evaluate chromosome-arm coverage for broad gains and losses; use a separate focal amplification analysis."
+      }
+    ],
+    "example": {
+      "title": "Arm-level comparison",
+      "setup": "Illustrative normalized bins on one arm are 0.7, 0.8, 0.7, versus a baseline near 1.",
+      "steps": [
+        "Aggregate the arm’s usable bins.",
+        "Compare its signal with the chosen within-sample baseline.",
+        "Check whether a narrow peak warrants separate focal analysis."
+      ],
+      "interpretation": "The broad decrease is a candidate relative loss, subject to coverage and baseline checks."
+    },
+    "adaptation": {
+      "stage": "segment",
+      "available": [
+        "Existing ATAC binned depth",
+        "Relative calls for comparison"
+      ],
+      "needed": [
+        "Compatible fragment inputs and matching bin definitions",
+        "Documented baseline settings"
+      ],
+      "first_experiment": "Run a small matched-cell comparison after confirming input availability.",
+      "success": "Describe arm-level agreement and discordance by coverage, without calling either tool truth."
+    },
+    "cautions": [
+      "Default resolution is coarse and focal analysis is distinct.",
+      "No validated absolute or biallelic deletion call follows from low signal.",
+      "Fragments were not established as available in this workspace."
+    ],
+    "sources": [
+      {
+        "title": "Copy-scAT paper",
+        "url": "https://doi.org/10.1126/sciadv.abg6045"
+      },
+      {
+        "title": "Copy-scAT repository",
+        "url": "https://github.com/spcdot/CopyscAT"
+      }
+    ],
+    "demo": "depth"
+  },
+  {
+    "id": "A3",
+    "name": "Alleloscope",
+    "category": "A",
+    "tagline": "Pool SNP allele counts across cells and candidate regions to estimate haplotype imbalance.",
+    "steps": [
+      {
+        "title": "Define regions",
+        "text": "Provide candidate genomic regions and allele counts at informative SNPs."
+      },
+      {
+        "title": "Phase",
+        "text": "Estimate SNP haplotype orientation jointly across cells using an expectation-maximization procedure."
+      },
+      {
+        "title": "Pool",
+        "text": "Aggregate oriented alleles within each region for more informative regional counts."
+      },
+      {
+        "title": "Estimate",
+        "text": "Estimate cell-level major-haplotype proportions and combine with relative coverage to assess allele states and confidence."
+      }
+    ],
+    "example": {
+      "title": "Regional imbalance",
+      "setup": "Illustratively, phased observations in one region total 18 reads on one haplotype and 6 on the other.",
+      "steps": [
+        "Orient SNP alleles consistently before pooling.",
+        "The pooled fraction is 18/24 = 0.75.",
+        "Compare this regional imbalance with relative depth and uncertainty."
+      ],
+      "interpretation": "The signal is consistent with imbalance; it does not by itself determine an integer genotype."
+    },
+    "adaptation": {
+      "stage": "alleles",
+      "available": [
+        "AT site observations and relative depth exist"
+      ],
+      "needed": [
+        "SNP-level counts and region definitions",
+        "Verified phase and preferably matched DNA segmentation"
+      ],
+      "first_experiment": "Audit whether SNP-level counts and phase can be reconstructed for one region.",
+      "success": "Quantify usable sites and uncertainty before attempting a regional comparison."
+    },
+    "cautions": [
+      "Unobserved alleles are missing evidence, not zero copies.",
+      "Phase errors or cell mixtures can distort pooled fractions.",
+      "Matched DNA segmentation is recommended for scATAC."
+    ],
+    "sources": [
+      {
+        "title": "Alleloscope paper",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9127226/"
+      },
+      {
+        "title": "Alleloscope repository",
+        "url": "https://github.com/seasoncloud/Alleloscope"
+      }
+    ],
+    "demo": "alleles"
+  },
+  {
+    "id": "A4",
+    "name": "Numbat-multiome",
+    "category": "A",
+    "tagline": "A joint probabilistic model combines reference-normalized ATAC depth and phased SNP alleles along chromosomes.",
+    "steps": [
+      {
+        "title": "Prepare",
+        "text": "Supply raw bin-by-cell ATAC counts, genomic bins, normalized ATAC reference and phased SNP-level allele counts."
+      },
+      {
+        "title": "Model",
+        "text": "Use a Poisson-lognormal coverage model and a beta-binomial phased allele-count model to score candidate joint states."
+      },
+      {
+        "title": "Connect",
+        "text": "A hidden Markov model (HMM) shares information across neighboring bins and models state transitions."
+      },
+      {
+        "title": "Pool",
+        "text": "Iterative clone-aware pooling improves estimates and returns state probabilities and clones."
+      }
+    ],
+    "example": {
+      "title": "Joint evidence",
+      "setup": "Imagine a region with normalized depth near 0.6 and phased counts 18 versus 6.",
+      "steps": [
+        "Compare depth against a defensible ATAC reference.",
+        "Score allele imbalance using the phased counts and their uncertainty.",
+        "Combine both signals with neighboring bins in the HMM."
+      ],
+      "interpretation": "A loss-like state may gain support, but this hypothetical input is not a tool result or proof of absolute copy number."
+    },
+    "adaptation": {
+      "stage": "reference",
+      "available": [
+        "Existing ATAC depth and site observations",
+        "Published ATAC-bin mode is a relevant comparator"
+      ],
+      "needed": [
+        "Suitable ATAC reference",
+        "Compatible raw fragment counts, bin geometry, phased SNP-level counts and verified phase continuity"
+      ],
+      "first_experiment": "Audit inputs and reference suitability before a small ATAC-bin feasibility run.",
+      "success": "Demonstrate input compatibility and report posterior uncertainty against independent evidence."
+    },
+    "cautions": [
+      "No suitable normal reference is established here; MCF10-A is not assumed diploid.",
+      "Current pyEpi pipeline uses AD segmentation, not this HMM.",
+      "Missing alleles and uncertain phase restrict power; ATAC 0:0 sensitivity is unvalidated here."
+    ],
+    "sources": [
+      {
+        "title": "Numbat-multiome paper",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12531993/"
+      },
+      {
+        "title": "ATAC-bin input vignette",
+        "url": "https://kharchenkolab.github.io/numbat/articles/numbat-multiome.html"
+      }
+    ],
+    "demo": "reference"
+  },
+  {
+    "id": "A5",
+    "name": "CopyKAT",
+    "category": "A",
+    "tagline": "Smooth ordered gene expression to identify broad relative copy-number patterns in scRNA-seq.",
+    "steps": [
+      {
+        "title": "Prepare",
+        "text": "Order RNA genes genomically, apply a variance-stabilizing Freeman–Tukey transformation, and smooth outliers with a polynomial dynamic linear model."
+      },
+      {
+        "title": "Reference",
+        "text": "Use clustering and Gaussian-mixture criteria to infer a putative diploid reference; this assumption can fail."
+      },
+      {
+        "title": "Segment",
+        "text": "Apply Bayesian Markov chain Monte Carlo segmentation to relative expression, then merge segments using Kolmogorov–Smirnov tests."
+      },
+      {
+        "title": "Classify",
+        "text": "Use the resulting broad profiles and normal-enrichment/mixture criteria to group cells and explore subclones."
+      }
+    ],
+    "example": {
+      "title": "Expression pattern",
+      "setup": "Hypothetically, a sequence of genes has normalized expression near 0.7 compared with a putative reference of 1.",
+      "steps": [
+        "Order the genes and smooth local expression.",
+        "Identify a sustained change across a broad interval.",
+        "Compare the interval and cells with the inferred reference."
+      ],
+      "interpretation": "The change is a candidate RNA-derived relative alteration; regulated expression could also contribute."
+    },
+    "adaptation": {
+      "stage": "reference",
+      "available": [
+        "Relative ATAC profiles provide a development baseline"
+      ],
+      "needed": [
+        "Compatible RNA expression matrix and gene coordinates",
+        "Defensible reference strategy"
+      ],
+      "first_experiment": "Study reference sensitivity on a separate compatible RNA dataset before transferring any concept.",
+      "success": "Report how inferred baseline and broad calls change with reference choice."
+    },
+    "cautions": [
+      "RNA expression is not ATAC fragment depth; direct input substitution is invalid.",
+      "A putative diploid group is an inference, not verified normal truth.",
+      "Smoothing can obscure focal events."
+    ],
+    "sources": [
+      {
+        "title": "CopyKAT paper",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8122019/"
+      },
+      {
+        "title": "CopyKAT repository",
+        "url": "https://github.com/navinlabcode/copykat"
+      },
+      {
+        "title": "XClone comparison",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11303794/"
+      }
+    ],
+    "demo": "reference"
+  },
+  {
+    "id": "A6",
+    "name": "inferCNV",
+    "category": "A",
+    "tagline": "Compare genomically smoothed RNA expression in cells with a chosen reference.",
+    "steps": [
+      {
+        "title": "Order",
+        "text": "Provide gene expression, gene order and cell annotations."
+      },
+      {
+        "title": "Reference",
+        "text": "Estimate expected expression from selected reference cells or a defined alternative."
+      },
+      {
+        "title": "Smooth",
+        "text": "Denoise expression and smooth along ordered genes to reveal broad patterns."
+      },
+      {
+        "title": "Infer",
+        "text": "Optionally apply an HMM: i3 models loss, neutral and gain; i6 estimates six state emissions using simulated expression spike-ins based on reference cells."
+      }
+    ],
+    "example": {
+      "title": "Reference comparison",
+      "setup": "Suppose five neighboring genes average 0.8 relative to selected reference cells.",
+      "steps": [
+        "Normalize each cell and compare gene expression to the reference.",
+        "Smooth across nearby genes.",
+        "Inspect the broad deviation and optionally infer HMM states."
+      ],
+      "interpretation": "A persistent decrease is a candidate RNA signal, not evidence of an absolute deletion."
+    },
+    "adaptation": {
+      "stage": "reference",
+      "available": [
+        "ATAC bins and relative pyEpi calls"
+      ],
+      "needed": [
+        "Gene expression and gene positions",
+        "Reference annotations with explicit assumptions"
+      ],
+      "first_experiment": "Test how changing a reference affects a compatible RNA example; document what transfers conceptually.",
+      "success": "Show reference sensitivity separately from independent validation."
+    },
+    "cautions": [
+      "ATAC accessibility and RNA expression have different biases; do not run directly on ATAC bins.",
+      "A cell cluster is not automatically a normal reference.",
+      "Smoothing cannot turn absent evidence into a measured region."
+    ],
+    "sources": [
+      {
+        "title": "inferCNV repository",
+        "url": "https://github.com/broadinstitute/infercnv"
+      },
+      {
+        "title": "inferCNV HMM methods",
+        "url": "https://github.com/broadinstitute/infercnv/wiki/inferCNV-HMM-based-CNV-Prediction-Methods/b16dd85440225a190a16e19fdc643fd8f9787a14"
+      }
+    ],
+    "demo": "reference"
+  },
+  {
+    "id": "A7",
+    "name": "CaSpER",
+    "category": "A",
+    "tagline": "Combine multiscale RNA expression and allele-frequency patterns to identify candidate alterations.",
+    "steps": [
+      {
+        "title": "Prepare",
+        "text": "Obtain RNA expression and allele-read profiles with genomic positions."
+      },
+      {
+        "title": "Smooth",
+        "text": "Apply recursive median filtering at several scales to expression and B-allele-frequency (BAF) shift signals."
+      },
+      {
+        "title": "Segment",
+        "text": "At each expression scale, a five-state HMM segments the smoothed expression profile."
+      },
+      {
+        "title": "Integrate",
+        "text": "Filter candidate segments for concordant BAF shifts; a Gaussian mixture model helps set the shift threshold."
+      }
+    ],
+    "example": {
+      "title": "Two RNA signals",
+      "setup": "Suppose a region’s expression is low relative to a reference and its observed alleles are 18 versus 6.",
+      "steps": [
+        "Smooth nearby expression values at a chosen scale.",
+        "Summarize allele-frequency shifts across the region.",
+        "Compare where the two candidate signals overlap."
+      ],
+      "interpretation": "Concordant signals can motivate follow-up; allelic expression and sparse reads can produce misleading shifts."
+    },
+    "adaptation": {
+      "stage": "alleles",
+      "available": [
+        "ATAC depth and allele observations"
+      ],
+      "needed": [
+        "Compatible RNA expression and RNA allele inputs",
+        "Defined reference and smoothing choices"
+      ],
+      "first_experiment": "Use the multiscale idea to inspect stability across ATAC resolutions without substituting the RNA model.",
+      "success": "Record which candidates persist across scales and where allele evidence is missing."
+    },
+    "cautions": [
+      "CaSpER is an RNA method; transferring its emissions to ATAC needs separate validation.",
+      "Allelic expression bias can mimic imbalance.",
+      "A low signal is not proof of a homozygous deletion.",
+      "The RNA HMM includes a homozygous-deletion state, but its existence does not establish detection in this ATAC workflow."
+    ],
+    "sources": [
+      {
+        "title": "CaSpER paper",
+        "url": "https://doi.org/10.1038/s41467-019-13779-x"
+      }
+    ],
+    "demo": "alleles"
+  },
+  {
+    "id": "A8",
+    "name": "HoneyBADGER",
+    "category": "A",
+    "tagline": "Use probabilistic genomic models of RNA expression and allele observations to infer candidate CNV and LOH.",
+    "steps": [
+      {
+        "title": "Cluster",
+        "text": "Cluster cells using smoothed lesser-allele fractions, split into groups and pool their observations."
+      },
+      {
+        "title": "Find regions",
+        "text": "Apply an HMM to pooled lesser-allele fractions to identify candidate CNV or LOH regions."
+      },
+      {
+        "title": "Score cells",
+        "text": "Use a Bayesian hierarchical model to estimate per-cell posterior probabilities for each candidate region, incorporating expression and alleles."
+      },
+      {
+        "title": "Recurse",
+        "text": "Cluster cells by posterior probabilities, split into putative subclones, and repeat until no further subclones are found."
+      }
+    ],
+    "example": {
+      "title": "Sparse RNA alleles",
+      "setup": "Imagine a region with reduced expression and 18 versus 6 allele reads across informative SNPs.",
+      "steps": [
+        "Order expression and allele evidence along the genome.",
+        "Model persistence of candidate states across nearby observations.",
+        "Inspect posterior support and region-level evidence."
+      ],
+      "interpretation": "A region may support a candidate alteration, while RNA-specific biases and uncertain baselines remain plausible."
+    },
+    "adaptation": {
+      "stage": "alleles",
+      "available": [
+        "Relative ATAC depth",
+        "AT site observations"
+      ],
+      "needed": [
+        "RNA expression and allele matrices for the actual method",
+        "A separately justified ATAC observation model for any adaptation"
+      ],
+      "first_experiment": "Prototype separate depth and allele evidence displays, including missingness, before proposing any joint model.",
+      "success": "Retain calibrated uncertainty and distinguish absence of observations from evidence of balance."
+    },
+    "cautions": [
+      "RNA-based emissions cannot simply be applied to ATAC.",
+      "Pooling can mask heterogeneous cells.",
+      "Missing-data behavior requires further source audit."
+    ],
+    "sources": [
+      {
+        "title": "HoneyBADGER paper",
+        "url": "https://genome.cshlp.org/highwire/markup/item_fulltext/1052075"
+      },
+      {
+        "title": "HoneyBADGER code",
+        "url": "https://github.com/JEFworks-Lab/HoneyBADGER"
+      }
+    ],
+    "demo": "alleles"
+  },
+  {
+    "id": "A9",
+    "name": "XClone",
+    "category": "A",
+    "tagline": "Model RNA read-depth and phased allelic signals separately, then combine their state evidence.",
+    "steps": [
+      {
+        "title": "Prepare",
+        "text": "Build gene-by-cell expression and allele count matrices and select reference cells."
+      },
+      {
+        "title": "Phase",
+        "text": "Orient allele counts through local and broader phasing steps."
+      },
+      {
+        "title": "Model",
+        "text": "Fit separate expression and allele mixture models; the phased allele module uses a beta-binomial likelihood. Smooth state probabilities along the genome using an HMM and across related cells."
+      },
+      {
+        "title": "Combine",
+        "text": "Combine module outputs to obtain candidate allele-specific copy-number state probabilities."
+      }
+    ],
+    "example": {
+      "title": "Complementary evidence",
+      "setup": "A hypothetical region has expression ratio 0.7 and phased RNA counts 18 versus 6.",
+      "steps": [
+        "The expression module scores the lower ratio.",
+        "The allele module evaluates imbalance and its uncertainty.",
+        "Combine the module evidence while retaining each separate result."
+      ],
+      "interpretation": "Concordance strengthens a candidate relative alteration but does not independently validate an integer state."
+    },
+    "adaptation": {
+      "stage": "alleles",
+      "available": [
+        "ATAC depth and observed alleles"
+      ],
+      "needed": [
+        "RNA expression and allele inputs for XClone",
+        "Verified phase continuity and a defensible reference"
+      ],
+      "first_experiment": "Visualize ATAC depth and allelic evidence side by side with explicit missing-data masks.",
+      "success": "Find cases of concordance and disagreement without treating either signal as ground truth."
+    },
+    "cautions": [
+      "XClone is designed for RNA, so its noise model requires validation before any ATAC adaptation.",
+      "Neighbor smoothing can mix biologically distinct cells.",
+      "No observed alleles cannot be treated as balanced."
+    ],
+    "sources": [
+      {
+        "title": "XClone paper",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11303794/"
+      },
+      {
+        "title": "XClone documentation",
+        "url": "https://xclone-cnv.readthedocs.io/en/latest/"
+      }
+    ],
+    "demo": "alleles"
+  },
+  {
+    "id": "A10",
+    "name": "CHISEL",
+    "category": "A",
+    "tagline": "Phase SNP blocks across cells and jointly cluster DNA depth and allele balance to infer allele-specific states.",
+    "steps": [
+      {
+        "title": "Count",
+        "text": "Derive read-depth ratios and SNP allele counts from barcoded single-cell DNA sequencing."
+      },
+      {
+        "title": "Phase",
+        "text": "Orient SNP blocks using information shared across cells."
+      },
+      {
+        "title": "Cluster",
+        "text": "Jointly cluster depth and allele fractions to identify recurrent genomic and cellular patterns."
+      },
+      {
+        "title": "Assign",
+        "text": "Infer allele-specific integer states and clones using ploidy and reference assumptions."
+      }
+    ],
+    "example": {
+      "title": "Two depth and allele patterns",
+      "setup": "In an illustrative DNA region, one cell has depth ratio 0.7 and phased counts 18 versus 6.",
+      "steps": [
+        "Build genomic bins and phase informative SNPs across cells.",
+        "Compare depth and allele fractions with patterns from other cells.",
+        "Assign candidate states only under a specified reference and ploidy model."
+      ],
+      "interpretation": "The pattern suggests an imbalance candidate; exact integer assignment depends on the model and assumptions."
+    },
+    "adaptation": {
+      "stage": "alleles",
+      "available": [
+        "Relative ATAC depth and site observations"
+      ],
+      "needed": [
+        "Compatible DNA BAM and SNP data for CHISEL",
+        "Independent calibration and validated phasing for any ATAC-inspired approach"
+      ],
+      "first_experiment": "Audit whether phase orientation could be estimated across cells without assuming clone labels.",
+      "success": "Measure phase consistency and uncertainty on independent controls or simulations."
+    },
+    "cautions": [
+      "DNA read-depth emissions do not automatically transfer to accessibility.",
+      "Default mode uses a matched normal; no-normal mode still has assumptions.",
+      "Relative category 0 cannot supply absolute zero-copy input."
+    ],
+    "sources": [
+      {
+        "title": "CHISEL paper",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9876616/"
+      },
+      {
+        "title": "CHISEL repository",
+        "url": "https://github.com/raphael-group/chisel"
+      }
+    ],
+    "demo": "alleles"
+  },
+  {
+    "id": "A11",
+    "name": "signals",
+    "category": "A",
+    "tagline": "Phase alleles across low-coverage DNA cells, then infer haplotype states with an HMM.",
+    "steps": [
+      {
+        "title": "Prepare",
+        "text": "Provide total integer DNA copy-number bins and per-cell haplotype-block allele counts."
+      },
+      {
+        "title": "Phase",
+        "text": "Use patterns of gains and losses across cells to orient alleles."
+      },
+      {
+        "title": "Model",
+        "text": "Use an HMM to infer allele-specific states along the genome given total copy number."
+      },
+      {
+        "title": "Report",
+        "text": "Return haplotype-specific states and LOH-related labels for each cell and bin."
+      }
+    ],
+    "example": {
+      "title": "Conditioning on total copy number",
+      "setup": "Suppose a DNA bin has independently inferred total CN 2 and phased counts 18 versus 6.",
+      "steps": [
+        "Provide the integer total CN and oriented block counts.",
+        "Compare candidate haplotype states under the allele model.",
+        "Use neighboring bins to inform the HMM state."
+      ],
+      "interpretation": "An imbalanced candidate can be assessed only conditional on the supplied CN and phase; the counts alone do not fix a genotype."
+    },
+    "adaptation": {
+      "stage": "alleles",
+      "available": [
+        "ATAC site observations and relative categories"
+      ],
+      "needed": [
+        "Independently justified integer total CN",
+        "Compatible haplotype block counts and validated phase"
+      ],
+      "first_experiment": "Check whether any independent DNA-derived total CN is available before considering this comparator.",
+      "success": "Explicitly document input provenance and assess uncertainty from upstream CN and phase."
+    },
+    "cautions": [
+      "The existing loss/base/gain categories are not integer total copy number.",
+      "A-Hom or B-Hom indicates one allele lost, not necessarily both.",
+      "This DNA method is not validated for the current ATAC data."
+    ],
+    "sources": [
+      {
+        "title": "signals documentation",
+        "url": "https://shahcompbio.github.io/signals/"
+      }
+    ],
+    "demo": "alleles"
+  }
+]

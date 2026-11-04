@@ -1,0 +1,37 @@
+topic: General scATAC CNV evidence under low coverage
+sample_context: MCF10-A development dataset; generalization across samples required
+plan: ../../docs/notes/2026-10-29-low-coverage-research-plan.md
+execution:
+  model: gpt-6.1-terra
+  fork_turns: none
+  batch_size: 3
+  waves:
+    - [A, E, F]
+    - [B, C, D]
+  shared_panel: shared/cells.tsv
+  output_dir: .
+items:
+  - id: A
+    name: Existing CNV methods
+    output_dir: a-cnv-methods
+    wave: 1
+  - id: B
+    name: Joint segmentation and uncertainty
+    output_dir: b-joint-segmentation
+    wave: 2
+  - id: C
+    name: Reference strategies
+    output_dir: c-reference-strategies
+    wave: 2
+  - id: D
+    name: Representation and foundation models
+    output_dir: d-representation-models
+    wave: 2
+  - id: E
+    name: Per-cell loss evidence
+    output_dir: e-per-cell-evidence
+    wave: 1
+  - id: F
+    name: Technical priors and SNP ascertainment
+    output_dir: f-technical-priors
+    wave: 1

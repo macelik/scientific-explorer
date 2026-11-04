@@ -1,0 +1,59 @@
+{
+  "date": "2026-10-29",
+  "scope": "Artifact structure, current completion state, links and shared export integrity; not scientific validation",
+  "tasks": [
+    {
+      "directory": "a-cnv-methods",
+      "status": "complete",
+      "method_records": 11,
+      "sources": 23,
+      "errors": []
+    },
+    {
+      "directory": "b-joint-segmentation",
+      "status": "complete",
+      "method_records": 5,
+      "sources": 15,
+      "errors": []
+    },
+    {
+      "directory": "c-reference-strategies",
+      "status": "complete",
+      "method_records": 6,
+      "sources": 14,
+      "errors": []
+    },
+    {
+      "directory": "d-representation-models",
+      "status": "complete",
+      "method_records": 6,
+      "sources": 15,
+      "errors": []
+    },
+    {
+      "directory": "e-per-cell-evidence",
+      "status": "complete",
+      "method_records": 3,
+      "sources": 6,
+      "errors": []
+    },
+    {
+      "directory": "f-technical-priors",
+      "status": "complete",
+      "method_records": 5,
+      "sources": 11,
+      "errors": []
+    }
+  ],
+  "errors": [],
+  "warnings": [],
+  "shared_hashes_verified": 5,
+  "source_metadata_checked": 7,
+  "local_links_checked": 77,
+  "pilot_regions_cross_checked": 6,
+  "json_files_parsed": 23,
+  "method_records": 36,
+  "source_records": 84,
+  "unique_source_urls": 70,
+  "scientific_validation_performed": false
+}

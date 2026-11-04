@@ -1,0 +1,167 @@
+[
+  {
+    "id": "atacpaper",
+    "title": "Atacformer preprint",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12637716/",
+    "kind": "preprint",
+    "accessed_at": "2026-10-29",
+    "locator": "Results and Methods: atlas, tokenization and embedding",
+    "supports": [
+      "Results and Methods: atlas, tokenization and embedding"
+    ]
+  },
+  {
+    "id": "atacdocs",
+    "title": "Atacformer quickstart",
+    "url": "https://docs.bedbase.org/geniml/atacformer/quickstart/",
+    "kind": "official_docs",
+    "accessed_at": "2026-10-29",
+    "locator": "pretrained checkpoint and input tokenization",
+    "supports": [
+      "pretrained checkpoint and input tokenization"
+    ]
+  },
+  {
+    "id": "ataccode",
+    "title": "geniml repository",
+    "url": "https://github.com/databio/geniml",
+    "kind": "code",
+    "accessed_at": "2026-10-29",
+    "locator": "README and license",
+    "supports": [
+      "README and license"
+    ]
+  },
+  {
+    "id": "atacweights",
+    "title": "atacformer-base-hg38 model",
+    "url": "https://huggingface.co/databio/atacformer-base-hg38",
+    "kind": "official_docs",
+    "accessed_at": "2026-10-29",
+    "locator": "model card and size",
+    "supports": [
+      "model card and size"
+    ]
+  },
+  {
+    "id": "chrompaper",
+    "title": "ChromFound preprint",
+    "url": "https://arxiv.org/abs/2505.12638",
+    "kind": "preprint",
+    "accessed_at": "2026-10-29",
+    "locator": "abstract and method",
+    "supports": [
+      "abstract and method"
+    ]
+  },
+  {
+    "id": "chromcode",
+    "title": "ChromFound official implementation",
+    "url": "https://github.com/SAIS-LifeScience/ChromFound",
+    "kind": "code",
+    "accessed_at": "2026-10-29",
+    "locator": "README v1.0.0 input and dependencies",
+    "supports": [
+      "README v1.0.0 input and dependencies"
+    ]
+  },
+  {
+    "id": "epipaper",
+    "title": "EpiFoundation preprint",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11839112/",
+    "kind": "preprint",
+    "accessed_at": "2026-10-29",
+    "locator": "sections 3.2, 3.3 and 4",
+    "supports": [
+      "sections 3.2, 3.3 and 4"
+    ]
+  },
+  {
+    "id": "epicode",
+    "title": "EpiFoundation official implementation",
+    "url": "https://github.com/UCSC-VLAA/EpiFoundation",
+    "kind": "code",
+    "accessed_at": "2026-10-29",
+    "locator": "README inputs and weights",
+    "supports": [
+      "README inputs and weights"
+    ]
+  },
+  {
+    "id": "peakpaper",
+    "title": "PeakVI paper",
+    "url": "https://doi.org/10.1016/j.crmeth.2022.100182",
+    "kind": "paper",
+    "accessed_at": "2026-10-29",
+    "locator": "STAR Methods model",
+    "supports": [
+      "STAR Methods model"
+    ]
+  },
+  {
+    "id": "peakdocs",
+    "title": "PeakVI documentation",
+    "url": "https://docs.scvi-tools.org/en/latest/api/reference/scvi.model.PEAKVI.html",
+    "kind": "official_docs",
+    "accessed_at": "2026-10-29",
+    "locator": "normalized accessibility and model API",
+    "supports": [
+      "normalized accessibility and model API"
+    ]
+  },
+  {
+    "id": "peakcode",
+    "title": "scvi-tools license",
+    "url": "https://github.com/scverse/scvi-tools/blob/main/LICENSE",
+    "kind": "code",
+    "accessed_at": "2026-10-29",
+    "locator": "license",
+    "supports": [
+      "license"
+    ]
+  },
+  {
+    "id": "scbcode",
+    "title": "scBasset implementation",
+    "url": "https://github.com/calico/scBasset",
+    "kind": "code",
+    "accessed_at": "2026-10-29",
+    "locator": "README preprocessing, training and license",
+    "supports": [
+      "README preprocessing, training and license"
+    ]
+  },
+  {
+    "id": "scbpaper",
+    "title": "scBasset paper",
+    "url": "https://www.nature.com/articles/s41592-022-01562-8",
+    "kind": "paper",
+    "accessed_at": "2026-10-29",
+    "locator": "methods sequence-based model",
+    "supports": [
+      "methods sequence-based model"
+    ]
+  },
+  {
+    "id": "scalepaper",
+    "title": "SCALE paper",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6783552/",
+    "kind": "paper",
+    "accessed_at": "2026-10-29",
+    "locator": "method and evaluations",
+    "supports": [
+      "method and evaluations"
+    ]
+  },
+  {
+    "id": "scalecode",
+    "title": "SCALE official implementation",
+    "url": "https://github.com/jsxlei/SCALE",
+    "kind": "code",
+    "accessed_at": "2026-10-29",
+    "locator": "README inputs outputs and license",
+    "supports": [
+      "README inputs outputs and license"
+    ]
+  }
+]
