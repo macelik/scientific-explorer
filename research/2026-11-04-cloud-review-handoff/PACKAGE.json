@@ -1,5 +1,5 @@
 {
-  "status": "prepared_locally_not_uploaded",
+  "status": "published",
   "release_tag_proposal": "cloud-review-data-2026-11-04",
   "filename": "cloud-review-data-2026-11-04.tar.gz",
   "size_bytes": 419016233,
@@ -10,5 +10,13 @@
   "local_output_directory": "/tmp/cnv-cloud-handoff-2026-11-04/publishable",
   "repository_visibility_checked": "public",
   "public_distribution_confirmation": "User explicitly authorized public GitHub publication of this 24-file package on 2026-11-04.",
-  "download_url": null
+  "download_url": "https://github.com/macelik/scientific-explorer/releases/download/cloud-review-data-2026-11-04/cloud-review-data-2026-11-04.tar.gz",
+  "release_tag": "cloud-review-data-2026-11-04",
+  "release_url": "https://github.com/macelik/scientific-explorer/releases/tag/cloud-review-data-2026-11-04",
+  "published_at": "2026-11-04T22:49:52Z",
+  "release_target_commit": "23622f02bcbb1d62d63be64ec880cdd2a918f5ad",
+  "sha256sums_url": "https://github.com/macelik/scientific-explorer/releases/download/cloud-review-data-2026-11-04/SHA256SUMS",
+  "github_asset_id": 711208761,
+  "github_asset_digest": "sha256:bc8d7519e5a0b636f7d0f22e2ac3f1beb89aba412881bdc74a4f221289e4d26e",
+  "github_asset_state": "uploaded"
 }

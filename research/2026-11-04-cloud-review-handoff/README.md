@@ -31,14 +31,18 @@ path and important remaining uncertainties.
 
 ## Data delivery
 
-`PACKAGE.json` is the authoritative delivery status and archive identity.
-The archive was prepared locally; do not assume that a release exists while
-its `download_url` is null. All payload files and hashes are listed in
-`DATA_MANIFEST.json`; `PACKAGE_VERIFICATION.json` records archive checks.
+The data package is published at the
+[GitHub Release](https://github.com/macelik/scientific-explorer/releases/tag/cloud-review-data-2026-11-04).
+Download the [399.61 MiB archive](https://github.com/macelik/scientific-explorer/releases/download/cloud-review-data-2026-11-04/cloud-review-data-2026-11-04.tar.gz)
+and [SHA256SUMS](https://github.com/macelik/scientific-explorer/releases/download/cloud-review-data-2026-11-04/SHA256SUMS).
+`PACKAGE.json` records the URLs and archive identity. All payload files and
+hashes are listed in `DATA_MANIFEST.json`; `PACKAGE_VERIFICATION.json` records
+the archive checks and matching GitHub-side digest. The release is marked as
+a prerelease because it supports ongoing method development.
 
 The repository is **public**. The user authorized public distribution of this
-specific 24-file data package on 2026-11-04. `PACKAGE.json` records whether
-publication has completed; a locally prepared archive alone is not a download.
+specific 24-file data package on 2026-11-04. GitHub's archive SHA-256 and byte
+size match the local verified package.
 
 Ordinary GitHub commits block files larger than 100 MiB. GitHub Releases allow
 assets under 2 GiB each, making a separate checksum-verified release asset a
@@ -55,10 +59,8 @@ revision separately. It does not contain original sequencing reads.
 
 ## Cloud setup
 
-First clone/check out `scientific-explorer` on `allelic-segmentation`. If the
-data package has been published, obtain its actual release tag and URL from
-`PACKAGE.json`. The following is the proposed download command, to be used only
-after that status records publication (or transfer the local archive privately):
+First clone/check out `scientific-explorer` on `allelic-segmentation`. Download
+the public assets through the links above or with the GitHub CLI:
 
 ```bash
 gh release download cloud-review-data-2026-11-04 \
@@ -67,8 +69,8 @@ gh release download cloud-review-data-2026-11-04 \
   --dir ../cloud-review-download
 ```
 
-Verify `SHA256SUMS` from within the download directory, then extract the archive
-into the directory alongside the workbench checkout. This creates a sibling
+Run `sha256sum -c SHA256SUMS` from within the download directory, then extract
+the archive into the directory alongside the workbench checkout. This creates a sibling
 `cloud-review-data-2026-11-04/` containing the original data layout. Allow at
 least 2 GiB free for the download and extraction, plus room for environments,
 caches and experiments. Use backed/sparse loading for initial diagnostics.

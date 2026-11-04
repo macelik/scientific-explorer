@@ -4,5 +4,8 @@
   "archive_sha256": "bc8d7519e5a0b636f7d0f22e2ac3f1beb89aba412881bdc74a4f221289e4d26e",
   "files_verified": 24,
   "archive_mib": 399.61,
-  "uncompressed_gib": 1.26
+  "uncompressed_gib": 1.26,
+  "github_asset_digest_matches": true,
+  "github_asset_size_matches": true,
+  "release_publication_verified": true
 }

@@ -86,7 +86,9 @@ Investigate these concrete questions:
 - QC: how do bin nonzero-frequency filtering, cell coverage filtering and
   count/dispersion outlier filters affect retained regions? Could a true
   event influence its own inclusion? Which masks or original observations
-  are needed to evaluate this? Check sparse explicit-zero handling.
+  are needed to evaluate this? Check sparse explicit-zero handling. Also
+  distinguish original read/fragment and cell-quality filters from these
+  later matrix filters; audit them where the necessary records exist.
 - GC: inspect per-cell LOESS, the correction denominator, boundary behavior,
   very small/zero/negative predictions and fit failures. Separate observed
   problems from plausible failure modes. Check how broad events or sparse
