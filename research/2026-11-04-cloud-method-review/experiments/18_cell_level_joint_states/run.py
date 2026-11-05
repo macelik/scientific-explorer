@@ -186,9 +186,9 @@ def prepare(d, p, lab, units, tabs, own_units):
         blk = d.rows("layers/raw", lo, hi)
         Y[lo:hi] = T.T.dot(blk.T).T; Fl[lo:hi] = F.T.dot(blk.T).T; tot[lo:hi] = blk.sum(1)
         cols = cells[lo:hi]
-        HA = pfs["HA"].read(columns=cols).to_pandas()[cols].to_numpy().T      # bins x cells
-        HB = pfs["HB"].read(columns=cols).to_pandas()[cols].to_numpy().T
-        AT = pfs["AT"].read(columns=cols).to_pandas()[cols].to_numpy().T
+        HA = pfs["HA"].read(columns=cols).to_pandas()[cols].to_numpy()      # bins x cells
+        HB = pfs["HB"].read(columns=cols).to_pandas()[cols].to_numpy()
+        AT = pfs["AT"].read(columns=cols).to_pandas()[cols].to_numpy()
         assert np.allclose(HA + HB, AT)
         M[lo:hi] = (WB.T.dot(HB) + WA.T.dot(HA)).T; N[lo:hi] = WN.T.dot(AT).T
         lc = lab[lo:hi]
