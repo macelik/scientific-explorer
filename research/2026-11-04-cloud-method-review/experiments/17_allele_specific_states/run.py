@@ -142,6 +142,48 @@ def main():
             rows.append(rec)
     out = pd.DataFrame(rows)
     out.to_csv(HERE / "region_states.tsv", sep="\t", index=False)
+
+    # ---- second allele source: phase-orientation HMM of experiment 16 (k = 0.6), own null
+    E16 = E / "16_major_minor_haplotypes"
+    hmm_rows, hmm_meta = [], {}
+    if (E16 / "region_haplotypes.tsv").exists():
+        rh = pd.read_csv(E16 / "region_haplotypes.tsv", sep="\t")
+        rh = rh[rh.group == "all"].set_index("region")
+        sh = pd.read_csv(E16 / "segment_haplotypes.tsv", sep="\t")
+        sh = sh[sh.group == "all"]
+        rn = pd.read_csv(E16 / "random_null.tsv", sep="\t")
+        rn = rn[(rn.group == "all") & rn.eligible]
+        hmed16 = float(rn.h_hat.median()); tau16 = mad(rn.h_hat)
+        hmm_meta = {"h_null_median_exp16": hmed16, "tau_h_exp16": tau16, "n_random_exp16": int(len(rn))}
+        d16 = df.copy()
+        d16["h_obs"] = np.nan; d16["h_se"] = np.nan; d16["allele_bins"] = 0
+        for i, r in d16.iterrows():
+            src = None
+            if r.region in rh.index:
+                src = rh.loc[r.region]
+            elif r.family == "called":
+                ch = r.region.split(":")[0]; a = float(r.region.split(":")[1].split("-")[0]) * 1e6
+                m = sh[(sh.chromosome == ch) & ((sh.start_bp - 1 - a).abs() < 60_000)]
+                if len(m):
+                    src = m.iloc[0]
+            if src is not None and bool(src.get("eligible", True)) and np.isfinite(src.h_hat):
+                hh = max(float(src.h_hat), 1 - float(src.h_hat))
+                lo, hi = src.get("h_ci_lo", np.nan), src.get("h_ci_hi", np.nan)
+                se = (hi - lo) / (2 * 1.96) if np.isfinite(lo) and np.isfinite(hi) and hi > lo else 0.01
+                d16.loc[i, ["h_obs", "h_se", "allele_bins"]] = [hh, se, float(src.bins_AT_ge5)]
+        for _, r in d16[d16.family.isin(["saved", "literature", "called"])].iterrows():
+            sig = sig_flank if r.depth_reference == "flanks" else sig_genome
+            post, _, has_allele = score(r, S, sig, tau16, hmed16, 0.6)
+            i = int(np.argmax(post)); st = S.iloc[i]
+            hmm_rows.append({"family": r.family, "region": r.region, "direction": r.direction, "L_obs": r.L_obs, "h_hmm": r.h_obs,
+                             "allele_used": has_allele, "map_type_hmm": st.type, "map_f_hmm": st.f, "map_post_hmm": float(post[i]),
+                             "major_mean_hmm": float(np.sum(post * S.major)), "minor_mean_hmm": float(np.sum(post * S.minor))})
+    hmm = pd.DataFrame(hmm_rows)
+    if len(hmm):
+        hmm = hmm.merge(out[out.k == 0.6][["region", "h_obs", "map_type", "map_f"]].rename(columns={"h_obs": "h_agnostic", "map_type": "map_type_agnostic",
+                                                                                                  "map_f": "map_f_agnostic"}), on="region", how="left")
+        hmm["agree"] = hmm.map_type_hmm == hmm.map_type_agnostic
+        hmm.to_csv(HERE / "region_states_hmm_allele.tsv", sep="\t", index=False)
     prim = out[out.k == 0.6]
 
     def fam_tab(g):
@@ -158,6 +200,9 @@ def main():
            "sigma_A_flank": sig_flank, "sigma_A_genome": sig_genome, "h_null_median": hmed, "tau_h": tau, "k_grid": [1.0, 0.6, 0.4],
            "primary_k": 0.6, "cell_fractions": FR.tolist(), "p0_zero": P0,
            "family_summary_k0.6": fam.to_dict("records"), "environment": C.environment()}
+    res["hmm_allele_source"] = hmm_meta
+    if len(hmm):
+        res["hmm_vs_agnostic_agreement_called"] = [int(hmm[hmm.family == "called"].agree.sum()), int((hmm.family == "called").sum())]
     C.write_json(HERE / "summary.json", res)
 
     # ------------------------------------------------------------------ figures
@@ -261,6 +306,12 @@ def main():
         ("Sensitivity to the attenuation k", C.html_table(ksens) + C.caption("MAP type at k = 1.0, 0.6, 0.4. A call that changes with k depends on how "
          "much the allelic signal is attenuated, which these data do not identify."), 3),
         ("Per-region detail", C.html_table(per_tab) + C.caption("k = 0.6. Notes are generated from the columns.")),
+        ("Allele source sensitivity: phase-orientation HMM (experiment 16)", (C.html_table(hmm[hmm.family.isin(["saved", "literature"])]) +
+         C.caption(f"Same depth term; alleles from experiment 16's HMM-oriented major-haplotype fraction with its own null (median "
+                   f"{hmm_meta.get('h_null_median_exp16', float('nan')):.3f}, spread {hmm_meta.get('tau_h_exp16', float('nan')):.3f}, "
+                   f"{hmm_meta.get('n_random_exp16', 0)} random windows). Called segments: MAP type agrees with the phase-agnostic source in "
+                   f"{int(hmm[hmm.family == 'called'].agree.sum()) if len(hmm) else 0} of {int((hmm.family == 'called').sum()) if len(hmm) else 0}; full table in region_states_hmm_allele.tsv."))
+         if len(hmm) else "<p>Experiment 16 outputs not found.</p>"),
         ("Called short segments", C.html_table(prim[prim.family == "called"][["region", "direction", "L_obs", "h_obs", "map_type", "map_f", "map_post",
                                                                                  "major_mean", "minor_mean", "fit", "map_type_depth_only"]], max_rows=80)),
         ("Limits and alternative explanations", "<ul><li>The state grid assumes a 1:1 diploid background and population-average mixtures; real "
@@ -290,7 +341,8 @@ def main():
         decision_impact="This is the concrete form of rank 1 in <code>method_comparison.tsv</code> (evidence layer) extended with rank 5 (joint "
                         "depth–allele evidence): modality-specific likelihoods, empirical nulls for each, and an explicit 'no state fits' outcome. "
                         "To become a method it needs a calibrated k (SNP-level, phase-aware counts) and an external baseline for σ_A.",
-        next_steps=["Add a selected-site-density likelihood (AT per fragment vs genome) so that LOH-driven ascertainment loss counts as evidence for loss.",
+        next_steps=["Calibrate which allele source (phase-agnostic or HMM-oriented) to use on samples with DNA-defined allele-specific states.",
+                    "Add a selected-site-density likelihood (AT per fragment vs genome) so that LOH-driven ascertainment loss counts as evidence for loss.",
                     "Replace phase-agnostic ĥ with the HMM-oriented major-haplotype fraction from experiment 16 when available.",
                     "Estimate k on samples with DNA-defined allele-specific states.",
                     "Run per cluster to expose subclonal or mirrored events."])

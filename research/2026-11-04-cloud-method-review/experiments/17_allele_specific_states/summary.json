@@ -142,8 +142,17 @@
    "matplotlib": "3.8.4",
    "statsmodels": "0.14.1"
   },
-  "workbench_commit_at_run": "8adb79ad699340c6718ff3a0573a7d1bf837d679",
+  "workbench_commit_at_run": "1e34dd69e6fa48939a69d3016dacc17c785c4737",
   "pyepi_upstream_commit": "e8305ea2162634d07e92a3bb401df672e48f217b",
   "cpu_count": 4
- }
+ },
+ "hmm_allele_source": {
+  "h_null_median_exp16": 0.51,
+  "tau_h_exp16": 0.014826000000000013,
+  "n_random_exp16": 60
+ },
+ "hmm_vs_agnostic_agreement_called": [
+  58,
+  67
+ ]
 }
