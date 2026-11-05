@@ -4,6 +4,10 @@ Independent review of the scATAC CNV workflow on `allelic-segmentation` (checkou
 `6d4f48d`), using the verified data release `cloud-review-data-2026-11-04` and pinned
 pyEpiAneufinder `e8305ea`. MCF10-A is development data; nothing here is CN truth.
 
+
+> **Start here:** [final_report.html](final_report.html) is the consolidated report for experiments 00–19: findings, what to
+> change, what worked, explicit methods with assumptions, and the path toward a haplotype-aware caller.
+
 ## Recommendation (details: [recommendation.md](recommendation.md))
 
 Put the next change in **evidence integration and the CN reference**, not in GC/rounding
@@ -49,7 +53,10 @@ reasons: [status.json](status.json).
 - [preprocessing_audit.md](preprocessing_audit.md): stage-by-stage formulas with code locators,
   failure hypotheses, diagnostics and reconstruction.
 - [experiments/](experiments/README.md): scripts, commands, seeds, environment, tables and one
-  HTML report per diagnostic.
+  HTML report per diagnostic (00–19; 08–19 implement the 2026-10-29 method designs: E:1/E:2/E:3 count and
+  allele models, B:2/B:3 count changepoint and joint HMM, C:3 baselines, per-modality model choice, major/minor
+  haplotype orientation, allele-specific states, cell-level joint mixture, spike-in benchmark, masking diagnosis).
+- [final_report.html](final_report.html), built by [final_report/build.py](final_report/build.py) from the experiments' outputs.
 - [method_comparison.tsv](method_comparison.tsv), [sources.json](sources.json),
   [recommendation.md](recommendation.md), [status.json](status.json).
 
