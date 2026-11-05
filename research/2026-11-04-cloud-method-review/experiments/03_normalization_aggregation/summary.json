@@ -461,9 +461,9 @@
    "pyarrow": "23.0.0",
    "skmisc": "0.5.2",
    "matplotlib": "3.8.4",
-   "statsmodels": null
+   "statsmodels": "0.14.1"
   },
-  "workbench_commit_at_run": "ed7d1970d6f955dd3a77dc66fae2de3dca6d7a3e",
+  "workbench_commit_at_run": "fdab8625887bc65b6f9a65dcc8476a140f92b3cb",
   "pyepi_upstream_commit": "e8305ea2162634d07e92a3bb401df672e48f217b",
   "cpu_count": 4
  }
