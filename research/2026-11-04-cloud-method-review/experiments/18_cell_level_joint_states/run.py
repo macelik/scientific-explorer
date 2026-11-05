@@ -711,7 +711,9 @@ def tables(ctx):
                       "evidence_class": r["class"], "frac_cells_P_event_gt_0.9": r["frac_cells_P90"] if sig else np.nan, "mean_P_event": r["mean_P_event"] if sig else np.nan,
                       "LRT_depth_only": r["components"]["depth_only"]["LRT_for_joint_best_type"], "LRT_allele_only": r["components"]["allele_only"]["LRT_for_joint_best_type"],
                       "depth_allele_agreement": r["agreement"], "agreement_note": r["agreement_note"].strip(),
-                      "major_haplotype_label": "B (HB)" if o["bins_B_major"] > o["bins_A_major"] else "A (HA)" if o["bins_A_major"] > o["bins_B_major"] else "undetermined",
+                      "corroborated_by_both_modalities": bool(sig and r["agreement"] == "depth and allele both support"),
+                      "major_haplotype_label": ("no certain bins" if o["bins_certain"] == 0 else "mixed along region" if min(o["bins_B_major"], o["bins_A_major"]) > 0.1 * o["bins_certain"]
+                                                else "B (HB)" if o["bins_B_major"] > o["bins_A_major"] else "A (HA)"),
                       "bins_certain": o["bins_certain"], "bins_B_major": o["bins_B_major"], "bins_A_major": o["bins_A_major"], "orientation_switches": o["orientation_switches"],
                       "mean_orientation_certainty": o["mean_certainty"],
                       "mean_major_copies_if_event": (1 - r["pi"]) + r["pi"] * a_e if sig else np.nan, "mean_minor_copies_if_event": (1 - r["pi"]) + r["pi"] * b_e if sig else np.nan})
@@ -732,6 +734,7 @@ def tables(ctx):
         frows.append({"window": r["name"], "n_cells_with_AT": r["n_cells_N_gt0"], "pooled_major_fraction": r["pooled_h"], "alpha_depth": r["alpha_r"], "rho_allele": r["rho_r"],
                       "best_type": r["best_type"], "pi": r["pi"], "pi_lo": r["pi_lo"], "pi_hi": r["pi_hi"], "LRT": r["LRT"], "boot_p": r["boot_p"], "evidence_class": r["class"],
                       "event_detected_p_lt_0.05": r["boot_p"] < 0.05, "subclonal_detected": r["class"] == "subclonal", "clonal_detected": r["class"] == "clonal",
+                      "corroborated_by_both_modalities": bool(r["boot_p"] < 0.05 and r["agreement"] == "depth and allele both support"),
                       "LRT_depth_only": vp["depth only"]["LRT"], "boot_p_depth_only": vp["depth only"]["boot_p"], "LRT_no_offset": vp["no shared baseline offset"]["LRT"],
                       "boot_p_no_offset": vp["no shared baseline offset"]["boot_p"], "LRT_allele_only": vp["allele only"]["LRT"]})
     return pd.DataFrame(rrows), pd.DataFrame(crows), pd.DataFrame(frows), pd.DataFrame(srows)
@@ -740,7 +743,7 @@ def tables(ctx):
 def fpr_summary(fr):
     n = len(fr)
     out = {"n_windows": n}
-    for nm, col in [("event_detected_p_lt_0.05", fr["event_detected_p_lt_0.05"]), ("subclonal_detected", fr.subclonal_detected), ("clonal_detected", fr.clonal_detected),
+    for nm, col in [("event_detected_p_lt_0.05", fr["event_detected_p_lt_0.05"]), ("subclonal_detected", fr.subclonal_detected), ("clonal_detected", fr.clonal_detected), ("corroborated_by_both_modalities", fr.corroborated_by_both_modalities),
                     ("no_offset_p_lt_0.05", fr.boot_p_no_offset < 0.05), ("depth_only_p_lt_0.05", fr.boot_p_depth_only < 0.05)]:
         k = int(col.sum()); lo, hi = clopper(k, n)
         out[nm] = {"k": k, "rate": k / n, "ci95": [lo, hi]}
@@ -753,13 +756,18 @@ def note_for(r, row, cl):
     if row.boot_p >= 0.05:
         s += " is not distinguishable from the 1:1 background plus baseline offset"
     s += f"; depth LRT {row.LRT_depth_only:.1f}, allele LRT {row.LRT_allele_only:.1f} ({row.depth_allele_agreement}"
-    s += f"; {row.agreement_note})" if row.agreement_note else ")"
-    s += f"; {row.major_haplotype_label} is the oriented major haplotype in {max(row.bins_B_major, row.bins_A_major)} of {row.bins_certain} certain bins"
-    if row.orientation_switches:
-        s += f" with {row.orientation_switches} orientation switch(es)"
-    sig_c = [c for c in cl if c["boot_p"] < 0.05 and c["pi"] >= 0.05]
+    s += f"; {row.agreement_note.strip().rstrip(';')})" if row.agreement_note else ")"
+    if row.bins_certain == 0:
+        s += "; no bin has orientation certainty >= 0.8, so the major haplotype is undetermined and the allele term is uninformative"
+    else:
+        s += (f"; oriented major haplotype by bin: HA on {row.bins_A_major}, HB on {row.bins_B_major} of {row.bins_certain} certain bins ({row.orientation_switches} label switches; "
+              "labels are local because phase between bins is unverified)")
+    sig_c = [c for c in cl if c["boot_p"] < 0.05 and not c["evidence_class"].startswith("small-fraction")]
+    n_small = sum(1 for c in cl if c["boot_p"] < 0.05 and c["evidence_class"].startswith("small-fraction"))
     if sig_c:
         s += "; clusters with p < 0.05: " + ", ".join(f"{c['cluster']} ({c['best_type']} {c['pi']:.0%})" for c in sig_c)
+    if n_small:
+        s += f"; {n_small} cluster(s) with only a small-fraction deviation"
     opp = [c for c in cl if c["opposite_to_all_orientation"]]
     if opp:
         s += "; cluster " + ", ".join(c["cluster"] for c in opp) + " carries the opposite haplotype to the pooled orientation"
@@ -902,17 +910,23 @@ def finish(ctx):
         "LRT": "2 x (penalised log-likelihood of the best event state - null), floored at 0; calibrated only through boot_p (the asymptotic chi-square does not apply at the boundary)",
         "boot_p": "(1 + #{T* >= T}) / (B + 1), T = max over the six types; parametric bootstrap from the fitted null",
         "boot_B": "number of bootstrap replicates",
+        "corroborated_by_both_modalities": "p < 0.05 and the same best type has LRT > 3.84 with the depth term alone and with the allele term alone",
         "evidence_class": "small-fraction deviation (p < 0.05 but CI upper < 0.10; not interpreted); clonal (p < 0.05, CI lower >= 0.8); subclonal (p < 0.05, CI upper < 0.95, lower > 0); event, clonal vs subclonal unresolved; no evidence (p >= 0.05 and CI upper <= 0.25); insufficient evidence (p >= 0.05, wider CI)",
         "frac_cells_P_event_gt_0.9": "fraction of cells whose posterior probability of the event state exceeds 0.9 (shown only when p < 0.05)",
         "mean_P_event": "mean posterior event probability over cells (shown only when p < 0.05)",
+        "n_cells": "cells in the region fit (all cells) or in the cluster",
+        "family / chrom / start_mb / end_mb": "region family (saved, literature, hypothesis, random) and its position",
+        "agreement_note": "types without a depth change (cnloh) or without an allele change (gain2, homdel) cannot be supported by that term",
+        "mean_orientation_certainty": "mean over the region's bins with AT of max(p_B_major, 1 - p_B_major) from exp 16",
+        "LRT_no_offset / LRT_allele_only": "random-panel LRT of the variant without the shared baseline offset / allele term only",
         "LRT_depth_only / LRT_allele_only": "LRT of the same best type fitted with only the depth term, or only the allele term; > 3.84 counts as support",
         "depth_allele_agreement": "both support / depth only / allele only / neither alone, from the two LRTs; types without a depth (cnloh) or allele (gain2, homdel) change cannot be supported by that term",
-        "major_haplotype_label": "haplotype (HA or HB column of the phased matrices) that exp 16 orients as major on most certain bins; labels are relative, not verified phase",
+        "major_haplotype_label": "HA or HB when one label is major on > 90% of the certain bins; 'mixed along region' otherwise (phase between bins is unverified, so labels are local); 'no certain bins' when none has certainty >= 0.8",
         "bins_certain / bins_B_major / bins_A_major": "bins with orientation certainty >= 0.8 and their major-haplotype label",
         "orientation_switches": "number of A/B label changes between consecutive certain bins in the region",
         "mean_major_copies_if_event / mean_minor_copies_if_event": "population-average relative copies (1-pi)*1 + pi*(state copies); shown only when p < 0.05",
         "cluster": "WNN cluster label (leiden 0.3, common.cell_clusters)",
-        "pooled_major_fraction_all_orientation / _own_cluster_orientation": "cluster pooled major fraction oriented by the exp 16 `all` call / by the cluster's own exp 16 call (descriptive only)",
+        "pooled_major_fraction_all_orientation / pooled_major_fraction_own_cluster_orientation": "cluster pooled major fraction oriented by the exp 16 `all` call / by the cluster's own exp 16 call (descriptive only)",
         "opposite_to_all_orientation": "pooled fraction < 0.47 under the `all` orientation but > 0.55 under the cluster's own orientation: the cluster carries the opposite haplotype",
         "boot_p_no_offset / boot_p_depth_only": "bootstrap p (B = 39) of the same pipeline without the shared baseline offset / with the allele term removed (random windows only)",
         "event_detected_p_lt_0.05 / subclonal_detected / clonal_detected": "false-positive flags in uncalled random windows",
@@ -981,23 +995,55 @@ def finish(ctx):
 
 
 def verdict_text(rg, cl, fs, ctx):
-    return "(to be written after the first full run)"
+    n = fs["n_windows"]
+    cor = rg[rg.corroborated_by_both_modalities]
+    dep = rg[(rg.boot_p < 0.05) & ~rg.corroborated_by_both_modalities & (rg.evidence_class.isin(["clonal", "subclonal", "event, clonal vs subclonal unresolved"]))]
+    return (f"Combining depth and allele evidence per cell supports a cell-fraction call in only {len(cor)} of {len(rg)} regions ({', '.join(cor.region)}); each is fitted as a near-clonal "
+            f"2:1-type gain (pi {cor.pi.min():.0%}-{cor.pi.max():.0%}) with both modalities contributing. {len(dep)} further regions "
+            f"({', '.join(dep.region)}) reach p < 0.05 from depth alone, and the allele term gives them no support. The same pipeline reports p < 0.05 for "
+            f"{fs['event_detected_p_lt_0.05']['k']}/{n} uncalled random windows ({fs['subclonal_detected']['k']} 'subclonal', {fs['clonal_detected']['k']} 'clonal') and {fs['corroborated_by_both_modalities']['k']}/{n} "
+            "with both modalities in agreement, so a depth-only subclonal or clonal call is not decisive evidence of a state; "
+            "'insufficient evidence' must remain an explicit output. Exploratory; no copy-number truth is available.")
 
 
 def supports_text(rg, cl, fs):
-    return ["(pending)"]
+    cor = rg[rg.corroborated_by_both_modalities]
+    return [
+        f"Reporting a per-cell mixture with an interval, a bootstrap p and an explicit class, with the depth-only and allele-only contributions shown beside it (done for {len(rg)} regions and {len(cl)} region x cluster fits).",
+        f"Treating a state as corroborated only when depth and allele both support the same type: {', '.join(cor.region) if len(cor) else 'none'} here, versus {fs['corroborated_by_both_modalities']['k']}/{fs['n_windows']} uncalled random windows.",
+        f"A shared, jointly estimated baseline offset: removing it raises the random-window rate of p < 0.05 from {fs['event_detected_p_lt_0.05']['k']}/{fs['n_windows']} to {fs['no_offset_p_lt_0.05']['k']}/{fs['n_windows']}.",
+        "Flagging clusters whose own exp 16 orientation is opposite to the pooled one (MYC and chr8:115-145 Mb, cluster 4) as a cluster-specific allelic pattern to examine, not as a fitted state.",
+    ]
 
 
 def not_supports_text(rg, cl, fs):
-    return ["(pending)"]
+    return [
+        "That any fitted event is a copy-number state: the baseline offset, cluster terms and allelic attenuation k are nuisances calibrated from random windows, and MCF10-A is assumed 1:1.",
+        f"That depth-only subclonal or clonal calls (the chr7 windows, 9p21, 19q13) are real: the depth-only rate of p < 0.05 in uncalled random windows is {fs['depth_only_p_lt_0.05']['k']}/{fs['n_windows']}, and the overall pipeline's is {fs['event_detected_p_lt_0.05']['k']}/{fs['n_windows']}.",
+        "Cluster-level p-values as calibrated: the cluster-level bootstrap was not validated on random windows, and most p < 0.05 cluster rows are small-fraction deviations at the 5% floor.",
+        "A subclonal fraction below about 5-10% of cells: such deviations are at the resolution limit and are labelled as such.",
+        "A fitted mirrored event for chr8:115-145 Mb cluster 4: the model has no event on the opposite haplotype, so its cluster-4 fit (cnloh in about 31% of cells) is only a symptom of the reversed orientation.",
+    ]
 
 
 def decision_text(rg, cl, fs):
-    return "(pending)"
+    return ("<p>For <code>recommendation.md</code> (item 1, the per-region evidence layer, and item 5, the joint depth-allele likelihood): a cell-level mixture can be added to the evidence layer, "
+            "but only as a labelled secondary output. (i) Report a cell fraction only with its interval and with the depth-only and allele-only contributions; call it corroborated only when both support the same state. "
+            f"(ii) A baseline offset estimated jointly and penalised by random-window spread is required: without it {fs['no_offset_p_lt_0.05']['k']}/{fs['n_windows']} uncalled windows are flagged. "
+            f"(iii) Even with it, depth-only calls have a false-positive rate of about {fs['depth_only_p_lt_0.05']['rate']:.0%} (95% CI {fs['depth_only_p_lt_0.05']['ci95'][0]:.0%}-{fs['depth_only_p_lt_0.05']['ci95'][1]:.0%}), so the saved chr7 dips stay "
+            "'depth-only, baseline-dependent' and the cross-sample technical baseline (item 3) remains the decisive experiment. (iv) 'Insufficient evidence' stays an explicit class. "
+            "This experiment does not justify replacing any pyEpiAneufinder call.</p>")
 
 
 def next_steps_text(rg, cl, fs):
-    return ["(pending)"]
+    return [
+        "Add event states on the opposite haplotype (signed attenuation) and test cluster 4 at chr8:115-145 Mb and MYC with them; then split cluster 4 and check allele-specific accessibility at the heterozygous sites.",
+        "Validate the cluster-level bootstrap on the random panel (it was run only for the 12 regions) and apply a multiplicity correction across region x cluster tests.",
+        "Replace the Gaussian baseline prior by an empirical (heavy-tailed) distribution from a cross-sample technical baseline or a mappability track; several random windows are baseline outliers that the Gaussian prior calls clonal.",
+        "Match the baseline calibration windows to region width (large regions currently use 25-bin windows and are therefore conservative on depth).",
+        "Estimate k on a sample with DNA-defined allele-specific states instead of using 0.6 and 1.0.",
+        "Model N (AT) jointly with depth if the dependence between them (exp 15) matters for the decision; here it is only conditioned on.",
+    ]
 
 
 if __name__ == "__main__":

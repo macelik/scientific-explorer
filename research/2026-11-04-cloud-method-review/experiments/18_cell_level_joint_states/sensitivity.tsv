@@ -44,7 +44,7 @@ lit_MYC_8q24	literature	k=1.0	gain1	0.96922	21.438
 lit_MYC_8q24	literature	no shared baseline offset	gain1	0.97246	1003.8			
 lit_MYC_8q24	literature	depth only	gain1	0.96993	40.212			
 lit_MYC_8q24	literature	allele only	amp	0.41965	35.532			
-lit_19q13_qter	literature	primary (k=0.6, joint, shared offset)	gain2	0.9992	3.7828	0.01	0.9984	1
+lit_19q13_qter	literature	primary (k=0.6, joint, shared offset)	gain2	0.9992	3.7828	0.02	0.9984	1
 lit_19q13_qter	literature	k=1.0	gain2	0.9992	3.7828			
 lit_19q13_qter	literature	no shared baseline offset	gain2	0.9992	1914.6			
 lit_19q13_qter	literature	depth only	gain1	0.99546	24.488			
@@ -59,153 +59,153 @@ chr8_115_145_cluster4_hypothesis	hypothesis	k=1.0	gain1	0.94803	276.48
 chr8_115_145_cluster4_hypothesis	hypothesis	no shared baseline offset	gain1	0.95531	1407.3			
 chr8_115_145_cluster4_hypothesis	hypothesis	depth only	gain1	0.96308	170.99			
 chr8_115_145_cluster4_hypothesis	hypothesis	allele only	amp	0.88171	373.05			
-random_chr1:7.0	random	primary (k=0.6, joint, shared offset)	gain2	0.99746	6.5821	0.01	0.99636	0.99886
+random_chr1:7.0	random	primary (k=0.6, joint, shared offset)	gain2	0.99746	6.5821	0.04	0.99636	0.99886
 random_chr1:7.0	random	k=1.0	gain2	0.99746	6.5821			
 random_chr1:7.0	random	no shared baseline offset	gain1	0.99488	311.9	0.025	0.9916	0.99933
 random_chr1:7.0	random	depth only	gain2	0.99746	6.5821	0.025	0.99636	0.99886
 random_chr1:7.0	random	allele only	loss1	0.3	3.8414e-13			
-random_chr4:79.5	random	primary (k=0.6, joint, shared offset)	cnloh	0.053829	0.71929	0.3	0	0.18129
+random_chr4:79.5	random	primary (k=0.6, joint, shared offset)	cnloh	0.053829	0.71929	0.39	0	0.18129
 random_chr4:79.5	random	k=1.0	cnloh	0.05	0.49616			
 random_chr4:79.5	random	no shared baseline offset	loss1	0.9977	894.65	0.025	0.99613	0.99952
-random_chr4:79.5	random	depth only	loss1	0.99863	3.0499	0.025	0.99735	1
+random_chr4:79.5	random	depth only	loss1	0.99863	3.0499	0.2	0.99735	1
 random_chr4:79.5	random	allele only	loss1	0.053817	0.71929			
-random_chr10:64.1	random	primary (k=0.6, joint, shared offset)	cnloh	0.18867	9.6993	0.01	0.068625	0.3129
+random_chr10:64.1	random	primary (k=0.6, joint, shared offset)	cnloh	0.18867	9.6993	0.02	0.068625	0.3129
 random_chr10:64.1	random	k=1.0	cnloh	0.1125	9.9376			
 random_chr10:64.1	random	no shared baseline offset	loss1	1	3967.3	0.025	0.9986	1
-random_chr10:64.1	random	depth only	loss1	1	5.8041	0.425	0.99744	1
+random_chr10:64.1	random	depth only	loss1	1	5.8041	0.075	0.99744	1
 random_chr10:64.1	random	allele only	loss1	0.18867	9.6993			
-random_chr2:61.1	random	primary (k=0.6, joint, shared offset)	gain2	0.99727	2.4629	0.13	0.99566	1
+random_chr2:61.1	random	primary (k=0.6, joint, shared offset)	gain2	0.99727	2.4629	0.12	0.99566	1
 random_chr2:61.1	random	k=1.0	gain2	0.99727	2.4629			
 random_chr2:61.1	random	no shared baseline offset	gain1	0.98703	40.988	0.025	0.97774	0.9917
 random_chr2:61.1	random	depth only	gain1	0.99154	5.3724	0.025	0.98345	0.99766
 random_chr2:61.1	random	allele only	gain1	0.15563	0.81692			
-random_chr3:129.9	random	primary (k=0.6, joint, shared offset)	cnloh	0.05	1.357	0.09	0	0.12308
+random_chr3:129.9	random	primary (k=0.6, joint, shared offset)	cnloh	0.05	1.357	0.2	0	0.12308
 random_chr3:129.9	random	k=1.0	cnloh	0.05	1.5881			
 random_chr3:129.9	random	no shared baseline offset	loss1	0.99908	418.05	0.025	0.99787	1
-random_chr3:129.9	random	depth only	loss1	1	1.4255	0.45	0.99906	1
+random_chr3:129.9	random	depth only	loss1	1	1.4255	0.4	0.99906	1
 random_chr3:129.9	random	allele only	loss1	0.05	1.357			
 random_chr8:51.5	random	primary (k=0.6, joint, shared offset)	gain2	0.05	122.23	0.01	0.031833	0.034874
 random_chr8:51.5	random	k=1.0	gain2	0.05	122.23			
 random_chr8:51.5	random	no shared baseline offset	gain2	0.05	139.44	0.025	0.032833	0.035907
 random_chr8:51.5	random	depth only	loss1	0.97862	176.65	0.025	0.97609	0.9804
 random_chr8:51.5	random	allele only	loss1	0.099531	5.8487			
-random_chr10:54.4	random	primary (k=0.6, joint, shared offset)	cnloh	0.12249	5.0673	0.05	0.015659	0.23594
+random_chr10:54.4	random	primary (k=0.6, joint, shared offset)	cnloh	0.12249	5.0673	0.04	0.015659	0.23594
 random_chr10:54.4	random	k=1.0	cnloh	0.070618	5.3059			
 random_chr10:54.4	random	no shared baseline offset	loss1	0.99625	3001.4	0.025	0.99281	1
-random_chr10:54.4	random	depth only	loss1	0.99411	7.8851	0.025	0.98775	1
+random_chr10:54.4	random	depth only	loss1	0.99411	7.8851	0.05	0.98775	1
 random_chr10:54.4	random	allele only	loss1	0.12249	5.0673			
-random_chr13:31.8	random	primary (k=0.6, joint, shared offset)	gain1	0.98654	5.6974	0.01	0.98427	0.98733
+random_chr13:31.8	random	primary (k=0.6, joint, shared offset)	gain1	0.98654	5.6974	0.04	0.98427	0.98733
 random_chr13:31.8	random	k=1.0	gain1	0.98654	5.6974			
-random_chr13:31.8	random	no shared baseline offset	cnloh	0.3	2.2555e-10	0.325	0	1
+random_chr13:31.8	random	no shared baseline offset	cnloh	0.3	2.2555e-10	0.4	0	1
 random_chr13:31.8	random	depth only	gain1	0.98654	5.6974	0.025	0.98427	0.98733
 random_chr13:31.8	random	allele only	loss1	0.3	3.8414e-13			
 random_chr7:125.5	random	primary (k=0.6, joint, shared offset)	cnloh	0.05	0	1	0	0.077342
 random_chr7:125.5	random	k=1.0	gain2	1	0			
 random_chr7:125.5	random	no shared baseline offset	cnloh	0.05	0	1	0	0.077342
-random_chr7:125.5	random	depth only	loss1	0.99895	2.2068	0.025	0.99765	1
+random_chr7:125.5	random	depth only	loss1	0.99895	2.2068	0.2	0.99765	1
 random_chr7:125.5	random	allele only	homdel	0.3	0			
 random_chr3:114.9	random	primary (k=0.6, joint, shared offset)	cnloh	0.05	0	1	0	0.34744
 random_chr3:114.9	random	k=1.0	cnloh	0.05	0			
 random_chr3:114.9	random	no shared baseline offset	loss1	0.9997	759.11	0.025	0.99816	1
-random_chr3:114.9	random	depth only	loss1	1	1.0102	0.475	0.99874	1
+random_chr3:114.9	random	depth only	loss1	1	1.0102	0.325	0.99874	1
 random_chr3:114.9	random	allele only	homdel	0.3	3.4106e-13			
-random_chr15:64.2	random	primary (k=0.6, joint, shared offset)	cnloh	0.05	0.11118	0.36	0	0.25231
+random_chr15:64.2	random	primary (k=0.6, joint, shared offset)	cnloh	0.05	0.11118	0.56	0	0.25231
 random_chr15:64.2	random	k=1.0	cnloh	0.05	0.072023			
-random_chr15:64.2	random	no shared baseline offset	cnloh	0.05	0.11119	0.425	0	0.25226
-random_chr15:64.2	random	depth only	cnloh	0.3	1.819e-10	0.55	0	1
+random_chr15:64.2	random	no shared baseline offset	cnloh	0.05	0.11119	0.3	0	0.25226
+random_chr15:64.2	random	depth only	cnloh	0.3	1.819e-10	0.85	0	1
 random_chr15:64.2	random	allele only	loss1	0.05	0.098762			
-random_chr5:30.4	random	primary (k=0.6, joint, shared offset)	gain2	1	0.17476	0.52	0.99855	1
+random_chr5:30.4	random	primary (k=0.6, joint, shared offset)	gain2	1	0.17476	0.41	0.99855	1
 random_chr5:30.4	random	k=1.0	gain2	1	0.17476			
 random_chr5:30.4	random	no shared baseline offset	gain1	0.99773	509.37	0.025	0.98871	1
-random_chr5:30.4	random	depth only	gain1	1	0.67784	0.875	0.99346	1
+random_chr5:30.4	random	depth only	gain1	1	0.67784	0.5	0.99346	1
 random_chr5:30.4	random	allele only	amp	0.05	0.11504			
-random_chr1:104.7	random	primary (k=0.6, joint, shared offset)	loss1	1	3.0898	0.47	0.9987	1
+random_chr1:104.7	random	primary (k=0.6, joint, shared offset)	loss1	1	3.0898	0.1	0.9987	1
 random_chr1:104.7	random	k=1.0	loss1	1	3.0898			
 random_chr1:104.7	random	no shared baseline offset	loss1	1	2334.5	0.025	0.99883	1
-random_chr1:104.7	random	depth only	loss1	1	3.0898	0.575	0.9987	1
+random_chr1:104.7	random	depth only	loss1	1	3.0898	0.15	0.9987	1
 random_chr1:104.7	random	allele only	loss1	0.3	3.8414e-13			
-random_chr11:116.4	random	primary (k=0.6, joint, shared offset)	cnloh	0.08866	3.5948	0.03	0	0.18683
+random_chr11:116.4	random	primary (k=0.6, joint, shared offset)	cnloh	0.08866	3.5948	0.1	0	0.18683
 random_chr11:116.4	random	k=1.0	cnloh	0.059686	5.816			
-random_chr11:116.4	random	no shared baseline offset	cnloh	0.088664	3.5948	0.025	0	0.18683
-random_chr11:116.4	random	depth only	gain2	0.99796	2.1236	0.025	0.99679	0.99997
+random_chr11:116.4	random	no shared baseline offset	cnloh	0.088664	3.5948	0.1	0	0.18683
+random_chr11:116.4	random	depth only	gain2	0.99796	2.1236	0.35	0.99679	0.99997
 random_chr11:116.4	random	allele only	loss1	0.088661	3.5948			
-random_chr4:22.8	random	primary (k=0.6, joint, shared offset)	gain2	0.99892	1.0594	0.06	0.99713	1
+random_chr4:22.8	random	primary (k=0.6, joint, shared offset)	gain2	0.99892	1.0594	0.3	0.99713	1
 random_chr4:22.8	random	k=1.0	gain2	0.99892	1.0594			
 random_chr4:22.8	random	no shared baseline offset	gain1	0.99538	748.32	0.025	0.98549	1
-random_chr4:22.8	random	depth only	gain1	0.99556	1.7021	0.075	0.98577	1
+random_chr4:22.8	random	depth only	gain1	0.99556	1.7021	0.15	0.98577	1
 random_chr4:22.8	random	allele only	amp	0.05	0.18756			
 random_chr6:126.7	random	primary (k=0.6, joint, shared offset)	gain2	0.99664	0	1	0.9947	1
 random_chr6:126.7	random	k=1.0	gain2	0.99664	0			
 random_chr6:126.7	random	no shared baseline offset	cnloh	0.05	0	1	0	0.05395
-random_chr6:126.7	random	depth only	gain1	0.98782	1.7804	0.025	0.97385	1
+random_chr6:126.7	random	depth only	gain1	0.98782	1.7804	0.325	0.97385	1
 random_chr6:126.7	random	allele only	homdel	0.3	0			
 random_chr2:135.5	random	primary (k=0.6, joint, shared offset)	cnloh	0.05	0	1	0	0.16544
 random_chr2:135.5	random	k=1.0	cnloh	0.05	0			
 random_chr2:135.5	random	no shared baseline offset	cnloh	0.05	0	1	0	0.16544
-random_chr2:135.5	random	depth only	gain1	0.98669	2.1757	0.025	0.97342	1
+random_chr2:135.5	random	depth only	gain1	0.98669	2.1757	0.3	0.97342	1
 random_chr2:135.5	random	allele only	homdel	0.3	2.2737e-13			
 random_chr13:37.5	random	primary (k=0.6, joint, shared offset)	cnloh	0.05	0	1	0	0.062293
 random_chr13:37.5	random	k=1.0	gain2	0.99382	0			
 random_chr13:37.5	random	no shared baseline offset	cnloh	0.05	0	1	0	0.062293
-random_chr13:37.5	random	depth only	gain1	0.97069	5.9679	0.025	0.95036	0.98721
+random_chr13:37.5	random	depth only	gain1	0.97069	5.9679	0.125	0.95036	0.98721
 random_chr13:37.5	random	allele only	homdel	0.95	0			
 random_chr4:116.0	random	primary (k=0.6, joint, shared offset)	cnloh	0.05	0	1	0	0.078721
 random_chr4:116.0	random	k=1.0	gain2	0.99394	0			
 random_chr4:116.0	random	no shared baseline offset	loss1	0.98947	40.301	0.025	0.98392	0.99102
-random_chr4:116.0	random	depth only	loss1	0.99681	4.683	0.025	0.99467	0.9999
+random_chr4:116.0	random	depth only	loss1	0.99681	4.683	0.05	0.99467	0.9999
 random_chr4:116.0	random	allele only	homdel	0.3	0			
 random_chr2:232.1	random	primary (k=0.6, joint, shared offset)	gain2	0.98997	44.718	0.01	0.98723	0.99079
 random_chr2:232.1	random	k=1.0	gain2	0.98997	44.718			
-random_chr2:232.1	random	no shared baseline offset	cnloh	0.3	4.3365e-09	0.15	0	1
+random_chr2:232.1	random	no shared baseline offset	cnloh	0.3	4.3365e-09	0.225	0	1
 random_chr2:232.1	random	depth only	gain2	0.98997	44.718	0.025	0.98723	0.99079
 random_chr2:232.1	random	allele only	loss1	0.3	3.8414e-13			
 random_chr6:119.2	random	primary (k=0.6, joint, shared offset)	cnloh	0.05	0	1	0	0.099111
 random_chr6:119.2	random	k=1.0	gain2	0.99362	0			
 random_chr6:119.2	random	no shared baseline offset	loss1	0.05	8.0475	0.025	0.037159	0.040297
-random_chr6:119.2	random	depth only	loss1	0.99784	2.7733	0.025	0.99626	1
+random_chr6:119.2	random	depth only	loss1	0.99784	2.7733	0.2	0.99626	1
 random_chr6:119.2	random	allele only	gain1	0.05	0.087452			
-random_chr15:41.6	random	primary (k=0.6, joint, shared offset)	gain1	1	0.033775	0.49	0.99715	1
+random_chr15:41.6	random	primary (k=0.6, joint, shared offset)	gain1	1	0.033775	0.68	0.99715	1
 random_chr15:41.6	random	k=1.0	gain1	1	0.033775			
 random_chr15:41.6	random	no shared baseline offset	gain1	0.99955	28.637	0.025	0.99569	1
-random_chr15:41.6	random	depth only	gain1	1	0.033775	0.55	0.99715	1
+random_chr15:41.6	random	depth only	gain1	1	0.033775	0.75	0.99715	1
 random_chr15:41.6	random	allele only	loss1	0.3	3.8414e-13			
 random_chr2:199.9	random	primary (k=0.6, joint, shared offset)	gain2	0.99248	34.555	0.01	0.99054	0.99335
 random_chr2:199.9	random	k=1.0	gain2	0.99248	34.555			
 random_chr2:199.9	random	no shared baseline offset	gain1	0.98699	1158.8	0.025	0.97947	0.98928
 random_chr2:199.9	random	depth only	gain2	0.99248	34.555	0.025	0.99054	0.99335
 random_chr2:199.9	random	allele only	loss1	0.3	3.8414e-13			
-random_chr7:27.8	random	primary (k=0.6, joint, shared offset)	gain1	0.99447	2.0778	0.02	0.9882	1
+random_chr7:27.8	random	primary (k=0.6, joint, shared offset)	gain1	0.99447	2.0778	0.29	0.9882	1
 random_chr7:27.8	random	k=1.0	gain1	0.99447	2.0778			
-random_chr7:27.8	random	no shared baseline offset	cnloh	0.95	3.638e-12	1	0	1
-random_chr7:27.8	random	depth only	gain1	0.99447	2.0778	0.025	0.9882	1
+random_chr7:27.8	random	no shared baseline offset	cnloh	0.95	3.638e-12	0.95	0	1
+random_chr7:27.8	random	depth only	gain1	0.99447	2.0778	0.2	0.9882	1
 random_chr7:27.8	random	allele only	loss1	0.3	3.8414e-13			
-random_chr6:74.8	random	primary (k=0.6, joint, shared offset)	cnloh	0.3	1.5898e-09	0.49	0	1
+random_chr6:74.8	random	primary (k=0.6, joint, shared offset)	cnloh	0.3	1.5898e-09	0.75	0	1
 random_chr6:74.8	random	k=1.0	cnloh	0.3	1.5898e-09			
-random_chr6:74.8	random	no shared baseline offset	cnloh	0.3	1.3679e-09	0.475	0	1
-random_chr6:74.8	random	depth only	cnloh	0.3	1.5898e-09	0.45	0	1
+random_chr6:74.8	random	no shared baseline offset	cnloh	0.3	1.3679e-09	0.275	0	1
+random_chr6:74.8	random	depth only	cnloh	0.3	1.5898e-09	0.9	0	1
 random_chr6:74.8	random	allele only	loss1	0.3	3.8414e-13			
-random_chr20:39.2	random	primary (k=0.6, joint, shared offset)	cnloh	0.053019	0.83076	0.28	0	0.17061
+random_chr20:39.2	random	primary (k=0.6, joint, shared offset)	cnloh	0.053019	0.83076	0.39	0	0.17061
 random_chr20:39.2	random	k=1.0	cnloh	0.05	0.48666			
-random_chr20:39.2	random	no shared baseline offset	cnloh	0.053017	0.83076	0.25	0	0.17061
-random_chr20:39.2	random	depth only	loss1	0.99815	3.0532	0.025	0.99707	1
+random_chr20:39.2	random	no shared baseline offset	cnloh	0.053017	0.83076	0.125	0	0.17061
+random_chr20:39.2	random	depth only	loss1	0.99815	3.0532	0.15	0.99707	1
 random_chr20:39.2	random	allele only	loss1	0.053019	0.83076			
 random_chr10:121.4	random	primary (k=0.6, joint, shared offset)	gain2	0.99858	0	1	0.9975	1
 random_chr10:121.4	random	k=1.0	gain2	0.99858	0			
 random_chr10:121.4	random	no shared baseline offset	cnloh	0.05	0	1	0.028783	0.031102
-random_chr10:121.4	random	depth only	gain1	0.99621	0.64264	0.025	0.99089	1
+random_chr10:121.4	random	depth only	gain1	0.99621	0.64264	0.45	0.99089	1
 random_chr10:121.4	random	allele only	homdel	0.3	0			
 random_chr6:145.0	random	primary (k=0.6, joint, shared offset)	cnloh	0.05	0	1	0	0.067697
 random_chr6:145.0	random	k=1.0	gain2	0.99742	0			
 random_chr6:145.0	random	no shared baseline offset	cnloh	0.05	0	1	0	0.067697
-random_chr6:145.0	random	depth only	loss1	0.9987	2.0513	0.025	0.99768	1
+random_chr6:145.0	random	depth only	loss1	0.9987	2.0513	0.2	0.99768	1
 random_chr6:145.0	random	allele only	amp	0.05	0.4368			
-random_chr2:164.3	random	primary (k=0.6, joint, shared offset)	gain1	0.98482	2.8603	0.01	0.97093	0.99776
+random_chr2:164.3	random	primary (k=0.6, joint, shared offset)	gain1	0.98482	2.8603	0.18	0.97093	0.99776
 random_chr2:164.3	random	k=1.0	gain1	0.98482	2.8603			
 random_chr2:164.3	random	no shared baseline offset	cnloh	0.3	3.638e-12	1	0	1
-random_chr2:164.3	random	depth only	gain1	0.98482	2.8603	0.025	0.97093	0.99776
+random_chr2:164.3	random	depth only	gain1	0.98482	2.8603	0.225	0.97093	0.99776
 random_chr2:164.3	random	allele only	loss1	0.3	3.8414e-13			
 random_chr14:93.5	random	primary (k=0.6, joint, shared offset)	cnloh	0.05	0	1	0	0.047639
 random_chr14:93.5	random	k=1.0	gain2	1	0			
 random_chr14:93.5	random	no shared baseline offset	cnloh	0.05	0	1	0	0.047639
-random_chr14:93.5	random	depth only	loss1	0.99859	0.64365	0.025	0.99764	1
+random_chr14:93.5	random	depth only	loss1	0.99859	0.64365	0.55	0.99764	1
 random_chr14:93.5	random	allele only	amp	0.05	0.93226			

@@ -157,8 +157,8 @@
      "LRT_allele_only": 0.0,
      "pooled_h_all_orient": 0.5327510917030568,
      "pooled_h_own_orient": 0.5327510917030568,
-     "boot_p": 0.16,
-     "class": "no evidence"
+     "boot_p": 0.01,
+     "class": "event, clonal vs subclonal unresolved"
     },
     {
      "cluster": "4",
@@ -180,7 +180,7 @@
    ],
    "boot_p": 0.01,
    "boot_B": 99,
-   "boot_T_q95": 3.4919847896933773,
+   "boot_T_q95": 4.1483307738824795,
    "class": "subclonal",
    "agreement": "depth only",
    "agreement_note": "",
@@ -226,7 +226,7 @@
      "class": ""
     }
    ],
-   "seconds": 96.60781860351562
+   "seconds": 73.40692973136902
   },
   {
    "name": "chr7_51.4_53.5",
@@ -402,13 +402,13 @@
      "LRT_allele_only": 2.020605904817785e-14,
      "pooled_h_all_orient": NaN,
      "pooled_h_own_orient": NaN,
-     "boot_p": 0.2,
+     "boot_p": 0.17,
      "class": "no evidence"
     }
    ],
    "boot_p": 0.01,
    "boot_B": 99,
-   "boot_T_q95": 9.89375655941185,
+   "boot_T_q95": 5.092619145504795,
    "class": "subclonal",
    "agreement": "depth only",
    "agreement_note": "",
@@ -454,7 +454,7 @@
      "class": ""
     }
    ],
-   "seconds": 42.40747046470642
+   "seconds": 30.33653998374939
   },
   {
    "name": "chr7_67.4_70.0",
@@ -613,7 +613,7 @@
      "LRT_allele_only": 6.17284001691587e-14,
      "pooled_h_all_orient": NaN,
      "pooled_h_own_orient": NaN,
-     "boot_p": 0.18,
+     "boot_p": 0.31,
      "class": "no evidence"
     },
     {
@@ -636,7 +636,7 @@
    ],
    "boot_p": 0.01,
    "boot_B": 99,
-   "boot_T_q95": 12.492009578231226,
+   "boot_T_q95": 5.23706219718224,
    "class": "subclonal",
    "agreement": "depth only",
    "agreement_note": "",
@@ -682,7 +682,7 @@
      "class": ""
     }
    ],
-   "seconds": 42.40516471862793
+   "seconds": 30.123042106628418
   },
   {
    "name": "chr7_70.0_73.3",
@@ -790,7 +790,7 @@
      "LRT_allele_only": 1.1460707394071505,
      "pooled_h_all_orient": 0.5602564102564103,
      "pooled_h_own_orient": 0.5673076923076923,
-     "boot_p": 0.24,
+     "boot_p": 0.09,
      "class": "insufficient evidence"
     },
     {
@@ -824,7 +824,7 @@
      "LRT_allele_only": 3.8485286941395316,
      "pooled_h_all_orient": 0.5409556313993175,
      "pooled_h_own_orient": 0.5357142857142857,
-     "boot_p": 0.16,
+     "boot_p": 0.05,
      "class": "insufficient evidence"
     },
     {
@@ -841,8 +841,8 @@
      "LRT_allele_only": 2.9880005184504626,
      "pooled_h_all_orient": 0.5717017208413002,
      "pooled_h_own_orient": 0.5643382352941176,
-     "boot_p": 0.05,
-     "class": "insufficient evidence"
+     "boot_p": 0.02,
+     "class": "event, clonal vs subclonal unresolved"
     },
     {
      "cluster": "4",
@@ -858,13 +858,13 @@
      "LRT_allele_only": 0.09958935588497297,
      "pooled_h_all_orient": 0.5411764705882353,
      "pooled_h_own_orient": NaN,
-     "boot_p": 0.67,
+     "boot_p": 0.38,
      "class": "insufficient evidence"
     }
    ],
    "boot_p": 0.08,
    "boot_B": 99,
-   "boot_T_q95": 3.9377168105187588,
+   "boot_T_q95": 4.899766639596054,
    "class": "no evidence",
    "agreement": "neither alone",
    "agreement_note": "type has no depth change; ",
@@ -910,7 +910,7 @@
      "class": ""
     }
    ],
-   "seconds": 126.96954536437988
+   "seconds": 131.85943603515625
   },
   {
    "name": "chr9_20_27",
@@ -1086,13 +1086,13 @@
      "LRT_allele_only": 0.0,
      "pooled_h_all_orient": 0.4125,
      "pooled_h_own_orient": NaN,
-     "boot_p": 0.04,
-     "class": "small-fraction deviation (<10% of cells)"
+     "boot_p": 0.07,
+     "class": "no evidence"
     }
    ],
    "boot_p": 0.01,
    "boot_B": 99,
-   "boot_T_q95": 1.50101399589075,
+   "boot_T_q95": 5.935844211363292,
    "class": "small-fraction deviation (<10% of cells)",
    "agreement": "depth only",
    "agreement_note": "",
@@ -1138,7 +1138,7 @@
      "class": ""
     }
    ],
-   "seconds": 104.98585438728333
+   "seconds": 110.47867250442505
   },
   {
    "name": "chr9_22.5_26.6",
@@ -1246,7 +1246,7 @@
      "LRT_allele_only": 0.0,
      "pooled_h_all_orient": 0.5182481751824818,
      "pooled_h_own_orient": NaN,
-     "boot_p": 0.12,
+     "boot_p": 0.11,
      "class": "no evidence"
     },
     {
@@ -1320,7 +1320,7 @@
    ],
    "boot_p": 0.01,
    "boot_B": 99,
-   "boot_T_q95": 1.8020338256999817,
+   "boot_T_q95": 3.4269610429560977,
    "class": "small-fraction deviation (<10% of cells)",
    "agreement": "depth only",
    "agreement_note": "",
@@ -1366,7 +1366,7 @@
      "class": ""
     }
    ],
-   "seconds": 78.42668104171753
+   "seconds": 78.48293900489807
   },
   {
    "name": "chr9_70_100",
@@ -1548,7 +1548,7 @@
    ],
    "boot_p": 0.01,
    "boot_B": 99,
-   "boot_T_q95": 0.0,
+   "boot_T_q95": 2.4300023929688903,
    "class": "small-fraction deviation (<10% of cells)",
    "agreement": "depth only",
    "agreement_note": "",
@@ -1594,7 +1594,7 @@
      "class": ""
     }
    ],
-   "seconds": 109.64619874954224
+   "seconds": 120.3880558013916
   },
   {
    "name": "lit_9p21_hemizygous_zone_approx",
@@ -1770,13 +1770,13 @@
      "LRT_allele_only": 2.020605904817785e-14,
      "pooled_h_all_orient": NaN,
      "pooled_h_own_orient": NaN,
-     "boot_p": 0.06,
+     "boot_p": 0.09,
      "class": "no evidence"
     }
    ],
    "boot_p": 0.01,
    "boot_B": 99,
-   "boot_T_q95": 2.8086469683330485e-07,
+   "boot_T_q95": 5.839758880560475,
    "class": "clonal",
    "agreement": "depth only",
    "agreement_note": "",
@@ -1822,7 +1822,7 @@
      "class": ""
     }
    ],
-   "seconds": 31.938528537750244
+   "seconds": 32.864463090896606
   },
   {
    "name": "lit_MYC_8q24",
@@ -1930,7 +1930,7 @@
      "LRT_allele_only": 0.8883655154895678,
      "pooled_h_all_orient": 0.603781693167168,
      "pooled_h_own_orient": 0.6105705440070766,
-     "boot_p": 0.31,
+     "boot_p": 0.15,
      "class": "no evidence"
     },
     {
@@ -1964,7 +1964,7 @@
      "LRT_allele_only": 2.159895495354931,
      "pooled_h_all_orient": 0.59765625,
      "pooled_h_own_orient": 0.5941051136363636,
-     "boot_p": 0.5,
+     "boot_p": 0.07,
      "class": "no evidence"
     },
     {
@@ -1981,7 +1981,7 @@
      "LRT_allele_only": 1.5108629182395816,
      "pooled_h_all_orient": 0.6151748078353583,
      "pooled_h_own_orient": 0.6152319523691392,
-     "boot_p": 0.16,
+     "boot_p": 0.09,
      "class": "no evidence"
     },
     {
@@ -2004,7 +2004,7 @@
    ],
    "boot_p": 0.01,
    "boot_B": 99,
-   "boot_T_q95": 15.975697038813085,
+   "boot_T_q95": 3.5782012793664717,
    "class": "clonal",
    "agreement": "depth and allele both support",
    "agreement_note": "",
@@ -2050,7 +2050,7 @@
      "class": ""
     }
    ],
-   "seconds": 133.55248761177063
+   "seconds": 142.0619194507599
   },
   {
    "name": "lit_19q13_qter",
@@ -2230,9 +2230,9 @@
      "class": "no evidence"
     }
    ],
-   "boot_p": 0.01,
+   "boot_p": 0.02,
    "boot_B": 99,
-   "boot_T_q95": 2.4194935100233126,
+   "boot_T_q95": 2.5501344319593042,
    "class": "clonal",
    "agreement": "neither alone",
    "agreement_note": "type has no allele change; ",
@@ -2278,7 +2278,7 @@
      "class": ""
     }
    ],
-   "seconds": 100.6293215751648
+   "seconds": 104.88845705986023
   },
   {
    "name": "lit_5q13_qter",
@@ -2460,7 +2460,7 @@
    ],
    "boot_p": 0.01,
    "boot_B": 99,
-   "boot_T_q95": 39.65019238825189,
+   "boot_T_q95": 2.874662446974251,
    "class": "clonal",
    "agreement": "depth and allele both support",
    "agreement_note": "",
@@ -2506,7 +2506,7 @@
      "class": ""
     }
    ],
-   "seconds": 102.00809502601624
+   "seconds": 113.54582262039185
   },
   {
    "name": "chr8_115_145_cluster4_hypothesis",
@@ -2688,7 +2688,7 @@
    ],
    "boot_p": 0.01,
    "boot_B": 99,
-   "boot_T_q95": 22.871746906674524,
+   "boot_T_q95": 3.1670176423431253,
    "class": "clonal",
    "agreement": "depth and allele both support",
    "agreement_note": "",
@@ -2734,7 +2734,7 @@
      "class": ""
     }
    ],
-   "seconds": 113.47757291793823
+   "seconds": 124.83328938484192
   },
   {
    "name": "random_chr1:7.0",
@@ -2827,9 +2827,9 @@
     ],
     "n_windows": 120
    },
-   "boot_p": 0.01,
+   "boot_p": 0.04,
    "boot_B": 99,
-   "boot_T_q95": 0.386992855976132,
+   "boot_T_q95": 4.775784122104592,
    "class": "clonal",
    "agreement": "depth only",
    "agreement_note": "type has no allele change; ",
@@ -2875,7 +2875,7 @@
      "class": ""
     }
    ],
-   "seconds": 17.955058097839355
+   "seconds": 20.713016033172607
   },
   {
    "name": "random_chr4:79.5",
@@ -2968,9 +2968,9 @@
     ],
     "n_windows": 120
    },
-   "boot_p": 0.3,
+   "boot_p": 0.39,
    "boot_B": 99,
-   "boot_T_q95": 2.3315530455529365,
+   "boot_T_q95": 5.506827276145485,
    "class": "no evidence",
    "agreement": "neither alone",
    "agreement_note": "type has no depth change; ",
@@ -3000,10 +3000,10 @@
      "best_type": "loss1",
      "pi": 0.9986303504558731,
      "LRT": 3.0498549040094076,
-     "boot_p": 0.025,
+     "boot_p": 0.2,
      "pi_lo": 0.9973519721630867,
      "pi_hi": 1.0,
-     "class": "clonal"
+     "class": "insufficient evidence"
     },
     {
      "variant": "allele only",
@@ -3016,7 +3016,7 @@
      "class": ""
     }
    ],
-   "seconds": 50.43585157394409
+   "seconds": 50.707223892211914
   },
   {
    "name": "random_chr10:64.1",
@@ -3109,9 +3109,9 @@
     ],
     "n_windows": 120
    },
-   "boot_p": 0.01,
+   "boot_p": 0.02,
    "boot_B": 99,
-   "boot_T_q95": 5.949648678524315,
+   "boot_T_q95": 4.071306215496222,
    "class": "subclonal",
    "agreement": "allele only",
    "agreement_note": "type has no depth change; ",
@@ -3141,7 +3141,7 @@
      "best_type": "loss1",
      "pi": 1.0,
      "LRT": 5.80413920499268,
-     "boot_p": 0.425,
+     "boot_p": 0.075,
      "pi_lo": 0.9974401714103042,
      "pi_hi": 1.0,
      "class": "insufficient evidence"
@@ -3157,7 +3157,7 @@
      "class": ""
     }
    ],
-   "seconds": 47.927462577819824
+   "seconds": 50.091941833496094
   },
   {
    "name": "random_chr2:61.1",
@@ -3250,9 +3250,9 @@
     ],
     "n_windows": 120
    },
-   "boot_p": 0.13,
+   "boot_p": 0.12,
    "boot_B": 99,
-   "boot_T_q95": 3.6971113405830667,
+   "boot_T_q95": 3.2530180186025954,
    "class": "insufficient evidence",
    "agreement": "neither alone",
    "agreement_note": "type has no allele change; ",
@@ -3298,7 +3298,7 @@
      "class": ""
     }
    ],
-   "seconds": 71.71710419654846
+   "seconds": 77.0130786895752
   },
   {
    "name": "random_chr3:129.9",
@@ -3391,9 +3391,9 @@
     ],
     "n_windows": 120
    },
-   "boot_p": 0.09,
+   "boot_p": 0.2,
    "boot_B": 99,
-   "boot_T_q95": 1.6376613859414608,
+   "boot_T_q95": 3.571484964337651,
    "class": "no evidence",
    "agreement": "neither alone",
    "agreement_note": "type has no depth change; ",
@@ -3423,7 +3423,7 @@
      "best_type": "loss1",
      "pi": 1.0,
      "LRT": 1.425460543432564,
-     "boot_p": 0.45,
+     "boot_p": 0.4,
      "pi_lo": 0.9990565046345414,
      "pi_hi": 1.0,
      "class": "insufficient evidence"
@@ -3439,7 +3439,7 @@
      "class": ""
     }
    ],
-   "seconds": 73.28396654129028
+   "seconds": 76.505366563797
   },
   {
    "name": "random_chr8:51.5",
@@ -3534,7 +3534,7 @@
    },
    "boot_p": 0.01,
    "boot_B": 99,
-   "boot_T_q95": 3.493864670568653,
+   "boot_T_q95": 4.337074616305832,
    "class": "small-fraction deviation (<10% of cells)",
    "agreement": "depth only",
    "agreement_note": "type has no allele change; ",
@@ -3580,7 +3580,7 @@
      "class": ""
     }
    ],
-   "seconds": 62.95561933517456
+   "seconds": 69.58189344406128
   },
   {
    "name": "random_chr10:54.4",
@@ -3673,10 +3673,10 @@
     ],
     "n_windows": 120
    },
-   "boot_p": 0.05,
+   "boot_p": 0.04,
    "boot_B": 99,
-   "boot_T_q95": 4.687800488154605,
-   "class": "no evidence",
+   "boot_T_q95": 4.279750911144217,
+   "class": "subclonal",
    "agreement": "allele only",
    "agreement_note": "type has no depth change; ",
    "variants": [
@@ -3705,10 +3705,10 @@
      "best_type": "loss1",
      "pi": 0.9941080752618765,
      "LRT": 7.885090642008436,
-     "boot_p": 0.025,
+     "boot_p": 0.05,
      "pi_lo": 0.9877487653762487,
      "pi_hi": 1.0,
-     "class": "clonal"
+     "class": "insufficient evidence"
     },
     {
      "variant": "allele only",
@@ -3721,7 +3721,7 @@
      "class": ""
     }
    ],
-   "seconds": 53.2428834438324
+   "seconds": 53.965370893478394
   },
   {
    "name": "random_chr13:31.8",
@@ -3814,9 +3814,9 @@
     ],
     "n_windows": 120
    },
-   "boot_p": 0.01,
+   "boot_p": 0.04,
    "boot_B": 99,
-   "boot_T_q95": 1.643066207179799e-06,
+   "boot_T_q95": 5.2981248755113475,
    "class": "clonal",
    "agreement": "depth only",
    "agreement_note": "",
@@ -3836,7 +3836,7 @@
      "best_type": "cnloh",
      "pi": 0.3,
      "LRT": 2.255546860396862e-10,
-     "boot_p": 0.325,
+     "boot_p": 0.4,
      "pi_lo": 0.0,
      "pi_hi": 1.0,
      "class": "insufficient evidence"
@@ -3862,7 +3862,7 @@
      "class": ""
     }
    ],
-   "seconds": 18.194554567337036
+   "seconds": 19.297370195388794
   },
   {
    "name": "random_chr7:125.5",
@@ -3957,7 +3957,7 @@
    },
    "boot_p": 1.0,
    "boot_B": 99,
-   "boot_T_q95": 0.0,
+   "boot_T_q95": 3.3145536689786232,
    "class": "no evidence",
    "agreement": "neither alone",
    "agreement_note": "type has no depth change; ",
@@ -3987,10 +3987,10 @@
      "best_type": "loss1",
      "pi": 0.9989539926208113,
      "LRT": 2.2068169422527717,
-     "boot_p": 0.025,
+     "boot_p": 0.2,
      "pi_lo": 0.9976473012113872,
      "pi_hi": 1.0,
-     "class": "clonal"
+     "class": "insufficient evidence"
     },
     {
      "variant": "allele only",
@@ -4003,7 +4003,7 @@
      "class": ""
     }
    ],
-   "seconds": 86.25338792800903
+   "seconds": 89.4984540939331
   },
   {
    "name": "random_chr3:114.9",
@@ -4098,7 +4098,7 @@
    },
    "boot_p": 1.0,
    "boot_B": 99,
-   "boot_T_q95": 2.5919651720043473,
+   "boot_T_q95": 4.490890084646526,
    "class": "insufficient evidence",
    "agreement": "neither alone",
    "agreement_note": "type has no depth change; ",
@@ -4128,7 +4128,7 @@
      "best_type": "loss1",
      "pi": 1.0,
      "LRT": 1.01015450982959,
-     "boot_p": 0.475,
+     "boot_p": 0.325,
      "pi_lo": 0.9987408206609141,
      "pi_hi": 1.0,
      "class": "insufficient evidence"
@@ -4144,7 +4144,7 @@
      "class": ""
     }
    ],
-   "seconds": 27.477060317993164
+   "seconds": 29.9553062915802
   },
   {
    "name": "random_chr15:64.2",
@@ -4237,9 +4237,9 @@
     ],
     "n_windows": 120
    },
-   "boot_p": 0.36,
+   "boot_p": 0.56,
    "boot_B": 99,
-   "boot_T_q95": 2.8342636625591684,
+   "boot_T_q95": 4.429337929011671,
    "class": "insufficient evidence",
    "agreement": "neither alone",
    "agreement_note": "type has no depth change; ",
@@ -4259,7 +4259,7 @@
      "best_type": "cnloh",
      "pi": 0.05,
      "LRT": 0.11118781300319824,
-     "boot_p": 0.425,
+     "boot_p": 0.3,
      "pi_lo": 0.0,
      "pi_hi": 0.2522553620679806,
      "class": "insufficient evidence"
@@ -4269,7 +4269,7 @@
      "best_type": "cnloh",
      "pi": 0.3,
      "LRT": 1.8189894035458565e-10,
-     "boot_p": 0.55,
+     "boot_p": 0.85,
      "pi_lo": 0.0,
      "pi_hi": 1.0,
      "class": "insufficient evidence"
@@ -4285,7 +4285,7 @@
      "class": ""
     }
    ],
-   "seconds": 33.1433482170105
+   "seconds": 33.766485929489136
   },
   {
    "name": "random_chr5:30.4",
@@ -4378,9 +4378,9 @@
     ],
     "n_windows": 120
    },
-   "boot_p": 0.52,
+   "boot_p": 0.41,
    "boot_B": 99,
-   "boot_T_q95": 0.5845890811826393,
+   "boot_T_q95": 3.13031252326109,
    "class": "insufficient evidence",
    "agreement": "neither alone",
    "agreement_note": "type has no allele change; ",
@@ -4410,7 +4410,7 @@
      "best_type": "gain1",
      "pi": 1.0,
      "LRT": 0.6778372960470733,
-     "boot_p": 0.875,
+     "boot_p": 0.5,
      "pi_lo": 0.9934566463777496,
      "pi_hi": 1.0,
      "class": "insufficient evidence"
@@ -4426,7 +4426,7 @@
      "class": ""
     }
    ],
-   "seconds": 89.3757996559143
+   "seconds": 95.62274503707886
   },
   {
    "name": "random_chr1:104.7",
@@ -4519,9 +4519,9 @@
     ],
     "n_windows": 120
    },
-   "boot_p": 0.47,
+   "boot_p": 0.1,
    "boot_B": 99,
-   "boot_T_q95": 3.141435898311829,
+   "boot_T_q95": 3.9797096788428457,
    "class": "insufficient evidence",
    "agreement": "neither alone",
    "agreement_note": "",
@@ -4551,7 +4551,7 @@
      "best_type": "loss1",
      "pi": 1.0,
      "LRT": 3.0897590160348045,
-     "boot_p": 0.575,
+     "boot_p": 0.15,
      "pi_lo": 0.9986951387073146,
      "pi_hi": 1.0,
      "class": "insufficient evidence"
@@ -4567,7 +4567,7 @@
      "class": ""
     }
    ],
-   "seconds": 19.08418607711792
+   "seconds": 18.449480295181274
   },
   {
    "name": "random_chr11:116.4",
@@ -4660,10 +4660,10 @@
     ],
     "n_windows": 120
    },
-   "boot_p": 0.03,
+   "boot_p": 0.1,
    "boot_B": 99,
-   "boot_T_q95": 1.532577295237569,
-   "class": "event, clonal vs subclonal unresolved",
+   "boot_T_q95": 4.404497665650338,
+   "class": "no evidence",
    "agreement": "neither alone",
    "agreement_note": "type has no depth change; ",
    "variants": [
@@ -4682,20 +4682,20 @@
      "best_type": "cnloh",
      "pi": 0.0886636099151498,
      "LRT": 3.594790009126882,
-     "boot_p": 0.025,
+     "boot_p": 0.1,
      "pi_lo": 0.0,
      "pi_hi": 0.18683061491382535,
-     "class": "event, clonal vs subclonal unresolved"
+     "class": "no evidence"
     },
     {
      "variant": "depth only",
      "best_type": "gain2",
      "pi": 0.9979564483749528,
      "LRT": 2.123585800971341,
-     "boot_p": 0.025,
+     "boot_p": 0.35,
      "pi_lo": 0.9967906079587222,
      "pi_hi": 0.9999723451755715,
-     "class": "clonal"
+     "class": "insufficient evidence"
     },
     {
      "variant": "allele only",
@@ -4708,7 +4708,7 @@
      "class": ""
     }
    ],
-   "seconds": 59.094918966293335
+   "seconds": 62.69312810897827
   },
   {
    "name": "random_chr4:22.8",
@@ -4801,9 +4801,9 @@
     ],
     "n_windows": 120
    },
-   "boot_p": 0.06,
+   "boot_p": 0.3,
    "boot_B": 99,
-   "boot_T_q95": 1.0704503942597483,
+   "boot_T_q95": 3.527417656588294,
    "class": "insufficient evidence",
    "agreement": "neither alone",
    "agreement_note": "type has no allele change; ",
@@ -4833,7 +4833,7 @@
      "best_type": "gain1",
      "pi": 0.9955568277948695,
      "LRT": 1.7021250584803056,
-     "boot_p": 0.075,
+     "boot_p": 0.15,
      "pi_lo": 0.9857692182996143,
      "pi_hi": 1.0,
      "class": "insufficient evidence"
@@ -4849,7 +4849,7 @@
      "class": ""
     }
    ],
-   "seconds": 84.12878131866455
+   "seconds": 90.10452103614807
   },
   {
    "name": "random_chr6:126.7",
@@ -4944,7 +4944,7 @@
    },
    "boot_p": 1.0,
    "boot_B": 99,
-   "boot_T_q95": 0.0,
+   "boot_T_q95": 4.665124969396491,
    "class": "insufficient evidence",
    "agreement": "neither alone",
    "agreement_note": "type has no allele change; ",
@@ -4974,10 +4974,10 @@
      "best_type": "gain1",
      "pi": 0.9878167667803879,
      "LRT": 1.78044606894764,
-     "boot_p": 0.025,
+     "boot_p": 0.325,
      "pi_lo": 0.9738542859453805,
      "pi_hi": 1.0,
-     "class": "clonal"
+     "class": "insufficient evidence"
     },
     {
      "variant": "allele only",
@@ -4990,7 +4990,7 @@
      "class": ""
     }
    ],
-   "seconds": 75.5994017124176
+   "seconds": 80.48342061042786
   },
   {
    "name": "random_chr2:135.5",
@@ -5085,7 +5085,7 @@
    },
    "boot_p": 1.0,
    "boot_B": 99,
-   "boot_T_q95": 1.430026291100875,
+   "boot_T_q95": 3.532857786203017,
    "class": "no evidence",
    "agreement": "neither alone",
    "agreement_note": "type has no depth change; ",
@@ -5115,10 +5115,10 @@
      "best_type": "gain1",
      "pi": 0.9866940516697056,
      "LRT": 2.1757247692439705,
-     "boot_p": 0.025,
+     "boot_p": 0.3,
      "pi_lo": 0.973417468655537,
      "pi_hi": 1.0,
-     "class": "clonal"
+     "class": "insufficient evidence"
     },
     {
      "variant": "allele only",
@@ -5131,7 +5131,7 @@
      "class": ""
     }
    ],
-   "seconds": 36.617931842803955
+   "seconds": 37.084299087524414
   },
   {
    "name": "random_chr13:37.5",
@@ -5226,7 +5226,7 @@
    },
    "boot_p": 1.0,
    "boot_B": 99,
-   "boot_T_q95": 1.4914680359994228,
+   "boot_T_q95": 5.9035618419919045,
    "class": "no evidence",
    "agreement": "neither alone",
    "agreement_note": "type has no depth change; ",
@@ -5256,10 +5256,10 @@
      "best_type": "gain1",
      "pi": 0.9706915523688893,
      "LRT": 5.967908960126806,
-     "boot_p": 0.025,
+     "boot_p": 0.125,
      "pi_lo": 0.9503643673712902,
      "pi_hi": 0.9872136114536563,
-     "class": "clonal"
+     "class": "insufficient evidence"
     },
     {
      "variant": "allele only",
@@ -5272,7 +5272,7 @@
      "class": ""
     }
    ],
-   "seconds": 88.73261404037476
+   "seconds": 90.83680057525635
   },
   {
    "name": "random_chr4:116.0",
@@ -5367,7 +5367,7 @@
    },
    "boot_p": 1.0,
    "boot_B": 99,
-   "boot_T_q95": 1.0607802721591708,
+   "boot_T_q95": 4.530624217544028,
    "class": "no evidence",
    "agreement": "neither alone",
    "agreement_note": "type has no depth change; ",
@@ -5397,10 +5397,10 @@
      "best_type": "loss1",
      "pi": 0.9968090748583065,
      "LRT": 4.6830199873802485,
-     "boot_p": 0.025,
+     "boot_p": 0.05,
      "pi_lo": 0.9946692948230995,
      "pi_hi": 0.9998995904021001,
-     "class": "clonal"
+     "class": "insufficient evidence"
     },
     {
      "variant": "allele only",
@@ -5413,7 +5413,7 @@
      "class": ""
     }
    ],
-   "seconds": 61.14551568031311
+   "seconds": 63.629127502441406
   },
   {
    "name": "random_chr2:232.1",
@@ -5508,7 +5508,7 @@
    },
    "boot_p": 0.01,
    "boot_B": 99,
-   "boot_T_q95": 1.478438207414e-08,
+   "boot_T_q95": 4.697842287573799,
    "class": "clonal",
    "agreement": "depth only",
    "agreement_note": "type has no allele change; ",
@@ -5528,7 +5528,7 @@
      "best_type": "cnloh",
      "pi": 0.3,
      "LRT": 4.336470738053322e-09,
-     "boot_p": 0.15,
+     "boot_p": 0.225,
      "pi_lo": 0.0,
      "pi_hi": 1.0,
      "class": "insufficient evidence"
@@ -5554,7 +5554,7 @@
      "class": ""
     }
    ],
-   "seconds": 18.695151805877686
+   "seconds": 20.448130130767822
   },
   {
    "name": "random_chr6:119.2",
@@ -5649,7 +5649,7 @@
    },
    "boot_p": 1.0,
    "boot_B": 99,
-   "boot_T_q95": 2.251769667699045,
+   "boot_T_q95": 4.174356919208363,
    "class": "no evidence",
    "agreement": "neither alone",
    "agreement_note": "type has no depth change; ",
@@ -5679,10 +5679,10 @@
      "best_type": "loss1",
      "pi": 0.9978397846242504,
      "LRT": 2.7733215669759375,
-     "boot_p": 0.025,
+     "boot_p": 0.2,
      "pi_lo": 0.9962618190931595,
      "pi_hi": 1.0,
-     "class": "clonal"
+     "class": "insufficient evidence"
     },
     {
      "variant": "allele only",
@@ -5695,7 +5695,7 @@
      "class": ""
     }
    ],
-   "seconds": 69.9488513469696
+   "seconds": 73.21803331375122
   },
   {
    "name": "random_chr15:41.6",
@@ -5788,9 +5788,9 @@
     ],
     "n_windows": 120
    },
-   "boot_p": 0.49,
+   "boot_p": 0.68,
    "boot_B": 99,
-   "boot_T_q95": 0.06255022727636969,
+   "boot_T_q95": 3.8167292016802037,
    "class": "insufficient evidence",
    "agreement": "neither alone",
    "agreement_note": "",
@@ -5820,7 +5820,7 @@
      "best_type": "gain1",
      "pi": 1.0,
      "LRT": 0.03377542511225329,
-     "boot_p": 0.55,
+     "boot_p": 0.75,
      "pi_lo": 0.9971526566915004,
      "pi_hi": 1.0,
      "class": "insufficient evidence"
@@ -5836,7 +5836,7 @@
      "class": ""
     }
    ],
-   "seconds": 17.903521299362183
+   "seconds": 21.022867918014526
   },
   {
    "name": "random_chr2:199.9",
@@ -5931,7 +5931,7 @@
    },
    "boot_p": 0.01,
    "boot_B": 99,
-   "boot_T_q95": 1.3509582786151442,
+   "boot_T_q95": 5.596850748370704,
    "class": "clonal",
    "agreement": "depth only",
    "agreement_note": "type has no allele change; ",
@@ -5977,7 +5977,7 @@
      "class": ""
     }
    ],
-   "seconds": 17.92615580558777
+   "seconds": 20.31234645843506
   },
   {
    "name": "random_chr7:27.8",
@@ -6070,10 +6070,10 @@
     ],
     "n_windows": 120
    },
-   "boot_p": 0.02,
+   "boot_p": 0.29,
    "boot_B": 99,
-   "boot_T_q95": 4.0390295907854894e-08,
-   "class": "clonal",
+   "boot_T_q95": 4.910901441075839,
+   "class": "insufficient evidence",
    "agreement": "neither alone",
    "agreement_note": "",
    "variants": [
@@ -6092,7 +6092,7 @@
      "best_type": "cnloh",
      "pi": 0.95,
      "LRT": 3.637978807091713e-12,
-     "boot_p": 1.0,
+     "boot_p": 0.95,
      "pi_lo": 0.0,
      "pi_hi": 1.0,
      "class": "insufficient evidence"
@@ -6102,10 +6102,10 @@
      "best_type": "gain1",
      "pi": 0.9944726218197851,
      "LRT": 2.07782550858974,
-     "boot_p": 0.025,
+     "boot_p": 0.2,
      "pi_lo": 0.988199988812158,
      "pi_hi": 1.0,
-     "class": "clonal"
+     "class": "insufficient evidence"
     },
     {
      "variant": "allele only",
@@ -6118,7 +6118,7 @@
      "class": ""
     }
    ],
-   "seconds": 17.941807746887207
+   "seconds": 19.55412197113037
   },
   {
    "name": "random_chr6:74.8",
@@ -6211,9 +6211,9 @@
     ],
     "n_windows": 120
    },
-   "boot_p": 0.49,
+   "boot_p": 0.75,
    "boot_B": 99,
-   "boot_T_q95": 2.166379999835037e-08,
+   "boot_T_q95": 3.9333213624817276,
    "class": "insufficient evidence",
    "agreement": "neither alone",
    "agreement_note": "type has no depth change; ",
@@ -6233,7 +6233,7 @@
      "best_type": "cnloh",
      "pi": 0.30000000000000004,
      "LRT": 1.367880031466484e-09,
-     "boot_p": 0.475,
+     "boot_p": 0.275,
      "pi_lo": 0.0,
      "pi_hi": 1.0,
      "class": "insufficient evidence"
@@ -6243,7 +6243,7 @@
      "best_type": "cnloh",
      "pi": 0.30000000000000004,
      "LRT": 1.5897967386990786e-09,
-     "boot_p": 0.45,
+     "boot_p": 0.9,
      "pi_lo": 0.0,
      "pi_hi": 1.0,
      "class": "insufficient evidence"
@@ -6259,7 +6259,7 @@
      "class": ""
     }
    ],
-   "seconds": 18.371241092681885
+   "seconds": 19.623647451400757
   },
   {
    "name": "random_chr20:39.2",
@@ -6352,9 +6352,9 @@
     ],
     "n_windows": 120
    },
-   "boot_p": 0.28,
+   "boot_p": 0.39,
    "boot_B": 99,
-   "boot_T_q95": 2.980981154678738,
+   "boot_T_q95": 4.1094437327490585,
    "class": "no evidence",
    "agreement": "neither alone",
    "agreement_note": "type has no depth change; ",
@@ -6374,7 +6374,7 @@
      "best_type": "cnloh",
      "pi": 0.053017485468086774,
      "LRT": 0.8307638617734483,
-     "boot_p": 0.25,
+     "boot_p": 0.125,
      "pi_lo": 0.0,
      "pi_hi": 0.17060683925117912,
      "class": "no evidence"
@@ -6384,10 +6384,10 @@
      "best_type": "loss1",
      "pi": 0.9981548623212944,
      "LRT": 3.0531655903105275,
-     "boot_p": 0.025,
+     "boot_p": 0.15,
      "pi_lo": 0.9970666598520606,
      "pi_hi": 1.0,
-     "class": "clonal"
+     "class": "insufficient evidence"
     },
     {
      "variant": "allele only",
@@ -6400,7 +6400,7 @@
      "class": ""
     }
    ],
-   "seconds": 52.26954483985901
+   "seconds": 54.77458477020264
   },
   {
    "name": "random_chr10:121.4",
@@ -6495,7 +6495,7 @@
    },
    "boot_p": 1.0,
    "boot_B": 99,
-   "boot_T_q95": 0.0,
+   "boot_T_q95": 2.9540548343160467,
    "class": "insufficient evidence",
    "agreement": "neither alone",
    "agreement_note": "type has no allele change; ",
@@ -6525,10 +6525,10 @@
      "best_type": "gain1",
      "pi": 0.9962126898545342,
      "LRT": 0.6426435006251268,
-     "boot_p": 0.025,
+     "boot_p": 0.45,
      "pi_lo": 0.9908915700044282,
      "pi_hi": 1.0,
-     "class": "clonal"
+     "class": "insufficient evidence"
     },
     {
      "variant": "allele only",
@@ -6541,7 +6541,7 @@
      "class": ""
     }
    ],
-   "seconds": 95.87088751792908
+   "seconds": 106.82575368881226
   },
   {
    "name": "random_chr6:145.0",
@@ -6636,7 +6636,7 @@
    },
    "boot_p": 1.0,
    "boot_B": 99,
-   "boot_T_q95": 2.0600796558024688,
+   "boot_T_q95": 3.352387068905591,
    "class": "no evidence",
    "agreement": "neither alone",
    "agreement_note": "type has no depth change; ",
@@ -6666,10 +6666,10 @@
      "best_type": "loss1",
      "pi": 0.9986953194592936,
      "LRT": 2.051297434922162,
-     "boot_p": 0.025,
+     "boot_p": 0.2,
      "pi_lo": 0.9976849822363468,
      "pi_hi": 1.0,
-     "class": "clonal"
+     "class": "insufficient evidence"
     },
     {
      "variant": "allele only",
@@ -6682,7 +6682,7 @@
      "class": ""
     }
    ],
-   "seconds": 89.51241564750671
+   "seconds": 96.78336381912231
   },
   {
    "name": "random_chr2:164.3",
@@ -6775,10 +6775,10 @@
     ],
     "n_windows": 120
    },
-   "boot_p": 0.01,
+   "boot_p": 0.18,
    "boot_B": 99,
-   "boot_T_q95": 3.564353391993766e-07,
-   "class": "clonal",
+   "boot_T_q95": 4.796055776535285,
+   "class": "insufficient evidence",
    "agreement": "neither alone",
    "agreement_note": "",
    "variants": [
@@ -6807,10 +6807,10 @@
      "best_type": "gain1",
      "pi": 0.9848235391319587,
      "LRT": 2.860327470360062,
-     "boot_p": 0.025,
+     "boot_p": 0.225,
      "pi_lo": 0.9709268730278727,
      "pi_hi": 0.9977577398816412,
-     "class": "clonal"
+     "class": "insufficient evidence"
     },
     {
      "variant": "allele only",
@@ -6823,7 +6823,7 @@
      "class": ""
     }
    ],
-   "seconds": 20.017011642456055
+   "seconds": 20.668654918670654
   },
   {
    "name": "random_chr14:93.5",
@@ -6918,7 +6918,7 @@
    },
    "boot_p": 1.0,
    "boot_B": 99,
-   "boot_T_q95": 0.0,
+   "boot_T_q95": 3.3550180473008338,
    "class": "no evidence",
    "agreement": "neither alone",
    "agreement_note": "type has no depth change; ",
@@ -6948,10 +6948,10 @@
      "best_type": "loss1",
      "pi": 0.9985913975630974,
      "LRT": 0.6436540858339868,
-     "boot_p": 0.025,
+     "boot_p": 0.55,
      "pi_lo": 0.9976391632928027,
      "pi_hi": 1.0,
-     "class": "clonal"
+     "class": "insufficient evidence"
     },
     {
      "variant": "allele only",
@@ -6964,7 +6964,7 @@
      "class": ""
     }
    ],
-   "seconds": 89.12218523025513
+   "seconds": 100.3605785369873
   }
  ],
  "orient": [
@@ -7211,7 +7211,7 @@
  "n_panel": 30,
  "B_main": 99,
  "B_var": 39,
- "seconds": 1375.372990846634,
+ "seconds": 1433.835905790329,
  "cluster_sizes": {
   "0": 1286,
   "1": 833,
@@ -7235,7 +7235,7 @@
    "matplotlib": "3.8.4",
    "statsmodels": "0.14.1"
   },
-  "workbench_commit_at_run": "ffbdbd32cf5a6390e6f0af9338c9fdc287851319",
+  "workbench_commit_at_run": "7e37b08da158194664dd01c3decbc0de1b53e7f8",
   "pyepi_upstream_commit": "e8305ea2162634d07e92a3bb401df672e48f217b",
   "cpu_count": 4
  },
