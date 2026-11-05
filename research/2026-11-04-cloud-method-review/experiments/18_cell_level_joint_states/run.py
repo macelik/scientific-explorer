@@ -76,7 +76,7 @@ SCR = Path("/tmp/claude-0/-home-user-scientific-explorer/b1079aa7-80fd-5756-88cc
 OUT = SCR if CHECK else HERE
 OUT.mkdir(parents=True, exist_ok=True)
 
-ALPHA, RNB = 0.02, 50.0
+ALPHA, EPS_OUT, PI_MIN = 0.02, 0.01, 0.02
 B_MAIN = 9 if CHECK else 99
 B_VAR = 9 if CHECK else 49
 K_PRIMARY, K_ALT = 0.6, 1.0
@@ -205,21 +205,28 @@ def prepare(d, p, lab, units, tabs, own_units):
 class Dat:
     """Cell-level arrays for one fit. y, mu0 length n; cl in 0..K-1; allele cells = N > 0."""
 
-    def __init__(self, y, mu0, cl, K, N, M, rho_r):
+    def __init__(self, y, mu0, cl, K, N, M, rho_r, alpha=ALPHA):
         self.y, self.mu0, self.cl, self.K = y, mu0, cl, K
-        self.cy = gammaln(y + RNB) - gammaln(RNB) - gammaln(y + 1)
+        self.alpha, self.R = alpha, 1.0 / alpha
+        self.cy = gammaln(y + self.R) - gammaln(self.R) - gammaln(y + 1)
         am = N > 0
         self.am = am
         self.Na, self.Ma = N[am], M[am]
         self.rho_r = rho_r
-        self.ca = self.Na / rho_r - 1.0
+        self.ca = 1.0 / np.minimum(rho_r / self.Na, 0.99) - 1.0
         self.lc = gammaln(self.Na + 1) - gammaln(self.Ma + 1) - gammaln(self.Na - self.Ma + 1)
         self.cA = gammaln(self.ca) - gammaln(self.Na + self.ca)
         self.cl_a = cl[am]
 
 
-def nb_ll(dat, mu):
-    return dat.cy + RNB * np.log(RNB / (RNB + mu)) + dat.y * (np.log(mu) - np.log(RNB + mu))
+def depth_ll_score(dat, mu):
+    """Log-likelihood of y under (1-eps) NB2(mu, alpha) + eps NB2(mu, 1) (outlier-robust background) and its derivative wrt log mu."""
+    y = dat.y
+    la = dat.cy + dat.R * np.log(dat.R / (dat.R + mu)) + y * (np.log(mu) - np.log(dat.R + mu))
+    lw = -np.log1p(mu) + y * (np.log(mu) - np.log1p(mu))              # NB2 with alpha = 1 (gammaln terms cancel)
+    lf = np.logaddexp(np.log1p(-EPS_OUT) + la, np.log(EPS_OUT) + lw)
+    rw = np.exp(np.log(EPS_OUT) + lw - lf)
+    return lf, (1 - rw) * (y - mu) / (1 + dat.alpha * mu) + rw * (y - mu) / (1 + mu)
 
 
 def bb_ll_dh(dat, h, grad=True):
@@ -251,10 +258,8 @@ def objective(x, dat, pr, e, k, use_d, use_a, pi_fixed):
     l0 = np.zeros(n); l1 = np.zeros(n)
     s0 = s1 = None
     if use_d:
-        l0 = nb_ll(dat, mu)
-        mu1 = mu * L
-        l1 = nb_ll(dat, mu1)
-        s0 = (dat.y - mu) / (1 + ALPHA * mu); s1 = (dat.y - mu1) / (1 + ALPHA * mu1)
+        l0, s0 = depth_ll_score(dat, mu)
+        l1, s1 = depth_ll_score(dat, mu * L)
     d0 = pr.d_med + pr.tau * z
     h0 = np.clip(0.5 + d0, 0.02, 0.98)
     h1 = np.clip(h0 + k * (he - 0.5), 0.02, 0.98)
@@ -302,7 +307,7 @@ def fit(dat, pr, e, k, use_d=True, use_a=True, pi_fixed=None, x0=None, pi0=0.3):
     if not use_a:
         x0[K] = 0.0; bnd[K] = (0.0, 0.0)
     if pi_fixed is None:
-        bnd = bnd + [(0.0, 1.0)]
+        bnd = bnd + [(PI_MIN, 1.0)]
     res = optimize.minimize(objective, x0, args=(dat, pr, e, k, use_d, use_a, pi_fixed), jac=True, method="L-BFGS-B", bounds=bnd,
                             options={"maxiter": 200, "ftol": 1e-10, "gtol": 1e-6})
     x = res.x
@@ -315,7 +320,7 @@ def posterior_w(dat, pr, fitres, k, use_d=True, use_a=True):
     mu = dat.mu0 * np.exp(x[:K][dat.cl])
     l0 = np.zeros(len(dat.y)); l1 = np.zeros(len(dat.y))
     if use_d:
-        l0 += nb_ll(dat, mu); l1 += nb_ll(dat, mu * L)
+        l0 += depth_ll_score(dat, mu)[0]; l1 += depth_ll_score(dat, mu * L)[0]
     if use_a:
         d0 = pr.d_med + pr.tau * x[K]
         h0 = np.clip(0.5 + d0, 0.02, 0.98); h1 = np.clip(h0 + k * (he - 0.5), 0.02, 0.98)
@@ -330,9 +335,16 @@ def scan_types(dat, pr, k, use_d=True, use_a=True, null=None):
     if null is None:
         null = fit(dat, pr, None, k, use_d, use_a, pi_fixed=0.0)
     alts = []
+    K = dat.K
     for e in TYPES:
-        x0 = np.r_[null["x"], 0.3]
-        alts.append(fit(dat, pr, e, k, use_d, use_a, x0=x0))
+        best = None
+        for pi0 in (0.3, 0.95):                      # two starts: mostly-background and mostly-event
+            x0 = np.r_[null["x"], pi0]
+            x0[:K] = x0[:K] - np.log(1 + pi0 * (TYPES[e][0] - 1)) if use_d else x0[:K]
+            f = fit(dat, pr, e, k, use_d, use_a, x0=x0)
+            if best is None or f["ll"] > best["ll"]:
+                best = f
+        alts.append(best)
     alts.sort(key=lambda f: -f["ll"])
     return null, alts
 
@@ -364,18 +376,32 @@ def profile_ci(dat, pr, best, k, use_d=True, use_a=True):
 def estimate_rho(Nv, Mv):
     am = Nv > 0
     if am.sum() < 5:
-        return 0.3
+        return 0.5
     class Z: pass
     h = Mv[am].sum() / Nv[am].sum()
     h = float(np.clip(h, 0.05, 0.95))
     best, br = -np.inf, 0.3
-    for r in np.exp(np.linspace(np.log(0.003), np.log(0.95), 40)):
-        z = Z(); z.Na, z.Ma = Nv[am], Mv[am]; z.ca = z.Na / r - 1
+    for r in np.exp(np.linspace(np.log(0.003), np.log(3.0), 50)):
+        z = Z(); z.Na, z.Ma = Nv[am], Mv[am]; z.ca = 1.0 / np.minimum(r / z.Na, 0.99) - 1
         z.lc = gammaln(z.Na + 1) - gammaln(z.Ma + 1) - gammaln(z.Na - z.Ma + 1); z.cA = gammaln(z.ca) - gammaln(z.Na + z.ca)
         ll = bb_ll_dh(z, h, False)[0].sum()
         if ll > best:
             best, br = ll, r
     return float(br)
+
+
+ALPHA_GRID = np.array([0.003, 0.006, 0.01, 0.015, 0.02, 0.03, 0.045, 0.07, 0.1, 0.15])
+
+
+def estimate_alpha(Y, mu0, lab_i, K, Nv, Mv, rho_r, pr):
+    """Region-specific NB2 dispersion: grid ML of the depth-only null (baseline a_c refitted at each alpha). Held fixed afterwards."""
+    best = None
+    for al in ALPHA_GRID:
+        dat = Dat(Y, mu0, lab_i, K, Nv, Mv, rho_r, al)
+        f = fit(dat, pr, None, K_PRIMARY, True, False, pi_fixed=0.0)
+        if best is None or f["ll"] > best[0]:
+            best = (f["ll"], al, dat)
+    return float(best[1]), best[2]
 
 
 def classify(p, lo, hi):
@@ -391,7 +417,7 @@ def classify(p, lo, hi):
 def simulate(rng, dat, nullfit, pr, mu0_full=None):
     K = dat.K; x = nullfit["x"]
     mu = dat.mu0 * np.exp(x[:K][dat.cl])
-    y = rng.poisson(rng.gamma(RNB, mu / RNB))
+    y = rng.poisson(rng.gamma(dat.R, mu / dat.R))
     d0 = pr.d_med + pr.tau * x[K]
     h0 = float(np.clip(0.5 + d0, 0.02, 0.98))
     Mn = np.zeros(len(dat.y)); Nn = np.zeros(len(dat.y))
@@ -463,23 +489,23 @@ def analyse_region(task):
     m_vec = np.full(K, cal["m"])
     pr = Prior(m_vec, cal["sig_u"], cal["sig_b"], cal["d_med"], cal["tau"])
     pr_noff = Prior(m_vec, cal["sig_u"], 1e-4, cal["d_med"], cal["tau"])
-    dat = Dat(Y, mu0, lab_i, K, Nv, Mv, rho_r)
-    res = {"name": u["name"], "family": u["family"], "mode": mode, "rho_r": rho_r, "n_cells": len(Y), "n_cells_N_gt0": int((Nv > 0).sum()), "sum_N": float(Nv.sum()),
+    alpha_r, dat = estimate_alpha(Y, mu0, lab_i, K, Nv, Mv, rho_r, pr)
+    res = {"name": u["name"], "family": u["family"], "mode": mode, "rho_r": rho_r, "alpha_r": alpha_r, "n_cells": len(Y), "n_cells_N_gt0": int((Nv > 0).sum()), "sum_N": float(Nv.sum()),
            "pooled_h": float(Mv.sum() / Nv.sum()) if Nv.sum() > 0 else np.nan}
     null, alts = scan_types(dat, pr, k)
     best = alts[0]
-    T = 2 * (best["ll"] - null["ll"])
+    T = max(0.0, 2 * (best["ll"] - null["ll"]))
     lo, hi, _ = profile_ci(dat, pr, best, k)
     w = posterior_w(dat, pr, best, k)
     comp = {}
     for nm, (ud, ua) in {"depth_only": (True, False), "allele_only": (False, True)}.items():
         n_, a_ = scan_types(dat, pr, k, ud, ua)
-        comp[nm] = {"type_best": a_[0]["type"], "pi": a_[0]["pi"], "LRT": 2 * (a_[0]["ll"] - n_["ll"]),
-                    "LRT_for_joint_best_type": 2 * (next(f for f in a_ if f["type"] == best["type"])["ll"] - n_["ll"]),
+        comp[nm] = {"type_best": a_[0]["type"], "pi": a_[0]["pi"], "LRT": max(0.0, 2 * (a_[0]["ll"] - n_["ll"])),
+                    "LRT_for_joint_best_type": max(0.0, 2 * (next(f for f in a_ if f["type"] == best["type"])["ll"] - n_["ll"])),
                     "pi_for_joint_best_type": next(f for f in a_ if f["type"] == best["type"])["pi"]}
     res.update(best_type=best["type"], pi=best["pi"], pi_lo=lo, pi_hi=hi, LRT=T, frac_cells_P90=float((w > 0.9).mean()), mean_P_event=float(w.mean()),
                a_hat_null=null["x"][:K].tolist(), d0_null=float(cal["d_med"] + cal["tau"] * null["x"][K]), d0_alt=float(cal["d_med"] + cal["tau"] * best["x"][K]),
-               b_hat_alt=float(best["x"][:K].mean()), all_types={f["type"]: {"pi": f["pi"], "LRT": 2 * (f["ll"] - null["ll"])} for f in alts},
+               b_hat_alt=float(best["x"][:K].mean()), all_types={f["type"]: {"pi": f["pi"], "LRT": max(0.0, 2 * (f["ll"] - null["ll"]))} for f in alts},
                components=comp, prior=cal_summary(cal))
     # ---- bootstrap (overall + cluster)
     rng = np.random.default_rng(SEED18 + (ridx,))
@@ -492,7 +518,7 @@ def analyse_region(task):
             s = lab_i == c
             prc = Prior([abar_null], cal["sig_u"], 1e-4, cal["d_med_c"][c], cal["tau_c"][c])
             cl_prs.append(prc)
-            cl_dats.append((s, Dat(Y[s], mu0[s], np.zeros(s.sum(), int), 1, Nv[s], Mv[s], rho_r), prc))
+            cl_dats.append((s, Dat(Y[s], mu0[s], np.zeros(s.sum(), int), 1, Nv[s], Mv[s], rho_r, alpha_r), prc))
         crow = []
         for c in range(K):
             s, dc, prc = cl_dats[c]
@@ -504,9 +530,9 @@ def analyse_region(task):
             for nm, (ud, ua) in {"depth_only": (True, False), "allele_only": (False, True)}.items():
                 n_, a_ = scan_types(dc, prc, k, ud, ua)
                 f = next(f for f in a_ if f["type"] == b["type"])
-                sub[nm] = 2 * (f["ll"] - n_["ll"])
+                sub[nm] = max(0.0, 2 * (f["ll"] - n_["ll"]))
             crow.append({"cluster": CLUST[c], "n_cells": int(s.sum()), "n_cells_N_gt0": int((Nv[s] > 0).sum()), "best_type": b["type"], "pi": b["pi"], "pi_lo": lo_c,
-                         "pi_hi": hi_c, "LRT": 2 * (b["ll"] - nl["ll"]), "frac_cells_P90": float((wc > 0.9).mean()), "LRT_depth_only": sub["depth_only"],
+                         "pi_hi": hi_c, "LRT": max(0.0, 2 * (b["ll"] - nl["ll"])), "frac_cells_P90": float((wc > 0.9).mean()), "LRT_depth_only": sub["depth_only"],
                          "LRT_allele_only": sub["allele_only"], "pooled_h_all_orient": float(Mv[s].sum() / Nv[s].sum()) if Nv[s].sum() > 0 else np.nan,
                          "pooled_h_own_orient": float(prep["Mo"][s, opts["own_index"]].sum() / prep["No"][s, opts["own_index"]].sum()) if opts["own_index"] is not None and prep["No"][s, opts["own_index"]].sum() > 0 else np.nan})
         res["clusters"] = crow
@@ -514,15 +540,15 @@ def analyse_region(task):
     Tb = []; Tc = [[] for _ in range(K)]
     for b_ in range(opts["B"]):
         yb, Mb, Nb = simulate(rng, dat, null, pr)
-        db = Dat(yb, mu0, lab_i, K, Nb, Mb, rho_r)
+        db = Dat(yb, mu0, lab_i, K, Nb, Mb, rho_r, alpha_r)
         nb_, ab_ = scan_types(db, pr, k)
-        Tb.append(2 * (ab_[0]["ll"] - nb_["ll"]))
+        Tb.append(max(0.0, 2 * (ab_[0]["ll"] - nb_["ll"])))
         if do_cl:
             for c in range(K):
                 s, dc, prc = cl_dats[c]
-                dcb = Dat(yb[s], mu0[s], np.zeros(s.sum(), int), 1, Nb[s], Mb[s], rho_r)
+                dcb = Dat(yb[s], mu0[s], np.zeros(s.sum(), int), 1, Nb[s], Mb[s], rho_r, alpha_r)
                 nl, al = scan_types(dcb, prc, k)
-                Tc[c].append(2 * (al[0]["ll"] - nl["ll"]))
+                Tc[c].append(max(0.0, 2 * (al[0]["ll"] - nl["ll"])))
     Tb = np.array(Tb)
     res["boot_p"] = float((1 + (Tb >= T).sum()) / (len(Tb) + 1)); res["boot_B"] = len(Tb); res["boot_T_q95"] = float(np.quantile(Tb, .95)) if len(Tb) else np.nan
     res["class"] = classify(res["boot_p"], lo, hi)
@@ -542,16 +568,16 @@ def analyse_region(task):
                                        "depth only": (pr, k, True, False), "allele only": (pr, k, False, True)}.items():
         nv, av = scan_types(dat, prv, kv, ud, ua)
         bv = av[0]
-        Tv = 2 * (bv["ll"] - nv["ll"])
+        Tv = max(0.0, 2 * (bv["ll"] - nv["ll"]))
         pv = np.nan
         if opts["var_boot"] and vname in opts["var_boot"]:
             rngv = np.random.default_rng(SEED18 + (ridx, 7))
             Tvb = []
             for _ in range(opts["B_var"]):
                 yb, Mb, Nb = simulate(rngv, dat, nv, prv)
-                db = Dat(yb, mu0, lab_i, K, Nb, Mb, rho_r)
+                db = Dat(yb, mu0, lab_i, K, Nb, Mb, rho_r, alpha_r)
                 n2, a2 = scan_types(db, prv, kv, ud, ua)
-                Tvb.append(2 * (a2[0]["ll"] - n2["ll"]))
+                Tvb.append(max(0.0, 2 * (a2[0]["ll"] - n2["ll"])))
             pv = float((1 + (np.array(Tvb) >= Tv).sum()) / (len(Tvb) + 1))
         lo_v, hi_v, _ = profile_ci(dat, prv, bv, kv, ud, ua) if opts["var_boot"] and vname in opts["var_boot"] else (np.nan, np.nan, None)
         var.append({"variant": vname, "best_type": bv["type"], "pi": bv["pi"], "LRT": Tv, "boot_p": pv, "pi_lo": lo_v, "pi_hi": hi_v,

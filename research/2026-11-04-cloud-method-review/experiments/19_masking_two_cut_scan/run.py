@@ -52,10 +52,12 @@ WIDTHS = [20, 30, 50]
 NLOC = 8
 
 
-def two_cut(v):
-    """max over windows of AD(window, rest); returns (Tmax, i, w)."""
+def two_cut(v, true=None):
+    """max over windows of AD(window, rest); returns (Tmax, i, w) or, with true=(i0, w0),
+    (Tmax, i, w, T_true, fraction of windows with T >= T_true)."""
     n = len(v)
     best = (-np.inf, None, None)
+    allT, t_true = [], np.nan
     for w in range(WMIN, min(WMAX, n - MINREST) + 1):
         for i in range(0, n - w + 1):
             if n - w < MINREST:
@@ -63,9 +65,15 @@ def two_cut(v):
             win = v[i:i + w]
             rest = np.concatenate([v[:i], v[i + w:]])
             t = sci.dist_ad(win, rest)
+            allT.append(t)
+            if true is not None and i == true[0] and w == true[1]:
+                t_true = t
             if t > best[0]:
                 best = (t, i, w)
-    return best
+    if true is None:
+        return best
+    allT = np.asarray(allT)
+    return best + (t_true, float(np.mean(allT >= t_true)) if np.isfinite(t_true) else np.nan)
 
 
 def null_task(args):
@@ -76,7 +84,7 @@ def null_task(args):
 
 
 def real_task(args):
-    (row, v, pool, pkg) = args
+    (row, v, pool, pkg, ref_cuts) = args
     sci.load(pkg)
     s, e = row["s"], row["e"]
     v2 = v.copy(); v2[s:e] *= FACT[row["type"]]
@@ -99,18 +107,25 @@ def real_task(args):
                 reason = "top cut " + ("at event" if at_event else "elsewhere") + "; rejected by global test"
         else:
             reason = "accepted cut elsewhere; recursion ended (depth/geometry)"
-    # final segment containing the event
-    bounds = [0] + sorted(int(x) for x in b) + [len(v2)]
+    # segment of the UNMODIFIED saved segmentation that contains the event (ref_cuts: saved cluster0 cuts)
+    bounds = [0] + sorted(int(x) for x in ref_cuts) + [len(v2)]
     k = np.searchsorted(bounds, s, side="right") - 1
     lo, hi = bounds[k], bounds[k + 1]
-    if e > hi:   # event spans a baseline boundary: use the union of the two segments
-        hi = bounds[min(len(bounds) - 1, np.searchsorted(bounds, e, side="left"))]
+    while hi < e and k + 2 < len(bounds):   # event spans a saved boundary: merge with the next segment
+        k += 1; hi = bounds[k + 1]
     seg = v2[lo:hi]
-    t, i, w = two_cut(seg) if len(seg) >= WMIN + MINREST else (np.nan, None, None)
+    if len(seg) >= WMIN + MINREST and (e - s) <= WMAX:
+        t, i, w, t_true, frac_ge = two_cut(seg, true=(s - lo, e - s))
+    else:
+        t, i, w, t_true, frac_ge = np.nan, None, None, np.nan, np.nan
     return {**{k_: row[k_] for k_ in ("type", "width", "locus", "chrom", "s", "e")}, "baseline_left_err": le, "baseline_right_err": re_,
             "baseline_detected": bool(le <= TOL and re_ <= TOL), "baseline_reason": reason,
             "segment_lo": lo, "segment_hi": hi, "segment_len": hi - lo, "two_cut_T": t,
-            "two_cut_start": (lo + i) if i is not None else None, "two_cut_end": (lo + i + w) if i is not None else None}
+            "two_cut_start": (lo + i) if i is not None else None, "two_cut_end": (lo + i + w) if i is not None else None,
+            "two_cut_T_true_window": t_true, "frac_windows_T_ge_true": frac_ge}
+
+
+VERDICT = DECISION = ""
 
 
 def main():
@@ -145,7 +160,8 @@ def main():
             ci = np.flatnonzero(d.seq == r.chrom)
             row = {"type": typ, "width": int(w), "locus": int(r.locus), "chrom": r.chrom, "s": int(r.event_start_local),
                    "e": int(r.event_end_local_excl), "chrom_idx": ci}
-            tasks.append((row, pb[ci].copy(), pb, pkg))
+            ref = bp0.loc[bp0.chromosome == r.chrom, "absolute_bin"].astype(int).tolist()
+            tasks.append((row, pb[ci].copy(), pb, pkg, ref))
     with ProcessPoolExecutor(3) as ex:
         res = pd.DataFrame(list(ex.map(real_task, tasks)))
     res["two_cut_threshold"] = res.segment_len.apply(thr)
@@ -153,9 +169,13 @@ def main():
     res["two_cut_detected"] = (res.two_cut_T > res.two_cut_threshold) & res.two_cut_edges_ok
     res.to_csv(HERE / "realizations.tsv", sep="\t", index=False)
     null["threshold"] = null.n_bins.apply(thr); null["above"] = null.Tmax > null.threshold
+    res["true_window_is_max"] = res.frac_windows_T_ge_true <= (1.0 / 1000)
     summ = res.groupby(["type", "width"]).agg(n=("locus", "size"), baseline_detected=("baseline_detected", "mean"),
                                              two_cut_detected=("two_cut_detected", "mean"),
-                                             two_cut_edges_ok=("two_cut_edges_ok", "mean")).reset_index()
+                                             two_cut_edges_ok=("two_cut_edges_ok", "mean"),
+                                             median_frac_windows_T_ge_true=("frac_windows_T_ge_true", "median")).reset_index()
+    tt = res.assign(true_above=res.two_cut_T_true_window > res.two_cut_threshold).groupby(["type", "width"]).true_above.mean()
+    summ["true_window_above_threshold"] = tt.values
     reasons = res[~res.baseline_detected].groupby(["type", "baseline_reason"]).size().rename("missed").reset_index()
     summ.to_csv(HERE / "detection_summary.tsv", sep="\t", index=False)
     reasons.to_csv(HERE / "miss_reasons.tsv", sep="\t", index=False)
@@ -182,6 +202,21 @@ def main():
             g = res[res.type == typ]; ax.scatter(g.segment_len, g.two_cut_T, s=18, color=c, label=typ)
         ax.set_xscale("log"); ax.set_yscale("log"); ax.set_xlabel("segment length (bins)"); ax.set_ylabel("max two-cut AD"); ax.legend(fontsize=6)
     b_det, b_null = fig(f_det), fig(f_null)
+    lo1 = summ[summ.type == "loss_one"]
+    better = float(lo1.two_cut_detected.mean()) > float(lo1.baseline_detected.mean()) + 0.2
+    global VERDICT, DECISION
+    if better:
+        VERDICT = ("Moderate focal changes are missed mainly through masking in long segments; a segment-vs-rest (two-cut) scan inside the "
+                   "same segment recovers many of them.")
+        DECISION = ("Moves rank 4 (segmentation) forward: a two-cut or seeded scan should be benchmarked with exp 14's realistic injections and "
+                    "an FDR-controlled threshold before adoption.")
+    else:
+        VERDICT = ("Moderate focal changes are missed not only because of the binary search: inside their own segment, natural windows on this real "
+                   "background differ from the rest about as much as an injected 0.5× or 1.5× change, so a better search alone (two-cut scan) "
+                   "does not isolate them. Detecting one-copy focal changes needs a baseline model of the regional structure.")
+        DECISION = ("Shifts weight from segmentation search (rank 9/4) to the baseline (rank 3): without a cross-sample or modelled regional "
+                    "baseline, neither the binary AD scan nor a two-cut AD scan separates one-copy focal events from accessibility structure at "
+                    "this scale. Deep (0.1×) losses remain detectable by the current scan.")
     sm = summ.set_index(["type", "width"])
     key = [f"Baseline AD binary scan, clean clonal one-copy loss (×0.5): detected {sm.loc[('loss_one',20),'baseline_detected']:.0%} / "
            f"{sm.loc[('loss_one',30),'baseline_detected']:.0%} / {sm.loc[('loss_one',50),'baseline_detected']:.0%} at 20/30/50 bins; "
@@ -192,6 +227,8 @@ def main():
            f"two-cut {sm.loc[('loss_deep',20),'two_cut_detected']:.0%} / {sm.loc[('loss_deep',30),'two_cut_detected']:.0%} / {sm.loc[('loss_deep',50),'two_cut_detected']:.0%}.",
            "Why the baseline misses: " + "; ".join(f"{r.baseline_reason} ({r.missed})" for r in reasons.groupby('baseline_reason').missed.sum().reset_index().itertuples()) + ".",
            f"Two-cut threshold from {len(null)} unmodified cluster-0 segments (150–1,500 bins): {null.above.mean():.0%} of them exceed it by construction (≈5%).",
+           "Rank of the true event window among all windows of its unmodified containing segment (median fraction of windows with T ≥ T_true): " +
+           "; ".join(f"{t} {w}: {v:.3f}" for (t, w), v in sm.median_frac_windows_T_ge_true.items()) + ". A value well above 0 means natural windows in the same segment differ more from the rest than the injected event does.",
            f"n = {NLOC} loci per cell; intervals are wide (Wilson 95% for 0/8 is 0–32%, for 8/8 is 68–100%)."]
     glossary = {"baseline_detected": "workbench AD scan places boundaries within ±2 bins of both injected edges",
                 "baseline_reason": "for misses: what happened in the deepest tested node containing the event",
@@ -225,15 +262,12 @@ def main():
     C.write_html_report(HERE / "report.html", "Masking and two-cut scan", "Experiment 19 · why moderate focal events are missed by binary AD segmentation",
                         sections, {"command": "python -I experiments/19_masking_two_cut_scan/run.py", "outputs": ["realizations.tsv", "null_segments.tsv",
                                    "detection_summary.tsv", "miss_reasons.tsv", "summary.json"], "environment": C.environment()},
-                        verdict="Moderate focal changes are missed mainly because the binary scan's single best cut in a long segment lies elsewhere and is "
-                                "rejected, which ends the search there; a segment-vs-rest (two-cut) scan inside the same segment is the targeted fix to test.",
+                        verdict=VERDICT,
                         key_findings=key, glossary=glossary,
                         supports=["A segmentation change (two-cut/CBS-like or seeded binary segmentation) as the next method experiment.",
                                   "Reporting 'not segmented' separately from 'no change' for focal events below ~0.5x contrast."],
                         not_supports=["Any claim about real events in MCF10-A; events here are synthetic.", "A calibrated false-discovery rate for the two-cut scan."],
-                        decision_impact="Moves part of rank 4 (segmentation) forward: the binary AD recursion has a structural sensitivity gap for moderate focal "
-                                        "events, independent of preprocessing. A two-cut or seeded scan should be benchmarked with exp 14's realistic injections and "
-                                        "an FDR-controlled threshold before adoption.",
+                        decision_impact=DECISION,
                         next_steps=["Integrate a two-cut statistic into the recursion and rerun experiment 14's realistic injections.",
                                     "Calibrate the two-cut threshold by permuting cells between halves (sampling-only null) plus the background-segment null.",
                                     "Compare with an exposure-aware count changepoint with a baseline-variance term (experiment 11 showed sampling-only dispersion over-segments)."])
