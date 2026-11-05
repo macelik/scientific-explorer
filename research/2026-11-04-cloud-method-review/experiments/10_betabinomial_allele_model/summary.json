@@ -1,0 +1,236 @@
+{
+ "experiment": "10_betabinomial_allele_model",
+ "method_record": "E:2",
+ "seed": 20261029,
+ "generator": "numpy.random.default_rng (PCG64), seed tuples (20261029, stream, task_index[, scenario_index]); stream 1 = power grid, 2 = label sims",
+ "replicates_per_scenario": 1000,
+ "grid_step_estimation": 0.0025,
+ "grid_step_simulation": 0.01,
+ "delta_max": 0.49,
+ "lr_cutoffs": {
+  "chi2_1_95": 3.841458820694124,
+  "boundary_onesided_chi2_1_90": 2.705543454095404
+ },
+ "min_bins": 3,
+ "min_AT_per_bin": 1,
+ "rho_empirical": 0.0038438180263300373,
+ "rho_exp06": 0.0038438180263300373,
+ "rho_sensitivity": [
+  0.0,
+  0.02,
+  0.1
+ ],
+ "MYC_delta_eff_exp06": 0.1060155604516495,
+ "haplotype_fractions": [
+  0.5,
+  0.6,
+  0.75,
+  0.9
+ ],
+ "data_icc": [
+  0,
+  0.02,
+  0.1,
+  "empirical"
+ ],
+ "phase_scenarios": [
+  "none",
+  "random",
+  "switch"
+ ],
+ "label_rule": "unobserved (<3 bins AT>=1); consistent with imbalance (agnostic h CI excludes 0.5 and LR > uncalled-random-window q95); insufficient (simulated power at h=0.75, rho=empirical, random orientation < 0.8); against (LR for h=0.75 > 3.841 and power >= 0.8; conditional on AT as independent observations); else compatible with balance",
+ "alignment_checks": {
+  "HA": {
+   "coords_match_anndata": true,
+   "barcode_set_equal": true,
+   "column_order_equal_anndata": false
+  },
+  "HB": {
+   "coords_match_anndata": true,
+   "barcode_set_equal": true,
+   "column_order_equal_anndata": false
+  },
+  "AT": {
+   "coords_match_anndata": true,
+   "barcode_set_equal": true,
+   "column_order_equal_anndata": false
+  },
+  "AT_equals_HA_plus_HB_all_groups": true
+ },
+ "random_window_calibration": {
+  "n_random_windows_with_estimate": 300,
+  "n_uncalled": 226,
+  "rho_settings": {
+   "empirical": {
+    "uncalled": {
+     "agn": {
+      "q95_LR": 16.359679292818328,
+      "median_LR": 0.5842944978758169,
+      "frac_gt_3.841": 0.24336283185840707,
+      "frac_gt_2.706": 0.2920353982300885,
+      "frac_CI_excludes_0.5": 0.24336283185840707
+     },
+     "ori": {
+      "q95_LR": 6.5944655379862525,
+      "median_LR": 0.7354007745962008,
+      "frac_gt_3.841": 0.12831858407079647,
+      "frac_gt_2.706": 0.20353982300884957,
+      "frac_CI_excludes_0.5": 0.12831858407079647
+     }
+    },
+    "all_random": {
+     "agn": {
+      "frac_gt_3.841": 0.31333333333333335
+     },
+     "ori": {
+      "frac_gt_3.841": 0.19666666666666666
+     }
+    }
+   },
+   "0": {
+    "uncalled": {
+     "agn": {
+      "q95_LR": 131.46425971706458,
+      "median_LR": 23.3058461566161,
+      "frac_gt_3.841": 0.8539823008849557,
+      "frac_gt_2.706": 0.8938053097345132,
+      "frac_CI_excludes_0.5": 0.8539823008849557
+     },
+     "ori": {
+      "q95_LR": 47.70667134853716,
+      "median_LR": 3.067201599422333,
+      "frac_gt_3.841": 0.4823008849557522,
+      "frac_gt_2.706": 0.5398230088495575,
+      "frac_CI_excludes_0.5": 0.4823008849557522
+     }
+    },
+    "all_random": {
+     "agn": {
+      "frac_gt_3.841": 0.8833333333333333
+     },
+     "ori": {
+      "frac_gt_3.841": 0.5333333333333333
+     }
+    }
+   },
+   "0.02": {
+    "uncalled": {
+     "agn": {
+      "q95_LR": 0.008426595258242742,
+      "median_LR": 0.0,
+      "frac_gt_3.841": 0.0,
+      "frac_gt_2.706": 0.008849557522123894,
+      "frac_CI_excludes_0.5": 0.0
+     },
+     "ori": {
+      "q95_LR": 1.750619575383098,
+      "median_LR": 0.27539546242769575,
+      "frac_gt_3.841": 0.01327433628318584,
+      "frac_gt_2.706": 0.022123893805309734,
+      "frac_CI_excludes_0.5": 0.01327433628318584
+     }
+    },
+    "all_random": {
+     "agn": {
+      "frac_gt_3.841": 0.09333333333333334
+     },
+     "ori": {
+      "frac_gt_3.841": 0.07666666666666666
+     }
+    }
+   },
+   "0.1": {
+    "uncalled": {
+     "agn": {
+      "q95_LR": 0.0,
+      "median_LR": 0.0,
+      "frac_gt_3.841": 0.0,
+      "frac_gt_2.706": 0.0,
+      "frac_CI_excludes_0.5": 0.0
+     },
+     "ori": {
+      "q95_LR": 0.6886264486493019,
+      "median_LR": 0.07906125971203437,
+      "frac_gt_3.841": 0.0,
+      "frac_gt_2.706": 0.0,
+      "frac_CI_excludes_0.5": 0.0
+     }
+    },
+    "all_random": {
+     "agn": {
+      "frac_gt_3.841": 0.03666666666666667
+     },
+     "ori": {
+      "frac_gt_3.841": 0.03333333333333333
+     }
+    }
+   }
+  },
+  "empirical_q95_uncalled_empirical_rho": {
+   "agn": 16.359679292818328,
+   "ori": 6.5944655379862525
+  }
+ },
+ "label_counts": [
+  {
+   "family": "called",
+   "label": "evidence against specified imbalance (h=0.75; conditional on AT-as-independent-observations)",
+   "regions": 53
+  },
+  {
+   "family": "called",
+   "label": "evidence consistent with imbalance",
+   "regions": 14
+  },
+  {
+   "family": "literature",
+   "label": "evidence against specified imbalance (h=0.75; conditional on AT-as-independent-observations)",
+   "regions": 1
+  },
+  {
+   "family": "literature",
+   "label": "evidence consistent with imbalance",
+   "regions": 3
+  },
+  {
+   "family": "random",
+   "label": "evidence against specified imbalance (h=0.75; conditional on AT-as-independent-observations)",
+   "regions": 257
+  },
+  {
+   "family": "random",
+   "label": "evidence consistent with imbalance",
+   "regions": 43
+  },
+  {
+   "family": "saved",
+   "label": "evidence against specified imbalance (h=0.75; conditional on AT-as-independent-observations)",
+   "regions": 6
+  },
+  {
+   "family": "saved",
+   "label": "evidence consistent with imbalance",
+   "regions": 1
+  }
+ ],
+ "n_regions": 378,
+ "runtime_seconds": 326.32983016967773,
+ "environment": {
+  "python": "3.10.20",
+  "platform": "Linux-6.18.44-fc-v236-x86_64-with-glibc2.39",
+  "packages": {
+   "numpy": "1.24.4",
+   "pandas": "2.2.0",
+   "scipy": "1.8.0",
+   "h5py": "3.6.0",
+   "anndata": "0.8.0",
+   "pyarrow": "23.0.0",
+   "skmisc": "0.5.2",
+   "matplotlib": "3.8.4",
+   "statsmodels": "0.14.1"
+  },
+  "workbench_commit_at_run": "fdab8625887bc65b6f9a65dcc8476a140f92b3cb",
+  "pyepi_upstream_commit": "e8305ea2162634d07e92a3bb401df672e48f217b",
+  "cpu_count": 4
+ }
+}

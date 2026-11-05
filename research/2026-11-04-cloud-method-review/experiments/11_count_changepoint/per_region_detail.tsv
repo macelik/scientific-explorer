@@ -1,0 +1,8 @@
+window	bins	edges_within_pm2 AD	edges_within_pm2 half_split	edges_within_pm2 pearson	inside: half_split	inside: pearson	inside: AD	rel_rate window	95% (half)	95% (pearson)	rel left flank	rel right flank	note
+chr7_8.3_10.7	24	2	2	0	4	0	0	0.16745	0.165-0.170	0.095-0.295	1.1818	0.53414	edges placed only at lenient phi
+chr7_51.4_53.5	19	2	2	0	3	0	0	0.1259	0.124-0.128	0.060-0.262	0.88781	0.64977	edges placed only at lenient phi
+chr7_67.4_70.0	26	2	2	1	2	0	0	0.10261	0.101-0.104	0.051-0.206	0.71524	0.89071	edges placed only at lenient phi
+chr7_70.0_73.3	33	2	2	1	4	0	0	0.33026	0.328-0.333	0.234-0.466	0.53058	1.413	edges placed only at lenient phi
+chr9_20_27	52	0	2	0	9	0	2	0.41589	0.414-0.418	0.326-0.531	0.66434	0.46738	edges placed only at lenient phi
+chr9_22.5_26.6	25	2	2	0	4	0	1	0.26742	0.265-0.270	0.172-0.415	0.57999	0.49338	edges placed only at lenient phi
+chr9_70_100	295	0	2	0	50	1	0	0.92819	0.927-0.930	0.867-0.994	0.99922	0.40148	window is a historical comparison, not truth

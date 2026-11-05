@@ -1,0 +1,241 @@
+level	source	mode	c	region	phi_used	n_new	n_ad	new_matched_pm2	ad_matched_pm2	new_matched_pm5	ad_matched_pm5	new_only_pm2	ad_only_pm2	new_only_pm5	ad_only_pm5	role	window_bins	new_left_nearest_offset_bins	new_right_nearest_offset_bins	new_boundaries_inside	ad_left_nearest_offset_bins	ad_right_nearest_offset_bins	ad_boundaries_inside
+chrom	all	phi1	1	chr7	1.0	250.0	15.0	15.0	15.0	31.0	15.0	235.0	0.0	219.0	0.0								
+chrom	all	phi1	1	chr9	1.0	172.0	10.0	10.0	10.0	21.0	10.0	162.0	0.0	151.0	0.0								
+chrom	all	phi1	1	chr1-22	1.0	4189.0	142.0	134.0	134.0	272.0	142.0	4055.0	8.0	3917.0	0.0								
+chrom	all	phi1	2	chr7	1.0	248.0	15.0	15.0	15.0	31.0	15.0	233.0	0.0	217.0	0.0								
+chrom	all	phi1	2	chr9	1.0	170.0	10.0	10.0	10.0	21.0	10.0	160.0	0.0	149.0	0.0								
+chrom	all	phi1	2	chr1-22	1.0	4158.0	142.0	133.0	133.0	270.0	142.0	4025.0	9.0	3888.0	0.0								
+chrom	all	phi1	5	chr7	1.0	241.0	15.0	15.0	15.0	30.0	15.0	226.0	0.0	211.0	0.0								
+chrom	all	phi1	5	chr9	1.0	168.0	10.0	10.0	10.0	21.0	10.0	158.0	0.0	147.0	0.0								
+chrom	all	phi1	5	chr1-22	1.0	4095.0	142.0	131.0	131.0	266.0	142.0	3964.0	11.0	3829.0	0.0								
+chrom	all	half_split	1	chr7	1.2958225157397152	250.0	15.0	15.0	15.0	31.0	15.0	235.0	0.0	219.0	0.0								
+chrom	all	half_split	1	chr9	1.2958225157397152	171.0	10.0	10.0	10.0	21.0	10.0	161.0	0.0	150.0	0.0								
+chrom	all	half_split	1	chr1-22	1.2958225157397152	4181.0	142.0	134.0	134.0	272.0	142.0	4047.0	8.0	3909.0	0.0								
+chrom	all	half_split	2	chr7	1.2958225157397152	244.0	15.0	15.0	15.0	31.0	15.0	229.0	0.0	213.0	0.0								
+chrom	all	half_split	2	chr9	1.2958225157397152	170.0	10.0	10.0	10.0	21.0	10.0	160.0	0.0	149.0	0.0								
+chrom	all	half_split	2	chr1-22	1.2958225157397152	4133.0	142.0	132.0	132.0	269.0	142.0	4001.0	10.0	3864.0	0.0								
+chrom	all	half_split	5	chr7	1.2958225157397152	236.0	15.0	15.0	15.0	30.0	15.0	221.0	0.0	206.0	0.0								
+chrom	all	half_split	5	chr9	1.2958225157397152	168.0	10.0	10.0	10.0	21.0	10.0	158.0	0.0	147.0	0.0								
+chrom	all	half_split	5	chr1-22	1.2958225157397152	4062.0	142.0	131.0	131.0	265.0	142.0	3931.0	11.0	3797.0	0.0								
+chrom	all	pearson	1	chr7	1319.0974385926263	69.0	15.0	9.0	9.0	12.0	12.0	60.0	6.0	57.0	3.0								
+chrom	all	pearson	1	chr9	1319.0974385926263	35.0	10.0	5.0	5.0	7.0	7.0	30.0	5.0	28.0	3.0								
+chrom	all	pearson	1	chr1-22	1319.0974385926263	1055.0	142.0	92.0	92.0	121.0	113.0	963.0	50.0	934.0	29.0								
+chrom	all	pearson	2	chr7	2653.985056040645	14.0	15.0	4.0	4.0	5.0	5.0	10.0	11.0	9.0	10.0								
+chrom	all	pearson	2	chr9	2653.985056040645	13.0	10.0	5.0	5.0	5.0	5.0	8.0	5.0	8.0	5.0								
+chrom	all	pearson	2	chr1-22	2653.985056040645	255.0	142.0	47.0	47.0	60.0	60.0	208.0	95.0	195.0	82.0								
+chrom	all	pearson	5	chr7	4036.562603002852	0.0	15.0	0.0	0.0	0.0	0.0	0.0	15.0	0.0	15.0								
+chrom	all	pearson	5	chr9	4036.562603002852	2.0	10.0	0.0	0.0	0.0	0.0	2.0	10.0	2.0	10.0								
+chrom	all	pearson	5	chr1-22	4036.562603002852	33.0	142.0	9.0	9.0	10.0	10.0	24.0	133.0	23.0	132.0								
+chrom	all	nb_half	1	chr7		250.0	15.0	15.0	15.0	31.0	15.0	235.0	0.0	219.0	0.0								
+chrom	all	nb_half	1	chr9		172.0	10.0	10.0	10.0	21.0	10.0	162.0	0.0	151.0	0.0								
+chrom	all	nb_half	1	chr1-22		4188.0	142.0	134.0	134.0	270.0	142.0	4054.0	8.0	3918.0	0.0								
+chrom	all	nb_half	2	chr7		247.0	15.0	15.0	15.0	31.0	15.0	232.0	0.0	216.0	0.0								
+chrom	all	nb_half	2	chr9		170.0	10.0	10.0	10.0	21.0	10.0	160.0	0.0	149.0	0.0								
+chrom	all	nb_half	2	chr1-22		4146.0	142.0	133.0	133.0	267.0	142.0	4013.0	9.0	3879.0	0.0								
+chrom	all	nb_half	5	chr7		239.0	15.0	15.0	15.0	30.0	15.0	224.0	0.0	209.0	0.0								
+chrom	all	nb_half	5	chr9		168.0	10.0	10.0	10.0	21.0	10.0	158.0	0.0	147.0	0.0								
+chrom	all	nb_half	5	chr1-22		4086.0	142.0	131.0	131.0	264.0	142.0	3955.0	11.0	3822.0	0.0								
+chrom	cluster0	phi1	1	chr7	1.0	240.0	12.0	11.0	11.0	25.0	12.0	229.0	1.0	215.0	0.0								
+chrom	cluster0	phi1	1	chr9	1.0	171.0	8.0	8.0	8.0	17.0	8.0	163.0	0.0	154.0	0.0								
+chrom	cluster0	phi1	1	chr1-22	1.0	4112.0	137.0	128.0	128.0	251.0	137.0	3984.0	9.0	3861.0	0.0								
+chrom	cluster0	phi1	2	chr7	1.0	235.0	12.0	11.0	11.0	25.0	12.0	224.0	1.0	210.0	0.0								
+chrom	cluster0	phi1	2	chr9	1.0	170.0	8.0	8.0	8.0	17.0	8.0	162.0	0.0	153.0	0.0								
+chrom	cluster0	phi1	2	chr1-22	1.0	4032.0	137.0	128.0	128.0	249.0	137.0	3904.0	9.0	3783.0	0.0								
+chrom	cluster0	phi1	5	chr7	1.0	223.0	12.0	11.0	11.0	23.0	12.0	212.0	1.0	200.0	0.0								
+chrom	cluster0	phi1	5	chr9	1.0	165.0	8.0	8.0	8.0	16.0	8.0	157.0	0.0	149.0	0.0								
+chrom	cluster0	phi1	5	chr1-22	1.0	3870.0	137.0	127.0	127.0	243.0	137.0	3743.0	10.0	3627.0	0.0								
+chrom	cluster0	half_split	1	chr7	1.1696879524242856	239.0	12.0	11.0	11.0	25.0	12.0	228.0	1.0	214.0	0.0								
+chrom	cluster0	half_split	1	chr9	1.1696879524242856	171.0	8.0	8.0	8.0	17.0	8.0	163.0	0.0	154.0	0.0								
+chrom	cluster0	half_split	1	chr1-22	1.1696879524242856	4096.0	137.0	128.0	128.0	250.0	137.0	3968.0	9.0	3846.0	0.0								
+chrom	cluster0	half_split	2	chr7	1.1696879524242856	233.0	12.0	11.0	11.0	25.0	12.0	222.0	1.0	208.0	0.0								
+chrom	cluster0	half_split	2	chr9	1.1696879524242856	167.0	8.0	8.0	8.0	16.0	8.0	159.0	0.0	151.0	0.0								
+chrom	cluster0	half_split	2	chr1-22	1.1696879524242856	4011.0	137.0	127.0	127.0	248.0	137.0	3884.0	10.0	3763.0	0.0								
+chrom	cluster0	half_split	5	chr7	1.1696879524242856	220.0	12.0	11.0	11.0	23.0	12.0	209.0	1.0	197.0	0.0								
+chrom	cluster0	half_split	5	chr9	1.1696879524242856	164.0	8.0	7.0	7.0	15.0	8.0	157.0	1.0	149.0	0.0								
+chrom	cluster0	half_split	5	chr1-22	1.1696879524242856	3822.0	137.0	125.0	125.0	240.0	137.0	3697.0	12.0	3582.0	0.0								
+chrom	cluster0	pearson	1	chr7	361.10248405224377	66.0	12.0	6.0	6.0	9.0	9.0	60.0	6.0	57.0	3.0								
+chrom	cluster0	pearson	1	chr9	361.10248405224377	35.0	8.0	4.0	4.0	4.0	4.0	31.0	4.0	31.0	4.0								
+chrom	cluster0	pearson	1	chr1-22	361.10248405224377	1020.0	137.0	85.0	85.0	114.0	106.0	935.0	52.0	906.0	31.0								
+chrom	cluster0	pearson	2	chr7	719.1374962056202	14.0	12.0	2.0	2.0	3.0	3.0	12.0	10.0	11.0	9.0								
+chrom	cluster0	pearson	2	chr9	719.1374962056202	13.0	8.0	3.0	3.0	3.0	3.0	10.0	5.0	10.0	5.0								
+chrom	cluster0	pearson	2	chr1-22	719.1374962056202	234.0	137.0	46.0	46.0	60.0	60.0	188.0	91.0	174.0	77.0								
+chrom	cluster0	pearson	5	chr7	1063.9665660213009	0.0	12.0	0.0	0.0	0.0	0.0	0.0	12.0	0.0	12.0								
+chrom	cluster0	pearson	5	chr9	1063.9665660213009	1.0	8.0	0.0	0.0	0.0	0.0	1.0	8.0	1.0	8.0								
+chrom	cluster0	pearson	5	chr1-22	1063.9665660213009	30.0	137.0	9.0	9.0	10.0	10.0	21.0	128.0	20.0	127.0								
+chrom	cluster0	nb_half	1	chr7		239.0	12.0	11.0	11.0	25.0	12.0	228.0	1.0	214.0	0.0								
+chrom	cluster0	nb_half	1	chr9		171.0	8.0	8.0	8.0	17.0	8.0	163.0	0.0	154.0	0.0								
+chrom	cluster0	nb_half	1	chr1-22		4109.0	137.0	128.0	128.0	251.0	137.0	3981.0	9.0	3858.0	0.0								
+chrom	cluster0	nb_half	2	chr7		234.0	12.0	11.0	11.0	25.0	12.0	223.0	1.0	209.0	0.0								
+chrom	cluster0	nb_half	2	chr9		169.0	8.0	8.0	8.0	17.0	8.0	161.0	0.0	152.0	0.0								
+chrom	cluster0	nb_half	2	chr1-22		4030.0	137.0	128.0	128.0	248.0	137.0	3902.0	9.0	3782.0	0.0								
+chrom	cluster0	nb_half	5	chr7		221.0	12.0	11.0	11.0	23.0	12.0	210.0	1.0	198.0	0.0								
+chrom	cluster0	nb_half	5	chr9		165.0	8.0	8.0	8.0	16.0	8.0	157.0	0.0	149.0	0.0								
+chrom	cluster0	nb_half	5	chr1-22		3855.0	137.0	127.0	127.0	242.0	137.0	3728.0	10.0	3613.0	0.0								
+window	all	phi1	1	chr7_8.3_10.7	1.0											candidate	24.0	2.0	1.0	4.0	0.0	1.0	0.0
+window	all	phi1	1	chr7_51.4_53.5	1.0											candidate	19.0	0.0	-1.0	3.0	0.0	1.0	0.0
+window	all	phi1	1	chr7_67.4_70.0	1.0											candidate	26.0	1.0	2.0	2.0	0.0	0.0	0.0
+window	all	phi1	1	chr7_70.0_73.3	1.0											candidate	33.0	2.0	2.0	5.0	0.0	1.0	0.0
+window	all	phi1	1	chr9_20_27	1.0											candidate_broad_window	52.0	2.0	1.0	9.0	25.0	-3.0	2.0
+window	all	phi1	1	chr9_22.5_26.6	1.0											candidate	25.0	-2.0	0.0	4.0	2.0	1.0	1.0
+window	all	phi1	1	chr9_70_100	1.0											historical_comparison_not_truth	295.0	1.0	-2.0	50.0	-141.0	6.0	0.0
+window	all	phi1	2	chr7_8.3_10.7	1.0											candidate	24.0	2.0	1.0	4.0	0.0	1.0	0.0
+window	all	phi1	2	chr7_51.4_53.5	1.0											candidate	19.0	0.0	-1.0	3.0	0.0	1.0	0.0
+window	all	phi1	2	chr7_67.4_70.0	1.0											candidate	26.0	1.0	2.0	2.0	0.0	0.0	0.0
+window	all	phi1	2	chr7_70.0_73.3	1.0											candidate	33.0	2.0	2.0	4.0	0.0	1.0	0.0
+window	all	phi1	2	chr9_20_27	1.0											candidate_broad_window	52.0	2.0	1.0	9.0	25.0	-3.0	2.0
+window	all	phi1	2	chr9_22.5_26.6	1.0											candidate	25.0	-2.0	0.0	4.0	2.0	1.0	1.0
+window	all	phi1	2	chr9_70_100	1.0											historical_comparison_not_truth	295.0	1.0	-2.0	50.0	-141.0	6.0	0.0
+window	all	phi1	5	chr7_8.3_10.7	1.0											candidate	24.0	2.0	1.0	4.0	0.0	1.0	0.0
+window	all	phi1	5	chr7_51.4_53.5	1.0											candidate	19.0	0.0	-1.0	3.0	0.0	1.0	0.0
+window	all	phi1	5	chr7_67.4_70.0	1.0											candidate	26.0	1.0	2.0	1.0	0.0	0.0	0.0
+window	all	phi1	5	chr7_70.0_73.3	1.0											candidate	33.0	2.0	2.0	4.0	0.0	1.0	0.0
+window	all	phi1	5	chr9_20_27	1.0											candidate_broad_window	52.0	2.0	1.0	9.0	25.0	-3.0	2.0
+window	all	phi1	5	chr9_22.5_26.6	1.0											candidate	25.0	-2.0	0.0	4.0	2.0	1.0	1.0
+window	all	phi1	5	chr9_70_100	1.0											historical_comparison_not_truth	295.0	1.0	-2.0	49.0	-141.0	6.0	0.0
+window	all	half_split	1	chr7_8.3_10.7	1.2958225157397152											candidate	24.0	2.0	1.0	4.0	0.0	1.0	0.0
+window	all	half_split	1	chr7_51.4_53.5	1.2958225157397152											candidate	19.0	0.0	-1.0	3.0	0.0	1.0	0.0
+window	all	half_split	1	chr7_67.4_70.0	1.2958225157397152											candidate	26.0	1.0	2.0	2.0	0.0	0.0	0.0
+window	all	half_split	1	chr7_70.0_73.3	1.2958225157397152											candidate	33.0	2.0	2.0	5.0	0.0	1.0	0.0
+window	all	half_split	1	chr9_20_27	1.2958225157397152											candidate_broad_window	52.0	2.0	1.0	9.0	25.0	-3.0	2.0
+window	all	half_split	1	chr9_22.5_26.6	1.2958225157397152											candidate	25.0	-2.0	0.0	4.0	2.0	1.0	1.0
+window	all	half_split	1	chr9_70_100	1.2958225157397152											historical_comparison_not_truth	295.0	1.0	-2.0	50.0	-141.0	6.0	0.0
+window	all	half_split	2	chr7_8.3_10.7	1.2958225157397152											candidate	24.0	2.0	1.0	4.0	0.0	1.0	0.0
+window	all	half_split	2	chr7_51.4_53.5	1.2958225157397152											candidate	19.0	0.0	-1.0	3.0	0.0	1.0	0.0
+window	all	half_split	2	chr7_67.4_70.0	1.2958225157397152											candidate	26.0	1.0	2.0	2.0	0.0	0.0	0.0
+window	all	half_split	2	chr7_70.0_73.3	1.2958225157397152											candidate	33.0	2.0	2.0	4.0	0.0	1.0	0.0
+window	all	half_split	2	chr9_20_27	1.2958225157397152											candidate_broad_window	52.0	2.0	1.0	9.0	25.0	-3.0	2.0
+window	all	half_split	2	chr9_22.5_26.6	1.2958225157397152											candidate	25.0	-2.0	0.0	4.0	2.0	1.0	1.0
+window	all	half_split	2	chr9_70_100	1.2958225157397152											historical_comparison_not_truth	295.0	1.0	-2.0	50.0	-141.0	6.0	0.0
+window	all	half_split	5	chr7_8.3_10.7	1.2958225157397152											candidate	24.0	2.0	1.0	3.0	0.0	1.0	0.0
+window	all	half_split	5	chr7_51.4_53.5	1.2958225157397152											candidate	19.0	0.0	-1.0	3.0	0.0	1.0	0.0
+window	all	half_split	5	chr7_67.4_70.0	1.2958225157397152											candidate	26.0	1.0	2.0	1.0	0.0	0.0	0.0
+window	all	half_split	5	chr7_70.0_73.3	1.2958225157397152											candidate	33.0	2.0	2.0	4.0	0.0	1.0	0.0
+window	all	half_split	5	chr9_20_27	1.2958225157397152											candidate_broad_window	52.0	2.0	1.0	9.0	25.0	-3.0	2.0
+window	all	half_split	5	chr9_22.5_26.6	1.2958225157397152											candidate	25.0	-2.0	0.0	4.0	2.0	1.0	1.0
+window	all	half_split	5	chr9_70_100	1.2958225157397152											historical_comparison_not_truth	295.0	1.0	-2.0	49.0	-141.0	6.0	0.0
+window	all	pearson	1	chr7_8.3_10.7	1319.0974385926263											candidate	24.0	0.0	-3.0	1.0	0.0	1.0	0.0
+window	all	pearson	1	chr7_51.4_53.5	1319.0974385926263											candidate	19.0	0.0	10.0	0.0	0.0	1.0	0.0
+window	all	pearson	1	chr7_67.4_70.0	1319.0974385926263											candidate	26.0	0.0	2.0	0.0	0.0	0.0	0.0
+window	all	pearson	1	chr7_70.0_73.3	1319.0974385926263											candidate	33.0	2.0	2.0	3.0	0.0	1.0	0.0
+window	all	pearson	1	chr9_20_27	1319.0974385926263											candidate_broad_window	52.0	21.0	-2.0	2.0	25.0	-3.0	2.0
+window	all	pearson	1	chr9_22.5_26.6	1319.0974385926263											candidate	25.0	-2.0	2.0	0.0	2.0	1.0	1.0
+window	all	pearson	1	chr9_70_100	1319.0974385926263											historical_comparison_not_truth	295.0	6.0	-6.0	8.0	-141.0	6.0	0.0
+window	all	pearson	2	chr7_8.3_10.7	2653.985056040645											candidate	24.0	-16.0	-40.0	0.0	0.0	1.0	0.0
+window	all	pearson	2	chr7_51.4_53.5	2653.985056040645											candidate	19.0	-62.0	70.0	0.0	0.0	1.0	0.0
+window	all	pearson	2	chr7_67.4_70.0	2653.985056040645											candidate	26.0	0.0	-26.0	0.0	0.0	0.0	0.0
+window	all	pearson	2	chr7_70.0_73.3	2653.985056040645											candidate	33.0	-26.0	0.0	0.0	0.0	1.0	0.0
+window	all	pearson	2	chr9_20_27	2653.985056040645											candidate_broad_window	52.0	-74.0	55.0	0.0	25.0	-3.0	2.0
+window	all	pearson	2	chr9_22.5_26.6	2653.985056040645											candidate	25.0	84.0	59.0	0.0	2.0	1.0	1.0
+window	all	pearson	2	chr9_70_100	2653.985056040645											historical_comparison_not_truth	295.0	-28.0	6.0	1.0	-141.0	6.0	0.0
+window	all	pearson	5	chr7_8.3_10.7	4036.562603002852											candidate	24.0			0.0	0.0	1.0	0.0
+window	all	pearson	5	chr7_51.4_53.5	4036.562603002852											candidate	19.0			0.0	0.0	1.0	0.0
+window	all	pearson	5	chr7_67.4_70.0	4036.562603002852											candidate	26.0			0.0	0.0	0.0	0.0
+window	all	pearson	5	chr7_70.0_73.3	4036.562603002852											candidate	33.0			0.0	0.0	1.0	0.0
+window	all	pearson	5	chr9_20_27	4036.562603002852											candidate_broad_window	52.0	107.0	55.0	0.0	25.0	-3.0	2.0
+window	all	pearson	5	chr9_22.5_26.6	4036.562603002852											candidate	25.0	84.0	59.0	0.0	2.0	1.0	1.0
+window	all	pearson	5	chr9_70_100	4036.562603002852											historical_comparison_not_truth	295.0	-83.0	265.0	0.0	-141.0	6.0	0.0
+window	all	nb_half	1	chr7_8.3_10.7												candidate	24.0	2.0	1.0	4.0	0.0	1.0	0.0
+window	all	nb_half	1	chr7_51.4_53.5												candidate	19.0	0.0	-1.0	3.0	0.0	1.0	0.0
+window	all	nb_half	1	chr7_67.4_70.0												candidate	26.0	1.0	2.0	2.0	0.0	0.0	0.0
+window	all	nb_half	1	chr7_70.0_73.3												candidate	33.0	2.0	2.0	5.0	0.0	1.0	0.0
+window	all	nb_half	1	chr9_20_27												candidate_broad_window	52.0	2.0	1.0	9.0	25.0	-3.0	2.0
+window	all	nb_half	1	chr9_22.5_26.6												candidate	25.0	-2.0	0.0	4.0	2.0	1.0	1.0
+window	all	nb_half	1	chr9_70_100												historical_comparison_not_truth	295.0	1.0	-2.0	50.0	-141.0	6.0	0.0
+window	all	nb_half	2	chr7_8.3_10.7												candidate	24.0	2.0	1.0	4.0	0.0	1.0	0.0
+window	all	nb_half	2	chr7_51.4_53.5												candidate	19.0	0.0	-1.0	3.0	0.0	1.0	0.0
+window	all	nb_half	2	chr7_67.4_70.0												candidate	26.0	1.0	2.0	2.0	0.0	0.0	0.0
+window	all	nb_half	2	chr7_70.0_73.3												candidate	33.0	2.0	2.0	4.0	0.0	1.0	0.0
+window	all	nb_half	2	chr9_20_27												candidate_broad_window	52.0	2.0	1.0	9.0	25.0	-3.0	2.0
+window	all	nb_half	2	chr9_22.5_26.6												candidate	25.0	-2.0	0.0	4.0	2.0	1.0	1.0
+window	all	nb_half	2	chr9_70_100												historical_comparison_not_truth	295.0	1.0	-2.0	50.0	-141.0	6.0	0.0
+window	all	nb_half	5	chr7_8.3_10.7												candidate	24.0	2.0	1.0	4.0	0.0	1.0	0.0
+window	all	nb_half	5	chr7_51.4_53.5												candidate	19.0	0.0	-1.0	3.0	0.0	1.0	0.0
+window	all	nb_half	5	chr7_67.4_70.0												candidate	26.0	1.0	2.0	1.0	0.0	0.0	0.0
+window	all	nb_half	5	chr7_70.0_73.3												candidate	33.0	2.0	2.0	4.0	0.0	1.0	0.0
+window	all	nb_half	5	chr9_20_27												candidate_broad_window	52.0	2.0	1.0	9.0	25.0	-3.0	2.0
+window	all	nb_half	5	chr9_22.5_26.6												candidate	25.0	-2.0	0.0	4.0	2.0	1.0	1.0
+window	all	nb_half	5	chr9_70_100												historical_comparison_not_truth	295.0	1.0	-2.0	49.0	-141.0	6.0	0.0
+window	cluster0	phi1	1	chr7_8.3_10.7	1.0											candidate	24.0	0.0	1.0	3.0	0.0	1.0	0.0
+window	cluster0	phi1	1	chr7_51.4_53.5	1.0											candidate	19.0	0.0	-1.0	3.0	0.0	1.0	0.0
+window	cluster0	phi1	1	chr7_67.4_70.0	1.0											candidate	26.0	1.0	2.0	1.0	0.0	1.0	0.0
+window	cluster0	phi1	1	chr7_70.0_73.3	1.0											candidate	33.0	2.0	2.0	4.0	1.0	1.0	1.0
+window	cluster0	phi1	1	chr9_20_27	1.0											candidate_broad_window	52.0	2.0	1.0	9.0	23.0	-3.0	2.0
+window	cluster0	phi1	1	chr9_22.5_26.6	1.0											candidate	25.0	-2.0	0.0	4.0	0.0	1.0	0.0
+window	cluster0	phi1	1	chr9_70_100	1.0											historical_comparison_not_truth	295.0	1.0	-2.0	50.0	-141.0	6.0	0.0
+window	cluster0	phi1	2	chr7_8.3_10.7	1.0											candidate	24.0	0.0	1.0	3.0	0.0	1.0	0.0
+window	cluster0	phi1	2	chr7_51.4_53.5	1.0											candidate	19.0	0.0	-1.0	3.0	0.0	1.0	0.0
+window	cluster0	phi1	2	chr7_67.4_70.0	1.0											candidate	26.0	1.0	2.0	1.0	0.0	1.0	0.0
+window	cluster0	phi1	2	chr7_70.0_73.3	1.0											candidate	33.0	2.0	2.0	4.0	1.0	1.0	1.0
+window	cluster0	phi1	2	chr9_20_27	1.0											candidate_broad_window	52.0	2.0	1.0	9.0	23.0	-3.0	2.0
+window	cluster0	phi1	2	chr9_22.5_26.6	1.0											candidate	25.0	-2.0	0.0	4.0	0.0	1.0	0.0
+window	cluster0	phi1	2	chr9_70_100	1.0											historical_comparison_not_truth	295.0	1.0	-2.0	49.0	-141.0	6.0	0.0
+window	cluster0	phi1	5	chr7_8.3_10.7	1.0											candidate	24.0	0.0	1.0	1.0	0.0	1.0	0.0
+window	cluster0	phi1	5	chr7_51.4_53.5	1.0											candidate	19.0	0.0	-1.0	2.0	0.0	1.0	0.0
+window	cluster0	phi1	5	chr7_67.4_70.0	1.0											candidate	26.0	1.0	2.0	1.0	0.0	1.0	0.0
+window	cluster0	phi1	5	chr7_70.0_73.3	1.0											candidate	33.0	2.0	2.0	4.0	1.0	1.0	1.0
+window	cluster0	phi1	5	chr9_20_27	1.0											candidate_broad_window	52.0	2.0	1.0	9.0	23.0	-3.0	2.0
+window	cluster0	phi1	5	chr9_22.5_26.6	1.0											candidate	25.0	-2.0	0.0	4.0	0.0	1.0	0.0
+window	cluster0	phi1	5	chr9_70_100	1.0											historical_comparison_not_truth	295.0	1.0	-2.0	49.0	-141.0	6.0	0.0
+window	cluster0	half_split	1	chr7_8.3_10.7	1.1696879524242856											candidate	24.0	0.0	1.0	3.0	0.0	1.0	0.0
+window	cluster0	half_split	1	chr7_51.4_53.5	1.1696879524242856											candidate	19.0	0.0	-1.0	3.0	0.0	1.0	0.0
+window	cluster0	half_split	1	chr7_67.4_70.0	1.1696879524242856											candidate	26.0	1.0	2.0	1.0	0.0	1.0	0.0
+window	cluster0	half_split	1	chr7_70.0_73.3	1.1696879524242856											candidate	33.0	2.0	2.0	4.0	1.0	1.0	1.0
+window	cluster0	half_split	1	chr9_20_27	1.1696879524242856											candidate_broad_window	52.0	2.0	1.0	9.0	23.0	-3.0	2.0
+window	cluster0	half_split	1	chr9_22.5_26.6	1.1696879524242856											candidate	25.0	-2.0	0.0	4.0	0.0	1.0	0.0
+window	cluster0	half_split	1	chr9_70_100	1.1696879524242856											historical_comparison_not_truth	295.0	1.0	-2.0	50.0	-141.0	6.0	0.0
+window	cluster0	half_split	2	chr7_8.3_10.7	1.1696879524242856											candidate	24.0	0.0	1.0	3.0	0.0	1.0	0.0
+window	cluster0	half_split	2	chr7_51.4_53.5	1.1696879524242856											candidate	19.0	0.0	-1.0	2.0	0.0	1.0	0.0
+window	cluster0	half_split	2	chr7_67.4_70.0	1.1696879524242856											candidate	26.0	1.0	2.0	1.0	0.0	1.0	0.0
+window	cluster0	half_split	2	chr7_70.0_73.3	1.1696879524242856											candidate	33.0	2.0	2.0	4.0	1.0	1.0	1.0
+window	cluster0	half_split	2	chr9_20_27	1.1696879524242856											candidate_broad_window	52.0	2.0	1.0	9.0	23.0	-3.0	2.0
+window	cluster0	half_split	2	chr9_22.5_26.6	1.1696879524242856											candidate	25.0	-2.0	0.0	4.0	0.0	1.0	0.0
+window	cluster0	half_split	2	chr9_70_100	1.1696879524242856											historical_comparison_not_truth	295.0	1.0	-2.0	49.0	-141.0	6.0	0.0
+window	cluster0	half_split	5	chr7_8.3_10.7	1.1696879524242856											candidate	24.0	0.0	1.0	1.0	0.0	1.0	0.0
+window	cluster0	half_split	5	chr7_51.4_53.5	1.1696879524242856											candidate	19.0	0.0	-1.0	2.0	0.0	1.0	0.0
+window	cluster0	half_split	5	chr7_67.4_70.0	1.1696879524242856											candidate	26.0	1.0	2.0	1.0	0.0	1.0	0.0
+window	cluster0	half_split	5	chr7_70.0_73.3	1.1696879524242856											candidate	33.0	2.0	2.0	4.0	1.0	1.0	1.0
+window	cluster0	half_split	5	chr9_20_27	1.1696879524242856											candidate_broad_window	52.0	2.0	1.0	9.0	23.0	-3.0	2.0
+window	cluster0	half_split	5	chr9_22.5_26.6	1.1696879524242856											candidate	25.0	-2.0	0.0	4.0	0.0	1.0	0.0
+window	cluster0	half_split	5	chr9_70_100	1.1696879524242856											historical_comparison_not_truth	295.0	1.0	-2.0	49.0	-141.0	6.0	0.0
+window	cluster0	pearson	1	chr7_8.3_10.7	361.10248405224377											candidate	24.0	0.0	-3.0	1.0	0.0	1.0	0.0
+window	cluster0	pearson	1	chr7_51.4_53.5	361.10248405224377											candidate	19.0	0.0	10.0	0.0	0.0	1.0	0.0
+window	cluster0	pearson	1	chr7_67.4_70.0	361.10248405224377											candidate	26.0	0.0	2.0	0.0	0.0	1.0	0.0
+window	cluster0	pearson	1	chr7_70.0_73.3	361.10248405224377											candidate	33.0	2.0	2.0	3.0	1.0	1.0	1.0
+window	cluster0	pearson	1	chr9_20_27	361.10248405224377											candidate_broad_window	52.0	21.0	-2.0	2.0	23.0	-3.0	2.0
+window	cluster0	pearson	1	chr9_22.5_26.6	361.10248405224377											candidate	25.0	-2.0	2.0	0.0	0.0	1.0	0.0
+window	cluster0	pearson	1	chr9_70_100	361.10248405224377											historical_comparison_not_truth	295.0	6.0	-6.0	8.0	-141.0	6.0	0.0
+window	cluster0	pearson	2	chr7_8.3_10.7	719.1374962056202											candidate	24.0	-16.0	-40.0	0.0	0.0	1.0	0.0
+window	cluster0	pearson	2	chr7_51.4_53.5	719.1374962056202											candidate	19.0	-62.0	70.0	0.0	0.0	1.0	0.0
+window	cluster0	pearson	2	chr7_67.4_70.0	719.1374962056202											candidate	26.0	0.0	-26.0	0.0	0.0	1.0	0.0
+window	cluster0	pearson	2	chr7_70.0_73.3	719.1374962056202											candidate	33.0	-26.0	1.0	0.0	1.0	1.0	1.0
+window	cluster0	pearson	2	chr9_20_27	719.1374962056202											candidate_broad_window	52.0	-74.0	55.0	0.0	23.0	-3.0	2.0
+window	cluster0	pearson	2	chr9_22.5_26.6	719.1374962056202											candidate	25.0	84.0	59.0	0.0	0.0	1.0	0.0
+window	cluster0	pearson	2	chr9_70_100	719.1374962056202											historical_comparison_not_truth	295.0	-28.0	6.0	1.0	-141.0	6.0	0.0
+window	cluster0	pearson	5	chr7_8.3_10.7	1063.9665660213009											candidate	24.0			0.0	0.0	1.0	0.0
+window	cluster0	pearson	5	chr7_51.4_53.5	1063.9665660213009											candidate	19.0			0.0	0.0	1.0	0.0
+window	cluster0	pearson	5	chr7_67.4_70.0	1063.9665660213009											candidate	26.0			0.0	0.0	1.0	0.0
+window	cluster0	pearson	5	chr7_70.0_73.3	1063.9665660213009											candidate	33.0			0.0	1.0	1.0	1.0
+window	cluster0	pearson	5	chr9_20_27	1063.9665660213009											candidate_broad_window	52.0	750.0	698.0	0.0	23.0	-3.0	2.0
+window	cluster0	pearson	5	chr9_22.5_26.6	1063.9665660213009											candidate	25.0	727.0	702.0	0.0	0.0	1.0	0.0
+window	cluster0	pearson	5	chr9_70_100	1063.9665660213009											historical_comparison_not_truth	295.0	560.0	265.0	0.0	-141.0	6.0	0.0
+window	cluster0	nb_half	1	chr7_8.3_10.7												candidate	24.0	0.0	1.0	3.0	0.0	1.0	0.0
+window	cluster0	nb_half	1	chr7_51.4_53.5												candidate	19.0	0.0	-1.0	3.0	0.0	1.0	0.0
+window	cluster0	nb_half	1	chr7_67.4_70.0												candidate	26.0	1.0	2.0	1.0	0.0	1.0	0.0
+window	cluster0	nb_half	1	chr7_70.0_73.3												candidate	33.0	2.0	2.0	4.0	1.0	1.0	1.0
+window	cluster0	nb_half	1	chr9_20_27												candidate_broad_window	52.0	2.0	1.0	9.0	23.0	-3.0	2.0
+window	cluster0	nb_half	1	chr9_22.5_26.6												candidate	25.0	-2.0	0.0	4.0	0.0	1.0	0.0
+window	cluster0	nb_half	1	chr9_70_100												historical_comparison_not_truth	295.0	1.0	-2.0	50.0	-141.0	6.0	0.0
+window	cluster0	nb_half	2	chr7_8.3_10.7												candidate	24.0	0.0	1.0	3.0	0.0	1.0	0.0
+window	cluster0	nb_half	2	chr7_51.4_53.5												candidate	19.0	0.0	-1.0	3.0	0.0	1.0	0.0
+window	cluster0	nb_half	2	chr7_67.4_70.0												candidate	26.0	1.0	2.0	1.0	0.0	1.0	0.0
+window	cluster0	nb_half	2	chr7_70.0_73.3												candidate	33.0	2.0	2.0	4.0	1.0	1.0	1.0
+window	cluster0	nb_half	2	chr9_20_27												candidate_broad_window	52.0	2.0	1.0	9.0	23.0	-3.0	2.0
+window	cluster0	nb_half	2	chr9_22.5_26.6												candidate	25.0	-2.0	0.0	4.0	0.0	1.0	0.0
+window	cluster0	nb_half	2	chr9_70_100												historical_comparison_not_truth	295.0	1.0	-2.0	49.0	-141.0	6.0	0.0
+window	cluster0	nb_half	5	chr7_8.3_10.7												candidate	24.0	0.0	1.0	1.0	0.0	1.0	0.0
+window	cluster0	nb_half	5	chr7_51.4_53.5												candidate	19.0	0.0	-1.0	2.0	0.0	1.0	0.0
+window	cluster0	nb_half	5	chr7_67.4_70.0												candidate	26.0	1.0	2.0	1.0	0.0	1.0	0.0
+window	cluster0	nb_half	5	chr7_70.0_73.3												candidate	33.0	2.0	2.0	4.0	1.0	1.0	1.0
+window	cluster0	nb_half	5	chr9_20_27												candidate_broad_window	52.0	2.0	1.0	9.0	23.0	-3.0	2.0
+window	cluster0	nb_half	5	chr9_22.5_26.6												candidate	25.0	-2.0	0.0	4.0	0.0	1.0	0.0
+window	cluster0	nb_half	5	chr9_70_100												historical_comparison_not_truth	295.0	1.0	-2.0	49.0	-141.0	6.0	0.0
