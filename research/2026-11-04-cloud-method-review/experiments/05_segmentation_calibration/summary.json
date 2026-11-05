@@ -131,7 +131,7 @@
    "both_pm5": 8
   }
  ],
- "seconds": 77.3,
+ "seconds": 340.3,
  "environment": {
   "python": "3.10.20",
   "platform": "Linux-6.18.44-fc-v236-x86_64-with-glibc2.39",
@@ -144,9 +144,9 @@
    "pyarrow": "23.0.0",
    "skmisc": "0.5.2",
    "matplotlib": "3.8.4",
-   "statsmodels": null
+   "statsmodels": "0.14.1"
   },
-  "workbench_commit_at_run": "6d4f48d79e0545fd3fb7ad84b86dbf659b57f107",
+  "workbench_commit_at_run": "8adb79ad699340c6718ff3a0573a7d1bf837d679",
   "pyepi_upstream_commit": "e8305ea2162634d07e92a3bb401df672e48f217b",
   "cpu_count": 4
  }

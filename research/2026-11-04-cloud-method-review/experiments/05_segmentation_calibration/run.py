@@ -215,43 +215,122 @@ def main():
     ax[1].set_ylim(ax[0].get_ylim()[0] - np.mean(pbs["all"][m]), ax[0].get_ylim()[1] - np.mean(pbs["all"][m]))
     b64 = C.fig_to_b64(fig); plt.close(fig)
     acc = calib.set_index("L")
-    frag = [
-        ("Question", "<p>Do the pinned local/global permutation tests, as used after choosing the maximum-AD cut, control false "
-         "acceptance? How much of the cluster pseudobulk's bin-to-bin variation is cell-sampling noise, and are boundaries "
-         "reproducible between disjoint halves of the same cells?</p>"),
-        ("A. Selection-aware null", C.html_table(calib) + C.html_table(calib_max) +
-         f"<div class='card'>On sequences with no spatial structure, the procedure accepted "
-         f"<b>{int(acc.loc[120,'accepted'])}/{int(acc.loc[120,'trials'])}</b> (120 bins) and <b>{int(acc.loc[400,'accepted'])}/{int(acc.loc[400,'trials'])}</b> "
-         f"(400 bins) first splits at α = 0.001. The fixed-split permutation p-value ignores the search over cuts (its median is far "
-         "below the max-over-cuts p-value), but at α = 0.001 the realised false-acceptance rate on exchangeable data stayed low. "
-         "<b>The prespecified hypothesis that the scan is grossly anti-conservative under an exchangeable null was not supported.</b> "
-         "This does not address spatially dependent nulls, which part B shows are the relevant case.</div>"),
-        ("B. Sampling share of variation", C.html_table(share) +
-         "<p>The half-difference contains only cell-sampling variation (same clusters, disjoint cells). A small sampling share and "
-         "high split-half correlation mean that almost all pseudobulk structure is reproducible between cells; reproducible "
-         "structure can be dosage, accessibility or a technical baseline, so passing these tests does not by itself indicate CN.</p>"),
-        ("C. Boundary stability", C.html_table(stab_sum) +
-         f"<p>Harness check against the saved genome-pool run: {json.dumps(harness)}. Breakpoints accepted when the half-difference "
-         f"(sampling-only) profile is scanned: {json.dumps(halfdiff)}.</p>"
-         + "<h3>Sampling-only (half-difference) segments</h3>" + C.html_table(hd) +
-         "<p>A profile that contains only cell-sampling variation still yields accepted breakpoints in <code>all</code>. Its segments "
-         "differ in noise scale (sd), which tracks the full pseudobulk depth: AD compares whole distributions, so a change in "
-         "variance alone can be detected. Low-depth regions therefore present a distribution change even before any mean shift.</p>"
-         + "<h3>Edges of the six saved windows</h3>" + (C.html_table(cand) if len(cand) else "<p>No breakpoint within 200 kb of a window edge.</p>")
-         + C.img(b64, "chr7 half pseudobulks")),
-        ("Interpretation", "<ul><li>Under an exchangeable null the select-then-test procedure rarely accepts at α = 0.001 (A); "
-         "the realistic problem is that the null is wrong, not that α is too loose.</li>"
-         "<li>Cell sampling explains well under 1% of pseudobulk bin variance and halves correlate at r > 0.99 (B). The permutation "
-         "tests are therefore tests of reproducible structure (dosage, accessibility, mappability, GC residue) against exchangeable "
-         "bins. With hundreds of cells nearly any reproducible regional difference passes, so significance carries little CN-specific "
-         "information and segment geometry (k, min_child_bins = 20) sets the resolution.</li>"
-         "<li>All six saved window edges reproduce in both disjoint halves (C): they are not cell-sampling artefacts. This is "
-         "necessary but not sufficient for CN, because accessibility structure is shared by the same cells.</li>"
-         "<li>AD responds to variance changes as well as mean shifts (half-difference segments), which matters for low-depth regions.</li></ul>"),
+    from scipy.stats import beta as _beta
+    n_tr, n_acc = int(calib.trials.sum()), int(calib.accepted.sum())
+    cp_hi = float(_beta.ppf(0.975, n_acc + 1, n_tr - n_acc)) if n_tr > n_acc else 1.0
+    sh = share.set_index(["source", "region"])
+    harness_txt = '; '.join(k + ' ' + str(v['rerun']) for k, v in harness.items())
+    harness_ok = all(v["identical"] for v in harness.values())
+    n_edges_hit = len(cand)
+    n_edges_both = int(cand.in_both_halves_pm2.sum()) if len(cand) else 0
+    n_total_bp = int(stab_sum.n.sum()); n_total_pm2 = int(stab_sum.both_pm2.sum())
+    ss = stab_sum.set_index(["source", "chrom"])
+    # per-window edge notes
+    win_rows = []
+    for rid in tgt.region_id.str.replace("__target", "", regex=False):
+        c = cand[cand.region == rid] if len(cand) else cand
+        if len(c) == 0:
+            note = "No breakpoint of the all or cluster0 scan lies within 200 kb of either window edge; the window&rsquo;s edges are not supported by this scan."
+        else:
+            edges_txt = "; ".join(f"{r.edge} edge: {r.source} breakpoint at {r.bp_start/1e6:.1f} Mb, nearest half-A/half-B breakpoint {r.nearest_A}/{r.nearest_B} bins away" for r in c.itertuples())
+            both = bool(c.in_both_halves_pm2.all())
+            note = f"{len(c)} of 2 edges coincide with a breakpoint ({edges_txt}); " + ("reproduced in both disjoint halves within &plusmn;2 bins." if both else "not all reproduced in both halves within &plusmn;2 bins.")
+        win_rows.append({"window": rid, "edges_with_breakpoint": len(c), "reproduced_both_halves_pm2": int(c.in_both_halves_pm2.sum()) if len(c) else 0, "note": __import__("html").unescape(note)})
+    win_df = pd.DataFrame(win_rows)
+    win_html = C.html_table(win_df).replace("<td>No breakpoint", "<td style='text-align:left;white-space:normal'>No breakpoint").replace("<td>1 of 2", "<td style='text-align:left;white-space:normal'>1 of 2").replace("<td>2 of 2", "<td style='text-align:left;white-space:normal'>2 of 2")
+    verdict = (f"Boundaries are reproducible between disjoint halves of the cells (split-half r = {sh.split_half_corr.min():.3f}&ndash;{sh.split_half_corr.max():.3f}, cell sampling &le; {100*sh.sampling_share_of_variance.max():.2f}% of pseudobulk variance) "
+               f"and the select-then-test scan accepted {n_acc} of {n_tr} exchangeable nulls at &alpha; = {ALPHA}, so a significant boundary shows reproducible non-sampling structure, not that the structure is copy number.")
+    findings = [
+        f"Exchangeable null: {int(acc.loc[120,'accepted'])}/{int(acc.loc[120,'trials'])} (120 bins) and {int(acc.loc[400,'accepted'])}/{int(acc.loc[400,'trials'])} (400 bins) first splits accepted at &alpha; = {ALPHA}; pooled {n_acc}/{n_tr} (upper 95% Clopper&ndash;Pearson bound {100*cp_hi:.1f}%, i.e. not excluding rates above &alpha;).",
+        f"Fixed-split p-values ignore the search over cuts: median p_local {acc.loc[120,'median_p_local']:.2f} (120 bins) and {acc.loc[400,'median_p_local']:.3f} (400 bins) versus median max-over-cuts p {calib_max.set_index('L').loc[120,'median_p_max']:.2f} and {calib_max.set_index('L').loc[400,'median_p_max']:.2f} (20 trials each, 200 permutations).",
+        f"Cell sampling explains {100*sh.loc[('all','genome'),'sampling_share_of_variance']:.2f}% of the <code>all</code> pseudobulk bin variance (robust SD {sh.loc[('all','genome'),'robust_sd_half_diff']:.3f} of half-difference vs {sh.loc[('all','genome'),'robust_sd_full']:.3f} full) and {100*sh.loc[('cluster0','genome'),'sampling_share_of_variance']:.2f}% for cluster 0; split-half correlation {sh.loc[('all','genome'),'split_half_corr']:.4f} / {sh.loc[('cluster0','genome'),'split_half_corr']:.4f}.",
+        f"Harness: the rerun reproduces the saved genome-pool breakpoints exactly for {sum(v['identical'] for v in harness.values())} of {len(harness)} source/chromosome scans ({harness_txt} breakpoints).",
+        f"Half-split stability (&plusmn;2 bins in both halves): all/chr7 {int(ss.loc[('all','chr7'),'both_pm2'])}/{int(ss.loc[('all','chr7'),'n'])}, all/chr9 {int(ss.loc[('all','chr9'),'both_pm2'])}/{int(ss.loc[('all','chr9'),'n'])}, cluster0/chr7 {int(ss.loc[('cluster0','chr7'),'both_pm2'])}/{int(ss.loc[('cluster0','chr7'),'n'])}, cluster0/chr9 {int(ss.loc[('cluster0','chr9'),'both_pm2'])}/{int(ss.loc[('cluster0','chr9'),'n'])} ({n_total_pm2} of {n_total_bp} overall).",
+        f"{n_edges_hit} of {2*len(tgt)} saved-window edges lie within 200 kb of a rerun breakpoint, and {n_edges_both} of those {n_edges_hit} reappear in both halves within &plusmn;2 bins; windows with no edge breakpoint: {', '.join(win_df[win_df.edges_with_breakpoint==0].window) or 'none'}.",
+        f"A sampling-only profile (half-difference) still yields accepted breakpoints in <code>all</code> ({halfdiff['all/chr7']} on chr7 at {', '.join(f'{v:.1f}' for v in hd[(hd.source=='all')&(hd.chrom=='chr7')].start_mb.iloc[1:])} Mb, {halfdiff['all/chr9']} on chr9) and none in cluster 0, with segment SD tracking depth (e.g. chr7 51.1&ndash;77.4 Mb SD {hd[(hd.source=='all')&(hd.chrom=='chr7')].sd_half_diff.iloc[1]:.3f} at pseudobulk mean {hd[(hd.source=='all')&(hd.chrom=='chr7')].mean_full_pseudobulk.iloc[1]:.2f}): AD responds to variance changes as well as means.",
     ]
-    C.write_html_report(HERE / "report.html", "Segmentation calibration", "Experiment 05 · AD scan null behaviour, sampling share and half-split stability",
-                        frag, {"command": "python -I experiments/05_segmentation_calibration/run.py", "summary": "summary.json",
-                               "seed": SEED, "environment": C.environment()})
+    sections = [
+        ("Question and why it matters",
+         "<p><b>Question.</b> Do the pinned local/global permutation tests, as used after choosing the maximum-AD cut, control false acceptance? How much of the cluster pseudobulk&rsquo;s bin-to-bin variation is cell-sampling noise, and are boundaries reproducible between disjoint halves of the same cells?</p>"
+         "<p><b>Why it matters.</b> The recommendation states that the saved boundaries are reproducible and that the problem is interpreting them. I started from the hypothesis that the select-then-test procedure is anti-conservative; "
+         "this experiment tests that hypothesis and quantifies how much boundary structure is cell sampling versus reproducible non-sampling structure, which determines whether a significant boundary can be used as evidence of copy-number change in the per-region evidence layer.</p>"),
+        ("Inputs",
+         f"<ul><li><b>Matrix.</b> processed <code>X</code> of <code>count_matrix.h5ad</code> ({d.n_cells:,} cells &times; {d.n_bins:,} bins), averaged per group: <code>all</code> ({int(masks['all'].sum()):,} cells) and WNN <code>cluster0</code> ({int(masks['cluster0'].sum()):,} cells), each also split into halves A and B (<code>pseudobulks.npz</code>).</li>"
+         "<li><b>Chromosomes scanned.</b> chr7 and chr9 (the chromosomes of the saved windows). The null uses the all-cell chr7 profile.</li>"
+         "<li><b>Saved breakpoints.</b> <code>genome_pool/raw_accepted_breakpoints.tsv</code> (harness check) and the workbench pool of the all-cell pseudobulk for the global permutation.</li>"
+         f"<li><b>Windows.</b> The {len(tgt)} saved target windows (shared <code>regions.tsv</code>, 1-based start coordinates).</li>"
+         f"<li><b>Settings (workbench DEFAULTS).</b> k = {sc.DEFAULTS['k']}, min_child_bins = {sc.DEFAULTS['min_child_bins']}, min_terminal_bins = {sc.DEFAULTS['min_terminal_bins']}, {N_PERM:,} permutations, &alpha; = {ALPHA}.</li>"
+         "<li><b>Not available.</b> Per-cell-level segmentation of the production run (<code>pyepi_results/</code> used k = 2 per cell, a different procedure), and any independent CN truth.</li></ul>"),
+        ("Method",
+         "<ol><li><b>A. Selection-aware null.</b> Randomly permute the bins of the all-cell chr7 pseudobulk (so no spatial structure remains), take the first L bins (L = 120 and 400; 150 trials each), pick the geometry-valid cut with maximal AD distance, then apply the pinned <code>permutation_test_ad</code> at that split (local) and <code>global_permutation_test_ad</code> against a permuted genome pool (global). Accept if both p &lt; &alpha;. "
+         "For the first 20 trials per L a max-over-cuts permutation p-value (200 permutations) is computed as the selection-aware comparator.</li>"
+         "<li><b>B. Sampling share.</b> Split cells into two halves within each cluster; the half-difference D = (A &minus; B)/2 contains cell-sampling variation only. Compare robust SD of D with that of the full pseudobulk.</li>"
+         "<li><b>C. Boundary stability.</b> Scan chr7 and chr9 with <code>server.allelic_scan.scan_chromosome</code> (workbench DEFAULTS, genome pool) on the full profile, each half and the half-difference, for <code>all</code> and <code>cluster0</code>. A full-scan breakpoint is &lsquo;stable&rsquo; if each half has a breakpoint within &plusmn;2 (or &plusmn;5) bins.</li></ol>"
+         "<pre>D = (A - B) / 2                       # pure cell-sampling variation\nsampling_share = (MAD_sd(D) / MAD_sd(full))^2,  MAD_sd(v) = 1.4826 * median(|v - median(v)|)\nsplit_half_corr = corr(A, B)\ncut = argmax over geometry-valid cuts of AD distance;  accept iff p_local &lt; 0.001 and p_global &lt; 0.001\np_max = (1 + #{perms with max valid-cut AD &gt;= observed}) / 201</pre>"
+         f"<p>Seeds: halves <code>default_rng(({SEED}, 2))</code>; null trials <code>default_rng([{SEED}, 1, L, trial])</code> (numpy PCG64). Pinned statistics come from pyEpi e8305ea via <code>server/pyepi_adapter</code>. Nothing is written outside this folder.</p>"),
+        ("Results", "", 2),
+        ("A. Selection-aware null", C.html_table(calib) + C.caption("Per sequence length L: <code>trials</code> run, <code>accepted</code> (both local and global p &lt; &alpha;), trials with local p &lt; &alpha;, and the median local p-value. A calibrated test accepts about 0.1% of trials.") +
+         C.html_table(calib_max) + C.caption("Selection-aware comparator on the first 20 trials per L: median max-over-cuts p-value, the fraction below 0.05, and the fraction of those same trials with fixed-split p &lt; &alpha;. Look for max-over-cuts p-values far larger than fixed-split p-values.") +
+         f"<div class='card'>On sequences with no spatial structure, the procedure accepted <b>{int(acc.loc[120,'accepted'])}/{int(acc.loc[120,'trials'])}</b> (120 bins) and <b>{int(acc.loc[400,'accepted'])}/{int(acc.loc[400,'trials'])}</b> (400 bins) first splits at &alpha; = {ALPHA}. "
+         f"The fixed-split permutation p-value ignores the search over cuts (its median is far below the max-over-cuts p-value), but at &alpha; = {ALPHA} the realised false-acceptance rate on exchangeable data stayed low ({n_acc}/{n_tr}; upper 95% Clopper&ndash;Pearson bound {100*cp_hi:.1f}%). "
+         "<b>The prespecified hypothesis that the scan is grossly anti-conservative under an exchangeable null was not supported.</b> This does not address spatially dependent nulls, which part B shows are the relevant case.</div>", 3),
+        ("B. Sampling share of variation", C.html_table(share) +
+         C.caption("Per source and region: robust SD of the full pseudobulk and of the half-difference, their squared ratio (<code>sampling_share_of_variance</code>), lag-1 autocorrelations (spatial structure) and the split-half correlation. Expect a tiny sampling share, high split-half correlation and near-zero autocorrelation of the half-difference.") +
+         "<p>The half-difference contains only cell-sampling variation (same clusters, disjoint cells). A small sampling share and high split-half correlation mean that almost all pseudobulk structure is reproducible between cells; reproducible structure can be dosage, accessibility or a technical baseline, so passing these tests does not by itself indicate CN.</p>", 3),
+        ("C. Boundary stability", C.html_table(stab_sum) + C.caption("Number of rerun breakpoints (<code>n</code>) and how many have a breakpoint within &plusmn;2 (<code>both_pm2</code>) or &plusmn;5 (<code>both_pm5</code>) bins in <em>both</em> halves. Full list: <code>boundary_stability.tsv</code>.") +
+         "<p>Harness check against the saved genome-pool run:</p>" + C.html_table(pd.DataFrame([{"scan": k, **v} for k, v in harness.items()])) +
+         C.caption("Saved vs rerun breakpoint counts and whether the positions are identical; True everywhere means the stability results describe the saved boundaries.") +
+         "<p>Breakpoints accepted when the half-difference (sampling-only) profile is scanned: " + ", ".join(f"{k}: {v}" for k, v in halfdiff.items()) + ".</p>", 3),
+        ("Sampling-only (half-difference) segments", C.html_table(hd) + C.caption("Segments of the half-difference profile in the <code>all</code> and <code>cluster0</code> sources. <code>sd_half_diff</code> is the SD of D inside the segment and <code>mean_full_pseudobulk</code> the mean of the full pseudobulk there. A segment with lower SD at lower pseudobulk mean means variance, not mean, drives the split.") +
+         "<p>A profile that contains only cell-sampling variation still yields accepted breakpoints in <code>all</code>. Its segments differ in noise scale (SD), which tracks the full pseudobulk depth: AD compares whole distributions, so a change in variance alone can be detected. Low-depth regions therefore present a distribution change even before any mean shift.</p>" +
+         C.img(b64, "chr7 half pseudobulks") + C.caption("Top: chr7 all-cell pseudobulk for half A and half B (they overlay almost exactly); red lines are the rerun breakpoints. Bottom: (A &minus; B)/2 on the same scale, i.e. the sampling-only component; look for its small amplitude and its smaller spread in the low-depth region around 51&ndash;77 Mb."), 3),
+        ("Per-region detail",
+         win_html + C.caption("One row per saved window. An edge counts if a rerun breakpoint of the all or cluster0 scan lies within 200 kb of the window&rsquo;s first retained bin or the next bin after its last. Full list: <code>candidate_edge_stability.tsv</code>.") +
+         (C.html_table(cand) + C.caption("Edge-level detail: breakpoint source and position, distance in bins to the nearest half-A and half-B breakpoint, and whether both are within &plusmn;2 bins.") if len(cand) else "")),
+        ("Sensitivity",
+         "<p>Two sequence lengths (120 and 400 bins) for the null; two sources (<code>all</code>, <code>cluster0</code>) and two stability tolerances (&plusmn;2 and &plusmn;5 bins) for stability. Not varied: &alpha;, k, min_child_bins, number of permutations, the single halving seed, and the number of null trials (150 per L; the null acceptance rate is imprecise at this size).</p>"),
+        ("Limits and alternative explanations",
+         "<ul><li>The exchangeable null removes spatial structure; it shows the permutation tests are not grossly loose on exchangeable data, not that significance of a boundary in structured data means CN. Reproducible accessibility, mappability and GC residue structure also rejects an exchangeable null.</li>"
+         "<li>Stability is assessed on halves of the same cells and the same sample: it shows boundaries are not cell-sampling artefacts but not that they are shared across samples or are CN.</li>"
+         "<li>150 trials per length cannot distinguish an acceptance rate of 0.1% from several times that (see Clopper&ndash;Pearson bound).</li>"
+         "<li>Only chr7 and chr9 were scanned; all half-split results are for those chromosomes.</li>"
+         "<li>The production per-cell run used a different segmentation (k = 2 per cell), so these results describe the workbench cluster scan only.</li></ul>"),
+    ]
+    glossary = {
+        "L": "Length in bins of the permuted null sequence.",
+        "trials / accepted": "Null trials run / trials in which both local and global permutation p-values were below &alpha;.",
+        "p_local_lt_alpha / median_p_local": "Trials with local p &lt; &alpha; / median of the local permutation p-value at the chosen split.",
+        "median_p_max / frac_p_max_lt_0_05": "Median of the max-over-cuts p-value (200 permutations) and the fraction below 0.05.",
+        "frac_fixed_split_p_lt_alpha": "Fraction of the same trials whose fixed-split local p is below &alpha;.",
+        "robust_sd_full / robust_sd_half_diff": "1.4826 &times; median absolute deviation of the full pseudobulk / of the half-difference over bins.",
+        "sampling_share_of_variance": "(robust SD of half-difference / robust SD of full)^2: share of pseudobulk bin variance due to cell sampling.",
+        "lag1_autocorr_full / lag1_autocorr_half_diff": "Lag-1 correlation between adjacent bins of the full profile / half-difference.",
+        "split_half_corr": "Correlation across bins between half A and half B pseudobulks.",
+        "n / both_pm2 / both_pm5": "Rerun breakpoints / those with a breakpoint within &plusmn;2 or &plusmn;5 bins in both halves.",
+        "bin_in_chrom / genomic_start": "Breakpoint position as bin index in the chromosome / genomic start (bp).",
+        "nearest_A / nearest_B": "Distance in bins to the nearest breakpoint of half A / half B scan.",
+        "in_both_halves_pm2": "True if both nearest distances are &le; 2 bins.",
+        "sd_half_diff / mean_full_pseudobulk": "SD of the half-difference and mean of the full pseudobulk within a segment.",
+        "edges_with_breakpoint / reproduced_both_halves_pm2": "Window edges with a rerun breakpoint within 200 kb / of those, reproduced in both halves within &plusmn;2 bins.",
+        "saved / rerun / identical": "Saved breakpoint count / rerun count / whether positions are identical.",
+        "AD": "Anderson&ndash;Darling distance between the bin-value distributions on either side of a cut.",
+        "p_global": "Pinned genome-pool permutation p-value at the chosen split.",
+    }
+    C.write_html_report(HERE / "report.html", "Segmentation calibration", "Experiment 05 &middot; AD scan null behaviour, sampling share and half-split stability",
+                        sections, {"command": "python -I experiments/05_segmentation_calibration/run.py", "summary": "summary.json",
+                                   "seed": SEED, "streams": res["seed_streams"], "environment": C.environment()},
+                        key_findings=findings, verdict=verdict, glossary=glossary,
+                        supports=["Boundaries are not cell-sampling artefacts: halves of the same cells agree almost perfectly and most breakpoints reappear in both halves.",
+                                  "On exchangeable nulls the select-then-test AD scan rarely accepts at the stated &alpha;, so the p-values are not grossly anti-conservative in that setting.",
+                                  "Window edges that coincide with a breakpoint are reproduced in both halves."],
+                        not_supports=["That a significant boundary indicates a copy-number change: reproducible accessibility, mappability and GC structure also reject an exchangeable null.",
+                                      "Calibration under spatially dependent nulls or in other samples.",
+                                      "Edge support for windows with no nearby breakpoint."],
+                        decision_impact="Supports the recommendation that significance of a segmentation boundary should not be used as CN evidence on its own, and that the per-region evidence layer must weigh depth contrast, coverage invariance and allelic evidence instead. "
+                                        "It also shows the scan is variance-sensitive in low-depth regions, which argues for evaluating an exposure-aware raw-count segmentation (rank 4) only after a cross-sample baseline exists.",
+                        next_steps=["Calibrate against nulls with realistic spatial dependence, e.g. block-permuted or baseline-structured profiles from unrelated samples.",
+                                    "Increase null trials to resolve the acceptance rate relative to &alpha;.",
+                                    "Repeat the half-split analysis on an independent sample."])
     print(json.dumps({k: res[k] for k in ["null_calibration", "null_max_over_cuts", "harness_check_vs_saved_genome_pool",
                                           "half_difference_breakpoints", "boundary_stability", "seconds"]}, indent=0, default=str))
 
