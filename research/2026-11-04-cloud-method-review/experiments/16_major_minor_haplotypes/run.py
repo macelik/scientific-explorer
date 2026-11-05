@@ -595,25 +595,30 @@ def report(ctx):
 
     # ---- figures
     figs = {}
-    fig, ax = plt.subplots(2, 2, figsize=(12, 6.5))
+    fig, ax = plt.subplots(4, 3, figsize=(14, 12), gridspec_kw={"width_ratios": [2.2, 2.2, 1]})
     panels = [("segment all|8 (chr1:166.8-236 Mb)", bin_tabs[("all", "all|8")]), ("5q13-qter", reg_tabs[("all", "lit_5q13_qter")]),
               ("19q13-qter", reg_tabs[("all", "lit_19q13_qter")]), ("MYC chr8:127-128.5 Mb", reg_tabs[("all", "lit_MYC_8q24")])]
-    for a, (ttl, bt) in zip(ax.ravel(), panels):
+    hb = np.linspace(0, 1, 41)
+    for row, (ttl, bt) in zip(ax, panels):
         bt = bt[bt.AT >= 5]
         x = d.start[bt.bin.to_numpy()] / 1e6
-        raw = bt.HB / bt.AT
+        raw = (bt.HB / bt.AT).to_numpy()
         ori = np.where(bt.p_B_major >= 0.5, raw, 1 - raw)
-        a.scatter(x, raw, s=6, color="#999", label="GT-oriented HB/AT")
-        a.scatter(x, ori, s=6, color="#2f5d8a", label="HMM-oriented major fraction")
-        a.axhline(0.5, color="k", lw=.5)
-        a.set_title(ttl, fontsize=9)
-        a.set_ylabel("allele fraction")
-        a.set_xlabel("Mb")
-        a2 = a.twinx()
-        a2.plot(x, bt.p_B_major, color="#9b2c2c", lw=.6, alpha=.6)
-        a2.set_ylim(-0.05, 1.05)
-        a2.set_ylabel("P(B-major)", color="#9b2c2c", fontsize=8)
-    ax[0, 0].legend(fontsize=7, loc="lower left")
+        row[0].scatter(x, raw, s=6, c=np.where(raw >= 0.5, "#9b2c2c", "#2f5d8a"), alpha=.8)
+        row[0].axhline(0.5, color="k", lw=.5); row[0].set_ylim(0, 1)
+        row[0].set_title(f"{ttl}: GT-oriented HB/AT per bin (pooled {bt.HB.sum() / bt.AT.sum():.3f})", fontsize=8)
+        row[0].set_ylabel("HB / AT")
+        row[1].scatter(x, ori, s=6, color="#2f5d8a")
+        row[1].axhline(0.5, color="k", lw=.5); row[1].set_ylim(0, 1)
+        r2 = row[1].twinx(); r2.plot(x, bt.p_B_major, color="#9b2c2c", lw=.6, alpha=.6); r2.set_ylim(-0.05, 1.05)
+        r2.set_ylabel("P(B-major)", color="#9b2c2c", fontsize=7)
+        row[1].set_title(f"after HMM orientation: major-haplotype fraction (median {np.median(ori):.3f})", fontsize=8)
+        row[2].hist(raw, hb, color="#999", alpha=.8, label="GT-oriented")
+        row[2].hist(ori, hb, histtype="step", color="#2f5d8a", lw=1.5, label="HMM-oriented")
+        row[2].axvline(0.5, color="k", lw=.5); row[2].set_title("distribution", fontsize=8)
+        for a_ in row[:2]:
+            a_.set_xlabel("Mb")
+    ax[0, 2].legend(fontsize=7)
     fig.tight_layout()
     figs["orient"] = C.fig_to_b64(fig)
     plt.close(fig)
@@ -786,8 +791,7 @@ Orientation labels are anchored to the HB column (GT phase), so P(B-major) can b
         ("Results",
          "<p>All numbers below come from the saved tables in this folder. Haplotype labels (A/B major) are inferred from allele counts.</p>"),
         ("Orientation and switches",
-         C.img(figs["orient"], "orientation tracks") + C.caption("Per-bin allele fraction (bins with AT >= 5): grey = GT-oriented HB/AT; blue = fraction of the inferred major haplotype; red line = posterior P(B-major) (right axis). "
-         "Where the grey points straddle 0.5 but the blue points sit on one side, the orientation HMM has re-aligned the bins.") +
+         C.img(figs["orient"], "orientation tracks") + C.caption("How to read: left, the GT-oriented HB/AT of each bin (AT >= 5), coloured by side of 0.5; middle, the same bins after HMM orientation (fraction on the inferred major haplotype), with the posterior P(B-major) in red; right, the two distributions. In imbalanced segments the GT-oriented values are bimodal and mirror-symmetric around 0.5 (for chr1:166.8-236 Mb about half the bins near 0.29 and half near 0.71), in runs of a few bins: the GT phase label switches between runs, so the pooled GT sum cancels towards 0.5. The HMM flips the runs where B is the minor allele, which moves every bin to the same side. That is only meaningful where the per-bin deviation is far above sampling noise and mirror-symmetric; in uncalled random windows the same procedure gives |h - 0.5| <= 0.035 (null 95th percentile), which bounds the folding bias.") +
          "<p>Imbalanced `all` segments:</p>" + C.html_table(seg_tab, floatfmt="{:.3f}") +
          C.caption(f"The {len(imb)} `all` segments with delta_hat above the null 95th percentile ({qa['delta_hat_q95']:.3f}). h_naive = GT-oriented fold; h_hat = HMM; delta_eff = phase-agnostic. "
                    "chr1q (cn_call 2) and chr5q/chr8q segments dominate; many small cn_call 0 or 0.5 segments are near the threshold."), 3),

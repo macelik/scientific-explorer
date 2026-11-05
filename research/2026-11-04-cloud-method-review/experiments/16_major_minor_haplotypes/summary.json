@@ -658,7 +658,7 @@
   }
  ],
  "imbalanced_all_segments_switch_rate_above_null_q95": 19,
- "runtime_seconds": 197.14648175239563,
+ "runtime_seconds": 123.124915599823,
  "environment": {
   "python": "3.10.20",
   "platform": "Linux-6.18.44-fc-v236-x86_64-with-glibc2.39",
@@ -673,7 +673,7 @@
    "matplotlib": "3.8.4",
    "statsmodels": "0.14.1"
   },
-  "workbench_commit_at_run": "ad0010e0a4db79ed46573604c2e814382cfcd5b6",
+  "workbench_commit_at_run": "ffbdbd32cf5a6390e6f0af9338c9fdc287851319",
   "pyepi_upstream_commit": "e8305ea2162634d07e92a3bb401df672e48f217b",
   "cpu_count": 4
  },
