@@ -1,0 +1,156 @@
+all_segment	chromosome	start_bp	end_bp	cn_call_all	all_h_hat	cluster	cluster_imbalanced_bins_in_segment	bins_compared	agree_fraction	class
+all|5	chr1	120000001	149800000	1	0.675	cluster0	20	16	0.875	same major haplotype
+all|5	chr1	120000001	149800000	1	0.675	cluster1	18	17	1	same major haplotype
+all|5	chr1	120000001	149800000	1	0.675	cluster2	19	17	1	same major haplotype
+all|5	chr1	120000001	149800000	1	0.675	cluster3	17	15	0.8	same major haplotype
+all|5	chr1	120000001	149800000	1	0.675	cluster4	14	11	1	same major haplotype
+all|6	chr1	149800001	156800000	2	0.7275	cluster0	60	58	0.9828	same major haplotype
+all|6	chr1	149800001	156800000	2	0.7275	cluster1	61	56	1	same major haplotype
+all|6	chr1	149800001	156800000	2	0.7275	cluster2	61	58	1	same major haplotype
+all|6	chr1	149800001	156800000	2	0.7275	cluster3	60	59	1	same major haplotype
+all|6	chr1	149800001	156800000	2	0.7275	cluster4	53	51	1	same major haplotype
+all|7	chr1	156800001	166800000	2	0.705	cluster0	93	89	0.9438	same major haplotype
+all|7	chr1	156800001	166800000	2	0.705	cluster1	95	90	0.9889	same major haplotype
+all|7	chr1	156800001	166800000	2	0.705	cluster2	94	88	0.9773	same major haplotype
+all|7	chr1	156800001	166800000	2	0.705	cluster3	92	89	0.9438	same major haplotype
+all|7	chr1	156800001	166800000	2	0.705	cluster4	87	81	0.963	same major haplotype
+all|8	chr1	166800001	236000000	2	0.7075	cluster0	649	633	0.9968	same major haplotype
+all|8	chr1	166800001	236000000	2	0.7075	cluster1	650	635	0.9953	same major haplotype
+all|8	chr1	166800001	236000000	2	0.7075	cluster2	650	632	0.9858	same major haplotype
+all|8	chr1	166800001	236000000	2	0.7075	cluster3	640	623	0.9936	same major haplotype
+all|8	chr1	166800001	236000000	2	0.7075	cluster4	611	583	0.9674	same major haplotype
+all|9	chr1	236000001	248900000	2	0.6975	cluster0	125	120	0.9833	same major haplotype
+all|9	chr1	236000001	248900000	2	0.6975	cluster1	125	122	0.9918	same major haplotype
+all|9	chr1	236000001	248900000	2	0.6975	cluster2	123	119	0.9664	same major haplotype
+all|9	chr1	236000001	248900000	2	0.6975	cluster3	123	117	0.9915	same major haplotype
+all|9	chr1	236000001	248900000	2	0.6975	cluster4	119	109	0.945	same major haplotype
+all|10	chr2	1	8600000	0.5	0.5425	cluster0	0	0		insufficient (<10 bins)
+all|10	chr2	1	8600000	0.5	0.5425	cluster1	0	0		insufficient (<10 bins)
+all|10	chr2	1	8600000	0.5	0.5425	cluster2	0	0		insufficient (<10 bins)
+all|10	chr2	1	8600000	0.5	0.5425	cluster3	0	0		insufficient (<10 bins)
+all|10	chr2	1	8600000	0.5	0.5425	cluster4	0	0		insufficient (<10 bins)
+all|13	chr2	33600001	36300000	0	0.5375	cluster0	0	0		insufficient (<10 bins)
+all|13	chr2	33600001	36300000	0	0.5375	cluster1	0	0		insufficient (<10 bins)
+all|13	chr2	33600001	36300000	0	0.5375	cluster2	0	0		insufficient (<10 bins)
+all|13	chr2	33600001	36300000	0	0.5375	cluster3	0	0		insufficient (<10 bins)
+all|13	chr2	33600001	36300000	0	0.5375	cluster4	0	0		insufficient (<10 bins)
+all|16	chr2	76000001	80700000	0	0.5475	cluster0	0	0		insufficient (<10 bins)
+all|16	chr2	76000001	80700000	0	0.5475	cluster1	17	9	1	insufficient (<10 bins)
+all|16	chr2	76000001	80700000	0	0.5475	cluster2	15	13	0.5385	mixed
+all|16	chr2	76000001	80700000	0	0.5475	cluster3	13	6	1	insufficient (<10 bins)
+all|16	chr2	76000001	80700000	0	0.5475	cluster4	0	0		insufficient (<10 bins)
+all|39	chr5	118900001	151900000	2	0.6425	cluster0	298	278	0.9748	same major haplotype
+all|39	chr5	118900001	151900000	2	0.6425	cluster1	302	285	0.9965	same major haplotype
+all|39	chr5	118900001	151900000	2	0.6425	cluster2	294	276	0.971	same major haplotype
+all|39	chr5	118900001	151900000	2	0.6425	cluster3	295	272	0.9743	same major haplotype
+all|39	chr5	118900001	151900000	2	0.6425	cluster4	278	251	0.9482	same major haplotype
+all|40	chr5	151900001	157100000	1	0.625	cluster0	45	44	0.9091	same major haplotype
+all|40	chr5	151900001	157100000	1	0.625	cluster1	45	40	1	same major haplotype
+all|40	chr5	151900001	157100000	1	0.625	cluster2	44	37	1	same major haplotype
+all|40	chr5	151900001	157100000	1	0.625	cluster3	45	39	0.9744	same major haplotype
+all|40	chr5	151900001	157100000	1	0.625	cluster4	41	37	0.9189	same major haplotype
+all|41	chr5	157100001	161000000	1.5	0.6425	cluster0	38	37	0.973	same major haplotype
+all|41	chr5	157100001	161000000	1.5	0.6425	cluster1	38	38	1	same major haplotype
+all|41	chr5	157100001	161000000	1.5	0.6425	cluster2	38	38	0.9737	same major haplotype
+all|41	chr5	157100001	161000000	1.5	0.6425	cluster3	38	36	1	same major haplotype
+all|41	chr5	157100001	161000000	1.5	0.6425	cluster4	37	37	0.973	same major haplotype
+all|42	chr5	161000001	163300000	0	0.575	cluster0	18	17	0.2353	mixed
+all|42	chr5	161000001	163300000	0	0.575	cluster1	19	16	1	same major haplotype
+all|42	chr5	161000001	163300000	0	0.575	cluster2	19	15	1	same major haplotype
+all|42	chr5	161000001	163300000	0	0.575	cluster3	0	0		insufficient (<10 bins)
+all|42	chr5	161000001	163300000	0	0.575	cluster4	0	0		insufficient (<10 bins)
+all|43	chr5	163300001	174100000	1.5	0.6375	cluster0	102	93	0.9462	same major haplotype
+all|43	chr5	163300001	174100000	1.5	0.6375	cluster1	101	94	1	same major haplotype
+all|43	chr5	163300001	174100000	1.5	0.6375	cluster2	100	92	0.9783	same major haplotype
+all|43	chr5	163300001	174100000	1.5	0.6375	cluster3	100	90	0.9111	same major haplotype
+all|43	chr5	163300001	174100000	1.5	0.6375	cluster4	95	85	0.9059	same major haplotype
+all|44	chr5	174100001	181100000	1	0.6275	cluster0	63	57	1	same major haplotype
+all|44	chr5	174100001	181100000	1	0.6275	cluster1	62	57	1	same major haplotype
+all|44	chr5	174100001	181100000	1	0.6275	cluster2	61	55	0.9273	same major haplotype
+all|44	chr5	174100001	181100000	1	0.6275	cluster3	61	58	0.9655	same major haplotype
+all|44	chr5	174100001	181100000	1	0.6275	cluster4	56	45	0.8667	same major haplotype
+all|49	chr6	57400001	69700000	0.5	0.5375	cluster0	0	0		insufficient (<10 bins)
+all|49	chr6	57400001	69700000	0.5	0.5375	cluster1	0	0		insufficient (<10 bins)
+all|49	chr6	57400001	69700000	0.5	0.5375	cluster2	0	0		insufficient (<10 bins)
+all|49	chr6	57400001	69700000	0.5	0.5375	cluster3	0	0		insufficient (<10 bins)
+all|49	chr6	57400001	69700000	0.5	0.5375	cluster4	0	0		insufficient (<10 bins)
+all|51	chr6	85700001	87700000	0.5	0.625	cluster0	0	0		insufficient (<10 bins)
+all|51	chr6	85700001	87700000	0.5	0.625	cluster1	14	5	1	insufficient (<10 bins)
+all|51	chr6	85700001	87700000	0.5	0.625	cluster2	0	0		insufficient (<10 bins)
+all|51	chr6	85700001	87700000	0.5	0.625	cluster3	0	0		insufficient (<10 bins)
+all|51	chr6	85700001	87700000	0.5	0.625	cluster4	0	0		insufficient (<10 bins)
+all|55	chr6	164200001	170600000	0.5	0.555	cluster0	0	0		insufficient (<10 bins)
+all|55	chr6	164200001	170600000	0.5	0.555	cluster1	56	45	0.7556	mixed
+all|55	chr6	164200001	170600000	0.5	0.555	cluster2	57	43	0.907	same major haplotype
+all|55	chr6	164200001	170600000	0.5	0.555	cluster3	10	8	1	insufficient (<10 bins)
+all|55	chr6	164200001	170600000	0.5	0.555	cluster4	0	0		insufficient (<10 bins)
+all|57	chr7	8300001	10800000	0	0.545	cluster0	21	15	1	same major haplotype
+all|57	chr7	8300001	10800000	0	0.545	cluster1	22	21	1	same major haplotype
+all|57	chr7	8300001	10800000	0	0.545	cluster2	20	18	1	same major haplotype
+all|57	chr7	8300001	10800000	0	0.545	cluster3	0	0		insufficient (<10 bins)
+all|57	chr7	8300001	10800000	0	0.545	cluster4	0	0		insufficient (<10 bins)
+all|63	chr7	70000001	73400000	0	0.5425	cluster0	23	10	1	same major haplotype
+all|63	chr7	70000001	73400000	0	0.5425	cluster1	0	0		insufficient (<10 bins)
+all|63	chr7	70000001	73400000	0	0.5425	cluster2	0	0		insufficient (<10 bins)
+all|63	chr7	70000001	73400000	0	0.5425	cluster3	0	0		insufficient (<10 bins)
+all|63	chr7	70000001	73400000	0	0.5425	cluster4	0	0		insufficient (<10 bins)
+all|69	chr7	145400001	148300000	0	0.5525	cluster0	19	11	1	same major haplotype
+all|69	chr7	145400001	148300000	0	0.5525	cluster1	0	0		insufficient (<10 bins)
+all|69	chr7	145400001	148300000	0	0.5525	cluster2	18	18	1	same major haplotype
+all|69	chr7	145400001	148300000	0	0.5525	cluster3	0	0		insufficient (<10 bins)
+all|69	chr7	145400001	148300000	0	0.5525	cluster4	0	0		insufficient (<10 bins)
+all|71	chr7	152800001	159300000	0.5	0.54	cluster0	53	20	0.95	same major haplotype
+all|71	chr7	152800001	159300000	0.5	0.54	cluster1	0	0		insufficient (<10 bins)
+all|71	chr7	152800001	159300000	0.5	0.54	cluster2	0	0		insufficient (<10 bins)
+all|71	chr7	152800001	159300000	0.5	0.54	cluster3	52	18	0.8333	same major haplotype
+all|71	chr7	152800001	159300000	0.5	0.54	cluster4	0	0		insufficient (<10 bins)
+all|76	chr8	115000001	134100000	2	0.585	cluster0	179	151	0.9669	same major haplotype
+all|76	chr8	115000001	134100000	2	0.585	cluster1	180	161	0.9814	same major haplotype
+all|76	chr8	115000001	134100000	2	0.585	cluster2	173	149	0.953	same major haplotype
+all|76	chr8	115000001	134100000	2	0.585	cluster3	174	148	0.9595	same major haplotype
+all|76	chr8	115000001	134100000	2	0.585	cluster4	170	140	0.15	opposite major haplotype
+all|77	chr8	134100001	136100000	1	0.5775	cluster0	19	16	1	same major haplotype
+all|77	chr8	134100001	136100000	1	0.5775	cluster1	20	16	1	same major haplotype
+all|77	chr8	134100001	136100000	1	0.5775	cluster2	20	18	1	same major haplotype
+all|77	chr8	134100001	136100000	1	0.5775	cluster3	0	0		insufficient (<10 bins)
+all|77	chr8	134100001	136100000	1	0.5775	cluster4	19	16	0.0625	opposite major haplotype
+all|79	chr8	138700001	145100000	1.5	0.595	cluster0	58	51	0.9608	same major haplotype
+all|79	chr8	138700001	145100000	1.5	0.595	cluster1	58	53	0.9811	same major haplotype
+all|79	chr8	138700001	145100000	1.5	0.595	cluster2	57	56	1	same major haplotype
+all|79	chr8	138700001	145100000	1.5	0.595	cluster3	57	53	1	same major haplotype
+all|79	chr8	138700001	145100000	1.5	0.595	cluster4	55	50	0.06	opposite major haplotype
+all|81	chr9	7200001	12500000	0	0.5475	cluster0	0	0		insufficient (<10 bins)
+all|81	chr9	7200001	12500000	0	0.5475	cluster1	22	7	1	insufficient (<10 bins)
+all|81	chr9	7200001	12500000	0	0.5475	cluster2	22	11	1	same major haplotype
+all|81	chr9	7200001	12500000	0	0.5475	cluster3	0	0		insufficient (<10 bins)
+all|81	chr9	7200001	12500000	0	0.5475	cluster4	0	0		insufficient (<10 bins)
+all|86	chr9	103500001	106700000	1	0.545	cluster0	0	0		insufficient (<10 bins)
+all|86	chr9	103500001	106700000	1	0.545	cluster1	0	0		insufficient (<10 bins)
+all|86	chr9	103500001	106700000	1	0.545	cluster2	0	0		insufficient (<10 bins)
+all|86	chr9	103500001	106700000	1	0.545	cluster3	1	0		insufficient (<10 bins)
+all|86	chr9	103500001	106700000	1	0.545	cluster4	0	0		insufficient (<10 bins)
+all|98	chr10	80600001	84100000	0	0.5825	cluster0	21	15	0.8	same major haplotype
+all|98	chr10	80600001	84100000	0	0.5825	cluster1	21	13	0.8462	same major haplotype
+all|98	chr10	80600001	84100000	0	0.5825	cluster2	0	0		insufficient (<10 bins)
+all|98	chr10	80600001	84100000	0	0.5825	cluster3	20	14	0.6429	mixed
+all|98	chr10	80600001	84100000	0	0.5825	cluster4	0	0		insufficient (<10 bins)
+all|99	chr10	84100001	87500000	1	0.54	cluster0	28	25	1	same major haplotype
+all|99	chr10	84100001	87500000	1	0.54	cluster1	0	0		insufficient (<10 bins)
+all|99	chr10	84100001	87500000	1	0.54	cluster2	0	0		insufficient (<10 bins)
+all|99	chr10	84100001	87500000	1	0.54	cluster3	21	14	1	same major haplotype
+all|99	chr10	84100001	87500000	1	0.54	cluster4	0	0		insufficient (<10 bins)
+all|120	chr14	45300001	49500000	0	0.615	cluster0	19	14	1	same major haplotype
+all|120	chr14	45300001	49500000	0	0.615	cluster1	19	12	1	same major haplotype
+all|120	chr14	45300001	49500000	0	0.615	cluster2	19	6	1	insufficient (<10 bins)
+all|120	chr14	45300001	49500000	0	0.615	cluster3	0	0		insufficient (<10 bins)
+all|120	chr14	45300001	49500000	0	0.615	cluster4	0	0		insufficient (<10 bins)
+all|129	chr16	48700001	53000000	0	0.58	cluster0	43	23	1	same major haplotype
+all|129	chr16	48700001	53000000	0	0.58	cluster1	43	35	1	same major haplotype
+all|129	chr16	48700001	53000000	0	0.58	cluster2	43	33	1	same major haplotype
+all|129	chr16	48700001	53000000	0	0.58	cluster3	43	36	1	same major haplotype
+all|129	chr16	48700001	53000000	0	0.58	cluster4	0	0		insufficient (<10 bins)
+all|132	chr17	8700001	13000000	0	0.5375	cluster0	0	0		insufficient (<10 bins)
+all|132	chr17	8700001	13000000	0	0.5375	cluster1	0	0		insufficient (<10 bins)
+all|132	chr17	8700001	13000000	0	0.5375	cluster2	40	24	0.9167	same major haplotype
+all|132	chr17	8700001	13000000	0	0.5375	cluster3	0	0		insufficient (<10 bins)
+all|132	chr17	8700001	13000000	0	0.5375	cluster4	0	0		insufficient (<10 bins)

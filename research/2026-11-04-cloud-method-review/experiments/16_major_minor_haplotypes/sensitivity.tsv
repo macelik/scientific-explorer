@@ -1,0 +1,6 @@
+config	rho	lambda_per_Mb	eligible_all_segments	null_delta_q95	null_median_delta	imbalanced_segments	median_abs_diff_delta_vs_base	spearman_delta_vs_base	median_viterbi_switches_imbalanced	total_viterbi_switches_imbalanced
+base	0.0038438	0.2	164	0.03525	0.01	31	0	1	3	286
+hazard_x0.1	0.0038438	0.02	164	0.0325	0.01	26	0.0025	0.81413	2.5	243
+hazard_x10	0.0038438	2	164	0.0475	0.01875	24	0.0075	0.85595	8.5	348
+rho_0	0	0.2	164	0.052875	0.025	19	0.015	0.75321	5	290
+rho_0.02	0.02	0.2	164	0.02	0	30	0.01	0.71414	1	196

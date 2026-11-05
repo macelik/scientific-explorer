@@ -1,0 +1,21 @@
+config	region	delta_hat	h_hat	viterbi_switches
+base	lit_9p21_hemizygous_zone_approx	0.015	0.515	0
+base	lit_MYC_8q24	0.0875	0.5875	2
+base	lit_19q13_qter	0.0125	0.5125	3
+base	lit_5q13_qter	0.1	0.6	128
+hazard_x0.1	lit_9p21_hemizygous_zone_approx	0.015	0.515	0
+hazard_x0.1	lit_MYC_8q24	0.0875	0.5875	2
+hazard_x0.1	lit_19q13_qter	0	0.5	
+hazard_x0.1	lit_5q13_qter	0.0975	0.5975	98
+hazard_x10	lit_9p21_hemizygous_zone_approx	0.025	0.525	2
+hazard_x10	lit_MYC_8q24	0.09	0.59	5
+hazard_x10	lit_19q13_qter	0.025	0.525	17
+hazard_x10	lit_5q13_qter	0.1025	0.6025	194
+rho_0	lit_9p21_hemizygous_zone_approx	0.03	0.53	0
+rho_0	lit_MYC_8q24	0.09	0.59	4
+rho_0	lit_19q13_qter	0.025	0.525	25
+rho_0	lit_5q13_qter	0.12	0.62	174
+rho_0.02	lit_9p21_hemizygous_zone_approx	0	0.5	
+rho_0.02	lit_MYC_8q24	0.0575	0.5575	0
+rho_0.02	lit_19q13_qter	0	0.5	
+rho_0.02	lit_5q13_qter	0.0825	0.5825	56
