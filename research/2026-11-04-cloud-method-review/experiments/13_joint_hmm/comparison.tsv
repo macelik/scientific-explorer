@@ -1,0 +1,213 @@
+table	source	variant	key1	key2	n	value	note
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	full	hmm_loss	pyepi_loss	1473		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	full	hmm_loss	pyepi_neutral	2133		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	full	hmm_loss	pyepi_gain	35		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	full	hmm_neutral	pyepi_loss	388		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	full	hmm_neutral	pyepi_neutral	11602		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	full	hmm_neutral	pyepi_gain	364		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	full	hmm_gain	pyepi_loss	76		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	full	hmm_gain	pyepi_neutral	6377		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	full	hmm_gain	pyepi_gain	2889		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	all	full	hmm_r=0.25	pyepi_cn_call=0	618		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	all	full	hmm_r=0.25	pyepi_cn_call=0.5	261		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	all	full	hmm_r=0.25	pyepi_cn_call=1	768		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	all	full	hmm_r=0.25	pyepi_cn_call=1.5	10		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	all	full	hmm_r=0.5	pyepi_cn_call=0	174		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	all	full	hmm_r=0.5	pyepi_cn_call=0.5	118		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	all	full	hmm_r=0.5	pyepi_cn_call=1	418		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	all	full	hmm_r=0.5	pyepi_cn_call=1.5	1		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	all	full	hmm_r=0.5	pyepi_cn_call=2	4		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	all	full	hmm_r=0.75	pyepi_cn_call=0	66		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	all	full	hmm_r=0.75	pyepi_cn_call=0.5	236		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	all	full	hmm_r=0.75	pyepi_cn_call=1	947		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	all	full	hmm_r=0.75	pyepi_cn_call=1.5	20		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	all	full	hmm_r=1	pyepi_cn_call=0	129		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	all	full	hmm_r=1	pyepi_cn_call=0.5	259		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	all	full	hmm_r=1	pyepi_cn_call=1	11602		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	all	full	hmm_r=1	pyepi_cn_call=1.5	328		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	all	full	hmm_r=1	pyepi_cn_call=2	36		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	all	full	hmm_r=1.25	pyepi_cn_call=0	20		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	all	full	hmm_r=1.25	pyepi_cn_call=0.5	43		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	all	full	hmm_r=1.25	pyepi_cn_call=1	5281		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	all	full	hmm_r=1.25	pyepi_cn_call=1.5	1068		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	all	full	hmm_r=1.25	pyepi_cn_call=2	49		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	all	full	hmm_r=1.5	pyepi_cn_call=0.5	7		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	all	full	hmm_r=1.5	pyepi_cn_call=1	806		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	all	full	hmm_r=1.5	pyepi_cn_call=1.5	101		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	all	full	hmm_r=1.5	pyepi_cn_call=2	191		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	all	full	hmm_r=2	pyepi_cn_call=0	1		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	all	full	hmm_r=2	pyepi_cn_call=0.5	5		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	all	full	hmm_r=2	pyepi_cn_call=1	290		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	all	full	hmm_r=2	pyepi_cn_call=1.5	97		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	all	full	hmm_r=2	pyepi_cn_call=2	1383		
+boundary_match_pm2bins	all	full	AD_breakpoints_with_hmm_boundary	79/142	142	0.5563380281690141	chance-level reference if hmm boundaries were placed at random per chromosome: 0.114
+boundary_match_pm2bins	all	full	hmm_depth_boundaries_with_AD_breakpoint	79/578	578	0.13667820069204153	AD = raw_accepted_breakpoints.tsv; neither is truth
+boundary_match_pm5bins	all	full	AD_breakpoints_with_hmm_boundary	89/142	142	0.6267605633802817	chance-level reference if hmm boundaries were placed at random per chromosome: 0.233
+boundary_match_pm5bins	all	full	hmm_depth_boundaries_with_AD_breakpoint	92/578	578	0.15916955017301038	AD = raw_accepted_breakpoints.tsv; neither is truth
+diagnostic_cn1_bins	all	full	frac_cn1_bins_viterbi_imbalanced		20112	0.06742243436754176	pyEpi cn_call==1 is not truth
+diagnostic_cn1_bins	all	full	frac_cn1_bins_viterbi_depth_not_r1		20112	0.4231304693715195	
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	no_baseline_var	hmm_loss	pyepi_loss	1626		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	no_baseline_var	hmm_loss	pyepi_neutral	9469		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	no_baseline_var	hmm_loss	pyepi_gain	560		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	no_baseline_var	hmm_neutral	pyepi_loss	120		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	no_baseline_var	hmm_neutral	pyepi_neutral	3473		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	no_baseline_var	hmm_neutral	pyepi_gain	496		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	no_baseline_var	hmm_gain	pyepi_loss	191		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	no_baseline_var	hmm_gain	pyepi_neutral	7170		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	no_baseline_var	hmm_gain	pyepi_gain	2232		
+boundary_match_pm2bins	all	no_baseline_var	AD_breakpoints_with_hmm_boundary	141/142	142	0.9929577464788732	chance-level reference if hmm boundaries were placed at random per chromosome: 0.968
+boundary_match_pm2bins	all	no_baseline_var	hmm_depth_boundaries_with_AD_breakpoint	485/17330	17330	0.02798615118291979	AD = raw_accepted_breakpoints.tsv; neither is truth
+boundary_match_pm5bins	all	no_baseline_var	AD_breakpoints_with_hmm_boundary	142/142	142	1.0	chance-level reference if hmm boundaries were placed at random per chromosome: 0.999
+boundary_match_pm5bins	all	no_baseline_var	hmm_depth_boundaries_with_AD_breakpoint	1005/17330	17330	0.05799192152336988	AD = raw_accepted_breakpoints.tsv; neither is truth
+diagnostic_cn1_bins	all	no_baseline_var	frac_cn1_bins_viterbi_imbalanced		20112	0.1259447096260939	pyEpi cn_call==1 is not truth
+diagnostic_cn1_bins	all	no_baseline_var	frac_cn1_bins_viterbi_depth_not_r1		20112	0.8273170246618934	
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	no_allele	hmm_loss	pyepi_loss	1426		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	no_allele	hmm_loss	pyepi_neutral	1848		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	no_allele	hmm_loss	pyepi_gain	12		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	no_allele	hmm_neutral	pyepi_loss	420		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	no_allele	hmm_neutral	pyepi_neutral	11715		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	no_allele	hmm_neutral	pyepi_gain	209		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	no_allele	hmm_gain	pyepi_loss	91		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	no_allele	hmm_gain	pyepi_neutral	6549		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	no_allele	hmm_gain	pyepi_gain	3067		
+boundary_match_pm2bins	all	no_allele	AD_breakpoints_with_hmm_boundary	86/142	142	0.6056338028169014	chance-level reference if hmm boundaries were placed at random per chromosome: 0.087
+boundary_match_pm2bins	all	no_allele	hmm_depth_boundaries_with_AD_breakpoint	86/426	426	0.20187793427230047	AD = raw_accepted_breakpoints.tsv; neither is truth
+boundary_match_pm5bins	all	no_allele	AD_breakpoints_with_hmm_boundary	95/142	142	0.6690140845070423	chance-level reference if hmm boundaries were placed at random per chromosome: 0.180
+boundary_match_pm5bins	all	no_allele	hmm_depth_boundaries_with_AD_breakpoint	95/426	426	0.22300469483568075	AD = raw_accepted_breakpoints.tsv; neither is truth
+diagnostic_cn1_bins	all	no_allele	frac_cn1_bins_viterbi_imbalanced		20112	0.0	pyEpi cn_call==1 is not truth
+diagnostic_cn1_bins	all	no_allele	frac_cn1_bins_viterbi_depth_not_r1		20112	0.41751193317422436	
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	baseline_all_bins	hmm_loss	pyepi_loss	1473		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	baseline_all_bins	hmm_loss	pyepi_neutral	2072		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	baseline_all_bins	hmm_loss	pyepi_gain	35		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	baseline_all_bins	hmm_neutral	pyepi_loss	388		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	baseline_all_bins	hmm_neutral	pyepi_neutral	11664		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	baseline_all_bins	hmm_neutral	pyepi_gain	374		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	baseline_all_bins	hmm_gain	pyepi_loss	76		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	baseline_all_bins	hmm_gain	pyepi_neutral	6376		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	baseline_all_bins	hmm_gain	pyepi_gain	2879		
+boundary_match_pm2bins	all	baseline_all_bins	AD_breakpoints_with_hmm_boundary	79/142	142	0.5563380281690141	chance-level reference if hmm boundaries were placed at random per chromosome: 0.114
+boundary_match_pm2bins	all	baseline_all_bins	hmm_depth_boundaries_with_AD_breakpoint	79/578	578	0.13667820069204153	AD = raw_accepted_breakpoints.tsv; neither is truth
+boundary_match_pm5bins	all	baseline_all_bins	AD_breakpoints_with_hmm_boundary	88/142	142	0.6197183098591549	chance-level reference if hmm boundaries were placed at random per chromosome: 0.233
+boundary_match_pm5bins	all	baseline_all_bins	hmm_depth_boundaries_with_AD_breakpoint	91/578	578	0.157439446366782	AD = raw_accepted_breakpoints.tsv; neither is truth
+diagnostic_cn1_bins	all	baseline_all_bins	frac_cn1_bins_viterbi_imbalanced		20112	0.06672633253778838	pyEpi cn_call==1 is not truth
+diagnostic_cn1_bins	all	baseline_all_bins	frac_cn1_bins_viterbi_depth_not_r1		20112	0.4200477326968974	
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	baseline_median_only	hmm_loss	pyepi_loss	1338		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	baseline_median_only	hmm_loss	pyepi_neutral	1318		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	baseline_median_only	hmm_loss	pyepi_gain	16		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	baseline_median_only	hmm_neutral	pyepi_loss	432		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	baseline_median_only	hmm_neutral	pyepi_neutral	7580		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	baseline_median_only	hmm_neutral	pyepi_gain	126		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	baseline_median_only	hmm_gain	pyepi_loss	167		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	baseline_median_only	hmm_gain	pyepi_neutral	11214		
+confusion_bins_hmm_class_vs_pyepi_cn_call	all	baseline_median_only	hmm_gain	pyepi_gain	3146		
+boundary_match_pm2bins	all	baseline_median_only	AD_breakpoints_with_hmm_boundary	74/142	142	0.5211267605633803	chance-level reference if hmm boundaries were placed at random per chromosome: 0.100
+boundary_match_pm2bins	all	baseline_median_only	hmm_depth_boundaries_with_AD_breakpoint	75/502	502	0.14940239043824702	AD = raw_accepted_breakpoints.tsv; neither is truth
+boundary_match_pm5bins	all	baseline_median_only	AD_breakpoints_with_hmm_boundary	86/142	142	0.6056338028169014	chance-level reference if hmm boundaries were placed at random per chromosome: 0.207
+boundary_match_pm5bins	all	baseline_median_only	hmm_depth_boundaries_with_AD_breakpoint	91/502	502	0.18127490039840638	AD = raw_accepted_breakpoints.tsv; neither is truth
+diagnostic_cn1_bins	all	baseline_median_only	frac_cn1_bins_viterbi_imbalanced		20112	0.07975338106603024	pyEpi cn_call==1 is not truth
+diagnostic_cn1_bins	all	baseline_median_only	frac_cn1_bins_viterbi_depth_not_r1		20112	0.6231105807478122	
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	full	hmm_loss	pyepi_loss	1423		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	full	hmm_loss	pyepi_neutral	2034		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	full	hmm_loss	pyepi_gain	30		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	full	hmm_neutral	pyepi_loss	443		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	full	hmm_neutral	pyepi_neutral	11150		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	full	hmm_neutral	pyepi_gain	268		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	full	hmm_gain	pyepi_loss	75		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	full	hmm_gain	pyepi_neutral	6985		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	full	hmm_gain	pyepi_gain	2929		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	cluster0	full	hmm_r=0.25	pyepi_cn_call=0	641		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	cluster0	full	hmm_r=0.25	pyepi_cn_call=0.5	305		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	cluster0	full	hmm_r=0.25	pyepi_cn_call=1	793		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	cluster0	full	hmm_r=0.25	pyepi_cn_call=1.5	16		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	cluster0	full	hmm_r=0.5	pyepi_cn_call=0	145		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	cluster0	full	hmm_r=0.5	pyepi_cn_call=0.5	129		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	cluster0	full	hmm_r=0.5	pyepi_cn_call=1	459		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	cluster0	full	hmm_r=0.5	pyepi_cn_call=2	14		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	cluster0	full	hmm_r=0.75	pyepi_cn_call=0	27		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	cluster0	full	hmm_r=0.75	pyepi_cn_call=0.5	176		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	cluster0	full	hmm_r=0.75	pyepi_cn_call=1	782		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	cluster0	full	hmm_r=1	pyepi_cn_call=0	158		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	cluster0	full	hmm_r=1	pyepi_cn_call=0.5	285		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	cluster0	full	hmm_r=1	pyepi_cn_call=1	11150		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	cluster0	full	hmm_r=1	pyepi_cn_call=1.5	250		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	cluster0	full	hmm_r=1	pyepi_cn_call=2	18		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	cluster0	full	hmm_r=1.25	pyepi_cn_call=0	20		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	cluster0	full	hmm_r=1.25	pyepi_cn_call=0.5	47		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	cluster0	full	hmm_r=1.25	pyepi_cn_call=1	6077		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	cluster0	full	hmm_r=1.25	pyepi_cn_call=1.5	991		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	cluster0	full	hmm_r=1.25	pyepi_cn_call=2	41		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	cluster0	full	hmm_r=1.5	pyepi_cn_call=0.5	1		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	cluster0	full	hmm_r=1.5	pyepi_cn_call=1	732		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	cluster0	full	hmm_r=1.5	pyepi_cn_call=1.5	98		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	cluster0	full	hmm_r=1.5	pyepi_cn_call=2	212		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	cluster0	full	hmm_r=2	pyepi_cn_call=0	3		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	cluster0	full	hmm_r=2	pyepi_cn_call=0.5	4		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	cluster0	full	hmm_r=2	pyepi_cn_call=1	176		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	cluster0	full	hmm_r=2	pyepi_cn_call=1.5	167		
+confusion_bins_hmm_r_vs_pyepi_cn_call_value	cluster0	full	hmm_r=2	pyepi_cn_call=2	1420		
+boundary_match_pm2bins	cluster0	full	AD_breakpoints_with_hmm_boundary	79/137	137	0.5766423357664233	chance-level reference if hmm boundaries were placed at random per chromosome: 0.093
+boundary_match_pm2bins	cluster0	full	hmm_depth_boundaries_with_AD_breakpoint	79/452	452	0.1747787610619469	AD = raw_accepted_breakpoints.tsv; neither is truth
+boundary_match_pm5bins	cluster0	full	AD_breakpoints_with_hmm_boundary	89/137	137	0.6496350364963503	chance-level reference if hmm boundaries were placed at random per chromosome: 0.193
+boundary_match_pm5bins	cluster0	full	hmm_depth_boundaries_with_AD_breakpoint	91/452	452	0.2013274336283186	AD = raw_accepted_breakpoints.tsv; neither is truth
+diagnostic_cn1_bins	cluster0	full	frac_cn1_bins_viterbi_imbalanced		20169	0.0678268630075859	pyEpi cn_call==1 is not truth
+diagnostic_cn1_bins	cluster0	full	frac_cn1_bins_viterbi_depth_not_r1		20169	0.4471714016560067	
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	no_baseline_var	hmm_loss	pyepi_loss	1621		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	no_baseline_var	hmm_loss	pyepi_neutral	9511		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	no_baseline_var	hmm_loss	pyepi_gain	574		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	no_baseline_var	hmm_neutral	pyepi_loss	124		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	no_baseline_var	hmm_neutral	pyepi_neutral	3465		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	no_baseline_var	hmm_neutral	pyepi_gain	500		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	no_baseline_var	hmm_gain	pyepi_loss	196		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	no_baseline_var	hmm_gain	pyepi_neutral	7193		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	no_baseline_var	hmm_gain	pyepi_gain	2153		
+boundary_match_pm2bins	cluster0	no_baseline_var	AD_breakpoints_with_hmm_boundary	136/137	137	0.9927007299270073	chance-level reference if hmm boundaries were placed at random per chromosome: 0.963
+boundary_match_pm2bins	cluster0	no_baseline_var	hmm_depth_boundaries_with_AD_breakpoint	444/16639	16639	0.02668429593124587	AD = raw_accepted_breakpoints.tsv; neither is truth
+boundary_match_pm5bins	cluster0	no_baseline_var	AD_breakpoints_with_hmm_boundary	137/137	137	1.0	chance-level reference if hmm boundaries were placed at random per chromosome: 0.999
+boundary_match_pm5bins	cluster0	no_baseline_var	hmm_depth_boundaries_with_AD_breakpoint	919/16639	16639	0.055231684596430075	AD = raw_accepted_breakpoints.tsv; neither is truth
+diagnostic_cn1_bins	cluster0	no_baseline_var	frac_cn1_bins_viterbi_imbalanced		20169	0.15345331945064208	pyEpi cn_call==1 is not truth
+diagnostic_cn1_bins	cluster0	no_baseline_var	frac_cn1_bins_viterbi_depth_not_r1		20169	0.8282016956715752	
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	no_allele	hmm_loss	pyepi_loss	1398		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	no_allele	hmm_loss	pyepi_neutral	1799		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	no_allele	hmm_loss	pyepi_gain	18		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	no_allele	hmm_neutral	pyepi_loss	459		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	no_allele	hmm_neutral	pyepi_neutral	11526		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	no_allele	hmm_neutral	pyepi_gain	278		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	no_allele	hmm_gain	pyepi_loss	84		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	no_allele	hmm_gain	pyepi_neutral	6844		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	no_allele	hmm_gain	pyepi_gain	2931		
+boundary_match_pm2bins	cluster0	no_allele	AD_breakpoints_with_hmm_boundary	79/137	137	0.5766423357664233	chance-level reference if hmm boundaries were placed at random per chromosome: 0.083
+boundary_match_pm2bins	cluster0	no_allele	hmm_depth_boundaries_with_AD_breakpoint	79/406	406	0.19458128078817735	AD = raw_accepted_breakpoints.tsv; neither is truth
+boundary_match_pm5bins	cluster0	no_allele	AD_breakpoints_with_hmm_boundary	88/137	137	0.6423357664233577	chance-level reference if hmm boundaries were placed at random per chromosome: 0.173
+boundary_match_pm5bins	cluster0	no_allele	hmm_depth_boundaries_with_AD_breakpoint	88/406	406	0.21674876847290642	AD = raw_accepted_breakpoints.tsv; neither is truth
+diagnostic_cn1_bins	cluster0	no_allele	frac_cn1_bins_viterbi_imbalanced		20169	0.0	pyEpi cn_call==1 is not truth
+diagnostic_cn1_bins	cluster0	no_allele	frac_cn1_bins_viterbi_depth_not_r1		20169	0.42852893053696267	
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	baseline_all_bins	hmm_loss	pyepi_loss	1449		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	baseline_all_bins	hmm_loss	pyepi_neutral	2148		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	baseline_all_bins	hmm_loss	pyepi_gain	30		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	baseline_all_bins	hmm_neutral	pyepi_loss	415		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	baseline_all_bins	hmm_neutral	pyepi_neutral	10925		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	baseline_all_bins	hmm_neutral	pyepi_gain	197		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	baseline_all_bins	hmm_gain	pyepi_loss	77		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	baseline_all_bins	hmm_gain	pyepi_neutral	7096		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	baseline_all_bins	hmm_gain	pyepi_gain	3000		
+boundary_match_pm2bins	cluster0	baseline_all_bins	AD_breakpoints_with_hmm_boundary	82/137	137	0.5985401459854015	chance-level reference if hmm boundaries were placed at random per chromosome: 0.093
+boundary_match_pm2bins	cluster0	baseline_all_bins	hmm_depth_boundaries_with_AD_breakpoint	82/453	453	0.18101545253863136	AD = raw_accepted_breakpoints.tsv; neither is truth
+boundary_match_pm5bins	cluster0	baseline_all_bins	AD_breakpoints_with_hmm_boundary	90/137	137	0.656934306569343	chance-level reference if hmm boundaries were placed at random per chromosome: 0.193
+boundary_match_pm5bins	cluster0	baseline_all_bins	hmm_depth_boundaries_with_AD_breakpoint	92/453	453	0.20309050772626933	AD = raw_accepted_breakpoints.tsv; neither is truth
+diagnostic_cn1_bins	cluster0	baseline_all_bins	frac_cn1_bins_viterbi_imbalanced		20169	0.06891764589221082	pyEpi cn_call==1 is not truth
+diagnostic_cn1_bins	cluster0	baseline_all_bins	frac_cn1_bins_viterbi_depth_not_r1		20169	0.4583271357033071	
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	baseline_median_only	hmm_loss	pyepi_loss	1273		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	baseline_median_only	hmm_loss	pyepi_neutral	1399		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	baseline_median_only	hmm_loss	pyepi_gain	16		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	baseline_median_only	hmm_neutral	pyepi_loss	479		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	baseline_median_only	hmm_neutral	pyepi_neutral	6768		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	baseline_median_only	hmm_neutral	pyepi_gain	129		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	baseline_median_only	hmm_gain	pyepi_loss	189		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	baseline_median_only	hmm_gain	pyepi_neutral	12002		
+confusion_bins_hmm_class_vs_pyepi_cn_call	cluster0	baseline_median_only	hmm_gain	pyepi_gain	3082		
+boundary_match_pm2bins	cluster0	baseline_median_only	AD_breakpoints_with_hmm_boundary	73/137	137	0.5328467153284672	chance-level reference if hmm boundaries were placed at random per chromosome: 0.076
+boundary_match_pm2bins	cluster0	baseline_median_only	hmm_depth_boundaries_with_AD_breakpoint	73/371	371	0.1967654986522911	AD = raw_accepted_breakpoints.tsv; neither is truth
+boundary_match_pm5bins	cluster0	baseline_median_only	AD_breakpoints_with_hmm_boundary	82/137	137	0.5985401459854015	chance-level reference if hmm boundaries were placed at random per chromosome: 0.159
+boundary_match_pm5bins	cluster0	baseline_median_only	hmm_depth_boundaries_with_AD_breakpoint	84/371	371	0.22641509433962265	AD = raw_accepted_breakpoints.tsv; neither is truth
+diagnostic_cn1_bins	cluster0	baseline_median_only	frac_cn1_bins_viterbi_imbalanced		20169	0.07085130646040953	pyEpi cn_call==1 is not truth
+diagnostic_cn1_bins	cluster0	baseline_median_only	frac_cn1_bins_viterbi_depth_not_r1		20169	0.6644355198572066	
