@@ -194,6 +194,7 @@ def score_models(y, off, D, tr, te, models=ALL_MODELS):
         else:
             p = fit(m, y[tr], X[tr], off[tr], Z[tr])
             out[m] = (logp(m, p, y[te], X[te], off[te], Z[te]), p, p_zero(m, p, X[te], off[te], Z[te]))
+    out["_offset_sd"] = sd_o
     return out
 
 
@@ -354,7 +355,7 @@ def compute(args, out):
                                           "pi_zinb_mean": float(expit(zt @ res["zinb"][1][k + 1:k + 3]).mean()),
                                           "pi_zip_mean": float(expit(zt @ res["zip"][1][k:k + 2]).mean()),
                                           "pi_hurdle_zero_mean": float(expit(zt @ res["hnb"][1][k + 1:k + 3]).mean()),
-                                          "nb_free_offset_slope": float(res["nb_fs"][1][k]), "y_test": y[tt]}
+                                          "nb_free_offset_slope": float(res["nb_fs"][1][k] / res["_offset_sd"]), "y_test": y[tt]}
             if (j + 1) % 25 == 0:
                 print(f"  A {mod}/{ofs} region {j+1}/{R} {round(time.time()-t0)}s", flush=True)
         print(f"A done {mod}/{ofs} {round(time.time()-t0)}s", flush=True)
@@ -378,6 +379,13 @@ def compute(args, out):
                 rec[f"obs_zero_t{t}"] = float((yte[mt] == 0).mean())
                 for m in ("pois", "nb", "zinb", "hnb"):
                     rec[f"pz_{m}_t{t}"] = float(ZP[(mod, ofs)][m][mt, j].mean())
+            n0 = (yte == 0).sum()
+            for m in ("pois", "nb", "zinb", "hnb"):
+                pz_ = ZP[(mod, ofs)][m][:, j].astype(np.float64)
+                rec[f"zz_{m}"] = float((n0 - pz_.sum()) / np.sqrt(max((pz_ * (1 - pz_)).sum(), 1e-12)))
+                for t in range(3):
+                    mt = terc[te] == t
+                    rec[f"zz_{m}_t{t}"] = float(((yte[mt] == 0).sum() - pz_[mt].sum()) / np.sqrt(max((pz_[mt] * (1 - pz_[mt])).sum(), 1e-12)))
             rec["best_model"] = max(MODELS, key=lambda m: rec[f"ls_{m}"])
             rows.append(rec)
     at_tab = pd.DataFrame(rows)
@@ -447,6 +455,26 @@ def compute(args, out):
                 sp[f"{pre}{m}"] = float(SPL[dn][m][:, j].sum() / max(inf, 1))   # mean over held-out cells with AT >= 1
         sp["test_cells_AT_ge1"] = int((AT[te, j] >= 1).sum())
         sp_rows.append(sp)
+
+    # cell-level Pearson dispersion of HB | AT by AT stratum (comparable to the bin-level variance inflation of exp 06)
+    drows = []
+    strata_AT = [("2", 2, 2), ("3-4", 3, 4), ("5-9", 5, 9), ("10-19", 10, 19), (">=20", 20, 10 ** 9)]
+    for fname in fams:
+        idx = np.flatnonzero(fam == fname)
+        for lab_, lo_, hi_ in strata_AT:
+            num, cnt_, nsum = 0.0, 0, 0.0
+            for j in idx:
+                ph_ = sp_rows[j]["p_hat_HB_over_AT"]
+                m_ = (AT[:, j] >= lo_) & (AT[:, j] <= hi_)
+                if m_.any():
+                    kk, nn = HB[m_, j], AT[m_, j]
+                    num += float(np.sum((kk - nn * ph_) ** 2 / (nn * ph_ * (1 - ph_)))); cnt_ += int(m_.sum()); nsum += float(nn.sum())
+            if cnt_:
+                phi_ = num / cnt_
+                nbar = nsum / cnt_
+                drows.append({"family": fname, "AT_stratum": lab_, "cell_region_pairs": cnt_, "mean_AT": nbar, "pearson_dispersion": phi_,
+                              "implied_rho": (phi_ - 1) / (nbar - 1) if nbar > 1 else np.nan})
+    pd.DataFrame(drows).to_csv(out / "split_dispersion_by_AT.tsv", sep="\t", index=False)
 
     pooled, SPL_pooled = [], np.zeros((te.sum(), R), np.float32)
     for fname in fams:

@@ -258,10 +258,8 @@ def build_tasks(d, paths, call, kseg, regs):
     # segments (all groups), config base, bootstrap
     for gi, gname in enumerate(GROUPS):
         s = kseg[kseg.group == gname].reset_index(drop=True)
-        if CHECK and gname != "all":
-            continue
         if CHECK:
-            s = s.head(12)
+            s = s.head(100)
         for r in s.itertuples():
             tasks.append(dict(kind="segment", group=gname, name=f"{gname}|{r.segment}", cfg_name="base", cfg=None, bins=np.arange(r.bin_start, r.bin_end + 1),
                               B=B_SEG, seed=SEED16 + (1, gi, int(r.segment))))
@@ -270,8 +268,6 @@ def build_tasks(d, paths, call, kseg, regs):
         if r["family"] not in ("saved", "literature"):
             continue
         for gi, gname in enumerate(GROUPS):
-            if CHECK and gname != "all":
-                continue
             tasks.append(dict(kind="region", group=gname, name=r["name"], cfg_name="base", cfg=None, bins=r["target"], B=B_REG, seed=SEED16 + (2, gi, ri)))
     # null windows
     rnd = [r for r in regs if r["family"] == "random"]
@@ -279,8 +275,6 @@ def build_tasks(d, paths, call, kseg, regs):
     nulls = unc[:N_NULL]
     for wi, r in enumerate(nulls):
         for gi, gname in enumerate(GROUPS):
-            if CHECK and gname != "all":
-                continue
             tasks.append(dict(kind="null", group=gname, name=r["name"], cfg_name="base", cfg=None, bins=r["target"], B=0, seed=SEED16 + (3, gi, wi)))
     return tasks, len(rnd), len(unc), nulls
 
@@ -698,6 +692,7 @@ def report(ctx):
     med_phi, med_phi_bb = float(pcs.dispersion_phi.median()), float(pcs.dispersion_phi_expected_bb.median())
     n_phi_hi = int((pcs.dispersion_phi.to_numpy() > pcs.dispersion_phi_bb_q95.to_numpy()).sum())
     sw5 = r5.viterbi_switches
+    n_small = int((imb.delta_hat < 0.06).sum())
     span5 = float(d.end[np.flatnonzero((d.seq == "chr5") & (d.start >= 70e6))[-1]] - 70e6) / 1e6
 
     cl_imb = ", ".join(g[-1] + ": " + str(int(imb_counts.loc[g, "imbalanced"])) for g in GROUPS[1:])
@@ -712,7 +707,7 @@ def report(ctx):
         f"<b>GT orientation flips often between bins.</b> 5q13-qter needs {int(sw5)} Viterbi orientation switches over about {span5:.0f} Mb ({sw5/span5:.2f}/Mb) against a prior of {LAMBDA0*1e6:.2f}/Mb; {n_sw_gt} of {len(imb)} imbalanced `all` segments exceed the null 95th percentile of switch rate ({qa['switch_rate_per_10Mb_q95']:.1f} per 10 Mb). Switch counts depend on the prespecified hazard (5q: {sens_ctrl[(sens_ctrl.config=='hazard_x0.1')&(sens_ctrl.region=='lit_5q13_qter')].viterbi_switches.iloc[0]:.0f} at x0.1, {sens_ctrl[(sens_ctrl.config=='hazard_x10')&(sens_ctrl.region=='lit_5q13_qter')].viterbi_switches.iloc[0]:.0f} at x10).",
         f"<b>Null calibration.</b> In {qa['n_windows']} uncalled random 25-bin windows (all cells) delta_hat has median {qa['delta_hat_median']:.3f}, 95th percentile {qa['delta_hat_q95']:.3f} (max {qa['delta_hat_max']:.3f}); {int(imb_counts.loc['all','imbalanced'])} of {int(imb_counts.loc['all','eligible'])} eligible `all` segments exceed it (clusters: {cl_imb}). Null windows are 25 bins, longer segments are less noisy, so the threshold is conservative for them.",
         f"<b>Cross-cluster orientation is mostly the same haplotype.</b> Across {n_same + n_opp + n_mix} (imbalanced all-segment x cluster) comparisons with >=10 confident bins, {n_same} are the same major haplotype, {n_mix} mixed and {n_opp} opposite; the {n_opp} opposite cases are all cluster 4 on chr8:115-145 Mb (agreement 0.06-0.15), a candidate mirrored event in 182 cells (hypothesis). {n_ins} comparisons had too few bins.",
-        f"<b>Per-cell fractions are not binomially homogeneous.</b> Across imbalanced segments the median dispersion phi is {med_phi:.2f} vs {med_phi_bb:.2f} expected for beta-binomial cells with rho = {rho:.4f}; {n_phi_hi}/{len(pcs)} segment-cluster rows exceed the simulated 95th percentile. At chr8:115-134 Mb {c4.frac_cells_major_below_half:.0%} of cluster-4 cells have major fraction < 0.5 (oriented by the pooled call) vs about 17-21% in clusters 0-3.",
+        f"<b>Per-cell fractions are not binomially homogeneous.</b> Across imbalanced segments the median dispersion phi is {med_phi:.2f} vs {med_phi_bb:.2f} expected for beta-binomial cells with rho = {rho:.4f}; {n_phi_hi}/{len(pcs)} segment-cluster rows exceed the simulated 95th percentile. At chr8:115-134 Mb {c4.frac_cells_major_below_half:.0%} of cluster-4 cells have major fraction < 0.5 (oriented by the pooled call) vs about 17-20% in clusters 0-3.",
         f"<b>Saved chr7 windows.</b> chr7:8.3-10.7 and 70.0-73.3 Mb show a small oriented imbalance (delta_hat {ra.loc['chr7_8.3_10.7','delta_hat']:.3f}, {ra.loc['chr7_70.0_73.3','delta_hat']:.3f}; null 95th pct {qa['delta_hat_q95']:.3f}) though their phase-agnostic delta is 0.000; 51.4-53.5 and 67.4-70.0 Mb are 0.000. This is weak, near the null edge, and far below the 5q/MYC values.",
         f"<b>Sensitivity.</b> Number of imbalanced `all` segments (each setting with its own null): base {int(sc.loc['base','imbalanced_segments'])}, hazard x0.1 {int(sc.loc['hazard_x0.1','imbalanced_segments'])}, x10 {int(sc.loc['hazard_x10','imbalanced_segments'])}, rho=0 {int(sc.loc['rho_0','imbalanced_segments'])}, rho=0.02 {int(sc.loc['rho_0.02','imbalanced_segments'])}; Spearman of delta_hat vs base {sc.loc['hazard_x0.1','spearman_delta_vs_base']:.2f}-{sc.loc['rho_0.02','spearman_delta_vs_base']:.2f}. Large effects (5q, MYC, chr1q) are stable; small effects are not.",
     ]
@@ -815,7 +810,7 @@ Orientation labels are anchored to the HB column (GT phase), so P(B-major) can b
                    "viterbi_switches_q95 and switch_rate_per_10Mb_q95 are 95th percentiles over windows.") +
          f"<p>Imbalanced segments per group (delta_hat above that group's null 95th percentile):</p>" + C.html_table(imb_counts.reset_index()) +
          f"<p>With 60 windows the 95th percentile rests on three windows above it; its sampling error is large. Because delta_hat is bounded at 0 it is biased upwards in noise ({qa['frac_windows_delta_hat_gt0']:.0%} of null windows have delta_hat > 0). "
-         "Seven of the eight smallest imbalanced `all` segments have fewer than 3,500 AT and delta_hat of 0.04-0.05, within about 1.5x the null 95th percentile.</p>", 3),
+         f"{n_small} of the {len(imb)} imbalanced `all` segments have delta_hat below 0.06, i.e. within about 1.7x the null 95th percentile; they are the least secure calls.</p>", 3),
         ("Per-cell support",
          C.img(figs["cell"], "per cell") + C.caption("Per-cell major-haplotype fraction (cells with AT >= 5 in the segment), orientation from the pooled `all` posterior, by cluster for three imbalanced segments. Cluster 4 on chr8:115-134 Mb falls below 0.5.") +
          C.html_table(pc_view, floatfmt="{:.3f}") + "<h4>Summary over all imbalanced `all` segments</h4>" + C.html_table(pc_sum, floatfmt="{:.3f}") +

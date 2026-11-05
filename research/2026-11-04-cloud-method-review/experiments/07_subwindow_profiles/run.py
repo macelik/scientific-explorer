@@ -160,7 +160,7 @@ def main():
         ("Results", "", 2),
         ("Reference: random 25-bin windows",
          C.html_table(pd.DataFrame([{"quantity": "SD of log2 per-bin ratio, 5th percentile", "value": sdq[0]}, {"quantity": "50th percentile", "value": sdq[1]}, {"quantity": "95th percentile", "value": sdq[2]},
-                                    {"quantity": f"random windows with rr &lt; 0.6 (n)", "value": len(deep)}, {"quantity": "their median SD", "value": res["deep_random_sd_median"]},
+                                    {"quantity": "random windows with rr < 0.6 (n)", "value": len(deep)}, {"quantity": "their median SD", "value": res["deep_random_sd_median"]},
                                     {"quantity": "attenuation vs GC-difference slope", "value": gc_slope[0]}, {"quantity": "intercept", "value": gc_slope[1]}])) +
          C.caption("Reference values from the 300 random windows. An even plateau should sit at the low end of the SD distribution (near or below the 5th percentile); patchy depletion at or above the median. Deep random windows are slightly less heterogeneous than random windows overall."), 3),
         ("Window shape: thirds", C.html_table(shape_cols) + C.caption("Raw rate relative to the flank mean in the whole window and in its first, middle and last third. A plateau has equal thirds; a shoulder shows larger values in the outer thirds. Windows differ in width, so thirds are not directly comparable between windows."), 3),
