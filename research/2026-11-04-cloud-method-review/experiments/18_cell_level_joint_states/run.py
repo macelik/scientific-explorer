@@ -345,9 +345,19 @@ def profile_ci(dat, pr, best, k, use_d=True, use_a=True):
         lls.append(f["ll"])
     lls = np.array(lls)
     top = max(lls.max(), best["ll"])
-    ok = 2 * (top - lls) <= 3.84
-    idx = np.flatnonzero(ok)
-    lo, hi = float(PI_GRID[idx[0]]), float(PI_GRID[idx[-1]])
+    pts = np.r_[PI_GRID, best["pi"]]; vals = np.r_[lls, best["ll"]]
+    o = np.argsort(pts); pts, vals = pts[o], vals[o]
+    dev = 2 * (top - vals)                     # deviance along pi
+    ip = int(np.argmin(np.abs(pts - best["pi"])))
+    lo, hi = float(pts[ip]), float(pts[ip])
+    j = ip
+    while j > 0 and dev[j - 1] <= 3.84:
+        j -= 1
+    lo = float(pts[j]) if j == 0 else float(pts[j - 1] + (pts[j] - pts[j - 1]) * (dev[j - 1] - 3.84) / (dev[j - 1] - dev[j]))
+    j = ip
+    while j < len(pts) - 1 and dev[j + 1] <= 3.84:
+        j += 1
+    hi = float(pts[j]) if j == len(pts) - 1 else float(pts[j] + (pts[j + 1] - pts[j]) * (3.84 - dev[j]) / (dev[j + 1] - dev[j]))
     return lo, hi, lls
 
 
