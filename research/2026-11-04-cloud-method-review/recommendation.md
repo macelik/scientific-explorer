@@ -99,6 +99,74 @@ keep bins that QC removes as an explicit "unobservable" state.
   beta-binomial fitted to base-called bins. Independent per-bin allele likelihoods would be
   miscalibrated until SNP-level, phase-block-aware, molecule-aware counts are available.
 
+## Update 2026-11-05: the 2026-10-29 method designs, implemented
+
+The user asked for the saved method records to be tried on raw counts, with an observation model
+chosen per modality, then extended to the allelic signal and to major/minor haplotypes. Each item
+links its report; all are exploratory and validated by the coordinator, either by independent
+recomputation or by a byte-identical rerun.
+
+**Depth (E:1, E:3, B:2, C:3).**
+- [L] NB2 with exposure fits cell-level depth; Poisson does not. Quasi-Poisson φ ≈ 3, NB α ≈ 0.01.
+  NB reproduces the held-out zero cells of the deep chr7 windows: 30 observed vs 24 NB-predicted vs
+  2.5 Poisson-predicted for 8.3–10.7 Mb ([exp 08](experiments/08_exposure_count_models/report.html)).
+- [L] Zero inflation is not needed. The bootstrap-"supported" ZINB fits have π ≈ 0.0003 (about one
+  cell) and appear just as often in random windows
+  ([exp 09](experiments/09_zero_inflation/report.html)).
+- [L] Sampling-based z-scores declare almost every region significant. Against the spread of uncalled
+  random windows, 27/46 called short losses and 4/21 called short gains remain unusual (BH q < 0.05).
+- [L] A raw-count changepoint with sampling-only dispersion (half-split φ = 1.30) produces about 4,200
+  segments, and the Pearson-iterated φ is unstable. Any count-likelihood segmentation needs an explicit
+  between-bin baseline-variance term ([exp 11](experiments/11_count_changepoint/report.html)). The joint
+  HMM confirms this: τ² ≈ 0.26 gives 600 depth runs, versus 17,352 without it
+  ([exp 13](experiments/13_joint_hmm/report.html)).
+- [L] The baseline choice moves calls. 14/42 called losses and 10/26 called gains change class under at
+  least one of seven prespecified baselines. The saved loss windows are stable, except chr9 20–27 under
+  a GC-decile baseline ([exp 12](experiments/12_baseline_sensitivity/report.html)).
+
+**Alleles (E:2, observation model, haplotype orientation).**
+- [L] Per-modality choice by held-out log score
+  ([exp 15](experiments/15_allelic_count_models/report.html)):
+  - allele total AT: NB2 with its own, larger α (median ≈ 0.12), conditioned on the region's depth;
+    ZINB gains only 0.0004 nats;
+  - haplotype split HB | AT: beta-binomial, about 0.030 nats better than binomial; the ρ must be
+    region- or cell-level, not the bin-level 0.0038;
+  - dependence: AT is not independent of depth (elasticity 0.50).
+- [L] Regional beta-binomial on the published controls
+  ([exp 10](experiments/10_betabinomial_allele_model/report.html)). Phase-agnostic h: MYC 0.593,
+  5q13-qter 0.605. The saved windows are 0.50–0.545 with intervals reaching 0.5. At the empirical ρ,
+  24% of uncalled random windows exceed the nominal LR cut, so allelic thresholds must be empirical.
+- [L] A phase-orientation HMM recovers most of the GT-oriented loss of signal at gains: 5q |h − 0.5|
+  goes from 0.010 to 0.100 and MYC from 0.032 to 0.087. It does not recover 19q or 9p21. 31/164
+  segments exceed the random-window 95th percentile. One cluster shows the opposite major haplotype
+  (cluster 4, chr8:115–145 Mb), which is a mirrored-event hypothesis
+  ([exp 16](experiments/16_major_minor_haplotypes/report.html)).
+
+**Combination: major/minor haplotypes.**
+- [L] Explicit allele-specific states (1:0, 0:0, 2:0, 2:1, 2:2, 4:1 at cell fractions 0.1–1) are
+  scored against the depth level and the major-haplotype fraction. Each modality has its own
+  likelihood and empirical null ([exp 17](experiments/17_allele_specific_states/report.html)).
+  - MYC and 5q fit a 2:1 gain with an identified major haplotype.
+  - The deep chr7 windows fit **no** modelled state: their depth is below the one-copy floor while
+    their alleles are balanced.
+  - 22/46 called short losses fit a state. Adding alleles changes the depth-only call in 24 of them.
+  - Calls depend on the allelic estimator and its null: 58/67 agree between the phase-agnostic and
+    HMM-oriented sources.
+- [L] Depth alone carries little information for one-copy changes at this scale. The baseline spread is
+  σ_A ≈ 0.39 (log), so a one-copy loss sits about 1.8 σ_A from neutral.
+
+**What this changes.**
+1. The evidence layer (stage 1) now has a concrete, tested form:
+   - NB2 depth rate ratio, judged against an empirical regional null;
+   - NB2 AT conditioned on depth;
+   - beta-binomial split oriented by a phase HMM;
+   - an allele-specific state score with an explicit "no modelled state fits" outcome.
+2. Zero inflation is dropped from the plan for depth.
+3. A count-likelihood segmentation (stage 4) must model between-bin baseline variance; sampling-only
+   dispersion over-segments by more than an order of magnitude.
+4. Results from the spike-in benchmark (exp 14), the masking diagnosis (exp 19) and the cell-level joint
+   mixture (exp 18) are pending and will be added here when validated.
+
 ## Staged plan with decision criteria
 
 | Stage | Action | Resolves | Success | Failure / stop | Changes the plan if… |
