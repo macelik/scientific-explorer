@@ -39,7 +39,7 @@ INFERENCE.  Penalised log-likelihood  l = sum_i log[(1-pi) f_0i + pi f_1i] - 1/2
   analytic gradients (a, d0, pi free).  Two starts per type (pi0 = 0.3 and 0.95, baseline shifted accordingly), best kept, same in data and bootstrap.
   Per-cell P(event) = pi f_1 / mix.  95% CI for pi: profile likelihood (grid 0.02, 2*dl <= 3.84).
   LRT_type = 2 (l_alt - l_null); T = max over the 6 types (selection included in the null).  p = (1 + #{T* >= T}) / (B + 1) from a PARAMETRIC
-  BOOTSTRAP: y*, M* simulated from the fitted null (MAP a, d0; N, E fixed), refit with the identical pipeline; B = 99, PCG64 seed
+  BOOTSTRAP: y*, M* simulated from the HIERARCHICAL null (a_c = m + b + u_c and d0 drawn from their priors, 1% outlier component; N, E, alpha_r, rho_r fixed), refit with the identical pipeline; B = 99, PCG64 seed
   (20261104, 18, region_index) (random windows: region_index = 1000 + j).  Cluster fits (K = 1) use prior mean = mean of the overall null a-hat,
   sd sigma_u, and their own d_med / tau per cluster; their bootstrap p uses the same replicates (max over types per cluster).
 CLASSIFICATION (prespecified).  p < 0.05: 'small-fraction deviation' if CI upper < 0.10 (about 350 cells: not interpreted as a subclone, such
@@ -248,6 +248,7 @@ class Prior:
     def __init__(self, m_vec, sig_u, sig_b, d_med, tau):
         K = len(m_vec)
         self.m = np.asarray(m_vec, float)
+        self.sig_u, self.sig_b = sig_u, sig_b
         s = sig_b ** 2 / (sig_u ** 2 + K * sig_b ** 2) if sig_b > 0 else 0.0
         self.Sinv = (np.eye(K) - s * np.ones((K, K))) / sig_u ** 2
         self.d_med, self.tau = d_med, tau
@@ -422,17 +423,21 @@ def classify(p, lo, hi):
     return "no evidence" if hi <= 0.25 else "insufficient evidence"
 
 
-def simulate(rng, dat, nullfit, pr, mu0_full=None):
-    K = dat.K; x = nullfit["x"]
-    mu = dat.mu0 * np.exp(x[:K][dat.cl])
-    y = rng.poisson(rng.gamma(dat.R, mu / dat.R))
-    d0 = pr.d_med + pr.tau * x[K]
-    h0 = float(np.clip(0.5 + d0, 0.02, 0.98))
+def simulate(rng, dat, pr):
+    """Null replicate from the hierarchical null: baseline a_c = m + b + u_c and background allele offset d0 are DRAWN from their priors
+    (so the replicate has the same nuisance tension with the prior as an ordinary uncalled window), then y from the 99:1 NB2 mixture and
+    M | N from the beta-binomial; N, exposure, alpha_r and rho_r fixed."""
+    K = dat.K
+    a = pr.m + rng.normal(0, pr.sig_b) + rng.normal(0, pr.sig_u, size=K)
+    mu = dat.mu0 * np.exp(a[dat.cl])
+    ow = rng.random(len(mu)) < EPS_OUT
+    y = np.where(ow, rng.poisson(rng.gamma(1.0, mu)), rng.poisson(rng.gamma(dat.R, mu / dat.R))).astype(float)
+    h0 = float(np.clip(0.5 + pr.d_med + pr.tau * rng.normal(), 0.02, 0.98))
     Mn = np.zeros(len(dat.y)); Nn = np.zeros(len(dat.y))
     Nn[dat.am] = dat.Na
     q = rng.beta(h0 * dat.ca, (1 - h0) * dat.ca)
     Mn[dat.am] = rng.binomial(dat.Na.astype(int), q)
-    return y.astype(float), Mn, Nn
+    return y, Mn, Nn
 
 
 # ============================================================================= per-region analysis
@@ -547,13 +552,15 @@ def analyse_region(task):
     boots = {"main": [], "k1": None}
     Tb = []; Tc = [[] for _ in range(K)]
     for b_ in range(opts["B"]):
-        yb, Mb, Nb = simulate(rng, dat, null, pr)
+        yb, Mb, Nb = simulate(rng, dat, pr)
         db = Dat(yb, mu0, lab_i, K, Nb, Mb, rho_r, alpha_r)
         nb_, ab_ = scan_types(db, pr, k)
         Tb.append(max(0.0, 2 * (ab_[0]["ll"] - nb_["ll"])))
         if do_cl:
+            abar_b = float(nb_["x"][:K].mean())
             for c in range(K):
-                s, dc, prc = cl_dats[c]
+                s, dc, prc0 = cl_dats[c]
+                prc = Prior([abar_b], cal["sig_u"], 1e-4, cal["d_med_c"][c], cal["tau_c"][c])
                 dcb = Dat(yb[s], mu0[s], np.zeros(s.sum(), int), 1, Nb[s], Mb[s], rho_r, alpha_r)
                 nl, al = scan_types(dcb, prc, k)
                 Tc[c].append(max(0.0, 2 * (al[0]["ll"] - nl["ll"])))
@@ -582,7 +589,7 @@ def analyse_region(task):
             rngv = np.random.default_rng(SEED18 + (ridx, 7))
             Tvb = []
             for _ in range(opts["B_var"]):
-                yb, Mb, Nb = simulate(rngv, dat, nv, prv)
+                yb, Mb, Nb = simulate(rngv, dat, prv)
                 db = Dat(yb, mu0, lab_i, K, Nb, Mb, rho_r, alpha_r)
                 n2, a2 = scan_types(db, prv, kv, ud, ua)
                 Tvb.append(max(0.0, 2 * (a2[0]["ll"] - n2["ll"])))

@@ -1,0 +1,31 @@
+window	n_cells_with_AT	pooled_major_fraction	alpha_depth	rho_allele	best_type	pi	pi_lo	pi_hi	LRT	boot_p	evidence_class	event_detected_p_lt_0.05	subclonal_detected	clonal_detected	LRT_depth_only	boot_p_depth_only	LRT_no_offset	boot_p_no_offset	LRT_allele_only
+random_chr1:7.0	0		0.01	0.5	gain2	0.99746	0.99636	0.99886	6.5821	0.01	clonal	True	False	True	6.5821	0.025	311.9	0.025	3.8414e-13
+random_chr4:79.5	1057	0.5382	0.02	0.84353	cnloh	0.053829	0	0.18129	0.71929	0.3	no evidence	False	False	False	3.0499	0.025	894.65	0.025	0.71929
+random_chr10:64.1	1180	0.57016	0.07	1.1183	cnloh	0.18867	0.068625	0.3129	9.6993	0.01	subclonal	True	True	False	5.8041	0.425	3967.3	0.025	9.6993
+random_chr2:61.1	2272	0.54717	0.01	0.84353	gain2	0.99727	0.99566	1	2.4629	0.13	insufficient evidence	False	False	False	5.3724	0.025	40.988	0.025	0.81692
+random_chr3:129.9	2299	0.52928	0.02	0.97124	cnloh	0.05	0	0.12308	1.357	0.09	no evidence	False	False	False	1.4255	0.45	418.05	0.025	1.357
+random_chr8:51.5	2060	0.54539	0.02	0.84353	gain2	0.05	0.031833	0.034874	122.23	0.01	small-fraction deviation (<10% of cells)	True	False	False	176.65	0.025	139.44	0.025	5.8487
+random_chr10:54.4	1477	0.56125	0.07	0.97124	cnloh	0.12249	0.015659	0.23594	5.0673	0.05	no evidence	False	False	False	7.8851	0.025	3001.4	0.025	5.0673
+random_chr13:31.8	0		0.015	0.5	gain1	0.98654	0.98427	0.98733	5.6974	0.01	clonal	True	False	True	5.6974	0.025	2.2555e-10	0.325	3.8414e-13
+random_chr7:125.5	2774	0.50625	0.02	0.55262	cnloh	0.05	0	0.077342	0	1	no evidence	False	False	False	2.2068	0.025	0	1	0
+random_chr3:114.9	90	0.53846	0.03	2.2629	cnloh	0.05	0	0.34744	0	1	insufficient evidence	False	False	False	1.0102	0.475	759.11	0.025	3.4106e-13
+random_chr15:64.2	260	0.55031	0.01	1.4825	cnloh	0.05	0	0.25231	0.11118	0.36	insufficient evidence	False	False	False	1.819e-10	0.55	0.11119	0.425	0.098762
+random_chr5:30.4	3026	0.51108	0.015	0.47996	gain2	1	0.99855	1	0.17476	0.52	insufficient evidence	False	False	False	0.67784	0.875	509.37	0.025	0.11504
+random_chr1:104.7	0		0.045	0.5	loss1	1	0.9987	1	3.0898	0.47	insufficient evidence	False	False	False	3.0898	0.575	2334.5	0.025	3.8414e-13
+random_chr11:116.4	1690	0.53769	0.01	1.1183	cnloh	0.08866	0	0.18683	3.5948	0.03	event, clonal vs subclonal unresolved	True	False	False	2.1236	0.025	3.5948	0.025	3.5948
+random_chr4:22.8	2723	0.51699	0.015	0.47996	gain2	0.99892	0.99713	1	1.0594	0.06	insufficient evidence	False	False	False	1.7021	0.075	748.32	0.025	0.18756
+random_chr6:126.7	2318	0.49907	0.015	0.47996	gain2	0.99664	0.9947	1	0	1	insufficient evidence	False	False	False	1.7804	0.025	0	1	0
+random_chr2:135.5	466	0.51895	0.015	1.4825	cnloh	0.05	0	0.16544	0	1	no evidence	False	False	False	2.1757	0.025	0	1	2.2737e-13
+random_chr13:37.5	2856	0.50736	0.02	0.47996	cnloh	0.05	0	0.062293	0	1	no evidence	False	False	False	5.9679	0.025	0	1	0
+random_chr4:116.0	1752	0.51509	0.02	0.73262	cnloh	0.05	0	0.078721	0	1	no evidence	False	False	False	4.683	0.025	40.301	0.025	0
+random_chr2:232.1	0		0.01	0.5	gain2	0.98997	0.98723	0.99079	44.718	0.01	clonal	True	False	True	44.718	0.025	4.3365e-09	0.15	3.8414e-13
+random_chr6:119.2	2228	0.53068	0.02	0.73262	cnloh	0.05	0	0.099111	0	1	no evidence	False	False	False	2.7733	0.025	8.0475	0.025	0.087452
+random_chr15:41.6	0		0.01	0.5	gain1	1	0.99715	1	0.033775	0.49	insufficient evidence	False	False	False	0.033775	0.55	28.637	0.025	3.8414e-13
+random_chr2:199.9	0		0.006	0.5	gain2	0.99248	0.99054	0.99335	34.555	0.01	clonal	True	False	True	34.555	0.025	1158.8	0.025	3.8414e-13
+random_chr7:27.8	0		0.01	0.5	gain1	0.99447	0.9882	1	2.0778	0.02	clonal	True	False	True	2.0778	0.025	3.638e-12	1	3.8414e-13
+random_chr6:74.8	0		0.015	0.5	cnloh	0.3	0	1	1.5898e-09	0.49	insufficient evidence	False	False	False	1.5898e-09	0.45	1.3679e-09	0.475	3.8414e-13
+random_chr20:39.2	1307	0.5393	0.015	0.97124	cnloh	0.053019	0	0.17061	0.83076	0.28	no evidence	False	False	False	3.0532	0.025	0.83076	0.25	0.83076
+random_chr10:121.4	3321	0.50663	0.01	0.55262	gain2	0.99858	0.9975	1	0	1	insufficient evidence	False	False	False	0.64264	0.025	0	1	0
+random_chr6:145.0	2895	0.52584	0.015	0.55262	cnloh	0.05	0	0.067697	0	1	no evidence	False	False	False	2.0513	0.025	0	1	0.4368
+random_chr2:164.3	0		0.015	0.5	gain1	0.98482	0.97093	0.99776	2.8603	0.01	clonal	True	False	True	2.8603	0.025	3.638e-12	1	3.8414e-13
+random_chr14:93.5	3320	0.50815	0.015	0.63629	cnloh	0.05	0	0.047639	0	1	no evidence	False	False	False	0.64365	0.025	0	1	0.93226

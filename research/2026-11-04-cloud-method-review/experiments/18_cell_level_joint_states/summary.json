@@ -1,0 +1,287 @@
+{
+ "experiment": "18_cell_level_joint_states",
+ "deterministic_given_seeds": true,
+ "seeds": {
+  "random_window_draw": [
+   20261104,
+   18
+  ],
+  "bootstrap_regions": "(20261104, 18, region_index) region_index 0..11 in region_mixtures.tsv order",
+  "bootstrap_random_windows": "(20261104, 18, 1000 + j)",
+  "bootstrap_variants": "(20261104, 18, region_index, 7)"
+ },
+ "parameters": {
+  "B_main": 99,
+  "B_variants": 39,
+  "alpha_grid": [
+   0.003,
+   0.006,
+   0.01,
+   0.015,
+   0.02,
+   0.03,
+   0.045,
+   0.07,
+   0.1,
+   0.15
+  ],
+  "eps_outlier": 0.01,
+  "pi_min": 0.05,
+  "k_primary": 0.6,
+  "k_alt": 1.0,
+  "orientation_certainty_min": 0.8,
+  "types": {
+   "loss1": {
+    "L": 0.5,
+    "h": 1.0
+   },
+   "homdel": {
+    "L": 0.02,
+    "h": 0.5
+   },
+   "cnloh": {
+    "L": 1.0,
+    "h": 1.0
+   },
+   "gain1": {
+    "L": 1.5,
+    "h": 0.6666666666666666
+   },
+   "gain2": {
+    "L": 2.0,
+    "h": 0.5
+   },
+   "amp": {
+    "L": 2.5,
+    "h": 0.8
+   }
+  },
+  "n_panel": 30,
+  "n_calibration_windows": 120,
+  "n_candidate_windows": 12197
+ },
+ "calibration_flank_relative": {
+  "m": -0.033989234648656205,
+  "sig_b": 0.44989039601324154,
+  "sig_u": 0.033795421417661384,
+  "d_med": 0.023889961004777416,
+  "tau": 0.014882506379562494,
+  "d_med_c": [
+   0.0270527532855242,
+   0.02741976496632048,
+   0.015555108798486261,
+   0.029784919585811864,
+   0.021960714285714278
+  ],
+  "tau_c": [
+   0.02519700750436029,
+   0.022190202343458962,
+   0.021136567019356532,
+   0.028780566876219313,
+   0.03421255088797288
+  ],
+  "n_windows": 120
+ },
+ "calibration_genome_relative": {
+  "m": -0.17805021297001744,
+  "sig_b": 0.49966524410693525,
+  "sig_u": 0.03943046960536936,
+  "d_med": 0.023889961004777416,
+  "tau": 0.014882506379562494,
+  "d_med_c": [
+   0.0270527532855242,
+   0.02741976496632048,
+   0.015555108798486261,
+   0.029784919585811864,
+   0.021960714285714278
+  ],
+  "tau_c": [
+   0.02519700750436029,
+   0.022190202343458962,
+   0.021136567019356532,
+   0.028780566876219313,
+   0.03421255088797288
+  ],
+  "n_windows": 120
+ },
+ "random_fpr": {
+  "n_windows": 30,
+  "event_detected_p_lt_0.05": {
+   "k": 9,
+   "rate": 0.3,
+   "ci95": [
+    0.14734518475470101,
+    0.4939590414625536
+   ]
+  },
+  "subclonal_detected": {
+   "k": 1,
+   "rate": 0.03333333333333333,
+   "ci95": [
+    0.0008435709266304788,
+    0.17216945563341265
+   ]
+  },
+  "clonal_detected": {
+   "k": 6,
+   "rate": 0.2,
+   "ci95": [
+    0.07713551200106561,
+    0.3856665109966071
+   ]
+  },
+  "no_offset_p_lt_0.05": {
+   "k": 16,
+   "rate": 0.5333333333333333,
+   "ci95": [
+    0.3432552381607341,
+    0.7165819208164629
+   ]
+  },
+  "depth_only_p_lt_0.05": {
+   "k": 21,
+   "rate": 0.7,
+   "ci95": [
+    0.5060409585374464,
+    0.8526548152452988
+   ]
+  }
+ },
+ "cluster_sizes": {
+  "0": 1286,
+  "1": 833,
+  "2": 603,
+  "3": 556,
+  "4": 182
+ },
+ "regions": [
+  {
+   "region": "chr7_8.3_10.7",
+   "best_type": "loss1",
+   "pi": 0.13589959292806109,
+   "pi_lo": 0.08983586984033201,
+   "pi_hi": 0.18703158990043475,
+   "boot_p": 0.01,
+   "evidence_class": "subclonal"
+  },
+  {
+   "region": "chr7_51.4_53.5",
+   "best_type": "amp",
+   "pi": 0.15485026670748758,
+   "pi_lo": 0.12473975546741023,
+   "pi_hi": 0.191132540447872,
+   "boot_p": 0.01,
+   "evidence_class": "subclonal"
+  },
+  {
+   "region": "chr7_67.4_70.0",
+   "best_type": "loss1",
+   "pi": 0.3748039600696748,
+   "pi_lo": 0.292928599316965,
+   "pi_hi": 0.4845075163238307,
+   "boot_p": 0.01,
+   "evidence_class": "subclonal"
+  },
+  {
+   "region": "chr7_70.0_73.3",
+   "best_type": "cnloh",
+   "pi": 0.09874599529318286,
+   "pi_lo": 0.0,
+   "pi_hi": 0.205886511184815,
+   "boot_p": 0.08,
+   "evidence_class": "no evidence"
+  },
+  {
+   "region": "chr9_20_27",
+   "best_type": "gain1",
+   "pi": 0.05,
+   "pi_lo": 0.03584508147514368,
+   "pi_hi": 0.05210496203053977,
+   "boot_p": 0.01,
+   "evidence_class": "small-fraction deviation (<10% of cells)"
+  },
+  {
+   "region": "chr9_22.5_26.6",
+   "best_type": "gain1",
+   "pi": 0.05,
+   "pi_lo": 0.02936267720861905,
+   "pi_hi": 0.07644938818742389,
+   "boot_p": 0.01,
+   "evidence_class": "small-fraction deviation (<10% of cells)"
+  },
+  {
+   "region": "chr9_70_100",
+   "best_type": "gain1",
+   "pi": 0.05,
+   "pi_lo": 0.03499979022480614,
+   "pi_hi": 0.044882509339691144,
+   "boot_p": 0.01,
+   "evidence_class": "small-fraction deviation (<10% of cells)"
+  },
+  {
+   "region": "lit_9p21_hemizygous_zone_approx",
+   "best_type": "loss1",
+   "pi": 0.9823019499261354,
+   "pi_lo": 0.9781073107300253,
+   "pi_hi": 0.9830614802082529,
+   "boot_p": 0.01,
+   "evidence_class": "clonal"
+  },
+  {
+   "region": "lit_MYC_8q24",
+   "best_type": "gain1",
+   "pi": 0.9692769399658353,
+   "pi_lo": 0.957969914996394,
+   "pi_hi": 0.9801248146295747,
+   "boot_p": 0.01,
+   "evidence_class": "clonal"
+  },
+  {
+   "region": "lit_19q13_qter",
+   "best_type": "gain2",
+   "pi": 0.9991960138371138,
+   "pi_lo": 0.9983971271844364,
+   "pi_hi": 1.0,
+   "boot_p": 0.01,
+   "evidence_class": "clonal"
+  },
+  {
+   "region": "lit_5q13_qter",
+   "best_type": "gain1",
+   "pi": 0.9948577286998898,
+   "pi_lo": 0.9936480777557348,
+   "pi_hi": 0.9951717172648664,
+   "boot_p": 0.01,
+   "evidence_class": "clonal"
+  },
+  {
+   "region": "chr8_115_145_cluster4_hypothesis",
+   "best_type": "gain1",
+   "pi": 0.952864531511206,
+   "pi_lo": 0.9453174027888906,
+   "pi_hi": 0.96063817090395,
+   "boot_p": 0.01,
+   "evidence_class": "clonal"
+  }
+ ],
+ "runtime_seconds": 1375.372990846634,
+ "environment": {
+  "python": "3.10.20",
+  "platform": "Linux-6.18.44-fc-v236-x86_64-with-glibc2.39",
+  "packages": {
+   "numpy": "1.24.4",
+   "pandas": "2.2.0",
+   "scipy": "1.8.0",
+   "h5py": "3.6.0",
+   "anndata": "0.8.0",
+   "pyarrow": "23.0.0",
+   "skmisc": "0.5.2",
+   "matplotlib": "3.8.4",
+   "statsmodels": "0.14.1"
+  },
+  "workbench_commit_at_run": "ffbdbd32cf5a6390e6f0af9338c9fdc287851319",
+  "pyepi_upstream_commit": "e8305ea2162634d07e92a3bb401df672e48f217b",
+  "cpu_count": 4
+ },
+ "check_mode": false
+}

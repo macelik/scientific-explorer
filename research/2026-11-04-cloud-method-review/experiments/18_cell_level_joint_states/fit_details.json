@@ -1,0 +1,7243 @@
+{
+ "results": [
+  {
+   "name": "chr7_8.3_10.7",
+   "family": "saved",
+   "mode": "flank",
+   "rho_r": 0.9712372628452939,
+   "alpha_r": 0.15,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 991,
+   "sum_N": 1440.0,
+   "pooled_h": 0.5486111111111112,
+   "best_type": "loss1",
+   "pi": 0.13589959292806109,
+   "pi_lo": 0.08983586984033201,
+   "pi_hi": 0.18703158990043475,
+   "LRT": 38.59565791700879,
+   "frac_cells_P90": 0.0,
+   "mean_P_event": 0.13589964364736148,
+   "a_hat_null": [
+    -1.6446190317914973,
+    -1.6666207487569686,
+    -1.4621797996790051,
+    -1.7435978047891116,
+    -1.7582442522839368
+   ],
+   "d0_null": 0.036603068641998374,
+   "d0_alt": 0.02466980421453386,
+   "b_hat_alt": -1.5832424658456778,
+   "all_types": {
+    "loss1": {
+     "pi": 0.13589959292806109,
+     "LRT": 38.59565791700879
+    },
+    "gain1": {
+     "pi": 0.3157449160934761,
+     "LRT": 38.17091722985788
+    },
+    "gain2": {
+     "pi": 0.05543490758338727,
+     "LRT": 30.602629643333785
+    },
+    "cnloh": {
+     "pi": 0.08019518770007084,
+     "LRT": 1.5063318658721983
+    },
+    "amp": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 1.0,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "gain1",
+     "pi": 0.3705593318027217,
+     "LRT": 41.525615334885515,
+     "LRT_for_joint_best_type": 39.66667805672114,
+     "pi_for_joint_best_type": 0.9439753600768293
+    },
+    "allele_only": {
+     "type_best": "amp",
+     "pi": 0.14086274233094725,
+     "LRT": 1.5468425935689538,
+     "LRT_for_joint_best_type": 1.5063318281511329,
+     "pi_for_joint_best_type": 0.08019532460434622
+    }
+   },
+   "prior": {
+    "m": -0.033989234648656205,
+    "sig_b": 0.44989039601324154,
+    "sig_u": 0.033795421417661384,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "clusters": [
+    {
+     "cluster": "0",
+     "n_cells": 1286,
+     "n_cells_N_gt0": 273,
+     "best_type": "gain2",
+     "pi": 0.05337219321778809,
+     "pi_lo": 0.02136396543561536,
+     "pi_hi": 0.09690442071585646,
+     "LRT": 15.011454065517682,
+     "frac_cells_P90": 0.0,
+     "LRT_depth_only": 15.011454065516773,
+     "LRT_allele_only": 0.0,
+     "pooled_h_all_orient": 0.5425531914893617,
+     "pooled_h_own_orient": 0.565068493150685,
+     "boot_p": 0.01,
+     "class": "small-fraction deviation (<10% of cells)"
+    },
+    {
+     "cluster": "1",
+     "n_cells": 833,
+     "n_cells_N_gt0": 309,
+     "best_type": "loss1",
+     "pi": 0.18187736264447457,
+     "pi_lo": 0.11226684460979097,
+     "pi_hi": 0.2577187275568442,
+     "LRT": 30.84433890854052,
+     "frac_cells_P90": 0.0,
+     "LRT_depth_only": 25.137560267027766,
+     "LRT_allele_only": 1.4949197205542077,
+     "pooled_h_all_orient": 0.5701559020044543,
+     "pooled_h_own_orient": 0.5701559020044543,
+     "boot_p": 0.01,
+     "class": "subclonal"
+    },
+    {
+     "cluster": "2",
+     "n_cells": 603,
+     "n_cells_N_gt0": 219,
+     "best_type": "gain1",
+     "pi": 0.6836507107691855,
+     "pi_lo": 0.4455094158493562,
+     "pi_hi": 0.9022701275152514,
+     "LRT": 36.17447123389866,
+     "frac_cells_P90": 0.09286898839137644,
+     "LRT_depth_only": 37.60078948520322,
+     "LRT_allele_only": 0.9712261131667788,
+     "pooled_h_all_orient": 0.5572289156626506,
+     "pooled_h_own_orient": 0.5714285714285714,
+     "boot_p": 0.01,
+     "class": "subclonal"
+    },
+    {
+     "cluster": "3",
+     "n_cells": 556,
+     "n_cells_N_gt0": 150,
+     "best_type": "loss1",
+     "pi": 0.09318738333618462,
+     "pi_lo": 0.0,
+     "pi_hi": 0.20163021847380924,
+     "LRT": 3.692737824134383,
+     "frac_cells_P90": 0.0,
+     "LRT_depth_only": 7.167998167556107,
+     "LRT_allele_only": 0.0,
+     "pooled_h_all_orient": 0.5327510917030568,
+     "pooled_h_own_orient": 0.5327510917030568,
+     "boot_p": 0.16,
+     "class": "no evidence"
+    },
+    {
+     "cluster": "4",
+     "n_cells": 182,
+     "n_cells_N_gt0": 40,
+     "best_type": "loss1",
+     "pi": 0.4155942722139128,
+     "pi_lo": 0.2586759950999089,
+     "pi_hi": 0.571781329049068,
+     "LRT": 32.067887358150074,
+     "frac_cells_P90": 0.0,
+     "LRT_depth_only": 39.622338389849574,
+     "LRT_allele_only": 0.0,
+     "pooled_h_all_orient": 0.42592592592592593,
+     "pooled_h_own_orient": NaN,
+     "boot_p": 0.01,
+     "class": "subclonal"
+    }
+   ],
+   "boot_p": 0.01,
+   "boot_B": 99,
+   "boot_T_q95": 3.4919847896933773,
+   "class": "subclonal",
+   "agreement": "depth only",
+   "agreement_note": "",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "loss1",
+     "pi": 0.11741591031303203,
+     "LRT": 37.1825475369551,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "loss1",
+     "pi": 1.0,
+     "LRT": 5030.4240949077575,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "depth only",
+     "best_type": "gain1",
+     "pi": 0.3705593318027217,
+     "LRT": 41.525615334885515,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "allele only",
+     "best_type": "amp",
+     "pi": 0.14086274233094725,
+     "LRT": 1.5468425935689538,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 96.60781860351562
+  },
+  {
+   "name": "chr7_51.4_53.5",
+   "family": "saved",
+   "mode": "flank",
+   "rho_r": 0.5,
+   "alpha_r": 0.15,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 0,
+   "sum_N": 0.0,
+   "pooled_h": NaN,
+   "best_type": "amp",
+   "pi": 0.15485026670748758,
+   "pi_lo": 0.12473975546741023,
+   "pi_hi": 0.191132540447872,
+   "LRT": 299.1457052833248,
+   "frac_cells_P90": 0.02716763005780347,
+   "mean_P_event": 0.15485026974267405,
+   "a_hat_null": [
+    -1.8653902638889388,
+    -1.9134112922677013,
+    -1.6410971392860212,
+    -1.8216445992180712,
+    -1.774218036594671
+   ],
+   "d0_null": 0.023889961004777416,
+   "d0_alt": 0.023889961004777416,
+   "b_hat_alt": -1.9977039534652223,
+   "all_types": {
+    "amp": {
+     "pi": 0.15485026670748758,
+     "LRT": 299.1457052833248
+    },
+    "loss1": {
+     "pi": 0.7401162565320848,
+     "LRT": 288.28740640593605
+    },
+    "gain2": {
+     "pi": 0.2575405478307459,
+     "LRT": 277.0045495413906
+    },
+    "gain1": {
+     "pi": 0.3617701293563291,
+     "LRT": 151.10705926033188
+    },
+    "homdel": {
+     "pi": 0.05,
+     "LRT": 29.344991087960807
+    },
+    "cnloh": {
+     "pi": 0.3000000000000002,
+     "LRT": 5.820766091346741e-09
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "amp",
+     "pi": 0.15485026670748758,
+     "LRT": 299.1457052833248,
+     "LRT_for_joint_best_type": 299.1457052833248,
+     "pi_for_joint_best_type": 0.15485026670748758
+    },
+    "allele_only": {
+     "type_best": "loss1",
+     "pi": 0.3,
+     "LRT": 3.8413716652030416e-13,
+     "LRT_for_joint_best_type": 3.8413716652030416e-13,
+     "pi_for_joint_best_type": 0.3
+    }
+   },
+   "prior": {
+    "m": -0.033989234648656205,
+    "sig_b": 0.44989039601324154,
+    "sig_u": 0.033795421417661384,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "clusters": [
+    {
+     "cluster": "0",
+     "n_cells": 1286,
+     "n_cells_N_gt0": 0,
+     "best_type": "amp",
+     "pi": 0.09610317823864943,
+     "pi_lo": 0.06786553856114767,
+     "pi_hi": 0.13053742388925657,
+     "LRT": 91.96014569650379,
+     "frac_cells_P90": 0.013219284603421462,
+     "LRT_depth_only": 91.96014569650379,
+     "LRT_allele_only": 1.4277468096679513e-13,
+     "pooled_h_all_orient": NaN,
+     "pooled_h_own_orient": NaN,
+     "boot_p": 0.01,
+     "class": "subclonal"
+    },
+    {
+     "cluster": "1",
+     "n_cells": 833,
+     "n_cells_N_gt0": 0,
+     "best_type": "loss1",
+     "pi": 0.5130364670531508,
+     "pi_lo": 0.42777272852333137,
+     "pi_hi": 0.5949629006997,
+     "LRT": 145.4691943622638,
+     "frac_cells_P90": 0.0012004801920768306,
+     "LRT_depth_only": 145.4691943622638,
+     "LRT_allele_only": 9.248157795127554e-14,
+     "pooled_h_all_orient": NaN,
+     "pooled_h_own_orient": NaN,
+     "boot_p": 0.01,
+     "class": "subclonal"
+    },
+    {
+     "cluster": "2",
+     "n_cells": 603,
+     "n_cells_N_gt0": 0,
+     "best_type": "gain2",
+     "pi": 0.2465532416434888,
+     "pi_lo": 0.166627616288528,
+     "pi_hi": 0.3403797239663147,
+     "LRT": 73.7381376615408,
+     "frac_cells_P90": 0.03482587064676617,
+     "LRT_depth_only": 73.7381376615408,
+     "LRT_allele_only": 6.694644838489694e-14,
+     "pooled_h_all_orient": NaN,
+     "pooled_h_own_orient": 0.6578947368421053,
+     "boot_p": 0.01,
+     "class": "subclonal"
+    },
+    {
+     "cluster": "3",
+     "n_cells": 556,
+     "n_cells_N_gt0": 0,
+     "best_type": "gain2",
+     "pi": 0.05,
+     "pi_lo": 0.0024647847569866255,
+     "pi_hi": 0.08503829857920994,
+     "LRT": 3.906100871382023,
+     "frac_cells_P90": 0.0,
+     "LRT_depth_only": 3.906100871382023,
+     "LRT_allele_only": 6.17284001691587e-14,
+     "pooled_h_all_orient": NaN,
+     "pooled_h_own_orient": NaN,
+     "boot_p": 0.03,
+     "class": "small-fraction deviation (<10% of cells)"
+    },
+    {
+     "cluster": "4",
+     "n_cells": 182,
+     "n_cells_N_gt0": 0,
+     "best_type": "homdel",
+     "pi": 0.05,
+     "pi_lo": 0.0009877775550427858,
+     "pi_hi": 0.05742850634751019,
+     "LRT": 1.4521829692827168,
+     "frac_cells_P90": 0.005494505494505495,
+     "LRT_depth_only": 1.4521829692827168,
+     "LRT_allele_only": 2.020605904817785e-14,
+     "pooled_h_all_orient": NaN,
+     "pooled_h_own_orient": NaN,
+     "boot_p": 0.2,
+     "class": "no evidence"
+    }
+   ],
+   "boot_p": 0.01,
+   "boot_B": 99,
+   "boot_T_q95": 9.89375655941185,
+   "class": "subclonal",
+   "agreement": "depth only",
+   "agreement_note": "",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "amp",
+     "pi": 0.15485026670748758,
+     "LRT": 299.1457052833248,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "loss1",
+     "pi": 1.0,
+     "LRT": 5572.026134181848,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "depth only",
+     "best_type": "amp",
+     "pi": 0.15485026670748758,
+     "LRT": 299.1457052833248,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "allele only",
+     "best_type": "loss1",
+     "pi": 0.3,
+     "LRT": 3.8413716652030416e-13,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 42.40747046470642
+  },
+  {
+   "name": "chr7_67.4_70.0",
+   "family": "saved",
+   "mode": "flank",
+   "rho_r": 0.5,
+   "alpha_r": 0.15,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 0,
+   "sum_N": 0.0,
+   "pooled_h": NaN,
+   "best_type": "loss1",
+   "pi": 0.3748039600696748,
+   "pi_lo": 0.292928599316965,
+   "pi_hi": 0.4845075163238307,
+   "LRT": 144.91164144834693,
+   "frac_cells_P90": 0.0,
+   "mean_P_event": 0.3748037965598887,
+   "a_hat_null": [
+    -2.0882779120963852,
+    -2.2093266156490157,
+    -1.8144827251086775,
+    -2.078167231302921,
+    -2.119709148450529
+   ],
+   "d0_null": 0.023889961004777416,
+   "d0_alt": 0.023889961004777416,
+   "b_hat_alt": -1.8524682975863722,
+   "all_types": {
+    "loss1": {
+     "pi": 0.3748039600696748,
+     "LRT": 144.91164144834693
+    },
+    "gain2": {
+     "pi": 0.6204592656952768,
+     "LRT": 130.11113826673682
+    },
+    "amp": {
+     "pi": 0.7736471669610879,
+     "LRT": 128.33904583830008
+    },
+    "gain1": {
+     "pi": 0.39999631011424336,
+     "LRT": 95.04103295493769
+    },
+    "homdel": {
+     "pi": 0.05,
+     "LRT": 32.64381275625783
+    },
+    "cnloh": {
+     "pi": 0.3000000000000002,
+     "LRT": 2.546585164964199e-10
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "loss1",
+     "pi": 0.3748039600696748,
+     "LRT": 144.91164144834693,
+     "LRT_for_joint_best_type": 144.91164144834693,
+     "pi_for_joint_best_type": 0.3748039600696748
+    },
+    "allele_only": {
+     "type_best": "loss1",
+     "pi": 0.3,
+     "LRT": 3.8413716652030416e-13,
+     "LRT_for_joint_best_type": 3.8413716652030416e-13,
+     "pi_for_joint_best_type": 0.3
+    }
+   },
+   "prior": {
+    "m": -0.033989234648656205,
+    "sig_b": 0.44989039601324154,
+    "sig_u": 0.033795421417661384,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "clusters": [
+    {
+     "cluster": "0",
+     "n_cells": 1286,
+     "n_cells_N_gt0": 0,
+     "best_type": "amp",
+     "pi": 0.05,
+     "pi_lo": 0.017419084967420773,
+     "pi_hi": 0.06006715558475304,
+     "LRT": 19.37718170129483,
+     "frac_cells_P90": 0.003110419906687403,
+     "LRT_depth_only": 19.37718170129483,
+     "LRT_allele_only": 1.4277468096679513e-13,
+     "pooled_h_all_orient": NaN,
+     "pooled_h_own_orient": NaN,
+     "boot_p": 0.01,
+     "class": "small-fraction deviation (<10% of cells)"
+    },
+    {
+     "cluster": "1",
+     "n_cells": 833,
+     "n_cells_N_gt0": 0,
+     "best_type": "loss1",
+     "pi": 0.5397469957898148,
+     "pi_lo": 0.4625739337789618,
+     "pi_hi": 0.6139595119201736,
+     "LRT": 199.46237883974845,
+     "frac_cells_P90": 0.02040816326530612,
+     "LRT_depth_only": 199.46237883974845,
+     "LRT_allele_only": 9.248157795127554e-14,
+     "pooled_h_all_orient": NaN,
+     "pooled_h_own_orient": 0.6567164179104478,
+     "boot_p": 0.01,
+     "class": "subclonal"
+    },
+    {
+     "cluster": "2",
+     "n_cells": 603,
+     "n_cells_N_gt0": 0,
+     "best_type": "gain1",
+     "pi": 0.8968671137526812,
+     "pi_lo": 0.6979069432470337,
+     "pi_hi": 1.0,
+     "LRT": 73.86200300909695,
+     "frac_cells_P90": 0.548922056384743,
+     "LRT_depth_only": 73.86200300909695,
+     "LRT_allele_only": 6.694644838489694e-14,
+     "pooled_h_all_orient": NaN,
+     "pooled_h_own_orient": NaN,
+     "boot_p": 0.01,
+     "class": "event, clonal vs subclonal unresolved"
+    },
+    {
+     "cluster": "3",
+     "n_cells": 556,
+     "n_cells_N_gt0": 0,
+     "best_type": "loss1",
+     "pi": 0.05,
+     "pi_lo": 0.0,
+     "pi_hi": 0.12034643506990236,
+     "LRT": 0.3669405236382772,
+     "frac_cells_P90": 0.0,
+     "LRT_depth_only": 0.3669405236382772,
+     "LRT_allele_only": 6.17284001691587e-14,
+     "pooled_h_all_orient": NaN,
+     "pooled_h_own_orient": NaN,
+     "boot_p": 0.18,
+     "class": "no evidence"
+    },
+    {
+     "cluster": "4",
+     "n_cells": 182,
+     "n_cells_N_gt0": 0,
+     "best_type": "loss1",
+     "pi": 0.33627219157327654,
+     "pi_lo": 0.18716496718564365,
+     "pi_hi": 0.4911285900521223,
+     "LRT": 22.536017729418518,
+     "frac_cells_P90": 0.0,
+     "LRT_depth_only": 22.536017729418518,
+     "LRT_allele_only": 2.020605904817785e-14,
+     "pooled_h_all_orient": NaN,
+     "pooled_h_own_orient": NaN,
+     "boot_p": 0.01,
+     "class": "subclonal"
+    }
+   ],
+   "boot_p": 0.01,
+   "boot_B": 99,
+   "boot_T_q95": 12.492009578231226,
+   "class": "subclonal",
+   "agreement": "depth only",
+   "agreement_note": "",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "loss1",
+     "pi": 0.3748039600696748,
+     "LRT": 144.91164144834693,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "loss1",
+     "pi": 1.0,
+     "LRT": 6575.107459066887,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "depth only",
+     "best_type": "loss1",
+     "pi": 0.3748039600696748,
+     "LRT": 144.91164144834693,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "allele only",
+     "best_type": "loss1",
+     "pi": 0.3,
+     "LRT": 3.8413716652030416e-13,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 42.40516471862793
+  },
+  {
+   "name": "chr7_70.0_73.3",
+   "family": "saved",
+   "mode": "flank",
+   "rho_r": 0.6362852663760575,
+   "alpha_r": 0.03,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 1776,
+   "sum_N": 2992.0,
+   "pooled_h": 0.5508021390374331,
+   "best_type": "cnloh",
+   "pi": 0.09874599529318286,
+   "pi_lo": 0.0,
+   "pi_hi": 0.205886511184815,
+   "LRT": 3.70925077204447,
+   "frac_cells_P90": 0.0,
+   "mean_P_event": 0.09874602761561836,
+   "a_hat_null": [
+    -1.0972869463351167,
+    -1.1058968553075545,
+    -0.9214294437331622,
+    -1.2087562924143818,
+    -0.9857172124898819
+   ],
+   "d0_null": 0.046089215037529815,
+   "d0_alt": 0.026106969186145957,
+   "b_hat_alt": -1.0638199949653526,
+   "all_types": {
+    "cnloh": {
+     "pi": 0.09874599529318286,
+     "LRT": 3.70925077204447
+    },
+    "gain2": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "gain1": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "loss1": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "amp": {
+     "pi": 1.0,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "loss1",
+     "pi": 0.9956466275673433,
+     "LRT": 12.230532847286668,
+     "LRT_for_joint_best_type": 4.2527972254902124e-09,
+     "pi_for_joint_best_type": 0.30000000000000004
+    },
+    "allele_only": {
+     "type_best": "loss1",
+     "pi": 0.09874594084759604,
+     "LRT": 3.7092496803329595,
+     "LRT_for_joint_best_type": 3.7092496803329595,
+     "pi_for_joint_best_type": 0.09874594084759604
+    }
+   },
+   "prior": {
+    "m": -0.033989234648656205,
+    "sig_b": 0.44989039601324154,
+    "sig_u": 0.033795421417661384,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "clusters": [
+    {
+     "cluster": "0",
+     "n_cells": 1286,
+     "n_cells_N_gt0": 523,
+     "best_type": "cnloh",
+     "pi": 0.10840625809022421,
+     "pi_lo": 0.0,
+     "pi_hi": 0.31661495776818827,
+     "LRT": 1.1460707394089695,
+     "frac_cells_P90": 0.0,
+     "LRT_depth_only": 1.8189894035458565e-12,
+     "LRT_allele_only": 1.1460707394071505,
+     "pooled_h_all_orient": 0.5602564102564103,
+     "pooled_h_own_orient": 0.5673076923076923,
+     "boot_p": 0.24,
+     "class": "insufficient evidence"
+    },
+    {
+     "cluster": "1",
+     "n_cells": 833,
+     "n_cells_N_gt0": 509,
+     "best_type": "cnloh",
+     "pi": 0.05,
+     "pi_lo": 0.0,
+     "pi_hi": 0.14255966133330092,
+     "LRT": 0.0,
+     "frac_cells_P90": 0.0,
+     "LRT_depth_only": 9.094947017729282e-13,
+     "LRT_allele_only": 0.0,
+     "pooled_h_all_orient": 0.5391211146838156,
+     "pooled_h_own_orient": 0.5348605577689243,
+     "boot_p": 1.0,
+     "class": "no evidence"
+    },
+    {
+     "cluster": "2",
+     "n_cells": 603,
+     "n_cells_N_gt0": 339,
+     "best_type": "cnloh",
+     "pi": 0.1747047727069078,
+     "pi_lo": 0.0001975057390624446,
+     "pi_hi": 0.3599254346161209,
+     "LRT": 3.848528694392371,
+     "frac_cells_P90": 0.0,
+     "LRT_depth_only": 0.0,
+     "LRT_allele_only": 3.8485286941395316,
+     "pooled_h_all_orient": 0.5409556313993175,
+     "pooled_h_own_orient": 0.5357142857142857,
+     "boot_p": 0.16,
+     "class": "insufficient evidence"
+    },
+    {
+     "cluster": "3",
+     "n_cells": 556,
+     "n_cells_N_gt0": 306,
+     "best_type": "cnloh",
+     "pi": 0.18010011440015358,
+     "pi_lo": 0.0,
+     "pi_hi": 0.40270235232905016,
+     "LRT": 2.988000518462286,
+     "frac_cells_P90": 0.0,
+     "LRT_depth_only": 0.0,
+     "LRT_allele_only": 2.9880005184504626,
+     "pooled_h_all_orient": 0.5717017208413002,
+     "pooled_h_own_orient": 0.5643382352941176,
+     "boot_p": 0.05,
+     "class": "insufficient evidence"
+    },
+    {
+     "cluster": "4",
+     "n_cells": 182,
+     "n_cells_N_gt0": 99,
+     "best_type": "cnloh",
+     "pi": 0.052797403950044675,
+     "pi_lo": 0.0,
+     "pi_hi": 0.4030669273751374,
+     "LRT": 0.09958935590520923,
+     "frac_cells_P90": 0.0,
+     "LRT_depth_only": 0.0,
+     "LRT_allele_only": 0.09958935588497297,
+     "pooled_h_all_orient": 0.5411764705882353,
+     "pooled_h_own_orient": NaN,
+     "boot_p": 0.67,
+     "class": "insufficient evidence"
+    }
+   ],
+   "boot_p": 0.08,
+   "boot_B": 99,
+   "boot_T_q95": 3.9377168105187588,
+   "class": "no evidence",
+   "agreement": "neither alone",
+   "agreement_note": "type has no depth change; ",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "cnloh",
+     "pi": 0.05692116865141336,
+     "LRT": 4.006332941782603,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "loss1",
+     "pi": 0.9951299446986113,
+     "LRT": 3306.016132397257,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "depth only",
+     "best_type": "loss1",
+     "pi": 0.9956466275673433,
+     "LRT": 12.230532847286668,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "allele only",
+     "best_type": "loss1",
+     "pi": 0.09874594084759604,
+     "LRT": 3.7092496803329595,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 126.96954536437988
+  },
+  {
+   "name": "chr9_20_27",
+   "family": "saved",
+   "mode": "flank",
+   "rho_r": 0.8435306093922691,
+   "alpha_r": 0.02,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 1148,
+   "sum_N": 1714.0,
+   "pooled_h": 0.5250875145857643,
+   "best_type": "gain1",
+   "pi": 0.05,
+   "pi_lo": 0.03584508147514368,
+   "pi_hi": 0.05210496203053977,
+   "LRT": 130.47343278339758,
+   "frac_cells_P90": 0.0060693641618497106,
+   "mean_P_event": 0.04661450234824456,
+   "a_hat_null": [
+    -0.31557295702874105,
+    -0.33382955251986,
+    -0.3388561790611152,
+    -0.2716965155208104,
+    -0.33247263704096847
+   ],
+   "d0_null": 0.024917262994973266,
+   "d0_alt": 0.021502268610235815,
+   "b_hat_alt": -0.33420171962445894,
+   "all_types": {
+    "gain1": {
+     "pi": 0.05,
+     "LRT": 130.47343278339758
+    },
+    "gain2": {
+     "pi": 0.05,
+     "LRT": 70.0339073071882
+    },
+    "cnloh": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "amp": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "loss1": {
+     "pi": 0.9799076621152049,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "loss1",
+     "pi": 0.9804080932796103,
+     "LRT": 132.85472231867243,
+     "LRT_for_joint_best_type": 130.35155089150794,
+     "pi_for_joint_best_type": 0.05
+    },
+    "allele_only": {
+     "type_best": "gain1",
+     "pi": 0.05,
+     "LRT": 0.050730516984231144,
+     "LRT_for_joint_best_type": 0.050730516984231144,
+     "pi_for_joint_best_type": 0.05
+    }
+   },
+   "prior": {
+    "m": -0.033989234648656205,
+    "sig_b": 0.44989039601324154,
+    "sig_u": 0.033795421417661384,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "clusters": [
+    {
+     "cluster": "0",
+     "n_cells": 1286,
+     "n_cells_N_gt0": 320,
+     "best_type": "gain1",
+     "pi": 0.05,
+     "pi_lo": 0.017870083033509968,
+     "pi_hi": 0.05545062843238644,
+     "LRT": 20.829407363153223,
+     "frac_cells_P90": 0.0,
+     "LRT_depth_only": 20.78923336174921,
+     "LRT_allele_only": 0.0,
+     "pooled_h_all_orient": 0.5167037861915368,
+     "pooled_h_own_orient": NaN,
+     "boot_p": 0.01,
+     "class": "small-fraction deviation (<10% of cells)"
+    },
+    {
+     "cluster": "1",
+     "n_cells": 833,
+     "n_cells_N_gt0": 359,
+     "best_type": "gain1",
+     "pi": 0.06971834460556962,
+     "pi_lo": 0.05003270624231926,
+     "pi_hi": 0.0961969392579666,
+     "LRT": 93.81192447443937,
+     "frac_cells_P90": 0.024009603841536616,
+     "LRT_depth_only": 94.32387165855198,
+     "LRT_allele_only": 0.1605400802919803,
+     "pooled_h_all_orient": 0.535593220338983,
+     "pooled_h_own_orient": 0.537828947368421,
+     "boot_p": 0.01,
+     "class": "small-fraction deviation (<10% of cells)"
+    },
+    {
+     "cluster": "2",
+     "n_cells": 603,
+     "n_cells_N_gt0": 219,
+     "best_type": "cnloh",
+     "pi": 0.05,
+     "pi_lo": 0.0,
+     "pi_hi": 0.17236858229793858,
+     "LRT": 0.0,
+     "frac_cells_P90": 0.0,
+     "LRT_depth_only": 0.0,
+     "LRT_allele_only": 0.0,
+     "pooled_h_all_orient": 0.4935897435897436,
+     "pooled_h_own_orient": NaN,
+     "boot_p": 1.0,
+     "class": "no evidence"
+    },
+    {
+     "cluster": "3",
+     "n_cells": 556,
+     "n_cells_N_gt0": 195,
+     "best_type": "gain2",
+     "pi": 0.05,
+     "pi_lo": 0.0181442523964199,
+     "pi_hi": 0.04687131777768974,
+     "LRT": 35.9786331592677,
+     "frac_cells_P90": 0.017985611510791366,
+     "LRT_depth_only": 35.97863315926679,
+     "LRT_allele_only": 0.0,
+     "pooled_h_all_orient": 0.5830388692579506,
+     "pooled_h_own_orient": 0.6090909090909091,
+     "boot_p": 0.01,
+     "class": "small-fraction deviation (<10% of cells)"
+    },
+    {
+     "cluster": "4",
+     "n_cells": 182,
+     "n_cells_N_gt0": 55,
+     "best_type": "gain1",
+     "pi": 0.05,
+     "pi_lo": 0.0,
+     "pi_hi": 0.08563167377773309,
+     "LRT": 3.236203677243566,
+     "frac_cells_P90": 0.005494505494505495,
+     "LRT_depth_only": 3.9449942521962384,
+     "LRT_allele_only": 0.0,
+     "pooled_h_all_orient": 0.4125,
+     "pooled_h_own_orient": NaN,
+     "boot_p": 0.04,
+     "class": "small-fraction deviation (<10% of cells)"
+    }
+   ],
+   "boot_p": 0.01,
+   "boot_B": 99,
+   "boot_T_q95": 1.50101399589075,
+   "class": "small-fraction deviation (<10% of cells)",
+   "agreement": "depth only",
+   "agreement_note": "",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "gain1",
+     "pi": 0.05,
+     "LRT": 129.33823170312826,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "gain1",
+     "pi": 0.05,
+     "LRT": 95.21419691171832,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "depth only",
+     "best_type": "loss1",
+     "pi": 0.9804080932796103,
+     "LRT": 132.85472231867243,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "allele only",
+     "best_type": "gain1",
+     "pi": 0.05,
+     "LRT": 0.050730516984231144,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 104.98585438728333
+  },
+  {
+   "name": "chr9_22.5_26.6",
+   "family": "saved",
+   "mode": "flank",
+   "rho_r": 0.8435306093922691,
+   "alpha_r": 0.045,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 1052,
+   "sum_N": 1554.0,
+   "pooled_h": 0.5238095238095238,
+   "best_type": "gain1",
+   "pi": 0.05,
+   "pi_lo": 0.02936267720861905,
+   "pi_hi": 0.07644938818742389,
+   "LRT": 25.97216296930128,
+   "frac_cells_P90": 0.00028901734104046245,
+   "mean_P_event": 0.04993548659722372,
+   "a_hat_null": [
+    -0.7173862440366787,
+    -0.7038760588480915,
+    -0.6753706784193512,
+    -0.7503967291424186,
+    -0.6615871336307553
+   ],
+   "d0_null": 0.023928850151166782,
+   "d0_alt": 0.020314139526862708,
+   "b_hat_alt": -0.7243663031891178,
+   "all_types": {
+    "gain1": {
+     "pi": 0.05,
+     "LRT": 25.97216296930128
+    },
+    "gain2": {
+     "pi": 0.05,
+     "LRT": 2.2693836381331494
+    },
+    "cnloh": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 0.9997104732722482,
+     "LRT": 0.0
+    },
+    "loss1": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "amp": {
+     "pi": 0.05,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "loss1",
+     "pi": 0.9837500487648313,
+     "LRT": 42.50093081812156,
+     "LRT_for_joint_best_type": 27.923681479678635,
+     "pi_for_joint_best_type": 0.05
+    },
+    "allele_only": {
+     "type_best": "amp",
+     "pi": 0.05,
+     "LRT": 0.08887538758017399,
+     "LRT_for_joint_best_type": 0.056341777080660904,
+     "pi_for_joint_best_type": 0.05
+    }
+   },
+   "prior": {
+    "m": -0.033989234648656205,
+    "sig_b": 0.44989039601324154,
+    "sig_u": 0.033795421417661384,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "clusters": [
+    {
+     "cluster": "0",
+     "n_cells": 1286,
+     "n_cells_N_gt0": 293,
+     "best_type": "gain1",
+     "pi": 0.05,
+     "pi_lo": 0.0,
+     "pi_hi": 0.0767485657210176,
+     "LRT": 1.4124219333052679,
+     "frac_cells_P90": 0.0,
+     "LRT_depth_only": 0.9319476321179536,
+     "LRT_allele_only": 0.0,
+     "pooled_h_all_orient": 0.5182481751824818,
+     "pooled_h_own_orient": NaN,
+     "boot_p": 0.12,
+     "class": "no evidence"
+    },
+    {
+     "cluster": "1",
+     "n_cells": 833,
+     "n_cells_N_gt0": 332,
+     "best_type": "gain2",
+     "pi": 0.05,
+     "pi_lo": 0.01686918849804768,
+     "pi_hi": 0.05066895008336923,
+     "LRT": 20.941023020805005,
+     "frac_cells_P90": 0.003601440576230492,
+     "LRT_depth_only": 20.941023020805915,
+     "LRT_allele_only": 0.0,
+     "pooled_h_all_orient": 0.5353159851301115,
+     "pooled_h_own_orient": 0.5377697841726619,
+     "boot_p": 0.01,
+     "class": "small-fraction deviation (<10% of cells)"
+    },
+    {
+     "cluster": "2",
+     "n_cells": 603,
+     "n_cells_N_gt0": 198,
+     "best_type": "cnloh",
+     "pi": 0.05,
+     "pi_lo": 0.0,
+     "pi_hi": 0.17781294589990151,
+     "LRT": 0.0,
+     "frac_cells_P90": 0.0,
+     "LRT_depth_only": 4.547473508864641e-13,
+     "LRT_allele_only": 0.0,
+     "pooled_h_all_orient": 0.4891304347826087,
+     "pooled_h_own_orient": NaN,
+     "boot_p": 1.0,
+     "class": "no evidence"
+    },
+    {
+     "cluster": "3",
+     "n_cells": 556,
+     "n_cells_N_gt0": 179,
+     "best_type": "gain2",
+     "pi": 0.05,
+     "pi_lo": 0.015953251830734753,
+     "pi_hi": 0.06291713193722871,
+     "LRT": 14.266202682033963,
+     "frac_cells_P90": 0.008992805755395683,
+     "LRT_depth_only": 14.266202682032144,
+     "LRT_allele_only": 0.0,
+     "pooled_h_all_orient": 0.5791505791505791,
+     "pooled_h_own_orient": 0.5791505791505791,
+     "boot_p": 0.01,
+     "class": "small-fraction deviation (<10% of cells)"
+    },
+    {
+     "cluster": "4",
+     "n_cells": 182,
+     "n_cells_N_gt0": 50,
+     "best_type": "gain1",
+     "pi": 0.05,
+     "pi_lo": 0.0,
+     "pi_hi": 0.15535843209725758,
+     "LRT": 0.0,
+     "frac_cells_P90": 0.0,
+     "LRT_depth_only": 0.16404003201932937,
+     "LRT_allele_only": 0.0,
+     "pooled_h_all_orient": 0.4,
+     "pooled_h_own_orient": NaN,
+     "boot_p": 1.0,
+     "class": "no evidence"
+    }
+   ],
+   "boot_p": 0.01,
+   "boot_B": 99,
+   "boot_T_q95": 1.8020338256999817,
+   "class": "small-fraction deviation (<10% of cells)",
+   "agreement": "depth only",
+   "agreement_note": "",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "gain1",
+     "pi": 0.05,
+     "LRT": 23.94287070158316,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "loss1",
+     "pi": 0.9802153257708949,
+     "LRT": 1396.7868906707736,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "depth only",
+     "best_type": "loss1",
+     "pi": 0.9837500487648313,
+     "LRT": 42.50093081812156,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "allele only",
+     "best_type": "amp",
+     "pi": 0.05,
+     "LRT": 0.08887538758017399,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 78.42668104171753
+  },
+  {
+   "name": "chr9_70_100",
+   "family": "saved",
+   "mode": "flank",
+   "rho_r": 0.41684864831194146,
+   "alpha_r": 0.006,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 3456,
+   "sum_N": 69734.0,
+   "pooled_h": 0.5240198468465884,
+   "best_type": "gain1",
+   "pi": 0.05,
+   "pi_lo": 0.03499979022480614,
+   "pi_hi": 0.044882509339691144,
+   "LRT": 437.9198151600867,
+   "frac_cells_P90": 0.028034682080924855,
+   "mean_P_event": 0.03449808878219652,
+   "a_hat_null": [
+    0.2762640015920382,
+    0.25972875442033405,
+    0.28059728075696744,
+    0.2644380546238572,
+    0.2811392690217079
+   ],
+   "d0_null": 0.024110395386663357,
+   "d0_alt": 0.018880943525295835,
+   "b_hat_alt": 0.2693561293695189,
+   "all_types": {
+    "gain1": {
+     "pi": 0.05,
+     "LRT": 437.9198151600867
+    },
+    "gain2": {
+     "pi": 0.9990487742988132,
+     "LRT": 1.7866101885010721
+    },
+    "cnloh": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "loss1": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "amp": {
+     "pi": 0.05,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "gain1",
+     "pi": 0.05,
+     "LRT": 553.1360315700949,
+     "LRT_for_joint_best_type": 553.1360315700949,
+     "pi_for_joint_best_type": 0.05
+    },
+    "allele_only": {
+     "type_best": "gain1",
+     "pi": 0.05352558660077787,
+     "LRT": 2.0495487585430965,
+     "LRT_for_joint_best_type": 2.0495487585430965,
+     "pi_for_joint_best_type": 0.05352558660077787
+    }
+   },
+   "prior": {
+    "m": -0.033989234648656205,
+    "sig_b": 0.44989039601324154,
+    "sig_u": 0.033795421417661384,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "clusters": [
+    {
+     "cluster": "0",
+     "n_cells": 1286,
+     "n_cells_N_gt0": 1283,
+     "best_type": "gain1",
+     "pi": 0.05,
+     "pi_lo": 0.01979174714739947,
+     "pi_hi": 0.04651271464549929,
+     "LRT": 140.16878290845852,
+     "frac_cells_P90": 0.026438569206842923,
+     "LRT_depth_only": 172.9814015316715,
+     "LRT_allele_only": 1.8105616365364767,
+     "pooled_h_all_orient": 0.518970490348347,
+     "pooled_h_own_orient": NaN,
+     "boot_p": 0.01,
+     "class": "small-fraction deviation (<10% of cells)"
+    },
+    {
+     "cluster": "1",
+     "n_cells": 833,
+     "n_cells_N_gt0": 833,
+     "best_type": "gain1",
+     "pi": 0.06658037343600236,
+     "pi_lo": 0.053882733210433166,
+     "pi_hi": 0.08437263292519766,
+     "LRT": 282.087949654564,
+     "frac_cells_P90": 0.057623049219687875,
+     "LRT_depth_only": 355.16605131558936,
+     "LRT_allele_only": 0.2006366323976181,
+     "pooled_h_all_orient": 0.5315655457019931,
+     "pooled_h_own_orient": 0.5348554251359863,
+     "boot_p": 0.01,
+     "class": "small-fraction deviation (<10% of cells)"
+    },
+    {
+     "cluster": "2",
+     "n_cells": 603,
+     "n_cells_N_gt0": 602,
+     "best_type": "cnloh",
+     "pi": 0.05,
+     "pi_lo": 0.03821772394688295,
+     "pi_hi": 0.039758353775037183,
+     "LRT": 0.0,
+     "frac_cells_P90": 0.001658374792703151,
+     "LRT_depth_only": 0.0,
+     "LRT_allele_only": 0.0,
+     "pooled_h_all_orient": 0.5222919553345831,
+     "pooled_h_own_orient": NaN,
+     "boot_p": 1.0,
+     "class": "no evidence"
+    },
+    {
+     "cluster": "3",
+     "n_cells": 556,
+     "n_cells_N_gt0": 556,
+     "best_type": "gain1",
+     "pi": 0.05,
+     "pi_lo": 0.018590604968370967,
+     "pi_hi": 0.04355935562957622,
+     "LRT": 46.88406057453358,
+     "frac_cells_P90": 0.02158273381294964,
+     "LRT_depth_only": 60.53285992683686,
+     "LRT_allele_only": 0.0,
+     "pooled_h_all_orient": 0.5223032629558542,
+     "pooled_h_own_orient": 0.5381955359949702,
+     "boot_p": 0.01,
+     "class": "small-fraction deviation (<10% of cells)"
+    },
+    {
+     "cluster": "4",
+     "n_cells": 182,
+     "n_cells_N_gt0": 182,
+     "best_type": "gain1",
+     "pi": 0.05,
+     "pi_lo": 0.014821119173863195,
+     "pi_hi": 0.049688524972817165,
+     "LRT": 10.918115886538999,
+     "frac_cells_P90": 0.02197802197802198,
+     "LRT_depth_only": 12.608731650670734,
+     "LRT_allele_only": 0.0,
+     "pooled_h_all_orient": 0.5137589433131535,
+     "pooled_h_own_orient": 0.5403243723616974,
+     "boot_p": 0.01,
+     "class": "small-fraction deviation (<10% of cells)"
+    }
+   ],
+   "boot_p": 0.01,
+   "boot_B": 99,
+   "boot_T_q95": 0.0,
+   "class": "small-fraction deviation (<10% of cells)",
+   "agreement": "depth only",
+   "agreement_note": "",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "gain1",
+     "pi": 0.05,
+     "LRT": 271.0804982547488,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "gain1",
+     "pi": 0.05,
+     "LRT": 445.8578157637239,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "depth only",
+     "best_type": "gain1",
+     "pi": 0.05,
+     "LRT": 553.1360315700949,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "allele only",
+     "best_type": "gain1",
+     "pi": 0.05352558660077787,
+     "LRT": 2.0495487585430965,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 109.64619874954224
+  },
+  {
+   "name": "lit_9p21_hemizygous_zone_approx",
+   "family": "literature",
+   "mode": "flank",
+   "rho_r": 0.5,
+   "alpha_r": 0.03,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 0,
+   "sum_N": 0.0,
+   "pooled_h": NaN,
+   "best_type": "loss1",
+   "pi": 0.9823019499261354,
+   "pi_lo": 0.9781073107300253,
+   "pi_hi": 0.9830614802082529,
+   "LRT": 89.18806961491282,
+   "frac_cells_P90": 0.9722543352601156,
+   "mean_P_event": 0.9823019432307522,
+   "a_hat_null": [
+    -0.32004445627435396,
+    -0.331128400467908,
+    -0.37622014960265504,
+    -0.29518934091076515,
+    -0.36881165193900306
+   ],
+   "d0_null": 0.023889961004777416,
+   "d0_alt": 0.023889961004777416,
+   "b_hat_alt": 0.34394562125601225,
+   "all_types": {
+    "loss1": {
+     "pi": 0.9823019499261354,
+     "LRT": 89.18806961491282
+    },
+    "gain1": {
+     "pi": 0.05,
+     "LRT": 62.973234933728236
+    },
+    "gain2": {
+     "pi": 0.05,
+     "LRT": 24.990420038317097
+    },
+    "cnloh": {
+     "pi": 0.95,
+     "LRT": 3.637978807091713e-12
+    },
+    "amp": {
+     "pi": 0.9996648576480544,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 1.0,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "loss1",
+     "pi": 0.9823019499261354,
+     "LRT": 89.18806961491282,
+     "LRT_for_joint_best_type": 89.18806961491282,
+     "pi_for_joint_best_type": 0.9823019499261354
+    },
+    "allele_only": {
+     "type_best": "loss1",
+     "pi": 0.3,
+     "LRT": 3.8413716652030416e-13,
+     "LRT_for_joint_best_type": 3.8413716652030416e-13,
+     "pi_for_joint_best_type": 0.3
+    }
+   },
+   "prior": {
+    "m": -0.033989234648656205,
+    "sig_b": 0.44989039601324154,
+    "sig_u": 0.033795421417661384,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "clusters": [
+    {
+     "cluster": "0",
+     "n_cells": 1286,
+     "n_cells_N_gt0": 0,
+     "best_type": "gain1",
+     "pi": 0.05,
+     "pi_lo": 0.012418234139242547,
+     "pi_hi": 0.05853314744256421,
+     "LRT": 8.398189388644823,
+     "frac_cells_P90": 0.0,
+     "LRT_depth_only": 8.398189388644823,
+     "LRT_allele_only": 1.4277468096679513e-13,
+     "pooled_h_all_orient": NaN,
+     "pooled_h_own_orient": NaN,
+     "boot_p": 0.01,
+     "class": "small-fraction deviation (<10% of cells)"
+    },
+    {
+     "cluster": "1",
+     "n_cells": 833,
+     "n_cells_N_gt0": 0,
+     "best_type": "gain1",
+     "pi": 0.061746813203006054,
+     "pi_lo": 0.038155052714593324,
+     "pi_hi": 0.09163745486473812,
+     "LRT": 46.987616718939535,
+     "frac_cells_P90": 0.0012004801920768306,
+     "LRT_depth_only": 46.987616718939535,
+     "LRT_allele_only": 9.248157795127554e-14,
+     "pooled_h_all_orient": NaN,
+     "pooled_h_own_orient": 0.7142857142857143,
+     "boot_p": 0.01,
+     "class": "small-fraction deviation (<10% of cells)"
+    },
+    {
+     "cluster": "2",
+     "n_cells": 603,
+     "n_cells_N_gt0": 0,
+     "best_type": "cnloh",
+     "pi": 0.3,
+     "pi_lo": 0.0,
+     "pi_hi": 1.0,
+     "LRT": 0.0,
+     "frac_cells_P90": 0.0,
+     "LRT_depth_only": 0.0,
+     "LRT_allele_only": 6.694644838489694e-14,
+     "pooled_h_all_orient": NaN,
+     "pooled_h_own_orient": NaN,
+     "boot_p": 1.0,
+     "class": "insufficient evidence"
+    },
+    {
+     "cluster": "3",
+     "n_cells": 556,
+     "n_cells_N_gt0": 0,
+     "best_type": "gain2",
+     "pi": 0.05,
+     "pi_lo": 0.0173973779345537,
+     "pi_hi": 0.04786162440158438,
+     "LRT": 24.739336297120644,
+     "frac_cells_P90": 0.01618705035971223,
+     "LRT_depth_only": 24.739336297120644,
+     "LRT_allele_only": 6.17284001691587e-14,
+     "pooled_h_all_orient": NaN,
+     "pooled_h_own_orient": 0.6367041198501873,
+     "boot_p": 0.01,
+     "class": "small-fraction deviation (<10% of cells)"
+    },
+    {
+     "cluster": "4",
+     "n_cells": 182,
+     "n_cells_N_gt0": 0,
+     "best_type": "gain1",
+     "pi": 0.05,
+     "pi_lo": 0.0,
+     "pi_hi": 0.08296676720729862,
+     "LRT": 1.7092855026514826,
+     "frac_cells_P90": 0.0,
+     "LRT_depth_only": 1.7092855026514826,
+     "LRT_allele_only": 2.020605904817785e-14,
+     "pooled_h_all_orient": NaN,
+     "pooled_h_own_orient": NaN,
+     "boot_p": 0.06,
+     "class": "no evidence"
+    }
+   ],
+   "boot_p": 0.01,
+   "boot_B": 99,
+   "boot_T_q95": 2.8086469683330485e-07,
+   "class": "clonal",
+   "agreement": "depth only",
+   "agreement_note": "",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "loss1",
+     "pi": 0.9823019499261354,
+     "LRT": 89.18806961491282,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "gain1",
+     "pi": 0.05,
+     "LRT": 22.00819048876656,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "depth only",
+     "best_type": "loss1",
+     "pi": 0.9823019499261354,
+     "LRT": 89.18806961491282,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "allele only",
+     "best_type": "loss1",
+     "pi": 0.3,
+     "LRT": 3.8413716652030416e-13,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 31.938528537750244
+  },
+  {
+   "name": "lit_MYC_8q24",
+   "family": "literature",
+   "mode": "flank",
+   "rho_r": 0.7326159283645955,
+   "alpha_r": 0.02,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 3351,
+   "sum_N": 18838.0,
+   "pooled_h": 0.5888629366174754,
+   "best_type": "gain1",
+   "pi": 0.9692769399658353,
+   "pi_lo": 0.957969914996394,
+   "pi_hi": 0.9801248146295747,
+   "LRT": 56.2311169544555,
+   "frac_cells_P90": 0.9274566473988439,
+   "mean_P_event": 0.9692768989068729,
+   "a_hat_null": [
+    0.44265404845818646,
+    0.4932763006466953,
+    0.35343998504304114,
+    0.5333190580981033,
+    0.4440073707166613
+   ],
+   "d0_null": 0.08419272352150806,
+   "d0_alt": -0.005417540733560856,
+   "b_hat_alt": 0.0571652573778552,
+   "all_types": {
+    "gain1": {
+     "pi": 0.9692769399658353,
+     "LRT": 56.2311169544555
+    },
+    "gain2": {
+     "pi": 0.9904454124165536,
+     "LRT": 21.291463111439953
+    },
+    "cnloh": {
+     "pi": 0.06571767464519335,
+     "LRT": 15.153038086864399
+    },
+    "amp": {
+     "pi": 0.9982163394412671,
+     "LRT": 0.0
+    },
+    "loss1": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 0.05,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "gain1",
+     "pi": 0.9699348981004458,
+     "LRT": 40.211991745884006,
+     "LRT_for_joint_best_type": 40.211991745884006,
+     "pi_for_joint_best_type": 0.9699348981004458
+    },
+    "allele_only": {
+     "type_best": "amp",
+     "pi": 0.4196452354914611,
+     "LRT": 35.532347706979635,
+     "LRT_for_joint_best_type": 30.596560081619828,
+     "pi_for_joint_best_type": 0.6095704711707295
+    }
+   },
+   "prior": {
+    "m": -0.033989234648656205,
+    "sig_b": 0.44989039601324154,
+    "sig_u": 0.033795421417661384,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "clusters": [
+    {
+     "cluster": "0",
+     "n_cells": 1286,
+     "n_cells_N_gt0": 1205,
+     "best_type": "cnloh",
+     "pi": 0.05,
+     "pi_lo": 0.0,
+     "pi_hi": 0.1206468475972485,
+     "LRT": 0.8883655154932057,
+     "frac_cells_P90": 0.0,
+     "LRT_depth_only": 3.637978807091713e-12,
+     "LRT_allele_only": 0.8883655154895678,
+     "pooled_h_all_orient": 0.603781693167168,
+     "pooled_h_own_orient": 0.6105705440070766,
+     "boot_p": 0.31,
+     "class": "no evidence"
+    },
+    {
+     "cluster": "1",
+     "n_cells": 833,
+     "n_cells_N_gt0": 829,
+     "best_type": "cnloh",
+     "pi": 0.05,
+     "pi_lo": 0.0,
+     "pi_hi": 0.07438740084286051,
+     "LRT": 0.0,
+     "frac_cells_P90": 0.0,
+     "LRT_depth_only": 0.0,
+     "LRT_allele_only": 0.0,
+     "pooled_h_all_orient": 0.5975206611570248,
+     "pooled_h_own_orient": 0.5973875661375662,
+     "boot_p": 1.0,
+     "class": "no evidence"
+    },
+    {
+     "cluster": "2",
+     "n_cells": 603,
+     "n_cells_N_gt0": 583,
+     "best_type": "cnloh",
+     "pi": 0.057682677698919146,
+     "pi_lo": 0.0,
+     "pi_hi": 0.16926023017134614,
+     "LRT": 2.159895495356068,
+     "frac_cells_P90": 0.0,
+     "LRT_depth_only": 0.0,
+     "LRT_allele_only": 2.159895495354931,
+     "pooled_h_all_orient": 0.59765625,
+     "pooled_h_own_orient": 0.5941051136363636,
+     "boot_p": 0.5,
+     "class": "no evidence"
+    },
+    {
+     "cluster": "3",
+     "n_cells": 556,
+     "n_cells_N_gt0": 553,
+     "best_type": "cnloh",
+     "pi": 0.05,
+     "pi_lo": 0.0,
+     "pi_hi": 0.16793559767563082,
+     "LRT": 1.5108629182404911,
+     "frac_cells_P90": 0.0,
+     "LRT_depth_only": 0.0,
+     "LRT_allele_only": 1.5108629182395816,
+     "pooled_h_all_orient": 0.6151748078353583,
+     "pooled_h_own_orient": 0.6152319523691392,
+     "boot_p": 0.16,
+     "class": "no evidence"
+    },
+    {
+     "cluster": "4",
+     "n_cells": 182,
+     "n_cells_N_gt0": 181,
+     "best_type": "cnloh",
+     "pi": 0.18080130737612135,
+     "pi_lo": 0.08061659702556882,
+     "pi_hi": 0.30064352660910926,
+     "LRT": 16.64469852696402,
+     "frac_cells_P90": 0.0,
+     "LRT_depth_only": 0.0,
+     "LRT_allele_only": 16.64469852696027,
+     "pooled_h_all_orient": 0.3922178988326848,
+     "pooled_h_own_orient": 0.6129032258064516,
+     "boot_p": 0.01,
+     "class": "subclonal"
+    }
+   ],
+   "boot_p": 0.01,
+   "boot_B": 99,
+   "boot_T_q95": 15.975697038813085,
+   "class": "clonal",
+   "agreement": "depth and allele both support",
+   "agreement_note": "",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "gain1",
+     "pi": 0.9692212789161724,
+     "LRT": 21.43770725504146,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "gain1",
+     "pi": 0.9724608671974356,
+     "LRT": 1003.8458356228148,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "depth only",
+     "best_type": "gain1",
+     "pi": 0.9699348981004458,
+     "LRT": 40.211991745884006,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "allele only",
+     "best_type": "amp",
+     "pi": 0.4196452354914611,
+     "LRT": 35.532347706979635,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 133.55248761177063
+  },
+  {
+   "name": "lit_19q13_qter",
+   "family": "literature",
+   "mode": "genome",
+   "rho_r": 0.41684864831194146,
+   "alpha_r": 0.006,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 3459,
+   "sum_N": 117954.0,
+   "pooled_h": 0.5226952879936246,
+   "best_type": "gain2",
+   "pi": 0.9991960138371138,
+   "pi_lo": 0.9983971271844364,
+   "pi_hi": 1.0,
+   "LRT": 3.7827640862378757,
+   "frac_cells_P90": 0.9976878612716763,
+   "mean_P_event": 0.9991960392606528,
+   "a_hat_null": [
+    0.6136098721734604,
+    0.6202397141503413,
+    0.5266026932430212,
+    0.6697905191033364,
+    0.5799232381744509
+   ],
+   "d0_null": 0.02273305944409399,
+   "d0_alt": 0.022733056922796663,
+   "b_hat_alt": -0.09107968771646512,
+   "all_types": {
+    "gain2": {
+     "pi": 0.9991960138371138,
+     "LRT": 3.7827640862378757
+    },
+    "gain1": {
+     "pi": 0.9960268980691958,
+     "LRT": 0.0
+    },
+    "cnloh": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "loss1": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "amp": {
+     "pi": 0.05,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "gain1",
+     "pi": 0.9954580583851781,
+     "LRT": 24.487897756363964,
+     "LRT_for_joint_best_type": 3.7827640838440857,
+     "pi_for_joint_best_type": 0.9991960138315253
+    },
+    "allele_only": {
+     "type_best": "homdel",
+     "pi": 0.3,
+     "LRT": 2.1827872842550278e-11,
+     "LRT_for_joint_best_type": 2.1827872842550278e-11,
+     "pi_for_joint_best_type": 0.3
+    }
+   },
+   "prior": {
+    "m": -0.17805021297001744,
+    "sig_b": 0.49966524410693525,
+    "sig_u": 0.03943046960536936,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "clusters": [
+    {
+     "cluster": "0",
+     "n_cells": 1286,
+     "n_cells_N_gt0": 1285,
+     "best_type": "cnloh",
+     "pi": 0.05,
+     "pi_lo": 0.020880546186187544,
+     "pi_hi": 0.02313464181928248,
+     "LRT": 0.0,
+     "frac_cells_P90": 0.0015552099533437014,
+     "LRT_depth_only": 0.0,
+     "LRT_allele_only": 0.0,
+     "pooled_h_all_orient": 0.5230697890099698,
+     "pooled_h_own_orient": 0.536948066803935,
+     "boot_p": 1.0,
+     "class": "no evidence"
+    },
+    {
+     "cluster": "1",
+     "n_cells": 833,
+     "n_cells_N_gt0": 833,
+     "best_type": "gain1",
+     "pi": 0.05,
+     "pi_lo": 0.015573006976639301,
+     "pi_hi": 0.016751319847954874,
+     "LRT": 0.0,
+     "frac_cells_P90": 0.003601440576230492,
+     "LRT_depth_only": 0.0,
+     "LRT_allele_only": 0.0,
+     "pooled_h_all_orient": 0.5229170963085172,
+     "pooled_h_own_orient": 0.5314658149171271,
+     "boot_p": 1.0,
+     "class": "no evidence"
+    },
+    {
+     "cluster": "2",
+     "n_cells": 603,
+     "n_cells_N_gt0": 603,
+     "best_type": "cnloh",
+     "pi": 0.05,
+     "pi_lo": 0.0239163848393482,
+     "pi_hi": 0.025828626251610785,
+     "LRT": 0.0,
+     "frac_cells_P90": 0.001658374792703151,
+     "LRT_depth_only": 0.0,
+     "LRT_allele_only": 0.0,
+     "pooled_h_all_orient": 0.5234185875171035,
+     "pooled_h_own_orient": 0.5392167557543363,
+     "boot_p": 1.0,
+     "class": "no evidence"
+    },
+    {
+     "cluster": "3",
+     "n_cells": 556,
+     "n_cells_N_gt0": 556,
+     "best_type": "cnloh",
+     "pi": 0.05,
+     "pi_lo": 0.007955783294558802,
+     "pi_hi": 0.00891575329915676,
+     "LRT": 0.0,
+     "frac_cells_P90": 0.0,
+     "LRT_depth_only": 0.0,
+     "LRT_allele_only": 0.0,
+     "pooled_h_all_orient": 0.518754988028731,
+     "pooled_h_own_orient": 0.5315624684375315,
+     "boot_p": 1.0,
+     "class": "no evidence"
+    },
+    {
+     "cluster": "4",
+     "n_cells": 182,
+     "n_cells_N_gt0": 182,
+     "best_type": "cnloh",
+     "pi": 0.05,
+     "pi_lo": 0.023329246076496283,
+     "pi_hi": 0.02422530492487663,
+     "LRT": 0.0,
+     "frac_cells_P90": 0.0,
+     "LRT_depth_only": 0.0,
+     "LRT_allele_only": 0.0,
+     "pooled_h_all_orient": 0.532456994482311,
+     "pooled_h_own_orient": 0.5459670424978318,
+     "boot_p": 1.0,
+     "class": "no evidence"
+    }
+   ],
+   "boot_p": 0.01,
+   "boot_B": 99,
+   "boot_T_q95": 2.4194935100233126,
+   "class": "clonal",
+   "agreement": "neither alone",
+   "agreement_note": "type has no allele change; ",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "gain2",
+     "pi": 0.9991960138371138,
+     "LRT": 3.7827640862378757,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "gain2",
+     "pi": 0.9992015503461147,
+     "LRT": 1914.6311367584422,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "depth only",
+     "best_type": "gain1",
+     "pi": 0.9954580583851781,
+     "LRT": 24.487897756363964,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "allele only",
+     "best_type": "homdel",
+     "pi": 0.3,
+     "LRT": 2.1827872842550278e-11,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 100.6293215751648
+  },
+  {
+   "name": "lit_5q13_qter",
+   "family": "literature",
+   "mode": "genome",
+   "rho_r": 0.9712372628452939,
+   "alpha_r": 0.003,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 3459,
+   "sum_N": 446467.0,
+   "pooled_h": 0.6381277899598402,
+   "best_type": "gain1",
+   "pi": 0.9948577286998898,
+   "pi_lo": 0.9936480777557348,
+   "pi_hi": 0.9951717172648664,
+   "LRT": 702.1129808244004,
+   "frac_cells_P90": 0.9933526011560694,
+   "mean_P_event": 0.994857680514002,
+   "a_hat_null": [
+    0.14505066277118023,
+    0.1377991286939152,
+    0.1548338745094184,
+    0.11955124091243345,
+    0.12364324097408712
+   ],
+   "d0_null": 0.11318499928215238,
+   "d0_alt": 0.03846797961752653,
+   "b_hat_alt": -0.26897178910441844,
+   "all_types": {
+    "gain1": {
+     "pi": 0.9948577286998898,
+     "LRT": 702.1129808244004
+    },
+    "amp": {
+     "pi": 0.99868436242004,
+     "LRT": 653.4973150500882
+    },
+    "gain2": {
+     "pi": 0.9999215880928547,
+     "LRT": 0.0
+    },
+    "cnloh": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "loss1": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 0.05,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "gain1",
+     "pi": 0.9945753951927674,
+     "LRT": 37.333925921382615,
+     "LRT_for_joint_best_type": 37.333925921382615,
+     "pi_for_joint_best_type": 0.9945753951927674
+    },
+    "allele_only": {
+     "type_best": "amp",
+     "pi": 0.9964503199231692,
+     "LRT": 669.3878689852536,
+     "LRT_for_joint_best_type": 660.4533908323065,
+     "pi_for_joint_best_type": 0.9923527456928595
+    }
+   },
+   "prior": {
+    "m": -0.17805021297001744,
+    "sig_b": 0.49966524410693525,
+    "sig_u": 0.03943046960536936,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "clusters": [
+    {
+     "cluster": "0",
+     "n_cells": 1286,
+     "n_cells_N_gt0": 1285,
+     "best_type": "cnloh",
+     "pi": 0.05,
+     "pi_lo": 0.024427899461245933,
+     "pi_hi": 0.025682741257927237,
+     "LRT": 5.176643518429046,
+     "frac_cells_P90": 0.007776049766718507,
+     "LRT_depth_only": 0.0,
+     "LRT_allele_only": 5.176643518370838,
+     "pooled_h_all_orient": 0.6378053146804293,
+     "pooled_h_own_orient": 0.6300480946489582,
+     "boot_p": 0.01,
+     "class": "small-fraction deviation (<10% of cells)"
+    },
+    {
+     "cluster": "1",
+     "n_cells": 833,
+     "n_cells_N_gt0": 833,
+     "best_type": "loss1",
+     "pi": 0.05,
+     "pi_lo": 0.023584970491554003,
+     "pi_hi": 0.024254102659956426,
+     "LRT": 0.0,
+     "frac_cells_P90": 0.003601440576230492,
+     "LRT_depth_only": 0.0,
+     "LRT_allele_only": 0.0,
+     "pooled_h_all_orient": 0.6415710698977681,
+     "pooled_h_own_orient": 0.6392064809006347,
+     "boot_p": 1.0,
+     "class": "no evidence"
+    },
+    {
+     "cluster": "2",
+     "n_cells": 603,
+     "n_cells_N_gt0": 603,
+     "best_type": "cnloh",
+     "pi": 0.05,
+     "pi_lo": 0.024927570519769928,
+     "pi_hi": 0.02570080021415533,
+     "LRT": 0.0,
+     "frac_cells_P90": 0.003316749585406302,
+     "LRT_depth_only": 5.729816621169448e-11,
+     "LRT_allele_only": 0.0,
+     "pooled_h_all_orient": 0.6359196961475855,
+     "pooled_h_own_orient": 0.6473196908191069,
+     "boot_p": 1.0,
+     "class": "no evidence"
+    },
+    {
+     "cluster": "3",
+     "n_cells": 556,
+     "n_cells_N_gt0": 556,
+     "best_type": "gain1",
+     "pi": 0.05,
+     "pi_lo": 0.009635603736222804,
+     "pi_hi": 0.01045638296755693,
+     "LRT": 0.0,
+     "frac_cells_P90": 0.0017985611510791368,
+     "LRT_depth_only": 0.0,
+     "LRT_allele_only": 12.885642989404914,
+     "pooled_h_all_orient": 0.6336908413928763,
+     "pooled_h_own_orient": 0.6332001158412974,
+     "boot_p": 1.0,
+     "class": "no evidence"
+    },
+    {
+     "cluster": "4",
+     "n_cells": 182,
+     "n_cells_N_gt0": 182,
+     "best_type": "gain1",
+     "pi": 0.05,
+     "pi_lo": 0.03632243712440868,
+     "pi_hi": 0.03712017312403876,
+     "LRT": 0.0,
+     "frac_cells_P90": 0.005494505494505495,
+     "LRT_depth_only": 0.0,
+     "LRT_allele_only": 11.786433389669583,
+     "pooled_h_all_orient": 0.6422113596054851,
+     "pooled_h_own_orient": 0.6449570906619084,
+     "boot_p": 1.0,
+     "class": "no evidence"
+    }
+   ],
+   "boot_p": 0.01,
+   "boot_B": 99,
+   "boot_T_q95": 39.65019238825189,
+   "class": "clonal",
+   "agreement": "depth and allele both support",
+   "agreement_note": "",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "gain1",
+     "pi": 0.9950585972540176,
+     "LRT": 720.5655399197713,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "gain1",
+     "pi": 0.9948445445183125,
+     "LRT": 991.2616475693067,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "depth only",
+     "best_type": "gain1",
+     "pi": 0.9945753951927674,
+     "LRT": 37.333925921382615,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "allele only",
+     "best_type": "amp",
+     "pi": 0.9964503199231692,
+     "LRT": 669.3878689852536,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 102.00809502601624
+  },
+  {
+   "name": "chr8_115_145_cluster4_hypothesis",
+   "family": "hypothesis",
+   "mode": "genome",
+   "rho_r": 2.9999999999999996,
+   "alpha_r": 0.015,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 3460,
+   "sum_N": 208799.0,
+   "pooled_h": 0.5975459652584543,
+   "best_type": "gain1",
+   "pi": 0.952864531511206,
+   "pi_lo": 0.9453174027888906,
+   "pi_hi": 0.96063817090395,
+   "LRT": 279.7901197579631,
+   "frac_cells_P90": 0.915028901734104,
+   "mean_P_event": 0.9528645351898003,
+   "a_hat_null": [
+    0.41779932110884327,
+    0.3921647996398424,
+    0.40362199854652364,
+    0.45362211399086866,
+    0.7103637312441412
+   ],
+   "d0_null": 0.09475016591238748,
+   "d0_alt": 3.283336537281134e-05,
+   "b_hat_alt": 0.08337759984590694,
+   "all_types": {
+    "gain1": {
+     "pi": 0.952864531511206,
+     "LRT": 279.7901197579631
+    },
+    "gain2": {
+     "pi": 0.9962426363207468,
+     "LRT": 13.082141825885628
+    },
+    "amp": {
+     "pi": 0.9990657909712213,
+     "LRT": 0.0
+    },
+    "cnloh": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "loss1": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 0.05,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "gain1",
+     "pi": 0.9630816173443719,
+     "LRT": 170.98589788473328,
+     "LRT_for_joint_best_type": 170.98589788473328,
+     "pi_for_joint_best_type": 0.9630816173443719
+    },
+    "allele_only": {
+     "type_best": "amp",
+     "pi": 0.8817140184269269,
+     "LRT": 373.052346813678,
+     "LRT_for_joint_best_type": 184.10987501588534,
+     "pi_for_joint_best_type": 0.8159640106282748
+    }
+   },
+   "prior": {
+    "m": -0.17805021297001744,
+    "sig_b": 0.49966524410693525,
+    "sig_u": 0.03943046960536936,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "clusters": [
+    {
+     "cluster": "0",
+     "n_cells": 1286,
+     "n_cells_N_gt0": 1286,
+     "best_type": "gain1",
+     "pi": 0.9545953896244429,
+     "pi_lo": 1.069343846877008,
+     "pi_hi": 0.6998577598987532,
+     "LRT": 0.0,
+     "frac_cells_P90": 0.9160186625194401,
+     "LRT_depth_only": 0.0,
+     "LRT_allele_only": 9.883317795924086,
+     "pooled_h_all_orient": 0.6136040570133313,
+     "pooled_h_own_orient": 0.6173558301647655,
+     "boot_p": 1.0,
+     "class": "insufficient evidence"
+    },
+    {
+     "cluster": "1",
+     "n_cells": 833,
+     "n_cells_N_gt0": 833,
+     "best_type": "gain1",
+     "pi": 0.05,
+     "pi_lo": 0.029258738085929492,
+     "pi_hi": 0.03128335439745633,
+     "LRT": 5.555647722412687,
+     "frac_cells_P90": 0.009603841536614645,
+     "LRT_depth_only": 0.0,
+     "LRT_allele_only": 15.360636318924662,
+     "pooled_h_all_orient": 0.6175542252973645,
+     "pooled_h_own_orient": 0.6179145079699846,
+     "boot_p": 0.01,
+     "class": "small-fraction deviation (<10% of cells)"
+    },
+    {
+     "cluster": "2",
+     "n_cells": 603,
+     "n_cells_N_gt0": 603,
+     "best_type": "gain1",
+     "pi": 0.05,
+     "pi_lo": 0.028695808755977784,
+     "pi_hi": 0.030256912669798422,
+     "LRT": 0.0,
+     "frac_cells_P90": 0.008291873963515755,
+     "LRT_depth_only": 0.0,
+     "LRT_allele_only": 18.12804768615979,
+     "pooled_h_all_orient": 0.61036387989731,
+     "pooled_h_own_orient": 0.6101694915254238,
+     "boot_p": 1.0,
+     "class": "no evidence"
+    },
+    {
+     "cluster": "3",
+     "n_cells": 556,
+     "n_cells_N_gt0": 556,
+     "best_type": "cnloh",
+     "pi": 0.8958599978566394,
+     "pi_lo": 0.8629381029607858,
+     "pi_hi": 0.923288164134122,
+     "LRT": 86.61096693804757,
+     "frac_cells_P90": 0.829136690647482,
+     "LRT_depth_only": 5.820766091346741e-11,
+     "LRT_allele_only": 86.61096693802756,
+     "pooled_h_all_orient": 0.6035747347432885,
+     "pooled_h_own_orient": 0.6024387299287698,
+     "boot_p": 0.01,
+     "class": "clonal"
+    },
+    {
+     "cluster": "4",
+     "n_cells": 182,
+     "n_cells_N_gt0": 182,
+     "best_type": "cnloh",
+     "pi": 0.305980263027901,
+     "pi_lo": 0.2389900003413004,
+     "pi_hi": 0.3788383430135196,
+     "LRT": 311.6577725979714,
+     "frac_cells_P90": 0.2802197802197802,
+     "LRT_depth_only": 0.0,
+     "LRT_allele_only": 311.65777259788274,
+     "pooled_h_all_orient": 0.4014245211257866,
+     "pooled_h_own_orient": 0.6088794926004228,
+     "boot_p": 0.01,
+     "class": "subclonal"
+    }
+   ],
+   "boot_p": 0.01,
+   "boot_B": 99,
+   "boot_T_q95": 22.871746906674524,
+   "class": "clonal",
+   "agreement": "depth and allele both support",
+   "agreement_note": "",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "gain1",
+     "pi": 0.9480302729672281,
+     "LRT": 276.4793020899815,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "gain1",
+     "pi": 0.9553134437395022,
+     "LRT": 1407.301881546955,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "depth only",
+     "best_type": "gain1",
+     "pi": 0.9630816173443719,
+     "LRT": 170.98589788473328,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "allele only",
+     "best_type": "amp",
+     "pi": 0.8817140184269269,
+     "LRT": 373.052346813678,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 113.47757291793823
+  },
+  {
+   "name": "random_chr1:7.0",
+   "family": "random",
+   "mode": "flank",
+   "rho_r": 0.5,
+   "alpha_r": 0.01,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 0,
+   "sum_N": 0.0,
+   "pooled_h": NaN,
+   "best_type": "gain2",
+   "pi": 0.9974603171717522,
+   "pi_lo": 0.9963563503751335,
+   "pi_hi": 0.9988633925450178,
+   "LRT": 6.5820633163821185,
+   "frac_cells_P90": 0.9947976878612717,
+   "mean_P_event": 0.9974603428188286,
+   "a_hat_null": [
+    0.260117435802889,
+    0.30281109737925893,
+    0.21368096778923376,
+    0.2744779221573257,
+    0.24232893570912287
+   ],
+   "d0_null": 0.023889961004777416,
+   "d0_alt": 0.023889961004777416,
+   "b_hat_alt": -0.43403034681999664,
+   "all_types": {
+    "gain2": {
+     "pi": 0.9974603171717522,
+     "LRT": 6.5820633163821185
+    },
+    "gain1": {
+     "pi": 0.9956007157439811,
+     "LRT": 3.8013387797545874
+    },
+    "cnloh": {
+     "pi": 0.3,
+     "LRT": 1.2732925824820995e-10
+    },
+    "amp": {
+     "pi": 0.9997566294094431,
+     "LRT": 0.0
+    },
+    "loss1": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 0.05,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "gain2",
+     "pi": 0.9974603171717522,
+     "LRT": 6.5820633163821185,
+     "LRT_for_joint_best_type": 6.5820633163821185,
+     "pi_for_joint_best_type": 0.9974603171717522
+    },
+    "allele_only": {
+     "type_best": "loss1",
+     "pi": 0.3,
+     "LRT": 3.8413716652030416e-13,
+     "LRT_for_joint_best_type": 3.8413716652030416e-13,
+     "pi_for_joint_best_type": 0.3
+    }
+   },
+   "prior": {
+    "m": -0.033989234648656205,
+    "sig_b": 0.44989039601324154,
+    "sig_u": 0.033795421417661384,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "boot_p": 0.01,
+   "boot_B": 99,
+   "boot_T_q95": 0.386992855976132,
+   "class": "clonal",
+   "agreement": "depth only",
+   "agreement_note": "type has no allele change; ",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "gain2",
+     "pi": 0.9974603171717522,
+     "LRT": 6.5820633163821185,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "gain1",
+     "pi": 0.9948791090489285,
+     "LRT": 311.8986726904732,
+     "boot_p": 0.025,
+     "pi_lo": 0.9916019922490696,
+     "pi_hi": 0.9993280146047566,
+     "class": "clonal"
+    },
+    {
+     "variant": "depth only",
+     "best_type": "gain2",
+     "pi": 0.9974603171717522,
+     "LRT": 6.5820633163821185,
+     "boot_p": 0.025,
+     "pi_lo": 0.9963563503751335,
+     "pi_hi": 0.9988633925450178,
+     "class": "clonal"
+    },
+    {
+     "variant": "allele only",
+     "best_type": "loss1",
+     "pi": 0.3,
+     "LRT": 3.8413716652030416e-13,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 17.955058097839355
+  },
+  {
+   "name": "random_chr4:79.5",
+   "family": "random",
+   "mode": "flank",
+   "rho_r": 0.8435306093922691,
+   "alpha_r": 0.02,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 1057,
+   "sum_N": 1466.0,
+   "pooled_h": 0.5381991814461119,
+   "best_type": "cnloh",
+   "pi": 0.05382869441994307,
+   "pi_lo": 0.0,
+   "pi_hi": 0.18128742888112656,
+   "LRT": 0.7192922428148449,
+   "frac_cells_P90": 0.0,
+   "mean_P_event": 0.05382856161306277,
+   "a_hat_null": [
+    -0.5868035686308078,
+    -0.5981773930854658,
+    -0.45589565976016627,
+    -0.683244728809737,
+    -0.6146648329347516
+   ],
+   "d0_null": 0.031035466533959416,
+   "d0_alt": 0.02250353863730259,
+   "b_hat_alt": -0.5877588476957303,
+   "all_types": {
+    "cnloh": {
+     "pi": 0.05382869441994307,
+     "LRT": 0.7192922428148449
+    },
+    "gain2": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "gain1": {
+     "pi": 0.9953580296528202,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "amp": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "loss1": {
+     "pi": 0.05,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "loss1",
+     "pi": 0.9986303504558731,
+     "LRT": 3.0498549040094076,
+     "LRT_for_joint_best_type": 3.637978807091713e-12,
+     "pi_for_joint_best_type": 0.3
+    },
+    "allele_only": {
+     "type_best": "loss1",
+     "pi": 0.053816600291904125,
+     "LRT": 0.7192921003872925,
+     "LRT_for_joint_best_type": 0.7192921003872925,
+     "pi_for_joint_best_type": 0.053816600291904125
+    }
+   },
+   "prior": {
+    "m": -0.033989234648656205,
+    "sig_b": 0.44989039601324154,
+    "sig_u": 0.033795421417661384,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "boot_p": 0.3,
+   "boot_B": 99,
+   "boot_T_q95": 2.3315530455529365,
+   "class": "no evidence",
+   "agreement": "neither alone",
+   "agreement_note": "type has no depth change; ",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "cnloh",
+     "pi": 0.05,
+     "LRT": 0.4961621234724589,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "loss1",
+     "pi": 0.9976963424130706,
+     "LRT": 894.6459129784307,
+     "boot_p": 0.025,
+     "pi_lo": 0.9961330782581619,
+     "pi_hi": 0.9995208650691813,
+     "class": "clonal"
+    },
+    {
+     "variant": "depth only",
+     "best_type": "loss1",
+     "pi": 0.9986303504558731,
+     "LRT": 3.0498549040094076,
+     "boot_p": 0.025,
+     "pi_lo": 0.9973519721630867,
+     "pi_hi": 1.0,
+     "class": "clonal"
+    },
+    {
+     "variant": "allele only",
+     "best_type": "loss1",
+     "pi": 0.053816600291904125,
+     "LRT": 0.7192921003872925,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 50.43585157394409
+  },
+  {
+   "name": "random_chr10:64.1",
+   "family": "random",
+   "mode": "flank",
+   "rho_r": 1.1182781160944826,
+   "alpha_r": 0.07,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 1180,
+   "sum_N": 1910.0,
+   "pooled_h": 0.5701570680628272,
+   "best_type": "cnloh",
+   "pi": 0.1886725984516769,
+   "pi_lo": 0.0686254214790493,
+   "pi_hi": 0.312898612015115,
+   "LRT": 9.699265302897402,
+   "frac_cells_P90": 0.0,
+   "mean_P_event": 0.18867253318579,
+   "a_hat_null": [
+    -1.2094605688350963,
+    -1.183216320504791,
+    -1.0569080742466535,
+    -1.4269903473021623,
+    -1.2676395383701575
+   ],
+   "d0_null": 0.052893268776220845,
+   "d0_alt": 0.021091721204720883,
+   "b_hat_alt": -1.2288428817429247,
+   "all_types": {
+    "cnloh": {
+     "pi": 0.1886725984516769,
+     "LRT": 9.699265302897402
+    },
+    "gain1": {
+     "pi": 0.9995667510346116,
+     "LRT": 0.0
+    },
+    "gain2": {
+     "pi": 0.994367183614602,
+     "LRT": 0.0
+    },
+    "loss1": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "amp": {
+     "pi": 0.9951118581563603,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "loss1",
+     "pi": 1.0,
+     "LRT": 5.80413920499268,
+     "LRT_for_joint_best_type": 4.3655745685100555e-10,
+     "pi_for_joint_best_type": 0.3000000000000001
+    },
+    "allele_only": {
+     "type_best": "loss1",
+     "pi": 0.1886714485927172,
+     "LRT": 9.69926532236559,
+     "LRT_for_joint_best_type": 9.69926532236559,
+     "pi_for_joint_best_type": 0.1886714485927172
+    }
+   },
+   "prior": {
+    "m": -0.033989234648656205,
+    "sig_b": 0.44989039601324154,
+    "sig_u": 0.033795421417661384,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "boot_p": 0.01,
+   "boot_B": 99,
+   "boot_T_q95": 5.949648678524315,
+   "class": "subclonal",
+   "agreement": "allele only",
+   "agreement_note": "type has no depth change; ",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "cnloh",
+     "pi": 0.11249998005968954,
+     "LRT": 9.93755961440911,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "loss1",
+     "pi": 1.0,
+     "LRT": 3967.3470939761137,
+     "boot_p": 0.025,
+     "pi_lo": 0.9986024752260692,
+     "pi_hi": 1.0,
+     "class": "clonal"
+    },
+    {
+     "variant": "depth only",
+     "best_type": "loss1",
+     "pi": 1.0,
+     "LRT": 5.80413920499268,
+     "boot_p": 0.425,
+     "pi_lo": 0.9974401714103042,
+     "pi_hi": 1.0,
+     "class": "insufficient evidence"
+    },
+    {
+     "variant": "allele only",
+     "best_type": "loss1",
+     "pi": 0.1886714485927172,
+     "LRT": 9.69926532236559,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 47.927462577819824
+  },
+  {
+   "name": "random_chr2:61.1",
+   "family": "random",
+   "mode": "flank",
+   "rho_r": 0.8435306093922691,
+   "alpha_r": 0.01,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 2272,
+   "sum_N": 4993.0,
+   "pooled_h": 0.5471660324454236,
+   "best_type": "gain2",
+   "pi": 0.9972681793992871,
+   "pi_lo": 0.9956611939299091,
+   "pi_hi": 1.0,
+   "LRT": 2.4628917269765225,
+   "frac_cells_P90": 0.992485549132948,
+   "mean_P_event": 0.9972681708219016,
+   "a_hat_null": [
+    0.18738435593927882,
+    0.18578706474769957,
+    0.12424297334086036,
+    0.24616845772665644,
+    0.176557344935927
+   ],
+   "d0_null": 0.03847856188739798,
+   "d0_alt": 0.038478560411818165,
+   "b_hat_alt": -0.5082401448866661,
+   "all_types": {
+    "gain2": {
+     "pi": 0.9972681793992871,
+     "LRT": 2.4628917269765225
+    },
+    "cnloh": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "gain1": {
+     "pi": 0.9914661467328468,
+     "LRT": 0.0
+    },
+    "amp": {
+     "pi": 0.9995699623767569,
+     "LRT": 0.0
+    },
+    "loss1": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 0.05,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "gain1",
+     "pi": 0.9915387644358894,
+     "LRT": 5.372399460913584,
+     "LRT_for_joint_best_type": 2.4628915992871043,
+     "pi_for_joint_best_type": 0.9972681833973422
+    },
+    "allele_only": {
+     "type_best": "gain1",
+     "pi": 0.15562710724652798,
+     "LRT": 0.8169237178590265,
+     "LRT_for_joint_best_type": 0.0,
+     "pi_for_joint_best_type": 0.3
+    }
+   },
+   "prior": {
+    "m": -0.033989234648656205,
+    "sig_b": 0.44989039601324154,
+    "sig_u": 0.033795421417661384,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "boot_p": 0.13,
+   "boot_B": 99,
+   "boot_T_q95": 3.6971113405830667,
+   "class": "insufficient evidence",
+   "agreement": "neither alone",
+   "agreement_note": "type has no allele change; ",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "gain2",
+     "pi": 0.9972681793992871,
+     "LRT": 2.4628917269765225,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "gain1",
+     "pi": 0.9870254155590694,
+     "LRT": 40.98818947559994,
+     "boot_p": 0.025,
+     "pi_lo": 0.9777380322237894,
+     "pi_hi": 0.9917020752558703,
+     "class": "clonal"
+    },
+    {
+     "variant": "depth only",
+     "best_type": "gain1",
+     "pi": 0.9915387644358894,
+     "LRT": 5.372399460913584,
+     "boot_p": 0.025,
+     "pi_lo": 0.9834499699634952,
+     "pi_hi": 0.9976562709916567,
+     "class": "clonal"
+    },
+    {
+     "variant": "allele only",
+     "best_type": "gain1",
+     "pi": 0.15562710724652798,
+     "LRT": 0.8169237178590265,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 71.71710419654846
+  },
+  {
+   "name": "random_chr3:129.9",
+   "family": "random",
+   "mode": "flank",
+   "rho_r": 0.9712372628452939,
+   "alpha_r": 0.02,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 2299,
+   "sum_N": 5396.0,
+   "pooled_h": 0.5292809488510007,
+   "best_type": "cnloh",
+   "pi": 0.05,
+   "pi_lo": 0.0,
+   "pi_hi": 0.12307847592752043,
+   "LRT": 1.3569798706230358,
+   "frac_cells_P90": 0.0,
+   "mean_P_event": 0.049937196423154834,
+   "a_hat_null": [
+    -0.5916639561968645,
+    -0.5720681188446644,
+    -0.4559073085520273,
+    -0.7358866252630556,
+    -0.5888873704788324
+   ],
+   "d0_null": 0.02533601161585904,
+   "d0_alt": 0.013577217617485747,
+   "b_hat_alt": -0.5888819392941598,
+   "all_types": {
+    "cnloh": {
+     "pi": 0.05,
+     "LRT": 1.3569798706230358
+    },
+    "gain2": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "gain1": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "loss1": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "amp": {
+     "pi": 1.0,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "loss1",
+     "pi": 1.0,
+     "LRT": 1.425460543432564,
+     "LRT_for_joint_best_type": 6.184563972055912e-11,
+     "pi_for_joint_best_type": 0.30000000000000004
+    },
+    "allele_only": {
+     "type_best": "loss1",
+     "pi": 0.05,
+     "LRT": 1.3569798175212782,
+     "LRT_for_joint_best_type": 1.3569798175212782,
+     "pi_for_joint_best_type": 0.05
+    }
+   },
+   "prior": {
+    "m": -0.033989234648656205,
+    "sig_b": 0.44989039601324154,
+    "sig_u": 0.033795421417661384,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "boot_p": 0.09,
+   "boot_B": 99,
+   "boot_T_q95": 1.6376613859414608,
+   "class": "no evidence",
+   "agreement": "neither alone",
+   "agreement_note": "type has no depth change; ",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "cnloh",
+     "pi": 0.05,
+     "LRT": 1.5881299363536527,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "loss1",
+     "pi": 0.9990795426337925,
+     "LRT": 418.0508933289675,
+     "boot_p": 0.025,
+     "pi_lo": 0.997874360968566,
+     "pi_hi": 1.0,
+     "class": "clonal"
+    },
+    {
+     "variant": "depth only",
+     "best_type": "loss1",
+     "pi": 1.0,
+     "LRT": 1.425460543432564,
+     "boot_p": 0.45,
+     "pi_lo": 0.9990565046345414,
+     "pi_hi": 1.0,
+     "class": "insufficient evidence"
+    },
+    {
+     "variant": "allele only",
+     "best_type": "loss1",
+     "pi": 0.05,
+     "LRT": 1.3569798175212782,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 73.28396654129028
+  },
+  {
+   "name": "random_chr8:51.5",
+   "family": "random",
+   "mode": "flank",
+   "rho_r": 0.8435306093922691,
+   "alpha_r": 0.02,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 2060,
+   "sum_N": 4296.0,
+   "pooled_h": 0.5453910614525139,
+   "best_type": "gain2",
+   "pi": 0.05,
+   "pi_lo": 0.03183316394570663,
+   "pi_hi": 0.03487422034997154,
+   "LRT": 122.23079485705603,
+   "frac_cells_P90": 0.01560693641618497,
+   "mean_P_event": 0.027400263679295708,
+   "a_hat_null": [
+    0.1288358728844982,
+    0.14983891358165363,
+    0.11844854679480263,
+    0.14461902569088791,
+    0.14514551545317275
+   ],
+   "d0_null": 0.03714927995366634,
+   "d0_alt": 0.037149508862123315,
+   "b_hat_alt": 0.12478462794591547,
+   "all_types": {
+    "gain2": {
+     "pi": 0.05,
+     "LRT": 122.23079485705603
+    },
+    "gain1": {
+     "pi": 0.05,
+     "LRT": 103.59429054627981
+    },
+    "cnloh": {
+     "pi": 0.0995290327689765,
+     "LRT": 5.848737026495655
+    },
+    "amp": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "loss1": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 1.0,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "loss1",
+     "pi": 0.9786200827000181,
+     "LRT": 176.64885982493797,
+     "LRT_for_joint_best_type": 122.23079468356082,
+     "pi_for_joint_best_type": 0.05
+    },
+    "allele_only": {
+     "type_best": "loss1",
+     "pi": 0.09953090331420746,
+     "LRT": 5.848736919070689,
+     "LRT_for_joint_best_type": 0.0,
+     "pi_for_joint_best_type": 0.3
+    }
+   },
+   "prior": {
+    "m": -0.033989234648656205,
+    "sig_b": 0.44989039601324154,
+    "sig_u": 0.033795421417661384,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "boot_p": 0.01,
+   "boot_B": 99,
+   "boot_T_q95": 3.493864670568653,
+   "class": "small-fraction deviation (<10% of cells)",
+   "agreement": "depth only",
+   "agreement_note": "type has no allele change; ",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "gain2",
+     "pi": 0.05,
+     "LRT": 122.23079485705603,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "gain2",
+     "pi": 0.05,
+     "LRT": 139.44319382753383,
+     "boot_p": 0.025,
+     "pi_lo": 0.03283321394386818,
+     "pi_hi": 0.0359067968588002,
+     "class": "small-fraction deviation (<10% of cells)"
+    },
+    {
+     "variant": "depth only",
+     "best_type": "loss1",
+     "pi": 0.9786200827000181,
+     "LRT": 176.64885982493797,
+     "boot_p": 0.025,
+     "pi_lo": 0.976089231496692,
+     "pi_hi": 0.9804008648085474,
+     "class": "clonal"
+    },
+    {
+     "variant": "allele only",
+     "best_type": "loss1",
+     "pi": 0.09953090331420746,
+     "LRT": 5.848736919070689,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 62.95561933517456
+  },
+  {
+   "name": "random_chr10:54.4",
+   "family": "random",
+   "mode": "flank",
+   "rho_r": 0.9712372628452939,
+   "alpha_r": 0.07,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 1477,
+   "sum_N": 2498.0,
+   "pooled_h": 0.5612489991993594,
+   "best_type": "cnloh",
+   "pi": 0.12249128359342376,
+   "pi_lo": 0.015659178247917318,
+   "pi_hi": 0.23593908520334214,
+   "LRT": 5.06728083087728,
+   "frac_cells_P90": 0.0,
+   "mean_P_event": 0.1224912742596651,
+   "a_hat_null": [
+    -1.1113055467920514,
+    -1.0699629521537917,
+    -0.953326155340057,
+    -1.1603534450211261,
+    -1.0311679169921804
+   ],
+   "d0_null": 0.04722147372597274,
+   "d0_alt": 0.02383721537186256,
+   "b_hat_alt": -1.0652236485786106,
+   "all_types": {
+    "cnloh": {
+     "pi": 0.12249128359342376,
+     "LRT": 5.06728083087728
+    },
+    "gain1": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "gain2": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "loss1": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "amp": {
+     "pi": 1.0,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "loss1",
+     "pi": 0.9941080752618765,
+     "LRT": 7.885090642008436,
+     "LRT_for_joint_best_type": 6.293703336268663e-10,
+     "pi_for_joint_best_type": 0.3000000000000001
+    },
+    "allele_only": {
+     "type_best": "loss1",
+     "pi": 0.12249117461384668,
+     "LRT": 5.067280824562658,
+     "LRT_for_joint_best_type": 5.067280824562658,
+     "pi_for_joint_best_type": 0.12249117461384668
+    }
+   },
+   "prior": {
+    "m": -0.033989234648656205,
+    "sig_b": 0.44989039601324154,
+    "sig_u": 0.033795421417661384,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "boot_p": 0.05,
+   "boot_B": 99,
+   "boot_T_q95": 4.687800488154605,
+   "class": "no evidence",
+   "agreement": "allele only",
+   "agreement_note": "type has no depth change; ",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "cnloh",
+     "pi": 0.07061772556189884,
+     "LRT": 5.3059017192572355,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "loss1",
+     "pi": 0.9962450807855829,
+     "LRT": 3001.377418354743,
+     "boot_p": 0.025,
+     "pi_lo": 0.9928054401770595,
+     "pi_hi": 1.0,
+     "class": "clonal"
+    },
+    {
+     "variant": "depth only",
+     "best_type": "loss1",
+     "pi": 0.9941080752618765,
+     "LRT": 7.885090642008436,
+     "boot_p": 0.025,
+     "pi_lo": 0.9877487653762487,
+     "pi_hi": 1.0,
+     "class": "clonal"
+    },
+    {
+     "variant": "allele only",
+     "best_type": "loss1",
+     "pi": 0.12249117461384668,
+     "LRT": 5.067280824562658,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 53.2428834438324
+  },
+  {
+   "name": "random_chr13:31.8",
+   "family": "random",
+   "mode": "flank",
+   "rho_r": 0.5,
+   "alpha_r": 0.015,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 0,
+   "sum_N": 0.0,
+   "pooled_h": NaN,
+   "best_type": "gain1",
+   "pi": 0.9865426978472138,
+   "pi_lo": 0.9842673340836978,
+   "pi_hi": 0.987327201649196,
+   "LRT": 5.6974236825772095,
+   "frac_cells_P90": 0.969364161849711,
+   "mean_P_event": 0.9865426705255288,
+   "a_hat_null": [
+    0.08651516019943746,
+    0.09850756288417344,
+    0.05224425988360419,
+    0.124515492927571,
+    0.09041740268266321
+   ],
+   "d0_null": 0.023889961004777416,
+   "d0_alt": 0.023889961004777416,
+   "b_hat_alt": -0.31094615839487943,
+   "all_types": {
+    "gain1": {
+     "pi": 0.9865426978472138,
+     "LRT": 5.6974236825772095
+    },
+    "gain2": {
+     "pi": 0.9964173822844127,
+     "LRT": 2.4724699975558906
+    },
+    "loss1": {
+     "pi": 0.9981436920959854,
+     "LRT": 0.4290756887239695
+    },
+    "cnloh": {
+     "pi": 0.3,
+     "LRT": 1.6652120393700898e-07
+    },
+    "amp": {
+     "pi": 0.9992801042358166,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 1.0,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "gain1",
+     "pi": 0.9865426978472138,
+     "LRT": 5.6974236825772095,
+     "LRT_for_joint_best_type": 5.6974236825772095,
+     "pi_for_joint_best_type": 0.9865426978472138
+    },
+    "allele_only": {
+     "type_best": "loss1",
+     "pi": 0.3,
+     "LRT": 3.8413716652030416e-13,
+     "LRT_for_joint_best_type": 3.8413716652030416e-13,
+     "pi_for_joint_best_type": 0.3
+    }
+   },
+   "prior": {
+    "m": -0.033989234648656205,
+    "sig_b": 0.44989039601324154,
+    "sig_u": 0.033795421417661384,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "boot_p": 0.01,
+   "boot_B": 99,
+   "boot_T_q95": 1.643066207179799e-06,
+   "class": "clonal",
+   "agreement": "depth only",
+   "agreement_note": "",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "gain1",
+     "pi": 0.9865426978472138,
+     "LRT": 5.6974236825772095,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "cnloh",
+     "pi": 0.3,
+     "LRT": 2.255546860396862e-10,
+     "boot_p": 0.325,
+     "pi_lo": 0.0,
+     "pi_hi": 1.0,
+     "class": "insufficient evidence"
+    },
+    {
+     "variant": "depth only",
+     "best_type": "gain1",
+     "pi": 0.9865426978472138,
+     "LRT": 5.6974236825772095,
+     "boot_p": 0.025,
+     "pi_lo": 0.9842673340836978,
+     "pi_hi": 0.987327201649196,
+     "class": "clonal"
+    },
+    {
+     "variant": "allele only",
+     "best_type": "loss1",
+     "pi": 0.3,
+     "LRT": 3.8413716652030416e-13,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 18.194554567337036
+  },
+  {
+   "name": "random_chr7:125.5",
+   "family": "random",
+   "mode": "flank",
+   "rho_r": 0.5526209907980147,
+   "alpha_r": 0.02,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 2774,
+   "sum_N": 7520.0,
+   "pooled_h": 0.50625,
+   "best_type": "cnloh",
+   "pi": 0.05,
+   "pi_lo": 0.0,
+   "pi_hi": 0.0773416216843078,
+   "LRT": 0.0,
+   "frac_cells_P90": 0.0,
+   "mean_P_event": 0.0495304607819975,
+   "a_hat_null": [
+    -0.5839707884051784,
+    -0.5590988240221059,
+    -0.4945911698757018,
+    -0.7705728931409417,
+    -0.5674433553539099
+   ],
+   "d0_null": 0.010455726774241803,
+   "d0_alt": -0.0019272378565906266,
+   "b_hat_alt": -0.5951351554974422,
+   "all_types": {
+    "cnloh": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "gain2": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "gain1": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "loss1": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "amp": {
+     "pi": 0.05,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "loss1",
+     "pi": 0.9989539926208113,
+     "LRT": 2.2068169422527717,
+     "LRT_for_joint_best_type": 1.8553691916167736e-10,
+     "pi_for_joint_best_type": 0.30000000000000004
+    },
+    "allele_only": {
+     "type_best": "homdel",
+     "pi": 0.3,
+     "LRT": 0.0,
+     "LRT_for_joint_best_type": 0.0,
+     "pi_for_joint_best_type": 0.05
+    }
+   },
+   "prior": {
+    "m": -0.033989234648656205,
+    "sig_b": 0.44989039601324154,
+    "sig_u": 0.033795421417661384,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "boot_p": 1.0,
+   "boot_B": 99,
+   "boot_T_q95": 0.0,
+   "class": "no evidence",
+   "agreement": "neither alone",
+   "agreement_note": "type has no depth change; ",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "gain2",
+     "pi": 1.0,
+     "LRT": 0.0,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "cnloh",
+     "pi": 0.05,
+     "LRT": 0.0,
+     "boot_p": 1.0,
+     "pi_lo": 0.0,
+     "pi_hi": 0.0773416216885906,
+     "class": "no evidence"
+    },
+    {
+     "variant": "depth only",
+     "best_type": "loss1",
+     "pi": 0.9989539926208113,
+     "LRT": 2.2068169422527717,
+     "boot_p": 0.025,
+     "pi_lo": 0.9976473012113872,
+     "pi_hi": 1.0,
+     "class": "clonal"
+    },
+    {
+     "variant": "allele only",
+     "best_type": "homdel",
+     "pi": 0.3,
+     "LRT": 0.0,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 86.25338792800903
+  },
+  {
+   "name": "random_chr3:114.9",
+   "family": "random",
+   "mode": "flank",
+   "rho_r": 2.262936019006385,
+   "alpha_r": 0.03,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 90,
+   "sum_N": 104.0,
+   "pooled_h": 0.5384615384615384,
+   "best_type": "cnloh",
+   "pi": 0.05,
+   "pi_lo": 0.0,
+   "pi_hi": 0.3474431993775492,
+   "LRT": 0.0,
+   "frac_cells_P90": 0.0,
+   "mean_P_event": 0.04997745121658099,
+   "a_hat_null": [
+    -0.5191386195829276,
+    -0.5244968599199034,
+    -0.42296467871549503,
+    -0.6677891136436698,
+    -0.5064331281823714
+   ],
+   "d0_null": 0.023881598798060018,
+   "d0_alt": 0.022660726121954352,
+   "b_hat_alt": -0.5281644822554074,
+   "all_types": {
+    "cnloh": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "gain2": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "gain1": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "amp": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "loss1": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 1.0,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "loss1",
+     "pi": 1.0,
+     "LRT": 1.01015450982959,
+     "LRT_for_joint_best_type": 0.0,
+     "pi_for_joint_best_type": 0.30000000000000004
+    },
+    "allele_only": {
+     "type_best": "homdel",
+     "pi": 0.3,
+     "LRT": 3.410605131648481e-13,
+     "LRT_for_joint_best_type": 0.0,
+     "pi_for_joint_best_type": 0.05
+    }
+   },
+   "prior": {
+    "m": -0.033989234648656205,
+    "sig_b": 0.44989039601324154,
+    "sig_u": 0.033795421417661384,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "boot_p": 1.0,
+   "boot_B": 99,
+   "boot_T_q95": 2.5919651720043473,
+   "class": "insufficient evidence",
+   "agreement": "neither alone",
+   "agreement_note": "type has no depth change; ",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "cnloh",
+     "pi": 0.05,
+     "LRT": 0.0,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "loss1",
+     "pi": 0.9996989497849549,
+     "LRT": 759.1104981598219,
+     "boot_p": 0.025,
+     "pi_lo": 0.9981568017742598,
+     "pi_hi": 1.0,
+     "class": "clonal"
+    },
+    {
+     "variant": "depth only",
+     "best_type": "loss1",
+     "pi": 1.0,
+     "LRT": 1.01015450982959,
+     "boot_p": 0.475,
+     "pi_lo": 0.9987408206609141,
+     "pi_hi": 1.0,
+     "class": "insufficient evidence"
+    },
+    {
+     "variant": "allele only",
+     "best_type": "homdel",
+     "pi": 0.3,
+     "LRT": 3.410605131648481e-13,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 27.477060317993164
+  },
+  {
+   "name": "random_chr15:64.2",
+   "family": "random",
+   "mode": "flank",
+   "rho_r": 1.4825140083971502,
+   "alpha_r": 0.01,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 260,
+   "sum_N": 318.0,
+   "pooled_h": 0.550314465408805,
+   "best_type": "cnloh",
+   "pi": 0.05,
+   "pi_lo": 0.0,
+   "pi_hi": 0.2523088705096211,
+   "LRT": 0.11118390548290336,
+   "frac_cells_P90": 0.0,
+   "mean_P_event": 0.04998522978618994,
+   "a_hat_null": [
+    -0.04961740124464786,
+    -0.06136024972851942,
+    -0.028938643509275257,
+    0.0050388862653490225,
+    -0.062177983606427206
+   ],
+   "d0_null": 0.02389581933174102,
+   "d0_alt": 0.022479797703696656,
+   "b_hat_alt": -0.039410393114186884,
+   "all_types": {
+    "cnloh": {
+     "pi": 0.05,
+     "LRT": 0.11118390548290336
+    },
+    "gain2": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "gain1": {
+     "pi": 0.9977203421547127,
+     "LRT": 0.0
+    },
+    "amp": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "loss1": {
+     "pi": 0.9992832944818121,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "cnloh",
+     "pi": 0.3,
+     "LRT": 1.8189894035458565e-10,
+     "LRT_for_joint_best_type": 1.8189894035458565e-10,
+     "pi_for_joint_best_type": 0.3
+    },
+    "allele_only": {
+     "type_best": "loss1",
+     "pi": 0.05,
+     "LRT": 0.09876195480967453,
+     "LRT_for_joint_best_type": 0.09876195480967453,
+     "pi_for_joint_best_type": 0.05
+    }
+   },
+   "prior": {
+    "m": -0.033989234648656205,
+    "sig_b": 0.44989039601324154,
+    "sig_u": 0.033795421417661384,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "boot_p": 0.36,
+   "boot_B": 99,
+   "boot_T_q95": 2.8342636625591684,
+   "class": "insufficient evidence",
+   "agreement": "neither alone",
+   "agreement_note": "type has no depth change; ",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "cnloh",
+     "pi": 0.05,
+     "LRT": 0.07202328115818091,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "cnloh",
+     "pi": 0.05,
+     "LRT": 0.11118781300319824,
+     "boot_p": 0.425,
+     "pi_lo": 0.0,
+     "pi_hi": 0.2522553620679806,
+     "class": "insufficient evidence"
+    },
+    {
+     "variant": "depth only",
+     "best_type": "cnloh",
+     "pi": 0.3,
+     "LRT": 1.8189894035458565e-10,
+     "boot_p": 0.55,
+     "pi_lo": 0.0,
+     "pi_hi": 1.0,
+     "class": "insufficient evidence"
+    },
+    {
+     "variant": "allele only",
+     "best_type": "loss1",
+     "pi": 0.05,
+     "LRT": 0.09876195480967453,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 33.1433482170105
+  },
+  {
+   "name": "random_chr5:30.4",
+   "family": "random",
+   "mode": "flank",
+   "rho_r": 0.4799576158818175,
+   "alpha_r": 0.015,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 3026,
+   "sum_N": 9879.0,
+   "pooled_h": 0.5110841178256909,
+   "best_type": "gain2",
+   "pi": 1.0,
+   "pi_lo": 0.9985466980711754,
+   "pi_hi": 1.0,
+   "LRT": 0.17475744173498242,
+   "frac_cells_P90": 1.0,
+   "mean_P_event": 0.9999999992004681,
+   "a_hat_null": [
+    0.3382457191162455,
+    0.3269086709514174,
+    0.2865493385032339,
+    0.4075011561931499,
+    0.3312972876447214
+   ],
+   "d0_null": 0.01279068429873411,
+   "d0_alt": 0.012790684238264969,
+   "b_hat_alt": -0.3549914168136411,
+   "all_types": {
+    "gain2": {
+     "pi": 1.0,
+     "LRT": 0.17475744173498242
+    },
+    "cnloh": {
+     "pi": 0.05,
+     "LRT": 0.01983228575772955
+    },
+    "gain1": {
+     "pi": 0.9989174533800247,
+     "LRT": 0.0
+    },
+    "loss1": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "amp": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 0.05,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "gain1",
+     "pi": 1.0,
+     "LRT": 0.6778372960470733,
+     "LRT_for_joint_best_type": 0.17475854433723725,
+     "pi_for_joint_best_type": 1.0
+    },
+    "allele_only": {
+     "type_best": "amp",
+     "pi": 0.05,
+     "LRT": 0.11504162841902144,
+     "LRT_for_joint_best_type": 0.0,
+     "pi_for_joint_best_type": 0.3
+    }
+   },
+   "prior": {
+    "m": -0.033989234648656205,
+    "sig_b": 0.44989039601324154,
+    "sig_u": 0.033795421417661384,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "boot_p": 0.52,
+   "boot_B": 99,
+   "boot_T_q95": 0.5845890811826393,
+   "class": "insufficient evidence",
+   "agreement": "neither alone",
+   "agreement_note": "type has no allele change; ",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "gain2",
+     "pi": 1.0,
+     "LRT": 0.17475744173498242,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "gain1",
+     "pi": 0.9977279976659854,
+     "LRT": 509.36550274068213,
+     "boot_p": 0.025,
+     "pi_lo": 0.988708402307281,
+     "pi_hi": 1.0,
+     "class": "clonal"
+    },
+    {
+     "variant": "depth only",
+     "best_type": "gain1",
+     "pi": 1.0,
+     "LRT": 0.6778372960470733,
+     "boot_p": 0.875,
+     "pi_lo": 0.9934566463777496,
+     "pi_hi": 1.0,
+     "class": "insufficient evidence"
+    },
+    {
+     "variant": "allele only",
+     "best_type": "amp",
+     "pi": 0.05,
+     "LRT": 0.11504162841902144,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 89.3757996559143
+  },
+  {
+   "name": "random_chr1:104.7",
+   "family": "random",
+   "mode": "flank",
+   "rho_r": 0.5,
+   "alpha_r": 0.045,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 0,
+   "sum_N": 0.0,
+   "pooled_h": NaN,
+   "best_type": "loss1",
+   "pi": 1.0,
+   "pi_lo": 0.9986951387073146,
+   "pi_hi": 1.0,
+   "LRT": 3.0897590160348045,
+   "frac_cells_P90": 1.0,
+   "mean_P_event": 0.9999999993087048,
+   "a_hat_null": [
+    -0.817126381466363,
+    -0.7600893222089201,
+    -0.72989897066101,
+    -1.033702813223291,
+    -0.8197406373637004
+   ],
+   "d0_null": 0.023889961004777416,
+   "d0_alt": 0.023889961004777416,
+   "b_hat_alt": -0.13910202986687575,
+   "all_types": {
+    "loss1": {
+     "pi": 1.0,
+     "LRT": 3.0897590160348045
+    },
+    "cnloh": {
+     "pi": 0.30000000000000004,
+     "LRT": 3.0370101740118116e-06
+    },
+    "gain1": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "gain2": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "amp": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 1.0,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "loss1",
+     "pi": 1.0,
+     "LRT": 3.0897590160348045,
+     "LRT_for_joint_best_type": 3.0897590160348045,
+     "pi_for_joint_best_type": 1.0
+    },
+    "allele_only": {
+     "type_best": "loss1",
+     "pi": 0.3,
+     "LRT": 3.8413716652030416e-13,
+     "LRT_for_joint_best_type": 3.8413716652030416e-13,
+     "pi_for_joint_best_type": 0.3
+    }
+   },
+   "prior": {
+    "m": -0.033989234648656205,
+    "sig_b": 0.44989039601324154,
+    "sig_u": 0.033795421417661384,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "boot_p": 0.47,
+   "boot_B": 99,
+   "boot_T_q95": 3.141435898311829,
+   "class": "insufficient evidence",
+   "agreement": "neither alone",
+   "agreement_note": "",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "loss1",
+     "pi": 1.0,
+     "LRT": 3.0897590160348045,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "loss1",
+     "pi": 1.0,
+     "LRT": 2334.517709279786,
+     "boot_p": 0.025,
+     "pi_lo": 0.9988270802643044,
+     "pi_hi": 1.0,
+     "class": "clonal"
+    },
+    {
+     "variant": "depth only",
+     "best_type": "loss1",
+     "pi": 1.0,
+     "LRT": 3.0897590160348045,
+     "boot_p": 0.575,
+     "pi_lo": 0.9986951387073146,
+     "pi_hi": 1.0,
+     "class": "insufficient evidence"
+    },
+    {
+     "variant": "allele only",
+     "best_type": "loss1",
+     "pi": 0.3,
+     "LRT": 3.8413716652030416e-13,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 19.08418607711792
+  },
+  {
+   "name": "random_chr11:116.4",
+   "family": "random",
+   "mode": "flank",
+   "rho_r": 1.1182781160944826,
+   "alpha_r": 0.01,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 1690,
+   "sum_N": 3277.0,
+   "pooled_h": 0.5376869087580104,
+   "best_type": "cnloh",
+   "pi": 0.08866011661029931,
+   "pi_lo": 0.0,
+   "pi_hi": 0.18683061406567544,
+   "LRT": 3.594790075218043,
+   "frac_cells_P90": 0.0,
+   "mean_P_event": 0.0886601285972118,
+   "a_hat_null": [
+    0.04677470394335786,
+    0.012151303293076274,
+    0.07173437572912597,
+    0.10012560333339027,
+    0.03913044589784748
+   ],
+   "d0_null": 0.02951892415035577,
+   "d0_alt": 0.011236339655433508,
+   "b_hat_alt": 0.053983510314443914,
+   "all_types": {
+    "cnloh": {
+     "pi": 0.08866011661029931,
+     "LRT": 3.594790075218043
+    },
+    "gain2": {
+     "pi": 0.9979564487574629,
+     "LRT": 2.1235858165018726
+    },
+    "gain1": {
+     "pi": 0.9980705981356744,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "amp": {
+     "pi": 0.9992726012205386,
+     "LRT": 0.0
+    },
+    "loss1": {
+     "pi": 0.05,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "gain2",
+     "pi": 0.9979564483749528,
+     "LRT": 2.123585800971341,
+     "LRT_for_joint_best_type": 1.2114469427615404e-09,
+     "pi_for_joint_best_type": 0.3
+    },
+    "allele_only": {
+     "type_best": "loss1",
+     "pi": 0.08866091062536122,
+     "LRT": 3.594790059947627,
+     "LRT_for_joint_best_type": 3.594790059947627,
+     "pi_for_joint_best_type": 0.08866091062536122
+    }
+   },
+   "prior": {
+    "m": -0.033989234648656205,
+    "sig_b": 0.44989039601324154,
+    "sig_u": 0.033795421417661384,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "boot_p": 0.03,
+   "boot_B": 99,
+   "boot_T_q95": 1.532577295237569,
+   "class": "event, clonal vs subclonal unresolved",
+   "agreement": "neither alone",
+   "agreement_note": "type has no depth change; ",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "cnloh",
+     "pi": 0.05968590655706131,
+     "LRT": 5.815963525546977,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "cnloh",
+     "pi": 0.0886636099151498,
+     "LRT": 3.594790009126882,
+     "boot_p": 0.025,
+     "pi_lo": 0.0,
+     "pi_hi": 0.18683061491382535,
+     "class": "event, clonal vs subclonal unresolved"
+    },
+    {
+     "variant": "depth only",
+     "best_type": "gain2",
+     "pi": 0.9979564483749528,
+     "LRT": 2.123585800971341,
+     "boot_p": 0.025,
+     "pi_lo": 0.9967906079587222,
+     "pi_hi": 0.9999723451755715,
+     "class": "clonal"
+    },
+    {
+     "variant": "allele only",
+     "best_type": "loss1",
+     "pi": 0.08866091062536122,
+     "LRT": 3.594790059947627,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 59.094918966293335
+  },
+  {
+   "name": "random_chr4:22.8",
+   "family": "random",
+   "mode": "flank",
+   "rho_r": 0.4799576158818175,
+   "alpha_r": 0.015,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 2723,
+   "sum_N": 6828.0,
+   "pooled_h": 0.5169888693614528,
+   "best_type": "gain2",
+   "pi": 0.9989181705677088,
+   "pi_lo": 0.997134656511753,
+   "pi_hi": 1.0,
+   "LRT": 1.059393283299869,
+   "frac_cells_P90": 0.9976878612716763,
+   "mean_P_event": 0.9989181654328807,
+   "a_hat_null": [
+    0.40771549075927055,
+    0.3992248377402025,
+    0.36371207162111385,
+    0.43096918230597253,
+    0.4329898910743522
+   ],
+   "d0_null": 0.01814820719726603,
+   "d0_alt": 0.01814820943597095,
+   "b_hat_alt": -0.28578283631123147,
+   "all_types": {
+    "gain2": {
+     "pi": 0.9989181705677088,
+     "LRT": 1.059393283299869
+    },
+    "cnloh": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "gain1": {
+     "pi": 0.9939444908391436,
+     "LRT": 0.0
+    },
+    "loss1": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "amp": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 0.05,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "gain1",
+     "pi": 0.9955568277948695,
+     "LRT": 1.7021250584803056,
+     "LRT_for_joint_best_type": 1.059393270395958,
+     "pi_for_joint_best_type": 0.9989181705686354
+    },
+    "allele_only": {
+     "type_best": "amp",
+     "pi": 0.05,
+     "LRT": 0.1875600239582127,
+     "LRT_for_joint_best_type": 9.094947017729282e-13,
+     "pi_for_joint_best_type": 0.95
+    }
+   },
+   "prior": {
+    "m": -0.033989234648656205,
+    "sig_b": 0.44989039601324154,
+    "sig_u": 0.033795421417661384,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "boot_p": 0.06,
+   "boot_B": 99,
+   "boot_T_q95": 1.0704503942597483,
+   "class": "insufficient evidence",
+   "agreement": "neither alone",
+   "agreement_note": "type has no allele change; ",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "gain2",
+     "pi": 0.9989181705677088,
+     "LRT": 1.059393283299869,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "gain1",
+     "pi": 0.9953778912940109,
+     "LRT": 748.3164616127724,
+     "boot_p": 0.025,
+     "pi_lo": 0.9854938688427545,
+     "pi_hi": 1.0,
+     "class": "clonal"
+    },
+    {
+     "variant": "depth only",
+     "best_type": "gain1",
+     "pi": 0.9955568277948695,
+     "LRT": 1.7021250584803056,
+     "boot_p": 0.075,
+     "pi_lo": 0.9857692182996143,
+     "pi_hi": 1.0,
+     "class": "insufficient evidence"
+    },
+    {
+     "variant": "allele only",
+     "best_type": "amp",
+     "pi": 0.05,
+     "LRT": 0.1875600239582127,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 84.12878131866455
+  },
+  {
+   "name": "random_chr6:126.7",
+   "family": "random",
+   "mode": "flank",
+   "rho_r": 0.4799576158818175,
+   "alpha_r": 0.015,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 2318,
+   "sum_N": 4831.0,
+   "pooled_h": 0.4990685158352308,
+   "best_type": "gain2",
+   "pi": 0.9966377256539337,
+   "pi_lo": 0.9946973943466884,
+   "pi_hi": 1.0,
+   "LRT": 0.0,
+   "frac_cells_P90": 0.9921965317919075,
+   "mean_P_event": 0.9966377211530718,
+   "a_hat_null": [
+    -0.1487422442776243,
+    -0.14192858902280653,
+    -0.17094262188010387,
+    -0.15796878156023855,
+    -0.16477535716932618
+   ],
+   "d0_null": 0.003733053950830286,
+   "d0_alt": 0.003733069867936159,
+   "b_hat_alt": -0.8484268339940708,
+   "all_types": {
+    "gain2": {
+     "pi": 0.9966377256539337,
+     "LRT": 0.0
+    },
+    "cnloh": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "gain1": {
+     "pi": 0.9856872024997592,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "loss1": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "amp": {
+     "pi": 0.9988472406138978,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "gain1",
+     "pi": 0.9878167667803879,
+     "LRT": 1.78044606894764,
+     "LRT_for_joint_best_type": 0.0,
+     "pi_for_joint_best_type": 0.996637725283879
+    },
+    "allele_only": {
+     "type_best": "homdel",
+     "pi": 0.3,
+     "LRT": 0.0,
+     "LRT_for_joint_best_type": 0.0,
+     "pi_for_joint_best_type": 0.3
+    }
+   },
+   "prior": {
+    "m": -0.033989234648656205,
+    "sig_b": 0.44989039601324154,
+    "sig_u": 0.033795421417661384,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "boot_p": 1.0,
+   "boot_B": 99,
+   "boot_T_q95": 0.0,
+   "class": "insufficient evidence",
+   "agreement": "neither alone",
+   "agreement_note": "type has no allele change; ",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "gain2",
+     "pi": 0.9966377256539337,
+     "LRT": 0.0,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "cnloh",
+     "pi": 0.05,
+     "LRT": 0.0,
+     "boot_p": 1.0,
+     "pi_lo": 0.0,
+     "pi_hi": 0.05395014462277754,
+     "class": "no evidence"
+    },
+    {
+     "variant": "depth only",
+     "best_type": "gain1",
+     "pi": 0.9878167667803879,
+     "LRT": 1.78044606894764,
+     "boot_p": 0.025,
+     "pi_lo": 0.9738542859453805,
+     "pi_hi": 1.0,
+     "class": "clonal"
+    },
+    {
+     "variant": "allele only",
+     "best_type": "homdel",
+     "pi": 0.3,
+     "LRT": 0.0,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 75.5994017124176
+  },
+  {
+   "name": "random_chr2:135.5",
+   "family": "random",
+   "mode": "flank",
+   "rho_r": 1.4825140083971502,
+   "alpha_r": 0.015,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 466,
+   "sum_N": 607.0,
+   "pooled_h": 0.5189456342668863,
+   "best_type": "cnloh",
+   "pi": 0.05,
+   "pi_lo": 0.0,
+   "pi_hi": 0.1654350362180278,
+   "LRT": 0.0,
+   "frac_cells_P90": 0.0,
+   "mean_P_event": 0.049897685728402,
+   "a_hat_null": [
+    0.005169307814700104,
+    -0.00469937750201132,
+    0.003605742513175436,
+    -0.04909757970712923,
+    0.06381606291919577
+   ],
+   "d0_null": 0.02388588405526339,
+   "d0_alt": 0.018811253527135637,
+   "b_hat_alt": 0.0037586277484439948,
+   "all_types": {
+    "cnloh": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "gain2": {
+     "pi": 0.9991939636885333,
+     "LRT": 0.0
+    },
+    "gain1": {
+     "pi": 0.9859697837920751,
+     "LRT": 0.0
+    },
+    "amp": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "loss1": {
+     "pi": 0.05,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "gain1",
+     "pi": 0.9866940516697056,
+     "LRT": 2.1757247692439705,
+     "LRT_for_joint_best_type": 2.546585164964199e-11,
+     "pi_for_joint_best_type": 0.30000000000000004
+    },
+    "allele_only": {
+     "type_best": "homdel",
+     "pi": 0.3,
+     "LRT": 2.2737367544323206e-13,
+     "LRT_for_joint_best_type": 0.0,
+     "pi_for_joint_best_type": 0.05
+    }
+   },
+   "prior": {
+    "m": -0.033989234648656205,
+    "sig_b": 0.44989039601324154,
+    "sig_u": 0.033795421417661384,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "boot_p": 1.0,
+   "boot_B": 99,
+   "boot_T_q95": 1.430026291100875,
+   "class": "no evidence",
+   "agreement": "neither alone",
+   "agreement_note": "type has no depth change; ",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "cnloh",
+     "pi": 0.05,
+     "LRT": 0.0,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "cnloh",
+     "pi": 0.05,
+     "LRT": 0.0,
+     "boot_p": 1.0,
+     "pi_lo": 0.0,
+     "pi_hi": 0.1654350314424088,
+     "class": "no evidence"
+    },
+    {
+     "variant": "depth only",
+     "best_type": "gain1",
+     "pi": 0.9866940516697056,
+     "LRT": 2.1757247692439705,
+     "boot_p": 0.025,
+     "pi_lo": 0.973417468655537,
+     "pi_hi": 1.0,
+     "class": "clonal"
+    },
+    {
+     "variant": "allele only",
+     "best_type": "homdel",
+     "pi": 0.3,
+     "LRT": 2.2737367544323206e-13,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 36.617931842803955
+  },
+  {
+   "name": "random_chr13:37.5",
+   "family": "random",
+   "mode": "flank",
+   "rho_r": 0.4799576158818175,
+   "alpha_r": 0.02,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 2856,
+   "sum_N": 7876.0,
+   "pooled_h": 0.5073641442356526,
+   "best_type": "cnloh",
+   "pi": 0.05,
+   "pi_lo": 0.0,
+   "pi_hi": 0.062293303458141894,
+   "LRT": 0.0,
+   "frac_cells_P90": 0.0,
+   "mean_P_event": 0.049285727493918276,
+   "a_hat_null": [
+    -0.5493196910414443,
+    -0.5441374895708507,
+    -0.4418428575211318,
+    -0.6652121744673507,
+    -0.5498297216640576
+   ],
+   "d0_null": 0.010246474211085948,
+   "d0_alt": -0.002353228943021174,
+   "b_hat_alt": -0.550068257579006,
+   "all_types": {
+    "cnloh": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "gain2": {
+     "pi": 0.9938200845523898,
+     "LRT": 0.0
+    },
+    "gain1": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "loss1": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "amp": {
+     "pi": 0.05,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "gain1",
+     "pi": 0.9706915523688893,
+     "LRT": 5.967908960126806,
+     "LRT_for_joint_best_type": 4.608304152498022e-06,
+     "pi_for_joint_best_type": 0.30000000000000004
+    },
+    "allele_only": {
+     "type_best": "homdel",
+     "pi": 0.95,
+     "LRT": 0.0,
+     "LRT_for_joint_best_type": 0.0,
+     "pi_for_joint_best_type": 0.05
+    }
+   },
+   "prior": {
+    "m": -0.033989234648656205,
+    "sig_b": 0.44989039601324154,
+    "sig_u": 0.033795421417661384,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "boot_p": 1.0,
+   "boot_B": 99,
+   "boot_T_q95": 1.4914680359994228,
+   "class": "no evidence",
+   "agreement": "neither alone",
+   "agreement_note": "type has no depth change; ",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "gain2",
+     "pi": 0.9938200845523898,
+     "LRT": 0.0,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "cnloh",
+     "pi": 0.05,
+     "LRT": 0.0,
+     "boot_p": 1.0,
+     "pi_lo": 0.0,
+     "pi_hi": 0.06229330387342157,
+     "class": "no evidence"
+    },
+    {
+     "variant": "depth only",
+     "best_type": "gain1",
+     "pi": 0.9706915523688893,
+     "LRT": 5.967908960126806,
+     "boot_p": 0.025,
+     "pi_lo": 0.9503643673712902,
+     "pi_hi": 0.9872136114536563,
+     "class": "clonal"
+    },
+    {
+     "variant": "allele only",
+     "best_type": "homdel",
+     "pi": 0.95,
+     "LRT": 0.0,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 88.73261404037476
+  },
+  {
+   "name": "random_chr4:116.0",
+   "family": "random",
+   "mode": "flank",
+   "rho_r": 0.7326159283645955,
+   "alpha_r": 0.02,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 1752,
+   "sum_N": 2982.0,
+   "pooled_h": 0.5150905432595574,
+   "best_type": "cnloh",
+   "pi": 0.05,
+   "pi_lo": 0.0,
+   "pi_hi": 0.07872088495040128,
+   "LRT": 0.0,
+   "frac_cells_P90": 0.0,
+   "mean_P_event": 0.049610908574661244,
+   "a_hat_null": [
+    -0.4709976340757453,
+    -0.4477911123329815,
+    -0.3869020302686603,
+    -0.6325035618012751,
+    -0.48931142961442764
+   ],
+   "d0_null": 0.01691357294765161,
+   "d0_alt": 0.00671116193983114,
+   "b_hat_alt": -0.48550115502354113,
+   "all_types": {
+    "cnloh": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "gain2": {
+     "pi": 0.9939395808827793,
+     "LRT": 0.0
+    },
+    "gain1": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "loss1": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "amp": {
+     "pi": 0.9966743294114747,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "loss1",
+     "pi": 0.9968090748583065,
+     "LRT": 4.6830199873802485,
+     "LRT_for_joint_best_type": 3.637978807091713e-12,
+     "pi_for_joint_best_type": 0.30000000000000004
+    },
+    "allele_only": {
+     "type_best": "homdel",
+     "pi": 0.3,
+     "LRT": 0.0,
+     "LRT_for_joint_best_type": 0.0,
+     "pi_for_joint_best_type": 0.05
+    }
+   },
+   "prior": {
+    "m": -0.033989234648656205,
+    "sig_b": 0.44989039601324154,
+    "sig_u": 0.033795421417661384,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "boot_p": 1.0,
+   "boot_B": 99,
+   "boot_T_q95": 1.0607802721591708,
+   "class": "no evidence",
+   "agreement": "neither alone",
+   "agreement_note": "type has no depth change; ",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "gain2",
+     "pi": 0.9939395808827793,
+     "LRT": 0.0,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "loss1",
+     "pi": 0.9894669962198249,
+     "LRT": 40.30083789698256,
+     "boot_p": 0.025,
+     "pi_lo": 0.9839173484586392,
+     "pi_hi": 0.991018659382673,
+     "class": "clonal"
+    },
+    {
+     "variant": "depth only",
+     "best_type": "loss1",
+     "pi": 0.9968090748583065,
+     "LRT": 4.6830199873802485,
+     "boot_p": 0.025,
+     "pi_lo": 0.9946692948230995,
+     "pi_hi": 0.9998995904021001,
+     "class": "clonal"
+    },
+    {
+     "variant": "allele only",
+     "best_type": "homdel",
+     "pi": 0.3,
+     "LRT": 0.0,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 61.14551568031311
+  },
+  {
+   "name": "random_chr2:232.1",
+   "family": "random",
+   "mode": "flank",
+   "rho_r": 0.5,
+   "alpha_r": 0.01,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 0,
+   "sum_N": 0.0,
+   "pooled_h": NaN,
+   "best_type": "gain2",
+   "pi": 0.9899655868504306,
+   "pi_lo": 0.9872255194436275,
+   "pi_hi": 0.9907948633757876,
+   "LRT": 44.717814451236336,
+   "frac_cells_P90": 0.9820809248554914,
+   "mean_P_event": 0.9899658103003286,
+   "a_hat_null": [
+    0.0562821106557491,
+    0.04961217405911241,
+    0.05511112888488862,
+    0.09301092512121295,
+    0.03206926987116485
+   ],
+   "d0_null": 0.023889961004777416,
+   "d0_alt": 0.023889961004777416,
+   "b_hat_alt": -0.63378563570935,
+   "all_types": {
+    "gain2": {
+     "pi": 0.9899655868504306,
+     "LRT": 44.717814451236336
+    },
+    "gain1": {
+     "pi": 0.9800610617569211,
+     "LRT": 34.44956746218304
+    },
+    "amp": {
+     "pi": 0.9936524744020068,
+     "LRT": 25.6724125905057
+    },
+    "cnloh": {
+     "pi": 0.3,
+     "LRT": 4.001776687800884e-11
+    },
+    "loss1": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 1.0,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "gain2",
+     "pi": 0.9899655868504306,
+     "LRT": 44.717814451236336,
+     "LRT_for_joint_best_type": 44.717814451236336,
+     "pi_for_joint_best_type": 0.9899655868504306
+    },
+    "allele_only": {
+     "type_best": "loss1",
+     "pi": 0.3,
+     "LRT": 3.8413716652030416e-13,
+     "LRT_for_joint_best_type": 3.8413716652030416e-13,
+     "pi_for_joint_best_type": 0.3
+    }
+   },
+   "prior": {
+    "m": -0.033989234648656205,
+    "sig_b": 0.44989039601324154,
+    "sig_u": 0.033795421417661384,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "boot_p": 0.01,
+   "boot_B": 99,
+   "boot_T_q95": 1.478438207414e-08,
+   "class": "clonal",
+   "agreement": "depth only",
+   "agreement_note": "type has no allele change; ",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "gain2",
+     "pi": 0.9899655868504306,
+     "LRT": 44.717814451236336,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "cnloh",
+     "pi": 0.3,
+     "LRT": 4.336470738053322e-09,
+     "boot_p": 0.15,
+     "pi_lo": 0.0,
+     "pi_hi": 1.0,
+     "class": "insufficient evidence"
+    },
+    {
+     "variant": "depth only",
+     "best_type": "gain2",
+     "pi": 0.9899655868504306,
+     "LRT": 44.717814451236336,
+     "boot_p": 0.025,
+     "pi_lo": 0.9872255194436275,
+     "pi_hi": 0.9907948633757876,
+     "class": "clonal"
+    },
+    {
+     "variant": "allele only",
+     "best_type": "loss1",
+     "pi": 0.3,
+     "LRT": 3.8413716652030416e-13,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 18.695151805877686
+  },
+  {
+   "name": "random_chr6:119.2",
+   "family": "random",
+   "mode": "flank",
+   "rho_r": 0.7326159283645955,
+   "alpha_r": 0.02,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 2228,
+   "sum_N": 4694.0,
+   "pooled_h": 0.5306774605879847,
+   "best_type": "cnloh",
+   "pi": 0.05,
+   "pi_lo": 0.0,
+   "pi_hi": 0.09911127481578007,
+   "LRT": 0.0,
+   "frac_cells_P90": 0.0,
+   "mean_P_event": 0.04972629357845697,
+   "a_hat_null": [
+    -0.4226801151059807,
+    -0.4298887501037182,
+    -0.3276003810211512,
+    -0.5819161071445348,
+    -0.4017017953679228
+   ],
+   "d0_null": 0.026349453329973238,
+   "d0_alt": 0.01476391290132226,
+   "b_hat_alt": -0.43275642282259674,
+   "all_types": {
+    "cnloh": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "gain2": {
+     "pi": 0.9936217849808796,
+     "LRT": 0.0
+    },
+    "gain1": {
+     "pi": 0.9738653263630498,
+     "LRT": 0.0
+    },
+    "loss1": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "amp": {
+     "pi": 0.9994708994202549,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "loss1",
+     "pi": 0.9978397846242504,
+     "LRT": 2.7733215669759375,
+     "LRT_for_joint_best_type": 1.538210199214518e-07,
+     "pi_for_joint_best_type": 0.95
+    },
+    "allele_only": {
+     "type_best": "gain1",
+     "pi": 0.05,
+     "LRT": 0.08745228754378331,
+     "LRT_for_joint_best_type": 0.0,
+     "pi_for_joint_best_type": 0.05
+    }
+   },
+   "prior": {
+    "m": -0.033989234648656205,
+    "sig_b": 0.44989039601324154,
+    "sig_u": 0.033795421417661384,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "boot_p": 1.0,
+   "boot_B": 99,
+   "boot_T_q95": 2.251769667699045,
+   "class": "no evidence",
+   "agreement": "neither alone",
+   "agreement_note": "type has no depth change; ",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "gain2",
+     "pi": 0.9936217849808796,
+     "LRT": 0.0,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "loss1",
+     "pi": 0.05,
+     "LRT": 8.047466961521422,
+     "boot_p": 0.025,
+     "pi_lo": 0.03715877461578383,
+     "pi_hi": 0.04029718803182411,
+     "class": "small-fraction deviation (<10% of cells)"
+    },
+    {
+     "variant": "depth only",
+     "best_type": "loss1",
+     "pi": 0.9978397846242504,
+     "LRT": 2.7733215669759375,
+     "boot_p": 0.025,
+     "pi_lo": 0.9962618190931595,
+     "pi_hi": 1.0,
+     "class": "clonal"
+    },
+    {
+     "variant": "allele only",
+     "best_type": "gain1",
+     "pi": 0.05,
+     "LRT": 0.08745228754378331,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 69.9488513469696
+  },
+  {
+   "name": "random_chr15:41.6",
+   "family": "random",
+   "mode": "flank",
+   "rho_r": 0.5,
+   "alpha_r": 0.01,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 0,
+   "sum_N": 0.0,
+   "pooled_h": NaN,
+   "best_type": "gain1",
+   "pi": 1.0,
+   "pi_lo": 0.9971526566915004,
+   "pi_hi": 1.0,
+   "LRT": 0.03377542511225329,
+   "frac_cells_P90": 1.0,
+   "mean_P_event": 0.9999999990549214,
+   "a_hat_null": [
+    0.17707297589853824,
+    0.16167406286896926,
+    0.16062429977090006,
+    0.21409799164456164,
+    0.1723935418307106
+   ],
+   "d0_null": 0.023889961004777416,
+   "d0_alt": 0.023889961004777416,
+   "b_hat_alt": -0.22827098922914374,
+   "all_types": {
+    "gain1": {
+     "pi": 1.0,
+     "LRT": 0.03377542511225329
+    },
+    "cnloh": {
+     "pi": 0.3,
+     "LRT": 2.6106135919690132e-08
+    },
+    "gain2": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "amp": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "loss1": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 0.05,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "gain1",
+     "pi": 1.0,
+     "LRT": 0.03377542511225329,
+     "LRT_for_joint_best_type": 0.03377542511225329,
+     "pi_for_joint_best_type": 1.0
+    },
+    "allele_only": {
+     "type_best": "loss1",
+     "pi": 0.3,
+     "LRT": 3.8413716652030416e-13,
+     "LRT_for_joint_best_type": 3.8413716652030416e-13,
+     "pi_for_joint_best_type": 0.3
+    }
+   },
+   "prior": {
+    "m": -0.033989234648656205,
+    "sig_b": 0.44989039601324154,
+    "sig_u": 0.033795421417661384,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "boot_p": 0.49,
+   "boot_B": 99,
+   "boot_T_q95": 0.06255022727636969,
+   "class": "insufficient evidence",
+   "agreement": "neither alone",
+   "agreement_note": "",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "gain1",
+     "pi": 1.0,
+     "LRT": 0.03377542511225329,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "gain1",
+     "pi": 0.9995535896451155,
+     "LRT": 28.63731518285931,
+     "boot_p": 0.025,
+     "pi_lo": 0.995690463179887,
+     "pi_hi": 1.0,
+     "class": "clonal"
+    },
+    {
+     "variant": "depth only",
+     "best_type": "gain1",
+     "pi": 1.0,
+     "LRT": 0.03377542511225329,
+     "boot_p": 0.55,
+     "pi_lo": 0.9971526566915004,
+     "pi_hi": 1.0,
+     "class": "insufficient evidence"
+    },
+    {
+     "variant": "allele only",
+     "best_type": "loss1",
+     "pi": 0.3,
+     "LRT": 3.8413716652030416e-13,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 17.903521299362183
+  },
+  {
+   "name": "random_chr2:199.9",
+   "family": "random",
+   "mode": "flank",
+   "rho_r": 0.5,
+   "alpha_r": 0.006,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 0,
+   "sum_N": 0.0,
+   "pooled_h": NaN,
+   "best_type": "gain2",
+   "pi": 0.9924801226818522,
+   "pi_lo": 0.9905399612016664,
+   "pi_hi": 0.9933482501452197,
+   "LRT": 34.55540568765355,
+   "frac_cells_P90": 0.9878612716763006,
+   "mean_P_event": 0.9924801237466446,
+   "a_hat_null": [
+    0.5021116438479788,
+    0.5002474201683187,
+    0.41514805559615825,
+    0.6040570196819129,
+    0.48596623102575165
+   ],
+   "d0_null": 0.023889961004777416,
+   "d0_alt": 0.023889961004777416,
+   "b_hat_alt": -0.1900422623434542,
+   "all_types": {
+    "gain2": {
+     "pi": 0.9924801226818522,
+     "LRT": 34.55540568765355
+    },
+    "gain1": {
+     "pi": 0.9854543918130156,
+     "LRT": 26.482202648185194
+    },
+    "amp": {
+     "pi": 0.9957936395568538,
+     "LRT": 15.71982151188422
+    },
+    "cnloh": {
+     "pi": 0.3,
+     "LRT": 2.801243681460619e-09
+    },
+    "loss1": {
+     "pi": 0.9992497930678016,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 0.05,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "gain2",
+     "pi": 0.9924801226818522,
+     "LRT": 34.55540568765355,
+     "LRT_for_joint_best_type": 34.55540568765355,
+     "pi_for_joint_best_type": 0.9924801226818522
+    },
+    "allele_only": {
+     "type_best": "loss1",
+     "pi": 0.3,
+     "LRT": 3.8413716652030416e-13,
+     "LRT_for_joint_best_type": 3.8413716652030416e-13,
+     "pi_for_joint_best_type": 0.3
+    }
+   },
+   "prior": {
+    "m": -0.033989234648656205,
+    "sig_b": 0.44989039601324154,
+    "sig_u": 0.033795421417661384,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "boot_p": 0.01,
+   "boot_B": 99,
+   "boot_T_q95": 1.3509582786151442,
+   "class": "clonal",
+   "agreement": "depth only",
+   "agreement_note": "type has no allele change; ",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "gain2",
+     "pi": 0.9924801226818522,
+     "LRT": 34.55540568765355,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "gain1",
+     "pi": 0.9869891054811804,
+     "LRT": 1158.8289617123155,
+     "boot_p": 0.025,
+     "pi_lo": 0.9794695295424813,
+     "pi_hi": 0.9892847819727368,
+     "class": "clonal"
+    },
+    {
+     "variant": "depth only",
+     "best_type": "gain2",
+     "pi": 0.9924801226818522,
+     "LRT": 34.55540568765355,
+     "boot_p": 0.025,
+     "pi_lo": 0.9905399612016664,
+     "pi_hi": 0.9933482501452197,
+     "class": "clonal"
+    },
+    {
+     "variant": "allele only",
+     "best_type": "loss1",
+     "pi": 0.3,
+     "LRT": 3.8413716652030416e-13,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 17.92615580558777
+  },
+  {
+   "name": "random_chr7:27.8",
+   "family": "random",
+   "mode": "flank",
+   "rho_r": 0.5,
+   "alpha_r": 0.01,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 0,
+   "sum_N": 0.0,
+   "pooled_h": NaN,
+   "best_type": "gain1",
+   "pi": 0.9944726218197851,
+   "pi_lo": 0.988199988812158,
+   "pi_hi": 1.0,
+   "LRT": 2.07782550858974,
+   "frac_cells_P90": 0.9904624277456647,
+   "mean_P_event": 0.9944726221147894,
+   "a_hat_null": [
+    0.160992902051914,
+    0.15666194347409448,
+    0.1275876357579418,
+    0.14906341944036838,
+    0.17990189271509666
+   ],
+   "d0_null": 0.023889961004777416,
+   "d0_alt": 0.023889961004777416,
+   "b_hat_alt": -0.24902794865041722,
+   "all_types": {
+    "gain1": {
+     "pi": 0.9944726218197851,
+     "LRT": 2.07782550858974
+    },
+    "gain2": {
+     "pi": 0.9984889577106292,
+     "LRT": 0.5625575462981942
+    },
+    "cnloh": {
+     "pi": 0.3,
+     "LRT": 9.567884262651205e-10
+    },
+    "amp": {
+     "pi": 0.9997174931615301,
+     "LRT": 0.0
+    },
+    "loss1": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 0.05,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "gain1",
+     "pi": 0.9944726218197851,
+     "LRT": 2.07782550858974,
+     "LRT_for_joint_best_type": 2.07782550858974,
+     "pi_for_joint_best_type": 0.9944726218197851
+    },
+    "allele_only": {
+     "type_best": "loss1",
+     "pi": 0.3,
+     "LRT": 3.8413716652030416e-13,
+     "LRT_for_joint_best_type": 3.8413716652030416e-13,
+     "pi_for_joint_best_type": 0.3
+    }
+   },
+   "prior": {
+    "m": -0.033989234648656205,
+    "sig_b": 0.44989039601324154,
+    "sig_u": 0.033795421417661384,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "boot_p": 0.02,
+   "boot_B": 99,
+   "boot_T_q95": 4.0390295907854894e-08,
+   "class": "clonal",
+   "agreement": "neither alone",
+   "agreement_note": "",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "gain1",
+     "pi": 0.9944726218197851,
+     "LRT": 2.07782550858974,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "cnloh",
+     "pi": 0.95,
+     "LRT": 3.637978807091713e-12,
+     "boot_p": 1.0,
+     "pi_lo": 0.0,
+     "pi_hi": 1.0,
+     "class": "insufficient evidence"
+    },
+    {
+     "variant": "depth only",
+     "best_type": "gain1",
+     "pi": 0.9944726218197851,
+     "LRT": 2.07782550858974,
+     "boot_p": 0.025,
+     "pi_lo": 0.988199988812158,
+     "pi_hi": 1.0,
+     "class": "clonal"
+    },
+    {
+     "variant": "allele only",
+     "best_type": "loss1",
+     "pi": 0.3,
+     "LRT": 3.8413716652030416e-13,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 17.941807746887207
+  },
+  {
+   "name": "random_chr6:74.8",
+   "family": "random",
+   "mode": "flank",
+   "rho_r": 0.5,
+   "alpha_r": 0.015,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 0,
+   "sum_N": 0.0,
+   "pooled_h": NaN,
+   "best_type": "cnloh",
+   "pi": 0.30000000000000004,
+   "pi_lo": 0.0,
+   "pi_hi": 1.0,
+   "LRT": 1.5897967386990786e-09,
+   "frac_cells_P90": 0.0,
+   "mean_P_event": 0.3,
+   "a_hat_null": [
+    -0.21950778312122532,
+    -0.20977438102896623,
+    -0.15485298341716264,
+    -0.21500316658580895,
+    -0.23550714775587703
+   ],
+   "d0_null": 0.023889961004777416,
+   "d0_alt": 0.023889961004777416,
+   "b_hat_alt": -0.20692911991610202,
+   "all_types": {
+    "cnloh": {
+     "pi": 0.30000000000000004,
+     "LRT": 1.5897967386990786e-09
+    },
+    "gain1": {
+     "pi": 0.9908076102082009,
+     "LRT": 0.0
+    },
+    "loss1": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "gain2": {
+     "pi": 0.9977754791289744,
+     "LRT": 0.0
+    },
+    "amp": {
+     "pi": 0.9993409493518378,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 1.0,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "cnloh",
+     "pi": 0.30000000000000004,
+     "LRT": 1.5897967386990786e-09,
+     "LRT_for_joint_best_type": 1.5897967386990786e-09,
+     "pi_for_joint_best_type": 0.30000000000000004
+    },
+    "allele_only": {
+     "type_best": "loss1",
+     "pi": 0.3,
+     "LRT": 3.8413716652030416e-13,
+     "LRT_for_joint_best_type": 3.8413716652030416e-13,
+     "pi_for_joint_best_type": 0.3
+    }
+   },
+   "prior": {
+    "m": -0.033989234648656205,
+    "sig_b": 0.44989039601324154,
+    "sig_u": 0.033795421417661384,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "boot_p": 0.49,
+   "boot_B": 99,
+   "boot_T_q95": 2.166379999835037e-08,
+   "class": "insufficient evidence",
+   "agreement": "neither alone",
+   "agreement_note": "type has no depth change; ",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "cnloh",
+     "pi": 0.30000000000000004,
+     "LRT": 1.5897967386990786e-09,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "cnloh",
+     "pi": 0.30000000000000004,
+     "LRT": 1.367880031466484e-09,
+     "boot_p": 0.475,
+     "pi_lo": 0.0,
+     "pi_hi": 1.0,
+     "class": "insufficient evidence"
+    },
+    {
+     "variant": "depth only",
+     "best_type": "cnloh",
+     "pi": 0.30000000000000004,
+     "LRT": 1.5897967386990786e-09,
+     "boot_p": 0.45,
+     "pi_lo": 0.0,
+     "pi_hi": 1.0,
+     "class": "insufficient evidence"
+    },
+    {
+     "variant": "allele only",
+     "best_type": "loss1",
+     "pi": 0.3,
+     "LRT": 3.8413716652030416e-13,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 18.371241092681885
+  },
+  {
+   "name": "random_chr20:39.2",
+   "family": "random",
+   "mode": "flank",
+   "rho_r": 0.9712372628452939,
+   "alpha_r": 0.015,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 1307,
+   "sum_N": 2099.0,
+   "pooled_h": 0.5393044306812768,
+   "best_type": "cnloh",
+   "pi": 0.05301861202424926,
+   "pi_lo": 0.0,
+   "pi_hi": 0.17060683610477395,
+   "LRT": 0.8307644130800327,
+   "frac_cells_P90": 0.0,
+   "mean_P_event": 0.053018637181806105,
+   "a_hat_null": [
+    -0.3200697094671285,
+    -0.3155993889046276,
+    -0.2531101807913641,
+    -0.379731889154224,
+    -0.2911929893841299
+   ],
+   "d0_null": 0.03223237070609501,
+   "d0_alt": 0.022770196904037813,
+   "b_hat_alt": -0.31194047095389577,
+   "all_types": {
+    "cnloh": {
+     "pi": 0.05301861202424926,
+     "LRT": 0.8307644130800327
+    },
+    "gain2": {
+     "pi": 0.9971352603152974,
+     "LRT": 0.0
+    },
+    "gain1": {
+     "pi": 0.9919484913405522,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "amp": {
+     "pi": 0.9993136406153443,
+     "LRT": 0.0
+    },
+    "loss1": {
+     "pi": 0.05,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "loss1",
+     "pi": 0.9981548623212944,
+     "LRT": 3.0531655903105275,
+     "LRT_for_joint_best_type": 2.8318027034401894e-08,
+     "pi_for_joint_best_type": 0.30000000000000004
+    },
+    "allele_only": {
+     "type_best": "loss1",
+     "pi": 0.053018682341716195,
+     "LRT": 0.8307642308495815,
+     "LRT_for_joint_best_type": 0.8307642308495815,
+     "pi_for_joint_best_type": 0.053018682341716195
+    }
+   },
+   "prior": {
+    "m": -0.033989234648656205,
+    "sig_b": 0.44989039601324154,
+    "sig_u": 0.033795421417661384,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "boot_p": 0.28,
+   "boot_B": 99,
+   "boot_T_q95": 2.980981154678738,
+   "class": "no evidence",
+   "agreement": "neither alone",
+   "agreement_note": "type has no depth change; ",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "cnloh",
+     "pi": 0.05,
+     "LRT": 0.48666234425036237,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "cnloh",
+     "pi": 0.053017485468086774,
+     "LRT": 0.8307638617734483,
+     "boot_p": 0.25,
+     "pi_lo": 0.0,
+     "pi_hi": 0.17060683925117912,
+     "class": "no evidence"
+    },
+    {
+     "variant": "depth only",
+     "best_type": "loss1",
+     "pi": 0.9981548623212944,
+     "LRT": 3.0531655903105275,
+     "boot_p": 0.025,
+     "pi_lo": 0.9970666598520606,
+     "pi_hi": 1.0,
+     "class": "clonal"
+    },
+    {
+     "variant": "allele only",
+     "best_type": "loss1",
+     "pi": 0.053018682341716195,
+     "LRT": 0.8307642308495815,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 52.26954483985901
+  },
+  {
+   "name": "random_chr10:121.4",
+   "family": "random",
+   "mode": "flank",
+   "rho_r": 0.5526209907980147,
+   "alpha_r": 0.01,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 3321,
+   "sum_N": 17719.0,
+   "pooled_h": 0.506631299734748,
+   "best_type": "gain2",
+   "pi": 0.9985839904732715,
+   "pi_lo": 0.9974995448037273,
+   "pi_hi": 1.0,
+   "LRT": 0.0,
+   "frac_cells_P90": 0.9959537572254336,
+   "mean_P_event": 0.9985842047239478,
+   "a_hat_null": [
+    1.5657124935665918e-05,
+    0.007499323767245761,
+    0.027424254125304616,
+    0.03972132796564897,
+    0.024985330630790118
+   ],
+   "d0_null": 0.007986089590830667,
+   "d0_alt": 0.007986083602233858,
+   "b_hat_alt": -0.6728609635983389,
+   "all_types": {
+    "gain2": {
+     "pi": 0.9985839904732715,
+     "LRT": 0.0
+    },
+    "cnloh": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "gain1": {
+     "pi": 0.9947607234726692,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "loss1": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "amp": {
+     "pi": 0.05,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "gain1",
+     "pi": 0.9962126898545342,
+     "LRT": 0.6426435006251268,
+     "LRT_for_joint_best_type": 0.0,
+     "pi_for_joint_best_type": 0.9985849550563654
+    },
+    "allele_only": {
+     "type_best": "homdel",
+     "pi": 0.3,
+     "LRT": 0.0,
+     "LRT_for_joint_best_type": 0.0,
+     "pi_for_joint_best_type": 0.3
+    }
+   },
+   "prior": {
+    "m": -0.033989234648656205,
+    "sig_b": 0.44989039601324154,
+    "sig_u": 0.033795421417661384,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "boot_p": 1.0,
+   "boot_B": 99,
+   "boot_T_q95": 0.0,
+   "class": "insufficient evidence",
+   "agreement": "neither alone",
+   "agreement_note": "type has no allele change; ",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "gain2",
+     "pi": 0.9985839904732715,
+     "LRT": 0.0,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "cnloh",
+     "pi": 0.05,
+     "LRT": 0.0,
+     "boot_p": 1.0,
+     "pi_lo": 0.028783138240870473,
+     "pi_hi": 0.03110209110924833,
+     "class": "no evidence"
+    },
+    {
+     "variant": "depth only",
+     "best_type": "gain1",
+     "pi": 0.9962126898545342,
+     "LRT": 0.6426435006251268,
+     "boot_p": 0.025,
+     "pi_lo": 0.9908915700044282,
+     "pi_hi": 1.0,
+     "class": "clonal"
+    },
+    {
+     "variant": "allele only",
+     "best_type": "homdel",
+     "pi": 0.3,
+     "LRT": 0.0,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 95.87088751792908
+  },
+  {
+   "name": "random_chr6:145.0",
+   "family": "random",
+   "mode": "flank",
+   "rho_r": 0.5526209907980147,
+   "alpha_r": 0.015,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 2895,
+   "sum_N": 9075.0,
+   "pooled_h": 0.5258402203856749,
+   "best_type": "cnloh",
+   "pi": 0.05,
+   "pi_lo": 0.0,
+   "pi_hi": 0.06769710077725416,
+   "LRT": 0.0,
+   "frac_cells_P90": 0.0,
+   "mean_P_event": 0.049348883351712634,
+   "a_hat_null": [
+    -0.3154055604577748,
+    -0.32707189591687236,
+    -0.2584916899646974,
+    -0.366149459555919,
+    -0.3309117077904409
+   ],
+   "d0_null": 0.0251347095451085,
+   "d0_alt": 0.012094771813366672,
+   "b_hat_alt": -0.3196059068564511,
+   "all_types": {
+    "cnloh": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "gain2": {
+     "pi": 0.9974225635165255,
+     "LRT": 0.0
+    },
+    "gain1": {
+     "pi": 0.9941214941518945,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "loss1": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "amp": {
+     "pi": 0.9987050356560867,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "loss1",
+     "pi": 0.9986953194592936,
+     "LRT": 2.051297434922162,
+     "LRT_for_joint_best_type": 3.637978807091713e-12,
+     "pi_for_joint_best_type": 0.30000000000000004
+    },
+    "allele_only": {
+     "type_best": "amp",
+     "pi": 0.05,
+     "LRT": 0.4367976848006947,
+     "LRT_for_joint_best_type": 0.0,
+     "pi_for_joint_best_type": 0.05
+    }
+   },
+   "prior": {
+    "m": -0.033989234648656205,
+    "sig_b": 0.44989039601324154,
+    "sig_u": 0.033795421417661384,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "boot_p": 1.0,
+   "boot_B": 99,
+   "boot_T_q95": 2.0600796558024688,
+   "class": "no evidence",
+   "agreement": "neither alone",
+   "agreement_note": "type has no depth change; ",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "gain2",
+     "pi": 0.9974225635165255,
+     "LRT": 0.0,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "cnloh",
+     "pi": 0.05,
+     "LRT": 0.0,
+     "boot_p": 1.0,
+     "pi_lo": 0.0,
+     "pi_hi": 0.0676970935182869,
+     "class": "no evidence"
+    },
+    {
+     "variant": "depth only",
+     "best_type": "loss1",
+     "pi": 0.9986953194592936,
+     "LRT": 2.051297434922162,
+     "boot_p": 0.025,
+     "pi_lo": 0.9976849822363468,
+     "pi_hi": 1.0,
+     "class": "clonal"
+    },
+    {
+     "variant": "allele only",
+     "best_type": "amp",
+     "pi": 0.05,
+     "LRT": 0.4367976848006947,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 89.51241564750671
+  },
+  {
+   "name": "random_chr2:164.3",
+   "family": "random",
+   "mode": "flank",
+   "rho_r": 0.5,
+   "alpha_r": 0.015,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 0,
+   "sum_N": 0.0,
+   "pooled_h": NaN,
+   "best_type": "gain1",
+   "pi": 0.9848235391319587,
+   "pi_lo": 0.9709268730278727,
+   "pi_hi": 0.9977577398816412,
+   "LRT": 2.860327470360062,
+   "frac_cells_P90": 0.9673410404624277,
+   "mean_P_event": 0.9848234950036978,
+   "a_hat_null": [
+    -0.23683269844217292,
+    -0.24547784502650077,
+    -0.20004104961178043,
+    -0.3174060612749579,
+    -0.21229182327131882
+   ],
+   "d0_null": 0.023889961004777416,
+   "d0_alt": 0.023889961004777416,
+   "b_hat_alt": -0.64319026264955,
+   "all_types": {
+    "gain1": {
+     "pi": 0.9848235391319587,
+     "LRT": 2.860327470360062
+    },
+    "loss1": {
+     "pi": 0.9990761628405079,
+     "LRT": 0.06476661086708191
+    },
+    "cnloh": {
+     "pi": 0.3,
+     "LRT": 0.0
+    },
+    "gain2": {
+     "pi": 0.9960492338216543,
+     "LRT": 0.0
+    },
+    "amp": {
+     "pi": 0.9995953110886844,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 1.0,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "gain1",
+     "pi": 0.9848235391319587,
+     "LRT": 2.860327470360062,
+     "LRT_for_joint_best_type": 2.860327470360062,
+     "pi_for_joint_best_type": 0.9848235391319587
+    },
+    "allele_only": {
+     "type_best": "loss1",
+     "pi": 0.3,
+     "LRT": 3.8413716652030416e-13,
+     "LRT_for_joint_best_type": 3.8413716652030416e-13,
+     "pi_for_joint_best_type": 0.3
+    }
+   },
+   "prior": {
+    "m": -0.033989234648656205,
+    "sig_b": 0.44989039601324154,
+    "sig_u": 0.033795421417661384,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "boot_p": 0.01,
+   "boot_B": 99,
+   "boot_T_q95": 3.564353391993766e-07,
+   "class": "clonal",
+   "agreement": "neither alone",
+   "agreement_note": "",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "gain1",
+     "pi": 0.9848235391319587,
+     "LRT": 2.860327470360062,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "cnloh",
+     "pi": 0.30000000000000004,
+     "LRT": 3.637978807091713e-12,
+     "boot_p": 1.0,
+     "pi_lo": 0.0,
+     "pi_hi": 1.0,
+     "class": "insufficient evidence"
+    },
+    {
+     "variant": "depth only",
+     "best_type": "gain1",
+     "pi": 0.9848235391319587,
+     "LRT": 2.860327470360062,
+     "boot_p": 0.025,
+     "pi_lo": 0.9709268730278727,
+     "pi_hi": 0.9977577398816412,
+     "class": "clonal"
+    },
+    {
+     "variant": "allele only",
+     "best_type": "loss1",
+     "pi": 0.3,
+     "LRT": 3.8413716652030416e-13,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 20.017011642456055
+  },
+  {
+   "name": "random_chr14:93.5",
+   "family": "random",
+   "mode": "flank",
+   "rho_r": 0.6362852663760575,
+   "alpha_r": 0.015,
+   "n_cells": 3460,
+   "n_cells_N_gt0": 3320,
+   "sum_N": 17241.0,
+   "pooled_h": 0.5081491792819443,
+   "best_type": "cnloh",
+   "pi": 0.05,
+   "pi_lo": 0.0,
+   "pi_hi": 0.04763906707050337,
+   "LRT": 0.0,
+   "frac_cells_P90": 0.0,
+   "mean_P_event": 0.048363527662955055,
+   "a_hat_null": [
+    -0.04606008090934784,
+    -0.09184153593016946,
+    -0.005684528523053707,
+    -0.033555748173895755,
+    -0.006992457911614422
+   ],
+   "d0_null": 0.009755415846971944,
+   "d0_alt": -0.0036797847713749797,
+   "b_hat_alt": -0.036827101942463046,
+   "all_types": {
+    "cnloh": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "gain2": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "gain1": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "homdel": {
+     "pi": 1.0,
+     "LRT": 0.0
+    },
+    "loss1": {
+     "pi": 0.05,
+     "LRT": 0.0
+    },
+    "amp": {
+     "pi": 0.05,
+     "LRT": 0.0
+    }
+   },
+   "components": {
+    "depth_only": {
+     "type_best": "loss1",
+     "pi": 0.9985913975630974,
+     "LRT": 0.6436540858339868,
+     "LRT_for_joint_best_type": 3.2778189051896334e-08,
+     "pi_for_joint_best_type": 0.3
+    },
+    "allele_only": {
+     "type_best": "amp",
+     "pi": 0.05,
+     "LRT": 0.9322608069833223,
+     "LRT_for_joint_best_type": 0.0,
+     "pi_for_joint_best_type": 0.05
+    }
+   },
+   "prior": {
+    "m": -0.033989234648656205,
+    "sig_b": 0.44989039601324154,
+    "sig_u": 0.033795421417661384,
+    "d_med": 0.023889961004777416,
+    "tau": 0.014882506379562494,
+    "d_med_c": [
+     0.0270527532855242,
+     0.02741976496632048,
+     0.015555108798486261,
+     0.029784919585811864,
+     0.021960714285714278
+    ],
+    "tau_c": [
+     0.02519700750436029,
+     0.022190202343458962,
+     0.021136567019356532,
+     0.028780566876219313,
+     0.03421255088797288
+    ],
+    "n_windows": 120
+   },
+   "boot_p": 1.0,
+   "boot_B": 99,
+   "boot_T_q95": 0.0,
+   "class": "no evidence",
+   "agreement": "neither alone",
+   "agreement_note": "type has no depth change; ",
+   "variants": [
+    {
+     "variant": "k=1.0",
+     "best_type": "gain2",
+     "pi": 1.0,
+     "LRT": 0.0,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    },
+    {
+     "variant": "no shared baseline offset",
+     "best_type": "cnloh",
+     "pi": 0.05,
+     "LRT": 0.0,
+     "boot_p": 1.0,
+     "pi_lo": 0.0,
+     "pi_hi": 0.047639064375836836,
+     "class": "no evidence"
+    },
+    {
+     "variant": "depth only",
+     "best_type": "loss1",
+     "pi": 0.9985913975630974,
+     "LRT": 0.6436540858339868,
+     "boot_p": 0.025,
+     "pi_lo": 0.9976391632928027,
+     "pi_hi": 1.0,
+     "class": "clonal"
+    },
+    {
+     "variant": "allele only",
+     "best_type": "amp",
+     "pi": 0.05,
+     "LRT": 0.9322608069833223,
+     "boot_p": NaN,
+     "pi_lo": NaN,
+     "pi_hi": NaN,
+     "class": ""
+    }
+   ],
+   "seconds": 89.12218523025513
+  }
+ ],
+ "orient": [
+  {
+   "region": "chr7_8.3_10.7",
+   "target_bins": 24,
+   "bins_with_AT": 21,
+   "bins_certain": 21,
+   "bins_B_major": 0,
+   "bins_A_major": 21,
+   "orientation_switches": 0,
+   "mean_certainty": 0.9740816151904761,
+   "n_flank_bins": 100,
+   "mode": "flank",
+   "family": "saved",
+   "chrom": "chr7",
+   "start_mb": 8.300001,
+   "end_mb": 10.7
+  },
+  {
+   "region": "chr7_51.4_53.5",
+   "target_bins": 19,
+   "bins_with_AT": 17,
+   "bins_certain": 0,
+   "bins_B_major": 0,
+   "bins_A_major": 0,
+   "orientation_switches": 0,
+   "mean_certainty": 0.5,
+   "n_flank_bins": 100,
+   "mode": "flank",
+   "family": "saved",
+   "chrom": "chr7",
+   "start_mb": 51.400001,
+   "end_mb": 53.5
+  },
+  {
+   "region": "chr7_67.4_70.0",
+   "target_bins": 26,
+   "bins_with_AT": 24,
+   "bins_certain": 0,
+   "bins_B_major": 0,
+   "bins_A_major": 0,
+   "orientation_switches": 0,
+   "mean_certainty": 0.5,
+   "n_flank_bins": 100,
+   "mode": "flank",
+   "family": "saved",
+   "chrom": "chr7",
+   "start_mb": 67.400001,
+   "end_mb": 70.0
+  },
+  {
+   "region": "chr7_70.0_73.3",
+   "target_bins": 33,
+   "bins_with_AT": 25,
+   "bins_certain": 16,
+   "bins_B_major": 12,
+   "bins_A_major": 4,
+   "orientation_switches": 2,
+   "mean_certainty": 0.8341736000000001,
+   "n_flank_bins": 100,
+   "mode": "flank",
+   "family": "saved",
+   "chrom": "chr7",
+   "start_mb": 70.000001,
+   "end_mb": 73.3
+  },
+  {
+   "region": "chr9_20_27",
+   "target_bins": 52,
+   "bins_with_AT": 32,
+   "bins_certain": 10,
+   "bins_B_major": 10,
+   "bins_A_major": 0,
+   "orientation_switches": 0,
+   "mean_certainty": 0.672340625,
+   "n_flank_bins": 100,
+   "mode": "flank",
+   "family": "saved",
+   "chrom": "chr9",
+   "start_mb": 20.000001,
+   "end_mb": 27.0
+  },
+  {
+   "region": "chr9_22.5_26.6",
+   "target_bins": 25,
+   "bins_with_AT": 14,
+   "bins_certain": 9,
+   "bins_B_major": 9,
+   "bins_A_major": 0,
+   "orientation_switches": 0,
+   "mean_certainty": 0.84514,
+   "n_flank_bins": 100,
+   "mode": "flank",
+   "family": "saved",
+   "chrom": "chr9",
+   "start_mb": 22.500001,
+   "end_mb": 26.6
+  },
+  {
+   "region": "chr9_70_100",
+   "target_bins": 295,
+   "bins_with_AT": 282,
+   "bins_certain": 145,
+   "bins_B_major": 127,
+   "bins_A_major": 18,
+   "orientation_switches": 5,
+   "mean_certainty": 0.7750513404255319,
+   "n_flank_bins": 100,
+   "mode": "flank",
+   "family": "saved",
+   "chrom": "chr9",
+   "start_mb": 70.100001,
+   "end_mb": 100.0
+  },
+  {
+   "region": "lit_9p21_hemizygous_zone_approx",
+   "target_bins": 38,
+   "bins_with_AT": 18,
+   "bins_certain": 0,
+   "bins_B_major": 0,
+   "bins_A_major": 0,
+   "orientation_switches": 0,
+   "mean_certainty": 0.5202622222222222,
+   "n_flank_bins": 100,
+   "mode": "flank",
+   "family": "literature",
+   "chrom": "chr9",
+   "start_mb": 20.000001,
+   "end_mb": 24.0
+  },
+  {
+   "region": "lit_MYC_8q24",
+   "target_bins": 15,
+   "bins_with_AT": 15,
+   "bins_certain": 14,
+   "bins_B_major": 5,
+   "bins_A_major": 9,
+   "orientation_switches": 3,
+   "mean_certainty": 0.9683578579987052,
+   "n_flank_bins": 100,
+   "mode": "flank",
+   "family": "literature",
+   "chrom": "chr8",
+   "start_mb": 127.000001,
+   "end_mb": 128.5
+  },
+  {
+   "region": "lit_19q13_qter",
+   "target_bins": 226,
+   "bins_with_AT": 220,
+   "bins_certain": 107,
+   "bins_B_major": 55,
+   "bins_A_major": 52,
+   "orientation_switches": 4,
+   "mean_certainty": 0.7472281272727272,
+   "n_flank_bins": 0,
+   "mode": "genome",
+   "family": "literature",
+   "chrom": "chr19",
+   "start_mb": 35.000001,
+   "end_mb": 58.5
+  },
+  {
+   "region": "lit_5q13_qter",
+   "target_bins": 1064,
+   "bins_with_AT": 1012,
+   "bins_certain": 714,
+   "bins_B_major": 319,
+   "bins_A_major": 395,
+   "orientation_switches": 86,
+   "mean_certainty": 0.8707783362192449,
+   "n_flank_bins": 0,
+   "mode": "genome",
+   "family": "literature",
+   "chrom": "chr5",
+   "start_mb": 71.400001,
+   "end_mb": 181.1
+  },
+  {
+   "region": "chr8_115_145_cluster4_hypothesis",
+   "target_bins": 297,
+   "bins_with_AT": 285,
+   "bins_certain": 267,
+   "bins_B_major": 148,
+   "bins_A_major": 119,
+   "orientation_switches": 36,
+   "mean_certainty": 0.9677869897685327,
+   "n_flank_bins": 0,
+   "mode": "genome",
+   "family": "hypothesis",
+   "chrom": "chr8",
+   "start_mb": 115.000001,
+   "end_mb": 145.1
+  }
+ ],
+ "cal_flank": {
+  "m": -0.033989234648656205,
+  "sig_b": 0.44989039601324154,
+  "sig_u": 0.033795421417661384,
+  "d_med": 0.023889961004777416,
+  "tau": 0.014882506379562494,
+  "d_med_c": [
+   0.0270527532855242,
+   0.02741976496632048,
+   0.015555108798486261,
+   0.029784919585811864,
+   0.021960714285714278
+  ],
+  "tau_c": [
+   0.02519700750436029,
+   0.022190202343458962,
+   0.021136567019356532,
+   0.028780566876219313,
+   0.03421255088797288
+  ],
+  "n_windows": 120
+ },
+ "cal_genome": {
+  "m": -0.17805021297001744,
+  "sig_b": 0.49966524410693525,
+  "sig_u": 0.03943046960536936,
+  "d_med": 0.023889961004777416,
+  "tau": 0.014882506379562494,
+  "d_med_c": [
+   0.0270527532855242,
+   0.02741976496632048,
+   0.015555108798486261,
+   0.029784919585811864,
+   0.021960714285714278
+  ],
+  "tau_c": [
+   0.02519700750436029,
+   0.022190202343458962,
+   0.021136567019356532,
+   0.028780566876219313,
+   0.03421255088797288
+  ],
+  "n_windows": 120
+ },
+ "n_candidates": 12197,
+ "n_windows_drawn": 150,
+ "n_calib": 120,
+ "n_panel": 30,
+ "B_main": 99,
+ "B_var": 39,
+ "seconds": 1375.372990846634,
+ "cluster_sizes": {
+  "0": 1286,
+  "1": 833,
+  "2": 603,
+  "3": 556,
+  "4": 182
+ },
+ "n_cells": 3460,
+ "n_bins": 25337,
+ "environment": {
+  "python": "3.10.20",
+  "platform": "Linux-6.18.44-fc-v236-x86_64-with-glibc2.39",
+  "packages": {
+   "numpy": "1.24.4",
+   "pandas": "2.2.0",
+   "scipy": "1.8.0",
+   "h5py": "3.6.0",
+   "anndata": "0.8.0",
+   "pyarrow": "23.0.0",
+   "skmisc": "0.5.2",
+   "matplotlib": "3.8.4",
+   "statsmodels": "0.14.1"
+  },
+  "workbench_commit_at_run": "ffbdbd32cf5a6390e6f0af9338c9fdc287851319",
+  "pyepi_upstream_commit": "e8305ea2162634d07e92a3bb401df672e48f217b",
+  "cpu_count": 4
+ },
+ "check": false
+}
