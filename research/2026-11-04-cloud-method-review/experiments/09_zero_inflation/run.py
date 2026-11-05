@@ -266,6 +266,15 @@ def main():
     B = int(args[0]) if args else 199
     Bci = int(args[1]) if len(args) > 1 else 99
     p = C.default_paths(); d = C.H5AD(p["h5ad"]); lab = C.cell_clusters(d, p)
+    if "--report" in sys.argv:       # rebuild report.html from the saved TSVs without refitting
+        import json
+        meta = json.load(open(HERE / "summary.json"))
+        reg = pd.read_csv(HERE / "lrt_by_region.tsv", sep="\t").drop(columns=["q_bh"], errors="ignore")
+        from statsmodels.stats.multitest import multipletests
+        reg["q_bh"] = multipletests(reg.p_boot, method="fdr_bh")[1]
+        build_report(reg, pd.read_csv(HERE / "model_comparison.tsv", sep="\t"), pd.read_csv(HERE / "bootstrap.tsv", sep="\t"),
+                     pd.read_csv(HERE / "zero_location.tsv", sep="\t", dtype={"level": str}), meta, None, d, sorted(set(lab)), None)
+        return
     regs = E4.build_regions(d, p)
     yt, yf, tot = E4.region_sums(d, regs, "layers/raw")
     m8 = pd.read_csv(HERE.parent / "08_exposure_count_models" / "region_models.tsv", sep="\t")
@@ -336,7 +345,6 @@ def build_report(reg, mc, bt, loc, meta, regs, d, clusters, fam08):
     reg["ho_poisson_minus_nb"] = [wide.loc[r, ("heldout_logscore_sum", "poisson")] - wide.loc[r, ("heldout_logscore_sum", "nb")] for r in reg.name]
     ci = mc[mc.model == "zinb_const"].set_index("region")
     reg["pi_lo"] = reg.name.map(ci.pi_lo); reg["pi_hi"] = reg.name.map(ci.pi_hi)
-    sig = reg[reg.p_boot < 0.05]; supp = reg[(reg.p_boot < 0.05) & (reg.ho_zinb_const_minus_nb > 0)]
     nfam = reg.groupby("family").agg(n=("name", "size"), n_p_lt_05=("p_boot", lambda s: int((s < .05).sum())), median_pi=("pi_const", "median"),
                                       median_p=("p_boot", "median"), median_lr=("lr_obs", "median"))
     # zero location summary
@@ -347,6 +355,7 @@ def build_report(reg, mc, bt, loc, meta, regs, d, clusters, fam08):
     maxc = lc.loc[lc.groupby("region").excess.idxmax()].set_index("region")
     reg["excess_low_tercile"] = reg.name.map(lt["0"]); reg["z_low_tercile"] = reg.name.map(lz["0"])
     reg["max_excess_cluster"] = reg.name.map(maxc.level); reg["max_excess_cluster_z"] = reg.name.map(maxc.z)
+    sig = reg[reg.p_boot < 0.05]; supp = reg[(reg.p_boot < 0.05) & (reg.ho_zinb_const_minus_nb > 0)]
 
     def f_p(ax):
         for f, c in fcol.items():
@@ -413,17 +422,23 @@ def build_report(reg, mc, bt, loc, meta, regs, d, clusters, fam08):
         ["region", "model", "n_params", "loglik", "aic", "bic", "alpha", "pi_hat", "pi_lo", "pi_hi", "heldout_logscore_mean", "heldout_diff_vs_nb_sum", "heldout_diff_vs_nb_se", "converged"]]
     inst = reg[["name", "family", "null_pi_median", "null_pi_q95", "null_frac_boundary", "null_frac_nonconv_nb", "null_frac_nonconv_zinb", "ci_frac_boundary", "ci_frac_nonconv"]].rename(columns={"name": "region"})
     nb_pois_dAIC = reg.dAIC_pois_vs_nb
+    full = reg[(reg.p_boot < .05) & (reg.dBIC_zinb_vs_nb < 0) & (reg.ho_zinb_const_minus_nb > 0)]
+    few = sig[sig.n_obs_zero <= 3]
+    tz = loc[(loc.by == "coverage_tercile") & loc.region.isin(sig.name)].groupby("level").excess.sum()
     key = [
-        f"Bootstrap NB vs ZINB LRT (B={B}, both models refitted in every replicate): {len(sig)}/{len(reg)} regions have p < 0.05 "
+        f"Bootstrap NB vs ZINB LRT (B={B}, both models refitted in every replicate): {len(sig)}/{len(reg)} regions have p &lt; 0.05 "
         f"({int((sv.p_boot<.05).sum())}/{len(sv)} saved, {int((fl.p_boot<.05).sum())}/{len(fl)} NB-misfit flagged, {int((ng.p_boot<.05).sum())}/{len(ng)} negative windows); "
-        f"{meta['n_q_bh_lt_0.05']} survive BH q < 0.05 (smallest attainable p = {1/(B+1):.4f}). Under a calibrated test ~5% of the negatives would be below 0.05.",
-        f"Saved windows: p_boot = " + ", ".join(f"{r.name.split('_',1)[0]}:{r.name.split('_',1)[1]} {r.p_boot:.3f}" for r in sv.itertuples()) + ". The deep chr7 windows do not need a zero component.",
-        f"Estimated constant pi is small where it is estimated at all: median {reg.pi_const.median():.4f}, max {reg.pi_const.max():.3f} ({reg.loc[reg.pi_const.idxmax(),'name']}); "
-        f"{int(reg.boundary_obs.sum())}/{len(reg)} fits sit on the pi = 0 boundary, which is why a chi-square LRT would be invalid.",
+        f"{meta['n_q_bh_lt_0.05']} survive BH q &lt; 0.05 (smallest attainable p = {1/(B+1):.4f}). Under a calibrated test ~5% of the negatives would be below 0.05.",
+        f"Saved windows: p_boot = " + ", ".join(f"{r.name.split('_',1)[0]}:{r.name.split('_',1)[1]} {r.p_boot:.3f}" for r in sv.itertuples()) + f". The four deep chr7 windows have LR &le; {sv[sv.name.str.startswith('chr7')].lr_obs.max():.1f} and BIC favours NB over ZINB in all of them (dBIC {sv[sv.name.str.startswith('chr7')].dBIC_zinb_vs_nb.min():.1f} to {sv[sv.name.str.startswith('chr7')].dBIC_zinb_vs_nb.max():.1f}); no held-out gain from ZINB in {int((sv[sv.name.str.startswith('chr7')].ho_zinb_const_minus_nb<=0.01).sum())}/4.",
+        f"Effect size is tiny: {len(few)}/{len(sig)} supported regions have at most 3 observed zero cells in {reg.n_cells_max if 'n_cells_max' in reg else 3460} cells, where NB expects about 0 (median NB-expected zeros {sig.nb_expected_zero.median():.1e}); the supported pi is about 1-3 cells (median expected structural zeros {sig.sum_tau_zinb.median():.1f}, max {reg.sum_tau_zinb.max():.1f}). "
+        f"So the LRT is detecting isolated zero cells that the NB tail cannot accommodate (a zero where mu is large costs the NB tens of log units), not a population-level zero-inflation.",
+        f"Estimated constant pi is small: median {reg.pi_const.median():.4f}, max {reg.pi_const.max():.4f} ({reg.loc[reg.pi_const.idxmax(),'name']}); "
+        f"{int(reg.boundary_obs.sum())}/{len(reg)} observed fits sit on the pi = 0 boundary and {100*reg.null_frac_boundary.mean():.0f}% of null replicates do, so null LR* is 0 in most replicates: the p-value floor and ties dominate, and a chi-square LRT would be invalid.",
         f"Of the {len(sig)} nominally supported regions, {len(supp)} also gain held-out log score under ZINB over NB (positive = better); hurdle NB beats NB held-out in "
         f"{int((reg.ho_hurdle_nb_minus_nb>0).sum())}/{len(reg)} regions and BIC prefers ZINB over NB in {int((reg.dBIC_zinb_vs_nb<0).sum())}/{len(reg)}.",
         f"Poisson vs NB: median ΔAIC (Poisson − NB) = {nb_pois_dAIC.median():.0f}; NB wins by >10 AIC in {int((nb_pois_dAIC>10).sum())}/{len(reg)} regions, so overdispersion, not zeros, is the dominant departure from Poisson (consistent with experiment 08).",
-        f"Where extra zeros are supported, excess zeros concentrate in the lowest cell-total tercile in {int(((sig.z_low_tercile>3)).sum())}/{max(len(sig),1)} of them (z > 3), pointing to a depth-related (technical) origin where present; see zero_location.tsv for cluster profiles.",
+        f"Where are the extra zeros? Summed over the {len(sig)} supported regions, observed-minus-NB-expected zero cells are {tz.get(0, np.nan):.0f} in the lowest cell-total tercile, {tz.get(1, np.nan):.0f} in the middle and {tz.get(2, np.nan):.0f} in the highest; almost none sits in the deepest third of cells, "
+        f"so the isolated zeros fall in lower- and mid-depth cells, which is compatible with a depth-related (technical) origin but does not prove one; cluster profiles are in zero_location.tsv (not summarised here); the excess z is defined only in {int(reg.z_low_tercile.notna().sum())} regions where NB expects at least one zero).",
         f"Component instability: in the null replicates the median fraction of ZINB fits on the pi = 0 boundary is {reg.null_frac_boundary.median():.2f}; median non-converged fraction NB {reg.null_frac_nonconv_nb.median():.3f}, ZINB {reg.null_frac_nonconv_zinb.median():.3f}.",
     ]
     glossary = {
@@ -493,7 +508,8 @@ def build_report(reg, mc, bt, loc, meta, regs, d, clusters, fam08):
         ("Component instability", C.html_table(inst) + C.caption(
             "Null-replicate pi quantiles and fractions of boundary and non-converged fits per region (rows ordered as in the run)."), 3),
         ("Per-region detail", C.html_table(per) + C.caption("One row per region; the note is generated from the columns (thresholds: p_boot 0.05, z 3).")),
-        ("Sensitivity", "<p>Three alternative zero parameterisations are reported: constant pi (used for the LRT), pi depending on log exposure (<code>zinb_exposure</code>, slope in lrt_by_region.tsv as pi_exposure_slope; LR in lr_obs_exposure, not bootstrapped), and the hurdle NB. "
+        ("Sensitivity", f"<p>All-criteria support (p<0.05, BIC favours ZINB, held-out gain): {len(full)}/{len(reg)} regions ({int((full.family=='uncalled_random_negative').sum())} negatives); nominal-only support (p<0.05 alone): {len(sig)}/{len(reg)}. "
+         "Three alternative zero parameterisations are reported: constant pi (used for the LRT), pi depending on log exposure (<code>zinb_exposure</code>, slope in lrt_by_region.tsv as pi_exposure_slope; LR in lr_obs_exposure, not bootstrapped), and the hurdle NB. "
          "The ranking by held-out score and BIC is in model_comparison.tsv. Results are conditional on the cluster terms and on the exposure definition from 08. "
          f"The bootstrap resolution is 1/{B+1}; BH over {len(reg)} regions is a convenience and not a formal family-wise statement. NB alpha is the ML value here, not the Cameron–Trivedi value of 08.</p>"),
         ("Limits and alternative explanations", "<ul><li>A rejected NB is also compatible with a misspecified mean (cluster terms too coarse, subclones) or heavier-tailed dispersion (e.g. alpha varying with exposure), not only with structural zeros.</li>"
@@ -506,16 +522,18 @@ def build_report(reg, mc, bt, loc, meta, regs, d, clusters, fam08):
         HERE / "report.html", "Zero inflation diagnostic", "Experiment 09 · method E:3 · Poisson / NB / ZINB / hurdle with bootstrap LRT (exploratory)",
         sections, {"command": "python -I experiments/09_zero_inflation/run.py", "outputs": ["model_comparison.tsv", "bootstrap.tsv", "lrt_by_region.tsv", "zero_location.tsv", "summary.json"],
                    "seeds": meta["seeds"], "B_null": B, "B_ci": Bci, "environment": meta["environment"]},
-        verdict=f"Exploratory: a structural-zero component is supported by the bootstrap LRT in {len(sig)}/{len(reg)} regions (negatives: {int((ng.p_boot<.05).sum())}/{len(ng)}), "
-                f"with small pi (median {reg.pi_const.median():.4f}); NB already captures the large majority of the departure from Poisson, and the deep chr7 windows do not need a zero component.",
+        verdict=f"Exploratory: the bootstrap LRT nominally favours a zero component in {len(sig)}/{len(reg)} regions, including {int((ng.p_boot<.05).sum())}/{len(ng)} negative windows, but with pi about 1 cell in {reg.n_cells.iloc[0] if 'n_cells' in reg else 3460} "
+                f"(median {reg.pi_const.median():.4f}); this is isolated zero cells, not population zero inflation. NB removes most of the Poisson misfit, and the deep chr7 windows do not need a zero component.",
         key_findings=key, glossary=glossary,
-        supports=["NB (not Poisson) is the necessary step for these counts; a zero component is at most a small additional refinement in a minority of regions.",
+        supports=["NB (not Poisson) is the necessary step for these counts; the zero component adds a handful of cells' worth of probability.",
                   "The deep chr7 saved windows are consistent with NB without extra zeros.",
+                  f"Isolated zero cells in cells with large expected counts are common in negative windows too ({int((ng.p_boot<.05).sum())}/{len(ng)}), so a log-likelihood region score needs protection against them.",
                   "A parametric bootstrap with refitting is a workable non-regular test for this decision."],
         not_supports=["Deleting or down-weighting zero cells.", "Any statement that extra zeros are biological dropout, deletion or dosage.",
                       "A validated production zero-inflation model; this is an exploratory description."],
-        decision_impact="For <code>recommendation.md</code>: the raw-count evidence layer can use NB (or quasi-Poisson) with exposure and cluster terms; zero inflation should not be a default component. "
-                        "Keep an optional ZINB/hurdle check as a misfit diagnostic for regions where NB is flagged, reported with its bootstrap p and held-out score, and never as a cell filter.",
+        decision_impact="For <code>recommendation.md</code>: the raw-count evidence layer can use NB (or quasi-Poisson) with exposure and cluster terms; a general zero-inflation component is not needed (pi is about 1 cell, and rejection is as common in negative windows as in flagged ones). "
+                        "The practical lesson is robustness: a single zero in a high-expected cell moves an NB log-likelihood by tens of units, so region scores should use count-level summaries or a capped per-cell contribution rather than a ZINB. "
+                        "Keep ZINB/hurdle only as an optional misfit diagnostic, reported with its bootstrap p and effect size, never as a cell filter.",
         next_steps=["Re-run with region selection and assessment on disjoint cell halves.", "Test alpha varying with exposure or cluster before attributing misfit to structural zeros.",
                     "Check flagged regions against a cross-sample technical baseline and mappability.", "Increase B (e.g. 999) for the regions near p = 0.05."])
 

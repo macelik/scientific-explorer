@@ -1,0 +1,125 @@
+{
+ "experiment": "09_zero_inflation",
+ "method_record": "E:3",
+ "seeds": {
+  "negative_windows": [
+   20261104,
+   9
+  ],
+  "train_test_split": [
+   20261104,
+   9
+  ],
+  "null_bootstrap": "(20261104, 9, region_index)",
+  "zinb_ci_bootstrap": "(20261104, 9, region_index, 1)"
+ },
+ "generator": "numpy.random.default_rng (PCG64)",
+ "B_null": 199,
+ "B_ci": 99,
+ "n_regions": 58,
+ "region_index_order": [
+  "chr7_8.3_10.7",
+  "chr7_51.4_53.5",
+  "chr7_67.4_70.0",
+  "chr7_70.0_73.3",
+  "chr9_20_27",
+  "chr9_22.5_26.6",
+  "chr9_70_100",
+  "chr9:22.7-26.7_cn0.0",
+  "chr12:117.2-119.6_cn0.0",
+  "chr12:119.6-123.7_cn1.5",
+  "chr12:127.6-133.2_cn0.0",
+  "chr14:45.3-49.5_cn0.0",
+  "chr17:33.3-36.8_cn0.5",
+  "chr22:32.9-35.3_cn0.0",
+  "chr22:35.3-43.2_cn1.5",
+  "chr22:43.2-50.6_cn0.5",
+  "random_chr12:106.6",
+  "random_chr8:108.0",
+  "random_chr22:38.2",
+  "random_chr10:85.4",
+  "random_chr6:139.4",
+  "random_chr9:29.2",
+  "random_chr9:27.8",
+  "random_chr6:18.2",
+  "random_chr6:17.1",
+  "random_chr18:63.8",
+  "random_chr22:35.0",
+  "random_chr22:35.6",
+  "random_chr10:100.2",
+  "random_chr10:103.4",
+  "random_chr11:16.6",
+  "random_chr13:25.8",
+  "random_chr13:67.2",
+  "random_chr13:93.3",
+  "random_chr13:93.8",
+  "random_chr17:69.4",
+  "random_chr18:39.1",
+  "random_chr1:18.2",
+  "random_chr1:43.3",
+  "random_chr1:54.1",
+  "random_chr1:77.6",
+  "random_chr1:94.0",
+  "random_chr21:35.3",
+  "random_chr2:117.8",
+  "random_chr2:170.3",
+  "random_chr2:189.9",
+  "random_chr2:27.6",
+  "random_chr2:44.1",
+  "random_chr2:46.5",
+  "random_chr4:146.5",
+  "random_chr4:159.9",
+  "random_chr5:30.9",
+  "random_chr6:125.2",
+  "random_chr6:140.0",
+  "random_chr6:20.4",
+  "random_chr7:125.2",
+  "random_chr8:22.9",
+  "random_chr8:53.8"
+ ],
+ "parameters": {
+  "alpha_bounds": [
+   1.0000000000000004e-06,
+   49.99999999999999
+  ],
+  "logit_pi_bounds": [
+   -12.0,
+   8.0
+  ],
+  "zinb_starts_logit_pi": [
+   -3.0,
+   -6.0
+  ],
+  "boundary_pi_threshold": 0.0001,
+  "hurdle_pi0": "(n0+0.5)/(n+1)",
+  "optimizer": "scipy L-BFGS-B, analytic gradients",
+  "lrt": "2(llZINB - llNB), floored at 0; p = (1+#{LR*>=LR})/(B+1)"
+ },
+ "counts": {
+  "saved": 7,
+  "nb_misfit_flagged_not_saved": 21,
+  "negatives": 30
+ },
+ "n_p_boot_lt_0.05": 41,
+ "n_q_bh_lt_0.05": 41,
+ "seconds": 1736.8,
+ "environment": {
+  "python": "3.10.20",
+  "platform": "Linux-6.18.44-fc-v236-x86_64-with-glibc2.39",
+  "packages": {
+   "numpy": "1.24.4",
+   "pandas": "2.2.0",
+   "scipy": "1.8.0",
+   "h5py": "3.6.0",
+   "anndata": "0.8.0",
+   "pyarrow": "23.0.0",
+   "skmisc": "0.5.2",
+   "matplotlib": "3.8.4",
+   "statsmodels": "0.14.1"
+  },
+  "workbench_commit_at_run": "a2d49bb95bfc9cf53b6be1fdbc5529a3fe269312",
+  "pyepi_upstream_commit": "e8305ea2162634d07e92a3bb401df672e48f217b",
+  "cpu_count": 4
+ },
+ "check_run": false
+}
