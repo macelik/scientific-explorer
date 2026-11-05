@@ -226,7 +226,10 @@ main{max-width:1080px;margin:0 auto;padding:28px 16px 64px}h1{font-size:1.55rem;
 pre{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:10px;overflow-x:auto;white-space:pre-wrap}
 .tw{overflow-x:auto;margin:8px 0}table{border-collapse:collapse;font-size:.86rem;min-width:50%}th,td{border-bottom:1px solid var(--line);padding:4px 8px;text-align:right;white-space:nowrap}
 th:first-child,td:first-child{text-align:left}th{color:var(--muted);font-weight:600}img{max-width:100%;height:auto;background:#fff;border-radius:6px;border:1px solid var(--line)}
-ul{padding-left:1.2rem}
+ul,ol{padding-left:1.2rem}li{margin:.15rem 0}h3{font-size:1rem;margin:1.2rem 0 .4rem}
+.toc ol{columns:2;margin:.3rem 0 0}.toc a{color:var(--accent);text-decoration:none}.verdict{border-left:4px solid var(--accent);font-size:1.02rem}
+.cap{color:var(--muted);font-size:.86rem;margin:.2rem 0 1rem}.cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:700px){.cols{grid-template-columns:1fr}.toc ol{columns:1}}
 """
 
 
@@ -246,18 +249,63 @@ def html_table(df, floatfmt="{:.4g}", max_rows=200):
     return f'<div class="tw"><table><thead><tr>{head}</tr></thead><tbody>{"".join(body)}</tbody></table></div>'
 
 
-def write_html_report(path, title, subtitle, sections, provenance):
-    """sections: list of (heading, html_fragment). provenance: dict rendered at the end."""
+def write_html_report(path, title, subtitle, sections, provenance, key_findings=None, verdict=None, glossary=None,
+                      supports=None, not_supports=None, decision_impact=None, next_steps=None):
+    """Self-contained report. Backward compatible: (heading, html) sections plus optional structured blocks.
+
+    key_findings: list of short HTML strings with numbers (shown first, in a summary box).
+    verdict: one-sentence bottom line for the reader.
+    glossary: dict column/term -> explanation (rendered as a definition table).
+    supports / not_supports: lists of what the evidence does / does not support.
+    decision_impact: HTML on how the result changes the method recommendation.
+    next_steps: list of follow-up checks that would resolve what remains open.
+    Sections may be 2-tuples (heading, html) or 3-tuples (heading, html, level) with level 2 or 3.
+    """
+    blocks = []
+    if verdict:
+        blocks.append(("Bottom line", f"<div class='card verdict'>{verdict}</div>", 2))
+    if key_findings:
+        blocks.append(("Key findings", "<div class='card'><ol>" + "".join(f"<li>{k}</li>" for k in key_findings) + "</ol></div>", 2))
+    for sec in sections:
+        h, frag = sec[0], sec[1]
+        lvl = sec[2] if len(sec) > 2 else 2
+        blocks.append((h, frag, lvl))
+    if supports or not_supports:
+        frag = "<div class='cols'>"
+        frag += "<div class='card'><h3>Supports</h3><ul>" + "".join(f"<li>{x}</li>" for x in (supports or [])) + "</ul></div>"
+        frag += "<div class='card'><h3>Does not support / cannot tell</h3><ul>" + "".join(f"<li>{x}</li>" for x in (not_supports or [])) + "</ul></div>"
+        frag += "</div>"
+        blocks.append(("What the evidence supports", frag, 2))
+    if decision_impact:
+        blocks.append(("Decision impact", f"<div class='card'>{decision_impact}</div>", 2))
+    if next_steps:
+        blocks.append(("Next checks", "<ul>" + "".join(f"<li>{x}</li>" for x in next_steps) + "</ul>", 2))
+    if glossary:
+        rows = "".join(f"<tr><td><code>{html.escape(k)}</code></td><td style='text-align:left;white-space:normal'>{v}</td></tr>" for k, v in glossary.items())
+        blocks.append(("Glossary", f"<div class='tw'><table><thead><tr><th>term / column</th><th style='text-align:left'>meaning</th></tr></thead><tbody>{rows}</tbody></table></div>", 2))
+    blocks.append(("Reproduce and provenance", "<pre>" + html.escape(json.dumps(provenance, indent=1, default=str)) + "</pre>", 2))
+    ids, toc = [], []
+    for i, (h, _, lvl) in enumerate(blocks):
+        sid = f"s{i}"
+        ids.append(sid)
+        if lvl == 2:
+            toc.append(f"<li><a href='#{sid}'>{html.escape(h)}</a></li>")
     parts = [f"<!doctype html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>"
              f"<title>{html.escape(title)}</title><style>{CSS}</style></head><body><main>",
              f"<h1>{html.escape(title)}</h1><p class='sub'>{subtitle}</p>",
              "<p><span class='tag'>exploratory diagnostic</span><span class='tag'>MCF10-A development data</span>"
-             "<span class='tag'>not CN truth</span></p>"]
-    for h, frag in sections:
-        parts.append(f"<h2>{html.escape(h)}</h2>{frag}")
-    parts.append("<h2>Provenance</h2><pre>" + html.escape(json.dumps(provenance, indent=1, default=str)) + "</pre>")
+             "<span class='tag'>not CN truth</span></p>",
+             "<nav class='toc card'><b>Contents</b><ol>" + "".join(toc) + "</ol></nav>"]
+    for sid, (h, frag, lvl) in zip(ids, blocks):
+        tag = "h2" if lvl == 2 else "h3"
+        parts.append(f"<section id='{sid}'><{tag}>{html.escape(h)}</{tag}>{frag}</section>")
     parts.append("</main></body></html>")
     Path(path).write_text("".join(parts))
+
+
+def caption(text):
+    """Figure/table caption: what is plotted and how to read it."""
+    return f"<p class='cap'>{text}</p>"
 
 
 def img(b64, alt):

@@ -268,7 +268,7 @@
    "test_pearson_disp_nb": 0.9818744672939514
   }
  ],
- "seconds": 47.3,
+ "seconds": 168.2,
  "environment": {
   "python": "3.10.20",
   "platform": "Linux-6.18.44-fc-v236-x86_64-with-glibc2.39",
@@ -283,7 +283,7 @@
    "matplotlib": "3.8.4",
    "statsmodels": "0.14.1"
   },
-  "workbench_commit_at_run": "20483b08765f5e1637beac63d21a450e51793f96",
+  "workbench_commit_at_run": "1d1c5ddf930beea0be3a021e7a3372f7f4bec589",
   "pyepi_upstream_commit": "e8305ea2162634d07e92a3bb401df672e48f217b",
   "cpu_count": 4
  }

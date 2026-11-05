@@ -198,62 +198,163 @@ def main():
            "saved": sv.to_dict("records"), "seconds": round(time.time() - t0, 1), "environment": C.environment()}
     C.write_json(HERE / "summary.json", res)
 
-    fig, ax = plt.subplots(1, 3, figsize=(15, 4))
-    for f, c in [("random", "#bbb"), ("called", "#9b2c2c"), ("saved", "k"), ("literature", "#2f5d8a")]:
-        g = df[df.family == f]
-        ax[0].scatter(g.log_rr / np.log(2), np.abs(g.z_quasi), s=10 if f != "saved" else 35, color=c, label=f, alpha=.7)
-    ax[0].set_yscale("log"); ax[0].axhline(1.96, color="#8a5a00", ls="--", lw=1)
-    ax[0].set_xlabel("log2 rate ratio (target/flank)"); ax[0].set_ylabel("|z| quasi-Poisson"); ax[0].legend(fontsize=7)
-    ax[0].set_title("Sampling-based z: nearly everything 'significant'")
-    ax[1].hist(rnd.log_rr / np.log(2), bins=40, color="#bbb", label="uncalled random")
-    for _, g in df[df.family == "saved"].iterrows():
-        ax[1].axvline(g.log_rr / np.log(2), color="k", lw=.8)
-    ax[1].set_xlabel("log2 rate ratio"); ax[1].set_title("Empirical reference (black = saved windows)")
-    q = pr.groupby(["family", "coverage_tercile"])[["obs_zero_frac", "pois_pred_zero_frac", "nb_pred_zero_frac"]].mean().reset_index()
-    for f, mk in [("random", "o"), ("called", "s"), ("saved", "^")]:
-        g = q[q.family == f]
-        ax[2].plot(g.coverage_tercile, g.obs_zero_frac - g.pois_pred_zero_frac, marker=mk, color="#2f5d8a", label=f"{f}: obs − Poisson")
-        ax[2].plot(g.coverage_tercile, g.obs_zero_frac - g.nb_pred_zero_frac, marker=mk, color="#9b2c2c", ls="--", label=f"{f}: obs − NB")
-    ax[2].axhline(0, color="k", lw=.5); ax[2].set_xticks([0, 1, 2]); ax[2].set_xticklabels(["low", "mid", "high"])
-    ax[2].set_xlabel("coverage tercile (test cells)"); ax[2].set_ylabel("zero fraction: observed − predicted"); ax[2].legend(fontsize=6)
-    ax[2].set_title("Held-out zero check")
-    b64 = C.fig_to_b64(fig); plt.close(fig)
+    # ------------------------------------------------------------------ report (structured)
+    def figure(fn, w=7, h=3.8):
+        fig, ax = plt.subplots(figsize=(w, h)); fn(ax); out = C.fig_to_b64(fig); plt.close(fig); return out
+
+    def f_sig(ax):
+        for f, c in [("random", "#bbb"), ("called", "#9b2c2c"), ("saved", "k"), ("literature", "#2f5d8a")]:
+            g = df[df.family == f]
+            ax.scatter(g.log_rr / np.log(2), np.abs(g.z_quasi), s=12 if f != "saved" else 40, color=c, label=f, alpha=.7)
+        ax.set_yscale("log"); ax.axhline(1.96, color="#8a5a00", ls="--", lw=1, label="|z| = 1.96")
+        ax.set_xlabel("log2 rate ratio, target / flanks"); ax.set_ylabel("|z|, quasi-Poisson"); ax.legend(fontsize=7)
+
+    def f_emp(ax):
+        ax.hist(rnd.log_rr / np.log(2), bins=40, color="#bbb", label="uncalled random windows")
+        for _, g in df[df.family == "saved"].iterrows():
+            ax.axvline(g.log_rr / np.log(2), color="k", lw=.9)
+        for v in (med - 1.96 * mad, med + 1.96 * mad):
+            ax.axvline(v / np.log(2), color="#8a5a00", ls="--", lw=1)
+        ax.set_xlabel("log2 rate ratio"); ax.set_ylabel("windows"); ax.legend(fontsize=7)
+
+    def f_zero(ax):
+        q = pr.groupby(["family", "coverage_tercile"])[["obs_zero_frac", "pois_pred_zero_frac", "nb_pred_zero_frac"]].mean().reset_index()
+        for f, mk in [("random", "o"), ("called", "s"), ("saved", "^")]:
+            g = q[q.family == f]
+            ax.plot(g.coverage_tercile, g.obs_zero_frac - g.pois_pred_zero_frac, marker=mk, color="#2f5d8a", label=f"{f}: observed − Poisson")
+            ax.plot(g.coverage_tercile, g.obs_zero_frac - g.nb_pred_zero_frac, marker=mk, color="#9b2c2c", ls="--", label=f"{f}: observed − NB")
+        ax.axhline(0, color="k", lw=.5); ax.set_xticks([0, 1, 2]); ax.set_xticklabels(["low", "mid", "high"])
+        ax.set_xlabel("coverage tercile (held-out cells)"); ax.set_ylabel("zero-cell fraction: observed − predicted"); ax.legend(fontsize=6)
+
+    def f_clu(ax):
+        sv_ = df[df.family == "saved"]
+        for _, g in sv_.iterrows():
+            vals = [float(x.split(":")[1]) for x in g.rr_by_cluster.split(";")]
+            ax.plot(range(len(vals)), vals, marker="o", label=g.region)
+        ax.set_xticks(range(len(clusters))); ax.set_xticklabels([f"cluster {c}" for c in clusters])
+        ax.set_yscale("log"); ax.set_ylabel("rate ratio target / flanks"); ax.legend(fontsize=6)
+
+    b_sig, b_emp, b_zero, b_clu = figure(f_sig), figure(f_emp), figure(f_zero), figure(f_clu)
     nsig = res["called_significant_empirical_q<0.05"]
-    frag = [
-        ("Question", "<p>Method E:1 from the 2026-10-29 review: model raw regional counts per cell with exposure, compare Poisson, "
-         "quasi-Poisson and NB, check held-out zeros by coverage, and ask which contrasts remain unusual once compared with the "
-         "variation of same-width uncalled regions.</p>"),
-        ("Model", "<pre>y_ip ~ F(mu),  log mu = log E_i(excluding region) + log n_p + b0 + b1·[target] + cluster\n"
-         "F ∈ {Poisson, quasi-Poisson (Pearson scale), NB2 (Cameron–Trivedi alpha), Poisson + cell-clustered sandwich SE}\n"
-         "heterogeneity: part×coverage tercile, part×cluster (quasi-Poisson Wald/F)\n"
-         "held-out: target-only fit on half of the cells (seed (20261104, 8)), predict zeros on the other half</pre>"),
-        ("Family summary", C.html_table(fam)),
-        ("Saved windows and literature loci", C.html_table(sv)),
-        ("Figure", C.img(b64, "count models")),
-        ("Called short segments (sorted by empirical z)", C.html_table(cl, max_rows=80)),
-        ("Interpretation", f"<ul><li>With thousands of cells, Poisson, quasi-Poisson and cluster-robust intervals for the rate ratio are narrow. "
-         "Almost every region, random ones included, is 'significant' against rate ratio 1. Correcting overdispersion (quasi/NB) "
-         "fixes sampling variance; it does not supply a null for regional baseline structure.</li>"
-         f"<li>Against the empirical spread of uncalled random windows (MAD of log rr = {mad:.3f}), {nsig['loss']} of {nsig['called_loss']} "
-         f"called short losses and {nsig['gain']} of {nsig['called_gain']} called short gains remain unusual at BH q &lt; 0.05. "
-         "The random windows are not neutral truth, so these are relative-unusualness statements.</li>"
-         "<li>The heterogeneity tests show whether a contrast varies with coverage (a technical signature) or across clusters (a "
-         "candidate subclonal or cell-state difference). The held-out zero check shows whether NB already explains the zeros, "
-         "which is the precondition E:3 sets before any zero-inflation model.</li></ul>"),
-        ("Held-out zeros in the saved windows", C.html_table(df[df.family == "saved"][["region", "test_obs_zero_cells", "test_expected_zero_cells_pois",
-                                                                                         "test_expected_zero_cells_nb", "test_excess_zeros_nb_z", "test_pearson_disp_nb"]]) +
-         "<p>Poisson badly underpredicts the zero-count cells in the deep chr7 windows; NB with a single moment-estimated alpha "
-         "predicts them within about 2 SD on held-out cells. The E:3 precondition (NB misfit) is therefore not met there, and a "
-         "zero-inflated component is not needed to describe these zeros.</p>"),
-        ("Limits", "<ul><li>Accessibility, mappability and CN are confounded in every column; cluster adjustment can absorb real signal.</li>"
-         "<li>Called segments were selected on these same data; their empirical p-values are conditional on selection.</li>"
-         "<li>Exposure excludes the focal region and flanks but still contains other events.</li></ul>"),
+    rf = fam.set_index(["family", "direction"])
+    sv_ = df[df.family == "saved"].set_index("region")
+    lit_ = df[df.family == "literature"]
+
+    def note(r):
+        bits = [f"rate ratio {r.rr:.2f} (95% {r.rr_lo_cluster_robust:.2f}–{r.rr_hi_cluster_robust:.2f})"]
+        bits.append("unusual vs uncalled random windows" if r.p_empirical_two_sided < 0.05 else "within the random-window range")
+        if r.p_part_x_coverage < 0.01:
+            bits.append("contrast varies with coverage")
+        if r.p_part_x_cluster < 0.01:
+            bits.append("contrast differs between clusters")
+        if np.isfinite(r.test_excess_zeros_nb_z):
+            bits.append("NB explains held-out zeros" if abs(r.test_excess_zeros_nb_z) <= 3 else "NB misfits held-out zeros")
+        return "; ".join(bits)
+    per = df[df.family.isin(["saved", "literature"])].copy()
+    per["note"] = per.apply(note, axis=1)
+    per_tab = per[["region", "rr", "rr_lo_cluster_robust", "rr_hi_cluster_robust", "z_empirical", "p_empirical_two_sided",
+                   "p_part_x_coverage", "p_part_x_cluster", "rr_by_cluster", "note"]]
+    chr7 = sv_.loc[[i for i in sv_.index if i.startswith("chr7")]]
+    key = [
+        f"Sampling-based tests call almost everything: |z| > 1.96 under quasi-Poisson for {100*rf.loc[('random','random'),'frac_|z_quasi|>1.96']:.0f}% of "
+        f"random windows and {100*rf.loc[('called','loss'),'frac_|z_quasi|>1.96']:.0f}% of called losses. Quasi-Poisson φ ≈ "
+        f"{rf.loc[('random','random'),'median_phi_quasi']:.1f} and NB α ≈ {rf.loc[('random','random'),'median_alpha_nb']:.3f} fix sampling variance only.",
+        f"Against the empirical spread of {len(rnd)} uncalled random windows (median log rr {med:.3f}, robust SD {mad:.3f}), "
+        f"{nsig['loss']}/{nsig['called_loss']} called short losses and {nsig['gain']}/{nsig['called_gain']} called short gains remain unusual (BH q < 0.05).",
+        f"The four chr7 saved windows: rate ratio {chr7.rr.min():.2f}–{chr7.rr.max():.2f}, empirical z {chr7.z_empirical.min():.1f} to {chr7.z_empirical.max():.1f}. "
+        f"The chr9 windows (z {sv_.loc['chr9_20_27','z_empirical']:.1f}, {sv_.loc['chr9_22.5_26.6','z_empirical']:.1f}) sit within the random range.",
+        f"Held-out zeros: in chr7 8.3–10.7, {int(sv_.loc['chr7_8.3_10.7','test_obs_zero_cells'])} test cells have zero target counts; Poisson predicts "
+        f"{sv_.loc['chr7_8.3_10.7','test_expected_zero_cells_pois']:.1f} and NB {sv_.loc['chr7_8.3_10.7','test_expected_zero_cells_nb']:.1f}. "
+        "NB accounts for the zeros of the deep chr7 windows, so zero inflation is not required there (E:3 precondition not met).",
+        f"Cluster heterogeneity is common: part × cluster p < 0.01 in {100*rf.loc[('called','loss'),'frac_p_cluster<0.01']:.0f}% of called losses and "
+        f"{100*rf.loc[('random','random'),'frac_p_cluster<0.01']:.0f}% of random windows. With thousands of cells, small between-cluster differences are detectable.",
+        f"Coverage dependence (a technical signature) appears in {100*rf.loc[('called','loss'),'frac_p_coverage<0.01']:.0f}% of called losses vs "
+        f"{100*rf.loc[('random','random'),'frac_p_coverage<0.01']:.0f}% of random windows.",
     ]
-    C.write_html_report(HERE / "report.html", "Exposure count models", "Experiment 08 · E:1 Poisson / quasi-Poisson / NB regression on raw counts",
-                        frag, {"command": "python -I experiments/08_exposure_count_models/run.py", "summary": "summary.json",
-                               "seeds": res["seeds"], "environment": C.environment()})
+    glossary = {
+        "rr": "rate ratio target/flanks from the Poisson GLM, exp(b1); exposure and cluster adjusted",
+        "rr_lo_* / rr_hi_*": "95% interval under quasi-Poisson, NB or cell-clustered robust SE",
+        "phi_quasi": "Pearson χ²/df of the Poisson fit (quasi-Poisson scale)",
+        "alpha_nb": "NB2 dispersion from the Cameron–Trivedi regression; Var = μ + αμ²",
+        "z_quasi": "b1 / SE under quasi-Poisson: tests rr = 1 against sampling noise only",
+        "z_empirical": "(log rr − median) / (1.4826·MAD) over uncalled random windows: how unusual the contrast is among same-width regions",
+        "p_empirical_two_sided": "fraction of uncalled random windows at least as far from the median",
+        "q_bh_empirical_called": "Benjamini–Hochberg q over the called-segment family using normal p from z_empirical",
+        "p_part_x_coverage / p_part_x_cluster": "quasi-Poisson Wald/F test that the rate ratio differs between coverage terciles / clusters",
+        "rr_by_cluster": "rate ratio per WNN cluster from the interaction model",
+        "test_obs_zero_cells / test_expected_zero_cells_*": "held-out cells with zero target counts, observed vs predicted",
+        "test_excess_zeros_nb_z": "(observed − NB-expected zero cells)/SD; NaN when the expected count is ~0",
+        "test_pearson_disp_nb": "mean squared Pearson residual of held-out target counts under NB (≈1 if adequate)",
+        "family": "saved = frozen windows; called = rule-selected short segments; literature = published MCF10-A loci; random = seeded windows",
+    }
+    sections = [
+        ("Question and why it matters", "<p>Method record <b>E:1</b> (2026-10-29 review): model each cell's raw counts in a region with its "
+         "library exposure, compare Poisson, quasi-Poisson and negative-binomial variance, and check whether zeros and spread are "
+         "explained. The decision it informs: can a raw-count, exposure-aware likelihood join the evidence layer recommended in "
+         "<code>recommendation.md</code>, and what null does it need?</p>"),
+        ("Inputs", f"<ul><li><code>layers/raw</code> of the AnnData: {d.n_cells:,} cells × {d.n_bins:,} retained bins (post-QC, pre-GC integer counts).</li>"
+         f"<li>WNN clusters <code>wnn_leiden_0.3</code> ({len(clusters)} clusters) from the MuData.</li>"
+         f"<li>Regions from experiment 04's rule: {int((df.family=='saved').sum())} saved windows, {int((df.family=='called').sum())} called short segments, "
+         f"{len(regs) - len(df)} literature loci with no flank (excluded here), {int((df.family=='random').sum())} random windows (seed (20261104, 4)), "
+         f"{len(rnd)} of them uncalled.</li><li>Not available: pre-QC counts, mappability, independent truth.</li></ul>"),
+        ("Method", "<pre>for region r, cell i, part p ∈ {target, flank}:\n"
+         "  y_ip ~ F(μ_ip)\n  log μ_ip = log E_i + log n_p + b0 + b1·[p = target] + γ_cluster(i)\n"
+         "  E_i = cell raw total minus target and flank counts;  n_p = retained bins in part p\n"
+         "  F: Poisson | quasi-Poisson (scale = Pearson χ²/df) | NB2 (α by Cameron–Trivedi) | Poisson + sandwich SE clustered by cell\n"
+         "heterogeneity: add part×coverage-tercile or part×cluster terms; quasi-Poisson Wald/F test\n"
+         "held-out check: split cells within cluster (seed (20261104, 8)); fit y_it on training cells (target only);\n"
+         "  predict P(y=0) on test cells: Poisson exp(−μ), NB (1+αμ)^(−1/α)\n"
+         "empirical null: median and MAD of b1 over uncalled random windows → z_empirical; BH over called segments</pre>"),
+        ("Results", "", 2),
+        ("Sampling-based significance is uninformative", C.img(b_sig, "z vs rr") + C.caption(
+            "Each point is a region. x: log2 target/flank rate ratio; y: |z| for rr = 1 under quasi-Poisson (log scale). Random windows "
+            "(grey) sit almost entirely above the dashed 1.96 line: once counts from thousands of cells are pooled, any regional "
+            "difference is 'significant'.") + C.html_table(fam) + C.caption("Family summary. Fractions are within each family."), 3),
+        ("Empirical reference from uncalled random windows", C.img(b_emp, "empirical null") + C.caption(
+            "Grey: log2 rate ratios of uncalled random 25-bin windows. Dashed: median ± 1.96 robust SD. Black: the saved windows. "
+            "This spread is the realistic scale against which a regional contrast should be judged at this resolution.") +
+         C.html_table(cl.head(25)) + C.caption("Called short segments, most negative empirical z first (top 25; full table in region_models.tsv)."), 3),
+        ("Held-out zero check (Poisson vs NB)", C.img(b_zero, "zero check") + C.caption(
+            "Observed minus predicted fraction of held-out cells with zero target counts, by coverage tercile. Solid blue: Poisson; "
+            "dashed red: NB. Poisson leaves excess zeros; NB brings them close to zero.") +
+         C.html_table(df[df.family == "saved"][["region", "test_obs_zero_cells", "test_expected_zero_cells_pois", "test_expected_zero_cells_nb",
+                                                 "test_excess_zeros_nb_z", "test_pearson_disp_nb"]]) +
+         C.caption("Saved windows: held-out zero cells. NaN z means too few expected zeros to test."), 3),
+        ("Between-cluster heterogeneity of the saved windows", C.img(b_clu, "rr by cluster") + C.caption(
+            "Rate ratio per WNN cluster for each saved window (log scale). Parallel flat lines mean a depletion shared by all clusters; "
+            "a single outlying cluster suggests a cluster-specific contribution (cell state or subclone)."), 3),
+        ("Per-region detail", C.html_table(per_tab) + C.caption("Saved windows (literature loci have no flank and are not modelled here). "
+         "The note is generated from the columns.")),
+        ("Sensitivity", "<p>All four variance models give nearly the same point estimate; the intervals differ by φ but stay narrow. "
+         f"Rate ratios on the frozen 300-cell panel agree with all cells (column <code>rr_panel300</code> in region_models.tsv). "
+         "Cluster adjustment is included in every model; removing it was not prespecified.</p>"),
+        ("Limits and alternative explanations", "<ul><li>Accessibility, mappability and CN are confounded in every column; a deep, "
+         "homogeneous, NB-consistent depletion is equally expected from an inaccessible or poorly mappable region.</li>"
+         "<li>Called segments were selected on these data, so their empirical p-values are conditional on selection.</li>"
+         "<li>Random windows are not neutral truth; some contain events, which widens the reference and makes the test conservative.</li>"
+         "<li>Exposure excludes the focal region and flanks but still contains other events; cluster terms can absorb real signal.</li></ul>"),
+    ]
+    C.write_html_report(
+        HERE / "report.html", "Exposure count models", "Experiment 08 · method E:1 · Poisson / quasi-Poisson / NB regression on raw counts",
+        sections, {"command": "python -I experiments/08_exposure_count_models/run.py", "outputs": ["region_models.tsv", "predictive_checks.tsv",
+                   "family_summary.tsv", "summary.json"], "seeds": res["seeds"], "environment": C.environment()},
+        verdict="Raw-count models with exposure fit the data's sampling behaviour (NB explains the zeros), but they only become informative "
+                "when judged against the spread of same-width uncalled regions. On that scale the deep chr7 windows stand out and the chr9 windows do not.",
+        key_findings=key, glossary=glossary,
+        supports=["NB, not zero inflation, is adequate for zeros in the deep chr7 windows.",
+                  "An empirical, region-based null is required; sampling-based p-values are not.",
+                  f"{nsig['loss']} called short losses and {nsig['gain']} called gains are unusual relative to uncalled regions."],
+        not_supports=["Any statement that a depletion is dosage rather than accessibility or mappability.",
+                      "Calibrated discovery claims for called segments (selected on the same data).",
+                      "Absolute CN states."],
+        decision_impact="E:1 can enter the evidence layer as <i>rate ratio + empirical z + heterogeneity flags</i>, with NB as the sampling model. "
+                        "It does not change the recommendation's ordering: the empirical z is only as good as the reference regions, which strengthens "
+                        "the case for a cross-sample technical baseline (stage 2).",
+        next_steps=["Replace random windows with a cross-sample baseline (same bins in unrelated samples) and recompute z.",
+                    "Repeat with region selection and assessment on disjoint cell halves to remove selection bias.",
+                    "Add mappability/GC covariates once a matched mappability track is available."])
     pd.set_option("display.width", 250)
-    print(fam.to_string()); print(sv.to_string()); print(nsig, res["seconds"])
+    print(nsig, res["seconds"])
 
 
 if __name__ == "__main__":
