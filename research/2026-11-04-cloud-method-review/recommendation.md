@@ -164,8 +164,22 @@ recomputation or by a byte-identical rerun.
 2. Zero inflation is dropped from the plan for depth.
 3. A count-likelihood segmentation (stage 4) must model between-bin baseline variance; sampling-only
    dispersion over-segments by more than an order of magnitude.
-4. Results from the spike-in benchmark (exp 14), the masking diagnosis (exp 19) and the cell-level joint
-   mixture (exp 18) are pending and will be added here when validated.
+4. **Segmentation sensitivity** ([exp 14](experiments/14_spikein_benchmark/report.html),
+   [exp 19](experiments/19_masking_two_cut_scan/report.html)) [L]. The benchmark injected events into
+   real raw counts (1,800 semi-synthetic realizations) and reran the current AD scan. It recovers clonal
+   deep losses (0.1×) in 40–60% of loci at 20–50 bins, but clonal one-copy losses in ≤ 15% and 1.5×
+   gains in ≤ 2.5%. Events carried by ≤ 50% of cells are essentially never recovered.
+   - Part of the failure is masking: the best single cut in a long segment is elsewhere and gets rejected.
+     A two-cut scan rescues deep losses.
+   - For one-copy changes, natural windows in the same segment are as extreme as the injected event. A
+     better search alone does not fix this; a depth baseline and allele-first segmentation are needed.
+5. **Cell-level joint mixture** ([exp 18](experiments/18_cell_level_joint_states/report.html)) [L].
+   - Near-clonal 2:1 gains at MYC, 5q13-qter and chr8:115–145 Mb are supported by both depth and alleles.
+   - Depth-only cell-level calls flag 7/30 uncalled random windows (23%), and none of those is supported
+     by both modalities. Report cell-level clonal/subclonal estimates only where both modalities agree,
+     until the depth null includes between-cell accessibility heterogeneity.
+6. The consolidated account, with explicit methods and assumptions, is in
+   [final_report.html](final_report.html).
 
 ## Staged plan with decision criteria
 
