@@ -349,9 +349,14 @@ def write_report(out, df, summ, summary):
     errs = pd.concat([big.left_edge_error_bins, big.right_edge_error_bins]).dropna()
     within = errs[errs.abs() <= 10]
     fn_all = df.n_false_new.mean()
-    verdict = (f"On this cluster-0 background the baseline pipeline recovered injected events only when they were at least 20 bins wide and carried by most cells "
-               f"(pooled detection at widths 20-50: {big.detected.mean():.2f}; widths 5-10: {small.detected.mean():.2f}); this is a semi-synthetic detectability "
-               f"measurement, not biological sensitivity.")
+    def det(t, w, f):
+        r = summ[(summ.type == t) & (summ.width == w) & (summ.f == f)]
+        return float(r.detected.iloc[0]) if len(r) else float("nan")
+    lo50, dp50, gn50 = det("loss_one", 50, 1.0), det("loss_deep", 50, 1.0), det("gain", 50, 1.0)
+    verdict = (f"On this cluster-0 background the baseline pipeline recovers mainly deep, clonal losses (0.1x; {dp50:.0%} at 50 bins); clonal one-copy "
+               f"losses are rarely recovered ({lo50:.0%} at 50 bins, at most a few percent below that) and 1.5x gains almost never ({gn50:.0%} at 50 bins); "
+               f"events in half or fewer of the cells are essentially never recovered, and events narrower than 20 bins cannot be by construction. "
+               f"This is a semi-synthetic detectability measurement on real background, not biological sensitivity.")
     key = [
         f"Width 50, all cells (f=1.0): detection loss_one {cell('loss_one', 50, 1.0)}; loss_deep {cell('loss_deep', 50, 1.0)}; gain {cell('gain', 50, 1.0)}.",
         f"Width 50, 25% of cells (f=0.25): loss_one {cell('loss_one', 50, 0.25)}; loss_deep {cell('loss_deep', 50, 0.25)}; gain {cell('gain', 50, 0.25)}.",
@@ -436,11 +441,12 @@ def write_report(out, df, summ, summary):
     not_sup = ["Biological sensitivity or specificity, or the true fraction of cells in a real subclone.",
                "Performance for events whose accessibility also changes, or on other clusters or samples.",
                "That a failed detection means the event is absent in real data."]
-    decision = ("<p>For research/2026-11-04-cloud-method-review/recommendation.md: the baseline can be described as able to recover events of at least "
-                "20 bins when most cells carry them and the pseudobulk contrast leaves the natural range, and as unable by construction to return segments shorter than 20 bins. "
-                "Detection at low carrier fractions is given by the tables above (conditional on this simulation); statements about small or subclonal events in the app should cite these rates as exploratory, not as calibrated detection probabilities.</p>")
-    nxt = ["Run the remaining prespecified loci (up to 40 per scenario) to narrow the intervals.",
-           "Repeat on another cluster and on the all-cell pseudobulk, and with a lower min-child setting as an exploratory alternative.",
+    decision = ("<p>For research/2026-11-04-cloud-method-review/recommendation.md: on this background the current AD segmentation is a detector of deep, "
+                "near-clonal losses of at least 20 bins. It should not be described as sensitive to one-copy focal losses, focal gains or subclonal events "
+                "of 2-5 Mb; regions without a call are not evidence of no change at that scale. Together with experiment 19 (natural windows in the same segment are "
+                "as extreme as injected one-copy changes) this supports prioritizing a depth baseline and allele-first segmentation over tuning the AD search. "
+                "Rates are exploratory and conditional on thinning as a dosage model.</p>")
+    nxt = ["Repeat on another cluster and on the all-cell pseudobulk, and with a lower min-child setting as an exploratory alternative.",
            "Add an accessibility-altering injection arm and per-cell overdispersed gain noise.",
            "Rescan the whole genome for false boundaries elsewhere, not only the affected chromosome."]
     gl = {"type": "injection model: loss_one (thin x0.5), loss_deep (thin x0.1), gain (+0.5x)", "width": "event width in 100 kb bins", "f": "fraction of cluster-0 cells carrying the event",

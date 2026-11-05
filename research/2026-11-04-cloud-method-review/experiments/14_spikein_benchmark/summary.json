@@ -47,9 +47,9 @@
   ],
   "n_scenarios": 45,
   "loci_prespecified_per_scenario": 40,
-  "loci_used_per_scenario_min": 5,
-  "loci_used_per_scenario_max": 6,
-  "n_realizations": 248,
+  "loci_used_per_scenario_min": 40,
+  "loci_used_per_scenario_max": 40,
+  "n_realizations": 1800,
   "candidate_starts_per_scenario": {
    "0": 18543,
    "1": 18543,
@@ -310,14 +310,14 @@
    248
   ]
  },
- "overall_detected": 0.05241935483870968,
+ "overall_detected": 0.041666666666666664,
  "runtime_seconds": {
-  "total_this_invocation": 2289.3158073425293,
-  "setup_reconstruct": 17.747931957244873,
-  "realizations": 2214.8780868053436,
-  "mean_per_realization_worker": 17.85157258064516
+  "total_this_invocation": 6945.286789655685,
+  "setup_reconstruct": 14.512349128723145,
+  "realizations": 6899.063669204712,
+  "mean_per_realization_worker": 13.94426111111111
  },
- "workers": 2,
+ "workers": 3,
  "environment": {
   "python": "3.10.20",
   "platform": "Linux-6.18.44-fc-v236-x86_64-with-glibc2.39",
@@ -332,9 +332,9 @@
    "matplotlib": "3.8.4",
    "statsmodels": "0.14.1"
   },
-  "workbench_commit_at_run": "1173ef6fb3a7bd7eaca616682e2ac7fa8347441c",
+  "workbench_commit_at_run": "8334afb880b2c53a54e2bd011838930bab600a12",
   "pyepi_upstream_commit": "e8305ea2162634d07e92a3bb401df672e48f217b",
   "cpu_count": 4
  },
- "command": "PYEPI_SCIENTIFIC_PACKAGE=/home/user/pyepi-upstream/pyEpiAneufinder /home/user/envs/cnv310/bin/python -I /home/user/scientific-explorer/research/2026-11-04-cloud-method-review/experiments/14_spikein_benchmark/run.py --max-minutes 38 --workers 2"
+ "command": "PYEPI_SCIENTIFIC_PACKAGE=/home/user/pyepi-upstream/pyEpiAneufinder /home/user/envs/cnv310/bin/python -I run.py --max-minutes 240 --workers 3"
 }
