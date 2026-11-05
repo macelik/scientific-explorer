@@ -1,0 +1,17 @@
+comparison	flag	n_group	group_flagged	group_frac	n_reference	reference_flagged	reference_frac	odds_ratio	fisher_p_two_sided
+called loss segments vs random windows	near_removed_1Mb	46	24	0.5217391304347826	300	7	0.023333333333333334	45.66233766233766	2.0812263876940332e-18
+called loss segments vs random windows	near_blacklist_1Mb	46	26	0.5652173913043478	300	47	0.15666666666666668	6.997872340425532	1.0605926607582697e-08
+called loss segments vs random windows	near_gap_like_1Mb	46	1	0.021739130434782608	300	0	0.0	inf	0.1329479768786127
+called loss segments vs random windows	GC_extreme_decile	46	4	0.08695652173913043	300	31	0.10333333333333333	0.82642089093702	1.0
+saved loss windows vs random windows	near_removed_1Mb	6	3	0.5	300	7	0.023333333333333334	41.857142857142854	0.0004815724332002359
+saved loss windows vs random windows	near_blacklist_1Mb	6	0	0.0	300	47	0.15666666666666668	0.0	0.5954511872628447
+saved loss windows vs random windows	near_gap_like_1Mb	6	0	0.0	300	0	0.0		1.0
+saved loss windows vs random windows	GC_extreme_decile	6	0	0.0	300	31	0.10333333333333333	0.0	1.0
+deep random (raw level c < 0.683) vs other random	near_removed_1Mb	66	2	0.030303030303030304	234	5	0.021367521367521368	1.43125	0.6511402837258827
+deep random (raw level c < 0.683) vs other random	near_blacklist_1Mb	66	7	0.10606060606060606	234	40	0.17094017094017094	0.5754237288135593	0.25128817788093327
+deep random (raw level c < 0.683) vs other random	near_gap_like_1Mb	66	0	0.0	234	0	0.0		1.0
+deep random (raw level c < 0.683) vs other random	GC_extreme_decile	66	18	0.2727272727272727	234	13	0.05555555555555555	6.375	3.827934012510108e-06
+called gain segments vs random windows	near_removed_1Mb	21	2	0.09523809523809523	300	7	0.023333333333333334	4.406015037593985	0.11113621394800063
+called gain segments vs random windows	near_blacklist_1Mb	21	13	0.6190476190476191	300	47	0.15666666666666668	8.747340425531915	6.35720432733202e-06
+called gain segments vs random windows	near_gap_like_1Mb	21	0	0.0	300	0	0.0		1.0
+called gain segments vs random windows	GC_extreme_decile	21	4	0.19047619047619047	300	31	0.10333333333333333	2.0417457305502844	0.26524727538136406
