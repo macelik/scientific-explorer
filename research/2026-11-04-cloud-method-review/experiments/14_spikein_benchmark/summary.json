@@ -1,0 +1,340 @@
+{
+ "experiment": "14_spikein_benchmark",
+ "semi_synthetic": true,
+ "not_biological_ground_truth": true,
+ "seed": 20261104,
+ "seed_streams": {
+  "loci": [
+   20261104,
+   14,
+   "scenario"
+  ],
+  "cells_and_noise": [
+   20261104,
+   14,
+   "scenario",
+   "locus"
+  ]
+ },
+ "generator": "numpy.random.default_rng (PCG64)",
+ "pinned_permutation_random_state": 42,
+ "grid": {
+  "types": {
+   "loss_one": [
+    "loss",
+    0.5
+   ],
+   "loss_deep": [
+    "loss",
+    0.1
+   ],
+   "gain": [
+    "gain",
+    0.5
+   ]
+  },
+  "widths": [
+   5,
+   10,
+   20,
+   30,
+   50
+  ],
+  "fractions": [
+   1.0,
+   0.5,
+   0.25
+  ],
+  "n_scenarios": 45,
+  "loci_prespecified_per_scenario": 40,
+  "loci_used_per_scenario_min": 5,
+  "loci_used_per_scenario_max": 6,
+  "n_realizations": 248,
+  "candidate_starts_per_scenario": {
+   "0": 18543,
+   "1": 18543,
+   "2": 18543,
+   "3": 16885,
+   "4": 16885,
+   "5": 16885,
+   "6": 14282,
+   "7": 14282,
+   "8": 14282,
+   "9": 12266,
+   "10": 12266,
+   "11": 12266,
+   "12": 9386,
+   "13": 9386,
+   "14": 9386,
+   "15": 18543,
+   "16": 18543,
+   "17": 18543,
+   "18": 16885,
+   "19": 16885,
+   "20": 16885,
+   "21": 14282,
+   "22": 14282,
+   "23": 14282,
+   "24": 12266,
+   "25": 12266,
+   "26": 12266,
+   "27": 9386,
+   "28": 9386,
+   "29": 9386,
+   "30": 18543,
+   "31": 18543,
+   "32": 18543,
+   "33": 16885,
+   "34": 16885,
+   "35": 16885,
+   "36": 14282,
+   "37": 14282,
+   "38": 14282,
+   "39": 12266,
+   "40": 12266,
+   "41": 12266,
+   "42": 9386,
+   "43": 9386,
+   "44": 9386
+  }
+ },
+ "source": {
+  "cluster": "0",
+  "cells": 1286,
+  "bins": 25337
+ },
+ "flank_bins": 50,
+ "edge_tolerance_bins": 2,
+ "scan_settings": {
+  "k": 6,
+  "n_permutations": 1000,
+  "alpha": 0.001,
+  "min_child_bins": 20,
+  "min_terminal_bins": 50
+ },
+ "cn_state_values_baseline": [
+  0.0,
+  0.5,
+  1.0,
+  1.5,
+  2.0
+ ],
+ "harness": {
+  "scans_identical_to_saved": 22,
+  "chromosomes": 22,
+  "nonidentical": {},
+  "cn_calls_identical_to_saved_karyogram": true,
+  "x_reconstruction_exact_all_cluster0_cells": false,
+  "x_reconstruction_mismatching_cells": 2
+ },
+ "reference_boundaries": {
+  "chr1": [
+   50,
+   456,
+   674,
+   763,
+   1183,
+   1245,
+   1315,
+   1414,
+   2104
+  ],
+  "chr2": [
+   81,
+   125,
+   324,
+   349,
+   744,
+   766,
+   910,
+   956,
+   1234,
+   2166
+  ],
+  "chr3": [
+   66,
+   1374,
+   1417,
+   1694
+  ],
+  "chr4": [
+   127,
+   679,
+   705,
+   783,
+   1787
+  ],
+  "chr5": [
+   50,
+   74,
+   134,
+   154,
+   1037,
+   1089,
+   1413,
+   1482,
+   1503,
+   1526
+  ],
+  "chr6": [
+   241,
+   312,
+   536,
+   556,
+   613,
+   773,
+   793,
+   947,
+   1511,
+   1538
+  ],
+  "chr7": [
+   79,
+   104,
+   302,
+   509,
+   529,
+   598,
+   625,
+   658,
+   714,
+   774,
+   823,
+   1369
+  ],
+  "chr8": [
+   50,
+   875,
+   934,
+   1048,
+   1239,
+   1259,
+   1285
+  ],
+  "chr9": [
+   192,
+   218,
+   660,
+   689,
+   721,
+   816,
+   856,
+   978
+  ],
+  "chr10": [
+   265,
+   365,
+   406,
+   530,
+   760,
+   785,
+   819,
+   879,
+   1225
+  ],
+  "chr11": [
+   1172
+  ],
+  "chr12": [
+   54,
+   320,
+   342,
+   417,
+   925,
+   1129,
+   1153,
+   1194,
+   1231
+  ],
+  "chr13": [
+   100,
+   819
+  ],
+  "chr14": [
+   95,
+   189,
+   210,
+   232,
+   490
+  ],
+  "chr15": [
+   51,
+   462
+  ],
+  "chr16": [
+   51,
+   83,
+   326,
+   369
+  ],
+  "chr17": [
+   79,
+   121,
+   211,
+   272,
+   306,
+   440,
+   472
+  ],
+  "chr18": [
+   56,
+   496,
+   626,
+   648
+  ],
+  "chr19": [
+   190,
+   281,
+   334,
+   395,
+   448
+  ],
+  "chr20": [
+   82,
+   236,
+   291,
+   318,
+   369,
+   389,
+   475,
+   513
+  ],
+  "chr21": [
+   123,
+   185
+  ],
+  "chr22": [
+   107,
+   152,
+   172,
+   248
+  ]
+ },
+ "overall_detected": 0.05241935483870968,
+ "runtime_seconds": {
+  "total_this_invocation": 2289.3158073425293,
+  "setup_reconstruct": 17.747931957244873,
+  "realizations": 2214.8780868053436,
+  "mean_per_realization_worker": 17.85157258064516
+ },
+ "workers": 2,
+ "environment": {
+  "python": "3.10.20",
+  "platform": "Linux-6.18.44-fc-v236-x86_64-with-glibc2.39",
+  "packages": {
+   "numpy": "1.24.4",
+   "pandas": "2.2.0",
+   "scipy": "1.8.0",
+   "h5py": "3.6.0",
+   "anndata": "0.8.0",
+   "pyarrow": "23.0.0",
+   "skmisc": "0.5.2",
+   "matplotlib": "3.8.4",
+   "statsmodels": "0.14.1"
+  },
+  "workbench_commit_at_run": "1173ef6fb3a7bd7eaca616682e2ac7fa8347441c",
+  "pyepi_upstream_commit": "e8305ea2162634d07e92a3bb401df672e48f217b",
+  "cpu_count": 4
+ },
+ "command": "PYEPI_SCIENTIFIC_PACKAGE=/home/user/pyepi-upstream/pyEpiAneufinder /home/user/envs/cnv310/bin/python -I /home/user/scientific-explorer/research/2026-11-04-cloud-method-review/experiments/14_spikein_benchmark/run.py --max-minutes 38 --workers 2"
+}
