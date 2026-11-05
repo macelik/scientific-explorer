@@ -12,50 +12,62 @@
   {
    "type": "gain",
    "width": 20,
-   "n": 7,
+   "n": 8,
    "baseline_detected": 0.0,
    "two_cut_detected": 0.0,
-   "two_cut_edges_ok": 0.14285714285714285
+   "two_cut_edges_ok": 0.125,
+   "median_frac_windows_T_ge_true": 0.09443129380811384,
+   "true_window_above_threshold": 0.0
   },
   {
    "type": "gain",
    "width": 30,
-   "n": 7,
+   "n": 8,
    "baseline_detected": 0.0,
    "two_cut_detected": 0.0,
-   "two_cut_edges_ok": 0.0
+   "two_cut_edges_ok": 0.0,
+   "median_frac_windows_T_ge_true": 0.14922794154011393,
+   "true_window_above_threshold": 0.0
   },
   {
    "type": "gain",
    "width": 50,
-   "n": 7,
+   "n": 8,
    "baseline_detected": 0.0,
    "two_cut_detected": 0.0,
-   "two_cut_edges_ok": 0.0
+   "two_cut_edges_ok": 0.0,
+   "median_frac_windows_T_ge_true": 0.023886740270400712,
+   "true_window_above_threshold": 0.0
   },
   {
    "type": "loss_deep",
    "width": 20,
-   "n": 7,
-   "baseline_detected": 0.5714285714285714,
-   "two_cut_detected": 0.2857142857142857,
-   "two_cut_edges_ok": 0.2857142857142857
+   "n": 8,
+   "baseline_detected": 0.5,
+   "two_cut_detected": 1.0,
+   "two_cut_edges_ok": 1.0,
+   "median_frac_windows_T_ge_true": 2.0756792660398117e-05,
+   "true_window_above_threshold": 1.0
   },
   {
    "type": "loss_deep",
    "width": 30,
-   "n": 7,
-   "baseline_detected": 0.42857142857142855,
-   "two_cut_detected": 0.0,
-   "two_cut_edges_ok": 0.0
+   "n": 8,
+   "baseline_detected": 0.5,
+   "two_cut_detected": 0.625,
+   "two_cut_edges_ok": 0.625,
+   "median_frac_windows_T_ge_true": 6.704146897307318e-05,
+   "true_window_above_threshold": 1.0
   },
   {
    "type": "loss_deep",
    "width": 50,
-   "n": 7,
-   "baseline_detected": 0.8571428571428571,
-   "two_cut_detected": 0.0,
-   "two_cut_edges_ok": 0.0
+   "n": 8,
+   "baseline_detected": 0.875,
+   "two_cut_detected": 0.75,
+   "two_cut_edges_ok": 0.75,
+   "median_frac_windows_T_ge_true": 6.385594710940805e-05,
+   "true_window_above_threshold": 1.0
   },
   {
    "type": "loss_one",
@@ -63,23 +75,29 @@
    "n": 8,
    "baseline_detected": 0.125,
    "two_cut_detected": 0.0,
-   "two_cut_edges_ok": 0.25
+   "two_cut_edges_ok": 0.375,
+   "median_frac_windows_T_ge_true": 0.009620227166708727,
+   "true_window_above_threshold": 0.0
   },
   {
    "type": "loss_one",
    "width": 30,
    "n": 8,
    "baseline_detected": 0.125,
-   "two_cut_detected": 0.0,
-   "two_cut_edges_ok": 0.0
+   "two_cut_detected": 0.125,
+   "two_cut_edges_ok": 0.25,
+   "median_frac_windows_T_ge_true": 0.000588733727289734,
+   "true_window_above_threshold": 0.125
   },
   {
    "type": "loss_one",
    "width": 50,
-   "n": 7,
-   "baseline_detected": 0.14285714285714285,
+   "n": 8,
+   "baseline_detected": 0.125,
    "two_cut_detected": 0.0,
-   "two_cut_edges_ok": 0.0
+   "two_cut_edges_ok": 0.0,
+   "median_frac_windows_T_ge_true": 0.0019173455807119173,
+   "true_window_above_threshold": 0.125
   }
  ],
  "miss_reasons": [
@@ -90,8 +108,13 @@
   },
   {
    "type": "gain",
+   "baseline_reason": "top cut at event; rejected by global test",
+   "missed": 1
+  },
+  {
+   "type": "gain",
    "baseline_reason": "top cut elsewhere; rejected by global test",
-   "missed": 5
+   "missed": 7
   },
   {
    "type": "gain",
@@ -106,7 +129,7 @@
   {
    "type": "loss_deep",
    "baseline_reason": "top cut elsewhere; rejected by global test",
-   "missed": 1
+   "missed": 2
   },
   {
    "type": "loss_deep",
@@ -131,10 +154,10 @@
   {
    "type": "loss_one",
    "baseline_reason": "top cut elsewhere; rejected by local test",
-   "missed": 8
+   "missed": 9
   }
  ],
- "seconds": 450.3,
+ "seconds": 796.3,
  "environment": {
   "python": "3.10.20",
   "platform": "Linux-6.18.44-fc-v236-x86_64-with-glibc2.39",
@@ -149,7 +172,7 @@
    "matplotlib": "3.8.4",
    "statsmodels": "0.14.1"
   },
-  "workbench_commit_at_run": "91d856df58d854759675a601cdbab87ebca39782",
+  "workbench_commit_at_run": "e040f835002f524ca8c8812ba56b48903cf41b89",
   "pyepi_upstream_commit": "e8305ea2162634d07e92a3bb401df672e48f217b",
   "cpu_count": 4
  }

@@ -213,7 +213,7 @@ def main():
     else:
         VERDICT = ("Moderate focal changes are missed not only because of the binary search: inside their own segment, natural windows on this real "
                    "background differ from the rest about as much as an injected 0.5× or 1.5× change, so a better search alone (two-cut scan) "
-                   "does not isolate them. Detecting one-copy focal changes needs a baseline model of the regional structure.")
+                   "does not isolate them. Detecting one-copy focal changes needs a baseline model of the regional structure. Masking is real for strong events: the two-cut scan recovers deep (0.1×) losses that the binary scan misses, because those windows are the most extreme in their segment.")
         DECISION = ("Shifts weight from segmentation search (rank 9/4) to the baseline (rank 3): without a cross-sample or modelled regional "
                     "baseline, neither the binary AD scan nor a two-cut AD scan separates one-copy focal events from accessibility structure at "
                     "this scale. Deep (0.1×) losses remain detectable by the current scan.")

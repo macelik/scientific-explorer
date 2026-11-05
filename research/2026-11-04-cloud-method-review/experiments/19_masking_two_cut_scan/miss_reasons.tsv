@@ -1,11 +1,12 @@
 type	baseline_reason	missed
 gain	accepted cut elsewhere; recursion ended (depth/geometry)	1
-gain	top cut elsewhere; rejected by global test	5
+gain	top cut at event; rejected by global test	1
+gain	top cut elsewhere; rejected by global test	7
 gain	top cut elsewhere; rejected by local test	15
 loss_deep	accepted cut elsewhere; recursion ended (depth/geometry)	6
-loss_deep	top cut elsewhere; rejected by global test	1
+loss_deep	top cut elsewhere; rejected by global test	2
 loss_deep	top cut elsewhere; rejected by local test	1
 loss_one	accepted cut elsewhere; recursion ended (depth/geometry)	9
 loss_one	top cut at event; rejected by local test	1
 loss_one	top cut elsewhere; rejected by global test	2
-loss_one	top cut elsewhere; rejected by local test	8
+loss_one	top cut elsewhere; rejected by local test	9
