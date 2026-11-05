@@ -1,0 +1,149 @@
+{
+ "experiment": "17_allele_specific_states",
+ "deterministic": true,
+ "inputs": [
+  "04 region_contrasts.tsv",
+  "10 region_estimates.tsv"
+ ],
+ "sigma_A_flank": 0.3909379193169692,
+ "sigma_A_genome": 0.4618308207986731,
+ "h_null_median": 0.52,
+ "tau_h": 0.02594549999999994,
+ "k_grid": [
+  1.0,
+  0.6,
+  0.4
+ ],
+ "primary_k": 0.6,
+ "cell_fractions": [
+  0.1,
+  0.2,
+  0.3,
+  0.4,
+  0.5,
+  0.6,
+  0.7,
+  0.8,
+  0.9,
+  1.0
+ ],
+ "p0_zero": 0.005,
+ "family_summary_k0.6": [
+  {
+   "family": "called",
+   "direction": "gain",
+   "n": 21,
+   "fits": 20,
+   "MAP_none": 15,
+   "MAP_loss1": 1,
+   "MAP_homdel": 0,
+   "MAP_cnloh": 0,
+   "MAP_gain1": 0,
+   "MAP_gain2": 2,
+   "MAP_amp": 3,
+   "allele_changes_depth_only_call": 4
+  },
+  {
+   "family": "called",
+   "direction": "loss",
+   "n": 46,
+   "fits": 22,
+   "MAP_none": 40,
+   "MAP_loss1": 6,
+   "MAP_homdel": 0,
+   "MAP_cnloh": 0,
+   "MAP_gain1": 0,
+   "MAP_gain2": 0,
+   "MAP_amp": 0,
+   "allele_changes_depth_only_call": 24
+  },
+  {
+   "family": "literature",
+   "direction": "gain",
+   "n": 3,
+   "fits": 3,
+   "MAP_none": 1,
+   "MAP_loss1": 0,
+   "MAP_homdel": 0,
+   "MAP_cnloh": 0,
+   "MAP_gain1": 2,
+   "MAP_gain2": 0,
+   "MAP_amp": 0,
+   "allele_changes_depth_only_call": 2
+  },
+  {
+   "family": "literature",
+   "direction": "loss",
+   "n": 1,
+   "fits": 1,
+   "MAP_none": 1,
+   "MAP_loss1": 0,
+   "MAP_homdel": 0,
+   "MAP_cnloh": 0,
+   "MAP_gain1": 0,
+   "MAP_gain2": 0,
+   "MAP_amp": 0,
+   "allele_changes_depth_only_call": 0
+  },
+  {
+   "family": "random",
+   "direction": "random",
+   "n": 300,
+   "fits": 291,
+   "MAP_none": 265,
+   "MAP_loss1": 13,
+   "MAP_homdel": 0,
+   "MAP_cnloh": 13,
+   "MAP_gain1": 4,
+   "MAP_gain2": 0,
+   "MAP_amp": 5,
+   "allele_changes_depth_only_call": 46
+  },
+  {
+   "family": "saved",
+   "direction": "comparison",
+   "n": 1,
+   "fits": 1,
+   "MAP_none": 1,
+   "MAP_loss1": 0,
+   "MAP_homdel": 0,
+   "MAP_cnloh": 0,
+   "MAP_gain1": 0,
+   "MAP_gain2": 0,
+   "MAP_amp": 0,
+   "allele_changes_depth_only_call": 0
+  },
+  {
+   "family": "saved",
+   "direction": "loss",
+   "n": 6,
+   "fits": 2,
+   "MAP_none": 6,
+   "MAP_loss1": 0,
+   "MAP_homdel": 0,
+   "MAP_cnloh": 0,
+   "MAP_gain1": 0,
+   "MAP_gain2": 0,
+   "MAP_amp": 0,
+   "allele_changes_depth_only_call": 4
+  }
+ ],
+ "environment": {
+  "python": "3.10.20",
+  "platform": "Linux-6.18.44-fc-v236-x86_64-with-glibc2.39",
+  "packages": {
+   "numpy": "1.24.4",
+   "pandas": "2.2.0",
+   "scipy": "1.8.0",
+   "h5py": "3.6.0",
+   "anndata": "0.8.0",
+   "pyarrow": "23.0.0",
+   "skmisc": "0.5.2",
+   "matplotlib": "3.8.4",
+   "statsmodels": "0.14.1"
+  },
+  "workbench_commit_at_run": "8adb79ad699340c6718ff3a0573a7d1bf837d679",
+  "pyepi_upstream_commit": "e8305ea2162634d07e92a3bb401df672e48f217b",
+  "cpu_count": 4
+ }
+}

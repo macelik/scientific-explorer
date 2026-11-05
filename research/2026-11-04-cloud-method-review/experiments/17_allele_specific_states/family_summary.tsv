@@ -1,0 +1,8 @@
+family	direction	n	fits	MAP_none	MAP_loss1	MAP_homdel	MAP_cnloh	MAP_gain1	MAP_gain2	MAP_amp	allele_changes_depth_only_call
+called	gain	21	20	15	1	0	0	0	2	3	4
+called	loss	46	22	40	6	0	0	0	0	0	24
+literature	gain	3	3	1	0	0	0	2	0	0	2
+literature	loss	1	1	1	0	0	0	0	0	0	0
+random	random	300	291	265	13	0	13	4	0	5	46
+saved	comparison	1	1	1	0	0	0	0	0	0	0
+saved	loss	6	2	6	0	0	0	0	0	0	4
