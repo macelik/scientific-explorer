@@ -37,7 +37,7 @@
    "matplotlib": "3.8.4",
    "statsmodels": "0.14.1"
   },
-  "workbench_commit_at_run": "17a34c08ea573f32430a03fe93b3f47b4291b7d4",
+  "workbench_commit_at_run": "119ed91cd4532a393be64d6625747c6a775fccdf",
   "pyepi_upstream_commit": "e8305ea2162634d07e92a3bb401df672e48f217b",
   "cpu_count": 4
  },
@@ -287,7 +287,7 @@
  "C_pct_regions_ratio_varies_by_cluster_p01": 15.217391304347828,
  "recommendation": {
   "depth": "NB2 with exposure",
-  "AT": "NB2 with exposure and its own alpha (ZINB only as sensitivity)",
+  "AT": "NB2 conditioned on region depth (offset log raw depth in region + 0.5) with its own alpha (ZINB only as sensitivity)",
   "split": "conditional beta-binomial with constant variance inflation phi"
  },
  "practical_margin_nats": 0.002,

@@ -845,8 +845,8 @@ def report(out, args):
                f"({fci(pA.d_logscore_vs_nb, pA.ci_lo, pA.ci_hi)} nats per cell-region vs NB2) and adding a zero-inflation or hurdle component changes the held-out score by "
                f"{zA.d_logscore_vs_nb:+.4f} (ZINB), i.e. by less than the {EQUIV} nats margin used here, although low-coverage cells show a small excess of zeros "
                f"(about {ex_pts:.1f} points above NB2 expectation). The haplotype split HB | AT needs a beta-binomial (or equivalent variance-inflated binomial) conditional on AT, "
-               f"not a plain binomial ({fci(b1.d_logscore_per_cell_vs_bb1, b1.ci_lo, b1.ci_hi)} nats per cell-region vs BB), and its cell-level rho is not one number: it falls from about "
-               f"{reg_sp.rho_mle.max():.2f} where cells carry ~1.5 observations to about {reg_sp[reg_sp.family == 'literature'].rho_mle.min():.3f} where they carry tens, while the variance inflation stays near {phi_pool.mean():.1f}.")
+               f"not a plain binomial ({fci(b1.d_logscore_per_cell_vs_bb1, b1.ci_lo, b1.ci_hi)} nats per cell-region vs BB), and its cell-level rho is not one number: its region median falls from "
+               f"{reg_sp[reg_sp.family == 'saved'].rho_mle.median():.2f} (saved windows, ~1.5 observations per informative cell) to {reg_sp[reg_sp.family == 'literature'].rho_mle.median():.3f} (literature loci, tens of observations), while the variance inflation stays near {phi_pool.mean():.1f}.")
     kf = [
         f"<b>Poisson is rejected for both count modalities.</b> NB2 beats Poisson by {-pA.d_logscore_vs_nb:.3f} nats per cell-region for AT (95% CI {pA.ci_lo:+.3f} to {pA.ci_hi:+.3f} for Poisson minus NB2, "
         f"{meta['n_test_cells']} held-out cells) and by {-pD.d_logscore_vs_nb:.2f} for raw depth ({pD.ci_lo:+.2f} to {pD.ci_hi:+.2f}). ZIP is also worse than NB2 ({zipA.d_logscore_vs_nb:+.4f}), so a zero term on a Poisson base does not help.",
@@ -873,13 +873,13 @@ def report(out, args):
          "evidence (held-out log score, nats per cell-region, bootstrap over cells)": f"Poisson minus NB2 {fci(pD.d_logscore_vs_nb, pD.ci_lo, pD.ci_hi, 3)}; ZINB minus NB2 {fci(zD.d_logscore_vs_nb, zD.ci_lo, zD.ci_hi)}; hurdle-NB {fci(hD.d_logscore_vs_nb, hD.ci_lo, hD.ci_hi)}",
          "not needed / rejected": "Poisson; zero-inflation (raw depth has almost no zeros except in the saved windows)",
          "caveat": f"median alpha {a_dp.alpha_nb.median():.3f}; quasi-Poisson (exp 08) is a variance correction without a likelihood and cannot be scored or used in a joint model"},
-        {"modality": "(2) allele total AT", "recommended observation model": "NB2 with its own alpha; exposure = cell AT outside the region (default) or a depth-conditioned covariate; ZINB only as a sensitivity",
+        {"modality": "(2) allele total AT", "recommended observation model": "NB2 with its own alpha; condition on the region's own depth (offset log(raw depth in region + 0.5)); ZINB only as a sensitivity",
          "evidence (held-out log score, nats per cell-region, bootstrap over cells)": f"Poisson minus NB2 {fci(pA.d_logscore_vs_nb, pA.ci_lo, pA.ci_hi, 3)}; ZINB minus NB2 {fci(zA.d_logscore_vs_nb, zA.ci_lo, zA.ci_hi)} / {fci(zO.d_logscore_vs_nb, zO.ci_lo, zO.ci_hi)} (two offsets); hurdle {fci(hA.d_logscore_vs_nb, hA.ci_lo, hA.ci_hi)}",
          "not needed / rejected": "Poisson and ZIP; hurdle; free offset slope adds nothing (" + fci(fsA.d_logscore_vs_nb, fsA.ci_lo, fsA.ci_hi) + ")",
-         "caveat": f"median alpha {a_at.alpha_nb.median():.2f}, 5 to 50 times depth alpha; a small excess of zeros remains in low-coverage cells ({ex_pts:.1f} points); AT is correlated with depth (see C)"},
-        {"modality": "(3) haplotype split HB | AT", "recommended observation model": "Conditional beta-binomial given AT with dispersion expressed as constant variance inflation phi (rho = (phi-1)/(AT-1)), not a fixed rho; no mixture",
+         "caveat": f"depth-conditioning beats the AT-outside exposure by {fci(oN.d_logscore_raw_in_minus_out, oN.ci_lo, oN.ci_hi)} nats, so AT is not conditionally independent of depth (see C); median alpha {a_at.alpha_nb.median():.2f} = {a_at.alpha_nb.median()/a_dp.alpha_nb.median():.0f} times depth alpha; a small excess of zeros remains in low-coverage cells ({ex_pts:.1f} points); AT is correlated with depth (see C)"},
+        {"modality": "(3) haplotype split HB | AT", "recommended observation model": "Conditional beta-binomial given AT; dispersion as a variance inflation phi (rho = (phi-1)/(AT-1)) or a region-specific rho, never a single rho carried across units; no mixture",
          "evidence (held-out log score, nats per cell-region, bootstrap over cells)": f"Binomial(p) minus BB {fci(b1.d_logscore_per_cell_vs_bb1, b1.ci_lo, b1.ci_hi)}; constant-phi BB {fci(bbphi.d_logscore_per_cell_vs_bb1, bbphi.ci_lo, bbphi.ci_hi)}; mixture {fci(mixx.d_logscore_per_cell_vs_bb1, mixx.ci_lo, mixx.ci_hi)}; family-pooled constant-rho BB {fci(bbp.d_logscore_per_cell_vs_bb1, bbp.ci_lo, bbp.ci_hi)}",
-         "not needed / rejected": "plain binomial; fixed pooled rho across regions; two-component mixture; separate NB for HA and HB is equivalent in prediction (within " + str(EQUIV) + ") but does not isolate the allele-sensitive part",
+         "not needed / rejected": "plain binomial; one fixed rho per family (loses by the pooled-rho row; constant phi is within the margin of region-specific rho); two-component mixture; separate NB for HA and HB is equivalent in prediction (within " + str(EQUIV) + ") but does not isolate the allele-sensitive part",
          "caveat": f"cell-level rho is {rho_fam.loc['literature','rho_pooled']:.3f} to {rho_fam.loc['saved','rho_pooled']:.2f} by family vs the bin-level 0.0038; do not reuse the exp 06 rho at cell level"},
     ]
     tabD = pd.DataFrame(rec_rows)
@@ -1027,7 +1027,7 @@ All optimisation: L-BFGS-B, numerical gradients; Poisson IRLS start. No scientif
         ("Per-region detail", C.html_table(tabDet, floatfmt="{:.3g}") +
          C.caption("One row per saved window and literature locus (AT with the raw-depth offset). The note is generated from the numbers in the row, not an interpretation of biology.")),
         ("Sensitivity", f"<ul><li>Reverse train/test direction: the point estimates agree in sign and size with the primary split (table).</li>"
-         f"<li>Two exposure definitions for AT give the same ranking of models; the free offset slope fits at median {slope.get('raw_in', float('nan')):.2f} (raw-depth offset) and {slope.get('out', float('nan')):.2f} (AT-outside offset) per unit of offset, so exposure is not strictly proportional on the log scale; this changes the held-out score by less than {EQUIV}.</li>"
+         f"<li>Two exposure definitions for AT give the same ranking of models; the free offset slope fits at median {slope.get('raw_in', float('nan')):.2f} (raw-depth offset) and {slope.get('out', float('nan')):.2f} (AT-outside offset) per unit of offset (1 = proportional exposure, as assumed); freeing it changes the held-out score by less than {EQUIV}.</li>"
          f"<li>Zero models use a constant-plus-offset logit; this was not varied.</li></ul>" + C.html_table(tabS1, floatfmt="{:+.4f}") +
          C.caption("AT, all 138 regions: alternatives minus NB2. Left columns raw-depth offset; the reverse split column gives the point estimate with train and test swapped.") +
          C.html_table(sp_rev, floatfmt="{:+.4f}") + C.caption("Split models minus BB(p,rho), all regions: primary direction and reverse direction (point estimates).")),
@@ -1079,7 +1079,7 @@ All optimisation: L-BFGS-B, numerical gradients; Poisson IRLS start. No scientif
             "B_joint_all": {r.joint_model: {"d": r.d_joint_logscore_vs_NB_AT_plus_BB, "ci": [r.ci_lo, r.ci_hi]} for r in joint[joint.family == "all"].itertuples()},
             "C_residual_corr_median_min_max": [rc_med, rc_lo, rc_hi], "C_elasticity_median_min_max": [el_med, el_lo, el_hi],
             "C_pct_regions_ratio_varies_by_tercile_p01": ter_frac, "C_pct_regions_ratio_varies_by_cluster_p01": clu_frac,
-            "recommendation": {"depth": "NB2 with exposure", "AT": "NB2 with exposure and its own alpha (ZINB only as sensitivity)", "split": "conditional beta-binomial with constant variance inflation phi"},
+            "recommendation": {"depth": "NB2 with exposure", "AT": "NB2 conditioned on region depth (offset log raw depth in region + 0.5) with its own alpha (ZINB only as sensitivity)", "split": "conditional beta-binomial with constant variance inflation phi"},
             "practical_margin_nats": EQUIV, "compute_seconds": meta["compute_seconds"], "check_mode": meta["check_mode"]}
     C.write_json(out / "summary.json", summ)
 
