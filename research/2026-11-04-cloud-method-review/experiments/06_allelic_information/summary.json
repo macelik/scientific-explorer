@@ -223,7 +223,7 @@
    "matplotlib": "3.8.4",
    "statsmodels": "0.14.1"
   },
-  "workbench_commit_at_run": "8adb79ad699340c6718ff3a0573a7d1bf837d679",
+  "workbench_commit_at_run": "71bd34a1be5d3464ddb30613299a663351faed3f",
   "pyepi_upstream_commit": "e8305ea2162634d07e92a3bb401df672e48f217b",
   "cpu_count": 4
  }

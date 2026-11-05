@@ -67,9 +67,9 @@ MODELS = ["pois", "nb", "zip", "zinb", "hnb"]
 ALL_MODELS = MODELS + ["nb_fs"]
 MNAME = {"pois": "Poisson", "nb": "NB2", "zip": "ZIP", "zinb": "ZINB", "hnb": "hurdle-NB", "nb_fs": "NB2 free offset slope"}
 RHO_GRID = np.r_[0.0, np.geomspace(1e-5, 0.95, 50)]
-SM_ = ["b05", "b1", "bb05", "bb1", "mix"]
+SM_ = ["b05", "b1", "bb05", "bb1", "bbphi", "mix"]
 SNAME = {"b05": "Binomial p=0.5", "b1": "Binomial p", "bb05": "Beta-binomial p=0.5", "bb1": "Beta-binomial p,rho",
-         "mix": "Mixture Bin(p)/Bin(1-p)", "bb_pooled": "Beta-binomial pooled family rho"}
+         "mix": "Mixture Bin(p)/Bin(1-p)", "bbphi": "Beta-binomial constant variance inflation", "bb_pooled": "Beta-binomial pooled family rho"}
 CONFIGS = [("AT", "raw_in"), ("AT", "out"), ("depth", "out")]
 
 
@@ -210,6 +210,19 @@ def lbb(k, n, p, rho):
     return lc + gammaln(k + a) + gammaln(n - k + b) - gammaln(n + a + b) + gammaln(a + b) - gammaln(a) - gammaln(b)
 
 
+def lbb_phi(k, n, p, phi):
+    """beta-binomial whose rho depends on the cell's n so that the variance inflation 1 + (n-1) rho = phi is constant."""
+    p = np.clip(p, 1e-6, 1 - 1e-6)
+    rho = np.where(n > 1, np.clip((phi - 1.0) / np.maximum(n - 1.0, 1.0), 0.0, 0.95), 0.0)
+    lc = gammaln(n + 1) - gammaln(k + 1) - gammaln(n - k + 1)
+    binom = lc + k * np.log(p) + (n - k) * np.log1p(-p)
+    rs = np.maximum(rho, 1e-6)
+    s = (1 - rs) / rs
+    a, b = p * s, (1 - p) * s
+    bb = lc + gammaln(k + a) + gammaln(n - k + b) - gammaln(n + a + b) + gammaln(a + b) - gammaln(a) - gammaln(b)
+    return np.where(rho > 1e-6, bb, binom)
+
+
 def lmix(k, n, p, w):
     return np.logaddexp(np.log(max(w, 1e-12)) + lbb(k, n, p, 0.0), np.log(max(1 - w, 1e-12)) + lbb(k, n, 1 - p, 0.0))
 
@@ -223,6 +236,9 @@ def fit_split(k, n):
     r = optimize.minimize(lambda q: -lbb(k, n, expit(q[0]), np.exp(q[1])).sum(), [np.log(ph / (1 - ph)), np.log(1e-3)],
                           method="L-BFGS-B", bounds=[(-8, 8), (np.log(1e-7), np.log(0.95))])
     P["bb1"] = (float(expit(r.x[0])), float(np.exp(r.x[1])))
+    r = optimize.minimize(lambda q: -lbb_phi(k, n, expit(q[0]), 1.0 + np.exp(q[1])).sum(), [np.log(ph / (1 - ph)), np.log(0.3)],
+                          method="L-BFGS-B", bounds=[(-8, 8), (np.log(1e-4), np.log(30.0))])
+    P["bbphi"] = (float(expit(r.x[0])), float(1.0 + np.exp(r.x[1])))
     best = None
     for p0, w0 in ((0.6, 0.5), (0.8, 0.5), (0.7, 0.3)):
         r = optimize.minimize(lambda q: -lmix(k, n, q[0], q[1]).sum(), [p0, w0], method="L-BFGS-B", bounds=[(0.5, 0.999), (0.0, 1.0)])
@@ -234,7 +250,8 @@ def fit_split(k, n):
 
 def split_logp(P, k, n):
     return {"b05": lbb(k, n, 0.5, 0.0), "b1": lbb(k, n, P["b1"][0], 0.0), "bb05": lbb(k, n, 0.5, P["bb05"][0]),
-            "bb1": lbb(k, n, P["bb1"][0], P["bb1"][1]), "mix": lmix(k, n, *P["mix"])}
+            "bb1": lbb(k, n, P["bb1"][0], P["bb1"][1]),
+            "bbphi": lbb_phi(k, n, P["bbphi"][0], P["bbphi"][1]), "mix": lmix(k, n, *P["mix"])}
 
 
 # ------------------------------------------------------------------ data
@@ -409,6 +426,15 @@ def compute(args, out):
                            "frac_regions_better_than_nb": float(np.mean(dl.mean(0) > 0))})
     fam_tab = pd.DataFrame(fr)
     fam_tab.to_csv(out / "at_family_summary.tsv", sep="\t", index=False)
+    orow = []      # offset choice for AT: NB2 with raw_in offset minus NB2 with 'out' offset (same train/test split)
+    for fname in fams + ["all"]:
+        sel = np.ones(R, bool) if fname == "all" else fam == fname
+        for m in ("nb", "zinb"):
+            dl = LS[("AT", "raw_in", "primary")][m][:, sel] - LS[("AT", "out", "primary")][m][:, sel]
+            mean, lo, hi = ci3((W @ dl).mean(1))
+            orow.append({"family": fname, "model": m, "regions": int(sel.sum()), "d_logscore_raw_in_minus_out": float(dl.mean()),
+                         "ci_lo": lo, "ci_hi": hi, "frac_regions_raw_in_better": float(np.mean(dl.mean(0) > 0))})
+    pd.DataFrame(orow).to_csv(out / "offset_comparison.tsv", sep="\t", index=False)
     zr = []
     for (mod, ofs) in CONFIGS:
         for fname in fams:
@@ -439,7 +465,7 @@ def compute(args, out):
         sp = {"family": r["family"], "region": r["name"], "cells_AT_ge1": int(mall.sum()), "cells_AT_ge2": int(a2.sum()),
               "mean_AT_given_ge1": float(AT[mall, j].mean()), "max_AT": int(AT[:, j].max()),
               "p_hat_HB_over_AT": Pa["b1"][0], "rho_mle_p05": Pa["bb05"][0], "rho_mle": Pa["bb1"][1], "p_bb": Pa["bb1"][0],
-              "mix_p": Pa["mix"][0], "mix_w": Pa["mix"][1], "rho_over_exp06": Pa["bb1"][1] / rho06}
+              "phi_mle": Pa["bbphi"][1], "mix_p": Pa["mix"][0], "mix_w": Pa["mix"][1], "rho_over_exp06": Pa["bb1"][1] / rho06}
         llb = lbb(HB[mall, j], AT[mall, j], Pa["b1"][0], 0.0).sum()
         llbb = lbb(HB[mall, j], AT[mall, j], Pa["bb1"][0], Pa["bb1"][1]).sum()
         sp["lrt_bb_vs_binom"] = float(max(0.0, 2 * (llbb - llb)))

@@ -252,7 +252,7 @@ def main():
     sections = [
         ("Question and why it matters",
          "<p><b>Question.</b> Do the pinned local/global permutation tests, as used after choosing the maximum-AD cut, control false acceptance? How much of the cluster pseudobulk&rsquo;s bin-to-bin variation is cell-sampling noise, and are boundaries reproducible between disjoint halves of the same cells?</p>"
-         "<p><b>Why it matters.</b> The recommendation states that the saved boundaries are reproducible and that the problem is interpreting them. I started from the hypothesis that the select-then-test procedure is anti-conservative; "
+         "<p><b>Why it matters.</b> The recommendation states that the saved boundaries are reproducible and that the problem is interpreting them. The review started from the hypothesis that the select-then-test procedure is anti-conservative; "
          "this experiment tests that hypothesis and quantifies how much boundary structure is cell sampling versus reproducible non-sampling structure, which determines whether a significant boundary can be used as evidence of copy-number change in the per-region evidence layer.</p>"),
         ("Inputs",
          f"<ul><li><b>Matrix.</b> processed <code>X</code> of <code>count_matrix.h5ad</code> ({d.n_cells:,} cells &times; {d.n_bins:,} bins), averaged per group: <code>all</code> ({int(masks['all'].sum()):,} cells) and WNN <code>cluster0</code> ({int(masks['cluster0'].sum()):,} cells), each also split into halves A and B (<code>pseudobulks.npz</code>).</li>"
